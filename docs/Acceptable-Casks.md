@@ -28,11 +28,11 @@ Stable versions live in the main repository at [Homebrew/homebrew-cask](https://
 
 ### But There Is No Stable Version!
 
-When an App is only available as beta, development, or unstable versions, or in cases where such a version is the general standard, then said version can go into the main repo.
+If upstream does not consider the software stable, the cask can likely wait until they do.
 
 ### Beta, Unstable, Development, Nightly, or Legacy
 
-When an App has a main stable version, alternative versions should be submitted to [Homebrew/homebrew-cask-versions](https://github.com/Homebrew/homebrew-cask-versions).
+Alternative versions should be submitted to [Homebrew/homebrew-cask-versions](https://github.com/Homebrew/homebrew-cask-versions).
 
 ### Regional and Localized
 
