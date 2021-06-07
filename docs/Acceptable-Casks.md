@@ -126,3 +126,7 @@ Common reasons to reject a Cask entirely:
 Common reasons to reject a Cask from the main repo:
 
 + The cask was submitted to the wrong repo. When drafting a cask, consult “[Finding a Home For Your Cask](#finding-a-home-for-your-cask)” to see where it belongs.
+
+## Sometimes there are exceptions
+
+Even if all criteria are met we may not accept the cask. Documentation tends to lag behind current decision-making. Although some rejections may seem arbitrary or strange they are based on years of experience making Homebrew work acceptably for our users.
