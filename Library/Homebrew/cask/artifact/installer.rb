@@ -20,10 +20,12 @@ module Cask
       # Extension module for manual installers.
       module ManualInstaller
         def install_phase(**)
+          installer_path = cask.staged_path.join(path)
+          installer_path = "'#{installer_path}'" if /[[:space:]]/.match?(installer_path)
           puts <<~EOS
             To complete the installation of Cask #{cask}, you must also
             run the installer at:
-              #{cask.staged_path.join(path)}
+              #{installer_path}
           EOS
         end
       end

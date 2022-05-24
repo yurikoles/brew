@@ -22,6 +22,16 @@ describe Cask::Artifact::Installer, :cask do
       end
     end
 
+    context "when given a manual installer with space" do
+      let(:args) { { manual: "some installer" } }
+
+      it "shows a message prompting to run the installer manually with quotes" do
+        expect {
+          installer.install_phase(command: command)
+        }.to output(%r{run the installer at:\s+'#{staged_path}/some installer'}).to_stdout
+      end
+    end
+
     context "when given a script installer" do
       let(:executable) { staged_path/"executable" }
       let(:args) { { script: { executable: "executable" } } }
