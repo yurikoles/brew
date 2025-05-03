@@ -332,6 +332,7 @@ module Homebrew
 
       # If asking the user is enabled, show dependency and size information.
       def ask(formulae, args:)
+        return if formulae.empty?
         ohai "Looking for bottles..."
 
         sized_formulae = compute_sized_formulae(formulae, args: args)
