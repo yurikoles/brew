@@ -218,6 +218,9 @@ module Homebrew
         end
 
         if casks.any?
+          if args.options_only.include? "--ask"
+            opoo "Option --ask is not compatible with casks."
+          end
           if args.dry_run?
             if (casks_to_install = casks.reject(&:installed?).presence)
               ohai "Would install #{::Utils.pluralize("cask", casks_to_install.count, include_count: true)}:"
