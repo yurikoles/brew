@@ -310,7 +310,7 @@ module Homebrew
         Install.perform_preinstall_checks_once
         Install.check_cc_argv(args.cc)
 
-        Install.ask_formulae(formulae, args: args) if args.ask?
+        Install.ask_formulae(installed_formulae, args: args) if args.ask?
 
         Install.install_formulae(
           installed_formulae,
