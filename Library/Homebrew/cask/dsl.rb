@@ -177,6 +177,7 @@ module Cask
     sig { returns(T::Boolean) }
     def livecheck_defined? = @livecheck_defined
 
+    sig { void }
     def set_no_autobump!
       return if @livecheck.strategy != :extract_plist
 
@@ -358,6 +359,8 @@ module Cask
         if !arg.is_a?(String) && arg != :latest
           raise CaskInvalidError.new(cask, "invalid 'version' value: #{arg.inspect}")
         end
+
+        no_autobump! because: :latest_version if arg == :latest
 
         DSL::Version.new(arg)
       end
