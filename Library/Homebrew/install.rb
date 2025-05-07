@@ -332,7 +332,7 @@ module Homebrew
 
       # If asking the user is enabled, show dependency and size information.
       def ask_formulae(formulae, args:)
-        return if formulae.empty? && casks.empty?
+        return if formulae.empty?
 
         ohai "Looking for bottles..."
 

@@ -43,7 +43,7 @@ module Homebrew
                description: "Ask for confirmation before downloading and upgrading formulae. " \
                             "Print bottles and dependencies download size, install and net install size.",
                env:         :ask
-          [
+        [
           [:switch, "--formula", "--formulae", {
             description: "Treat all named arguments as formulae. If no named arguments " \
                          "are specified, upgrade only outdated formulae.",
@@ -260,6 +260,7 @@ module Homebrew
       sig { params(casks: T::Array[Cask::Cask]).returns(T::Boolean) }
       def upgrade_outdated_casks(casks)
         return false if args.formula?
+
         Install.ask_casks casks
 
         Cask::Upgrade.upgrade_casks(

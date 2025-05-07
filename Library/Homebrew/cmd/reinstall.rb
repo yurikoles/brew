@@ -172,9 +172,7 @@ module Homebrew
         end
 
         if casks.any?
-          if args.ask?
-            Install.ask_casks casks
-          end
+          Install.ask_casks casks if args.ask?
           Cask::Reinstall.reinstall_casks(
             *casks,
             binaries:       args.binaries?,
