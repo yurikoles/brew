@@ -261,7 +261,7 @@ module Homebrew
       def upgrade_outdated_casks(casks)
         return false if args.formula?
 
-        Install.ask_casks casks
+        Install.ask_casks casks if args.ask?
 
         Cask::Upgrade.upgrade_casks(
           *casks,
