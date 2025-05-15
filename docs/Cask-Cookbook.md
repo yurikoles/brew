@@ -555,6 +555,8 @@ installer manual: "RubyMotion Installer.app"
 | `args:`         | array of arguments to the install script |
 | `input:`        | array of lines of input to be sent to `stdin` of the script |
 | `must_succeed:` | set to `false` if the script is allowed to fail |
+| `print_stderr:` | set to `false` to suppress `stderr` output |
+| `print_stdout:` | set to `false` to suppress `stdout` output |
 | `sudo:`         | set to `true` if the script needs *sudo* |
 
 The path may be absolute, or relative to the cask. Example (from [miniforge.rb](https://github.com/Homebrew/homebrew-cask/blob/864f623e2cd17dbde5987a7b3923fdb0b4ac9ee5/Casks/m/miniforge.rb#L23-L26)):
@@ -770,11 +772,6 @@ Since `pkg` installers can do arbitrary things, different techniques are needed 
 * [`login_item:`](#uninstall-login_item) (string or array) - names of login items to remove
 * [`kext:`](#uninstall-kext) (string or array) - bundle IDs of kexts to unload from the system
 * [`script:`](#uninstall-script) (string or hash) - relative path to an uninstall script to be run via sudo; use hash if args are needed
-  * `executable:` - relative path to an uninstall script to be run via sudo (required for hash form)
-  * `args:` - array of arguments to the uninstall script
-  * `input:` - array of lines of input to be sent to `stdin` of the script
-  * `must_succeed:` - set to `false` if the script is allowed to fail
-  * `sudo:` - set to `true` if the script needs *sudo*
 * [`pkgutil:`](#uninstall-pkgutil) (string, regexp or array of strings and regexps) - strings or regexps matching bundle IDs of packages to uninstall using `pkgutil`
 * [`delete:`](#uninstall-delete) (string or array) - double-quoted, absolute paths of files or directory trees to remove. Should only be used as a last resort; `pkgutil:` is strongly preferred.
 * **`rmdir:`** (string or array) - double-quoted, absolute paths of directories to remove if empty. Works recursively.
@@ -894,7 +891,19 @@ IDs inside a kext bundle on disk can be listed using [`list_id_in_kext`](https:/
 
 #### `uninstall` *script*
 
-`uninstall script:` introduces a series of key-value pairs describing a command which will automate completion of the uninstall. Example (from [virtualbox.rb](https://github.com/Homebrew/homebrew-cask/blob/ef9931087f6e101262bf64119166e2d9cec068f0/Casks/v/virtualbox.rb#L55-L61)):
+`uninstall script:` introduces a series of key-value pairs describing a command which will automate completion of the uninstall. The form is similar to [`installer script:`](#installer-script):
+
+| key             | value |
+| --------------- | ----- |
+| `executable:`   | path to an uninstall script to be run |
+| `args:`         | array of arguments to the uninstall script |
+| `input:`        | array of lines of input to be sent to `stdin` of the script |
+| `must_succeed:` | set to `false` if the script is allowed to fail |
+| `print_stderr:` | set to `false` to suppress `stderr` output |
+| `print_stdout:` | set to `false` to suppress `stdout` output |
+| `sudo:`         | set to `true` if the script needs *sudo* |
+
+The path may be absolute, or relative to the cask. Example (from [virtualbox.rb](https://github.com/Homebrew/homebrew-cask/blob/ef9931087f6e101262bf64119166e2d9cec068f0/Casks/v/virtualbox.rb#L55-L61)):
 
 ```ruby
 uninstall script:  {
