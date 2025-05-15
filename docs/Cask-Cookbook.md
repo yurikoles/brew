@@ -1124,14 +1124,14 @@ The examples above can become hard to read, however. Since many of these changes
 | `major_minor`            | `1.2.3-a45,ccdd88` | `1.2` |
 | `major_minor_patch`      | `1.2.3-a45,ccdd88` | `1.2.3-a45` |
 | `minor_patch`            | `1.2.3-a45,ccdd88` | `2.3-a45` |
-| `before_comma`           | `1.2.3-a45,ccdd88` | `1.2.3-a45` |
-| `after_comma`            | `1.2.3-a45,ccdd88` | `ccdd88` |
+| `csv.first`              | `1.2.3-a45,ccdd88` | `1.2.3-a45` |
+| `csv.second`             | `1.2.3-a45,ccdd88` | `ccdd88` |
 | `dots_to_hyphens`        | `1.2.3-a45,ccdd88` | `1-2-3-a45,ccdd88` |
 | `no_dots`                | `1.2.3-a45,ccdd88` | `123-a45,ccdd88` |
 
 Similar to `dots_to_hyphens`, we provide methods for all logical permutations of `{dots,hyphens,underscores}_to_{dots,hyphens,underscores}`. The same applies to `no_dots` in the form of `no_{dots,hyphens,underscores}`, with an extra `no_dividers` that applies all these at once.
 
-Finally, there is `csv` which returns an array of comma-separated values. `csv`, `before_comma` and `after_comma` are extra-special to allow for otherwise complex cases, and should be used sparingly. There should be no more than two of `,` per `version`.
+Finally, there is `csv` which returns an array of comma-separated values, which replaces the deprecated `before_comma` and `after_comma` methods. Comma-separated versions should only be used for otherwise complex cases; ideally, there should be no more than two instances of `,` per `version`, although methods up to `csv.fifth` are available.
 
 #### `version :latest`
 
