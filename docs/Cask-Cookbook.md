@@ -314,30 +314,36 @@ The syntax for both stanzas is the same:
 deprecate! date: "YYYY-MM-DD", because: "is ..."
 disable! date: "YYYY-MM-DD", because: "is ..."
 
-# Or with a preset reason (see the `because:` argument section below)
-deprecate! date: "YYYY-MM-DD", because: :discontinued
-disable! date: "YYYY-MM-DD", because: :discontinued
+# Or with a preset reason and suggested replacement (see the parameter sections below)
+deprecate! date: "YYYY-MM-DD", because: :discontinued, replacement_formula: "another"
+disable! date: "YYYY-MM-DD", because: :unmaintained, replacement_cask: "alternative"
 ```
 
-#### `date:` argument
+#### `date:` parameter
 
-The `date:` argument controls when the deprecation or disabling will take effect.
+The `date:` parameter controls when the deprecation or disabling will take effect.
 Casks that have a `deprecate!` stanza with a date in the future will not be treated as being deprecated until that date.
-Casks that have a `disable!` stanza with a date in the future will be automatically deprecated until that date, at which point they will be disabled.
+Casks that have a `disable!` stanza with a date in the future will be automatically deprecated until that date, at which point they will become disabled.
 
-#### `because:` argument
+#### `because:` parameter
 
-The `because:` argument accepts a reason for the cask being deprecated or disabled.
+The `because:` parameter accepts a reason for the cask being deprecated or disabled.
 The info message will be `<cask> is deprecated because it <reason>!`, so format the reason to fit that sentence.
 For example, `because: "is broken"` will result in `<cask> is deprecated because it is broken!`.
 
-The `because:` argument can also accept a symbol that corresponds to a preset reason, for example:
+The `because:` parameter can also accept a symbol that corresponds to a preset reason, for example:
 
 ```ruby
 deprecate! date: "YYYY-MM-DD", because: :discontinued
 ```
 
-A complete list of allowable symbols can be found in the [`DeprecateDisable` module](https://github.com/Homebrew/brew/blob/master/Library/Homebrew/deprecate_disable.rb).
+A complete list of allowable symbols can be found in the [`DeprecateDisable` module](https://rubydoc.brew.sh/DeprecateDisable) documentation.
+
+#### `replacement_formula:` / `replacement_cask:` parameter
+
+The `replacement_formula:` and `replacement_cask:` parameters accept a string for suggesting a replacement formula or cask to the user.
+
+Refer to [Deprecating, Disabling and Removing Casks](Deprecating-Disabling-and-Removing-Casks.md) for more information about the deprecation process for casks.
 
 ### Stanza: `conflicts_with`
 
