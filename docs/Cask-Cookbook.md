@@ -305,49 +305,6 @@ caveats do
 end
 ```
 
-### Stanza: `deprecate!` / `disable!`
-
-`deprecate!` and `disable!` are used to declare that a cask is no longer functional or supported.
-Casks that contain a `deprecate!` stanza can still be installed, but will print a warning message when they are installed or upgraded.
-Casks that contain a `disable!` stanza cannot be installed or upgraded and will print an error message.
-
-The syntax for both stanzas is the same:
-
-```ruby
-deprecate! date: "YYYY-MM-DD", because: "is ..."
-disable! date: "YYYY-MM-DD", because: "is ..."
-
-# Or with a preset reason and suggested replacement (see the parameter sections below)
-deprecate! date: "YYYY-MM-DD", because: :discontinued, replacement_formula: "another"
-disable! date: "YYYY-MM-DD", because: :unmaintained, replacement_cask: "alternative"
-```
-
-#### `date:` parameter
-
-The `date:` parameter controls when the deprecation or disabling will take effect.
-Casks that have a `deprecate!` stanza with a date in the future will not be treated as being deprecated until that date.
-Casks that have a `disable!` stanza with a date in the future will be automatically deprecated until that date, at which point they will become disabled.
-
-#### `because:` parameter
-
-The `because:` parameter accepts a reason for the cask being deprecated or disabled.
-The info message will be `<cask> is deprecated because it <reason>!`, so format the reason to fit that sentence.
-For example, `because: "is broken"` will result in `<cask> is deprecated because it is broken!`.
-
-The `because:` parameter can also accept a symbol that corresponds to a preset reason, for example:
-
-```ruby
-deprecate! date: "YYYY-MM-DD", because: :discontinued
-```
-
-A complete list of allowable symbols can be found in the [`DeprecateDisable` module](https://rubydoc.brew.sh/DeprecateDisable) documentation.
-
-#### `replacement_formula:` / `replacement_cask:` parameter
-
-The `replacement_formula:` and `replacement_cask:` parameters accept a string for suggesting a replacement formula or cask to the user.
-
-Refer to [Deprecating, Disabling and Removing Casks](Deprecating-Disabling-and-Removing-Casks.md) for more information about the deprecation process for casks.
-
 ### Stanza: `conflicts_with`
 
 `conflicts_with` is used to declare conflicts that prevent a cask from installing or working correctly.
@@ -377,6 +334,14 @@ conflicts_with formula: "macvim"
 ### Stanza: `depends_on`
 
 `depends_on` is used to declare dependencies and requirements for a cask. `depends_on` is not consulted until `install` is attempted.
+
+| key        | description |
+| ---------- | ----------- |
+| `cask:`    | required Homebrew cask tokens as string or array |
+| `formula:` | required Homebrew formula names as string or array |
+| `macos:`   | macOS release requirements as symbol, array or string comparison expression |
+| `arch:`    | hardware requirements as symbol or array  |
+| `java:`    | *stub - not yet functional* |
 
 #### `depends_on` *cask*
 
@@ -445,15 +410,48 @@ depends_on arch: :x86_64            # same meaning as above
 depends_on arch: [:x86_64]          # same meaning as above
 ```
 
-#### `depends_on` parameters
+### Stanza: `deprecate!` / `disable!`
 
-| key        | description |
-| ---------- | ----------- |
-| `formula:` | required Homebrew formula names as string or array |
-| `cask:`    | required Homebrew cask tokens as string or array |
-| `macos:`   | macOS release requirements as symbol, array or string comparison expression |
-| `arch:`    | hardware requirements as symbol or array  |
-| `java:`    | *stub - not yet functional* |
+`deprecate!` and `disable!` are used to declare that a cask is no longer functional or supported.
+Casks that contain a `deprecate!` stanza can still be installed, but will print a warning message when they are installed or upgraded.
+Casks that contain a `disable!` stanza cannot be installed or upgraded and will print an error message.
+
+The syntax for both stanzas is the same:
+
+```ruby
+deprecate! date: "YYYY-MM-DD", because: "is ..."
+disable! date: "YYYY-MM-DD", because: "is ..."
+
+# Or with a preset reason and suggested replacement (see the parameter sections below)
+deprecate! date: "YYYY-MM-DD", because: :discontinued, replacement_formula: "another"
+disable! date: "YYYY-MM-DD", because: :unmaintained, replacement_cask: "alternative"
+```
+
+#### `date:` parameter
+
+The `date:` parameter controls when the deprecation or disabling will take effect.
+Casks that have a `deprecate!` stanza with a date in the future will not be treated as being deprecated until that date.
+Casks that have a `disable!` stanza with a date in the future will be automatically deprecated until that date, at which point they will become disabled.
+
+#### `because:` parameter
+
+The `because:` parameter accepts a reason for the cask being deprecated or disabled.
+The info message will be `<cask> is deprecated because it <reason>!`, so format the reason to fit that sentence.
+For example, `because: "is broken"` will result in `<cask> is deprecated because it is broken!`.
+
+The `because:` parameter can also accept a symbol that corresponds to a preset reason, for example:
+
+```ruby
+deprecate! date: "YYYY-MM-DD", because: :discontinued
+```
+
+A complete list of allowable symbols can be found in the [`DeprecateDisable` module](https://rubydoc.brew.sh/DeprecateDisable) documentation.
+
+#### `replacement_formula:` / `replacement_cask:` parameter
+
+The `replacement_formula:` and `replacement_cask:` parameters accept a string for suggesting a replacement formula or cask to the user.
+
+Refer to [Deprecating, Disabling and Removing Casks](Deprecating-Disabling-and-Removing-Casks.md) for more information about the deprecation process for casks.
 
 ### Stanza: `desc`
 
@@ -756,10 +754,6 @@ The value of `suite` is never an `.app` bundle, but a plain directory.
 
 > If you cannot design a working `uninstall` stanza, please submit your cask anyway. The maintainers can help you write an `uninstall` stanza, just ask!
 
-#### `uninstall pkgutil:` is the easiest and most useful
-
-The easiest and most useful `uninstall` directive is [`pkgutil:`](#uninstall-pkgutil). It should cover most use cases.
-
 #### `uninstall` is required for casks that install using `pkg` or `installer`
 
 For most casks, uninstall actions are determined automatically, and an explicit `uninstall` stanza is not needed. However, a cask which uses the [`pkg`](#stanza-pkg) or [`installer`](#stanza-installer) stanzas will **not** know how to uninstall correctly unless an `uninstall` stanza is given.
@@ -771,6 +765,10 @@ The `uninstall` stanza is available for other artifact types, and is useful for 
 #### There are multiple uninstall techniques
 
 Since `pkg` installers can do arbitrary things, different techniques are needed to uninstall in each case. You may need to specify one, or several, of the following key-value pairs as arguments to `uninstall`.
+
+##### `uninstall pkgutil:` is the easiest and most useful
+
+The easiest and most useful `uninstall` directive is [`pkgutil:`](#uninstall-pkgutil). It should cover most use cases.
 
 #### Summary of keys
 
