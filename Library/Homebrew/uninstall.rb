@@ -72,12 +72,12 @@ module Homebrew
               maybe_paths = maybe_paths.reject do |path|
                 # Remove extension only if a file
                 # (f.e. directory with name "openssl@1.1" will be trimmed to "openssl@1")
-                filename = if File.directory?(path)
+                basename = if File.directory?(path)
                   File.basename(path)
-                 else
-                   File.basename(path, ".*")
-                 end
-                excluded_names.include?(filename)
+                else
+                  File.basename(path, ".*")
+                end
+                excluded_names.include?(basename)
               end
               maybe_paths -= paths if paths.present?
               if maybe_paths.present?
