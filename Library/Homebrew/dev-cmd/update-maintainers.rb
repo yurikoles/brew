@@ -30,7 +30,7 @@ module Homebrew
 
         # Not all PLC members are Homebrew GitHub organisation members any more
         non_maintainer_plc_members = {
-          colindean: "Colin Dean",
+          colindean:   "Colin Dean",
           mozzadrella: "Vanessa Gennarelli",
         }.transform_keys(&:to_s)
         public_members += non_maintainer_plc_members.keys
