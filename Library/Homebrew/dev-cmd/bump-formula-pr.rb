@@ -399,10 +399,14 @@ module Homebrew
 
             if github_release_data.present?
               pre = "pre" if github_release_data["prerelease"].present?
+              # maximum length of PR body is 65,536 characters so let's truncate release notes to half of that.
+              body = github_release_data["body"].truncate(32_768)
+
               formula_pr_message += <<~XML
                 <details>
                   <summary>#{pre}release notes</summary>
-                  <pre>#{github_release_data["body"]}</pre>
+                  <pre>#{body}</pre>
+                  <p>View the full release notes at #{github_release_data["html_url"]}.</p>
                 </details>
               XML
             end
