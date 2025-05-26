@@ -436,7 +436,7 @@ module Homebrew
           # If `brew audit` fails, revert the changes made to any formula.
           commits.each do |revert|
             revert_formula = Formula[revert[:formula_name]]
-            revert_formula.path.atomic_write(revert[:old_contents]) unless args.dry_run? || args.write_only?
+            revert_formula.path.atomic_write(revert[:old_contents]) if !args.dry_run? && !args.write_only?
             revert_alias_rename = revert[:additional_files]
             if revert_alias_rename && (source = revert_alias_rename.first) && (destination = revert_alias_rename.last)
               FileUtils.mv source, destination
