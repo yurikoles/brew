@@ -600,7 +600,7 @@ class Tap
     safe_system "git", "-C", path, *args
     git_repository.set_head_origin_auto
 
-    current_upstream_head = git_repository.origin_branch_name if current_upstream_head.nil?
+    current_upstream_head ||= git_repository.origin_branch_name
 
     new_upstream_head = T.must(git_repository.origin_branch_name)
     return if new_upstream_head == current_upstream_head
