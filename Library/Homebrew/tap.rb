@@ -590,14 +590,15 @@ class Tap
     end
     return unless remote
 
-    current_upstream_head = T.must(git_repository.origin_branch_name)
-    return if requested_remote.blank? && git_repository.origin_has_branch?(current_upstream_head)
-
     args = %w[fetch]
     args << "--quiet" if quiet
     args << "origin"
     args << "+refs/heads/*:refs/remotes/origin/*"
     safe_system "git", "-C", path, *args
+
+    current_upstream_head = T.must(git_repository.origin_branch_name)
+    return if requested_remote.blank? && git_repository.origin_has_branch?(current_upstream_head)
+
     git_repository.set_head_origin_auto
 
     new_upstream_head = T.must(git_repository.origin_branch_name)
