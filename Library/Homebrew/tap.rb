@@ -591,7 +591,8 @@ class Tap
     return unless remote
 
     current_upstream_head = git_repository.origin_branch_name
-    return if current_upstream_head.present? && requested_remote.blank? && git_repository.origin_has_branch?(current_upstream_head)
+    return if current_upstream_head.present? && requested_remote.blank? &&
+              git_repository.origin_has_branch?(current_upstream_head)
 
     args = %w[fetch]
     args << "--quiet" if quiet
