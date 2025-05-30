@@ -84,7 +84,10 @@ module Homebrew
           r.owner = self
           filepath = r.fetch
           html_doctype_prefix = "<!doctype html"
-          if File.read(filepath, 100).strip.downcase.start_with?(html_doctype_prefix)
+          # Number of bytes to read from file start to ensure it is not HTML.
+          # HTML may start with arbitrary number of whitespace lines.
+          head_len = 100
+          if File.read(filepath, head_len).strip.downcase.start_with?(html_doctype_prefix)
             raise "Downloaded URL is not archive"
           end
 
