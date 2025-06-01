@@ -151,7 +151,7 @@ RSpec.shared_context "integration test" do # rubocop:disable RSpec/ContextWordin
         program_name = "test"
       end
 
-      tarball_name = "#{prefix}-0.1#{'-linux' if OS.linux?}.tbz"
+      tarball_name = "#{prefix}-0.1#{"-linux" if OS.linux?}.tbz"
       tarball = TEST_FIXTURE_DIR / "tarballs/#{tarball_name}"
 
       content = <<~RUBY
