@@ -88,7 +88,7 @@ RSpec.describe Homebrew::Cmd::UpgradeCmd do
 
     content = <<~RUBY
       depends_on "testball5"
-      # should work as its not building but test doesnt pass if dependant
+      # should work as it's not building but test doesn't pass if dependant
       # depends_on "build" => :build
       depends_on "installed"
       version "0.1"
