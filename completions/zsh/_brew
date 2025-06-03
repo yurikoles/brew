@@ -191,6 +191,7 @@ __brew_internal_commands() {
     'list:List all installed formulae and casks'
     'livecheck:Check for newer versions of formulae and/or casks from upstream'
     'log:Show the `git log` for formula or cask, or show the log for the Homebrew repository if no formula or cask is provided'
+    'mcp-server:Starts the Homebrew MCP (Model Context Protocol) server'
     'migrate:Migrate renamed packages to new names, where formula are old names of packages'
     'missing:Check the given formula kegs for missing dependencies'
     'nodenv-sync:Create symlinks for Homebrew'\''s installed NodeJS versions in `~/.nodenv/versions`'
@@ -1509,6 +1510,15 @@ _brew_ls() {
     - installed_cask \
     '(--formula --pinned --multiple --installed-on-request --installed-as-dependency --poured-from-bottle --built-from-source)--cask[List only casks, or treat all named arguments as casks]' \
     '*:installed_cask:__brew_installed_casks'
+}
+
+# brew mcp-server
+_brew_mcp_server() {
+  _arguments \
+    '--debug[Enable debug logging to stderr]' \
+    '--help[Show this message]' \
+    '--quiet[Make some output more quiet]' \
+    '--verbose[Make some output more verbose]'
 }
 
 # brew migrate
