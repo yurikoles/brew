@@ -68,10 +68,7 @@ module Homebrew
           canonical_json = JSON.pretty_generate(tap.formula_renames.merge(tap.alias_table))
           File.write("_data/formula_canonical.json", "#{canonical_json}\n") unless args.dry_run?
 
-          OnSystem::ALL_OS_ARCH_COMBINATIONS.filter_map do |os, arch|
-            bottle_tag = Utils::Bottles::Tag.new(system: os, arch:)
-            next unless bottle_tag.valid_combination?
-
+          OnSystem::VALID_OS_ARCH_TAGS.each do |bottle_tag|
             variation_formulae = all_formulae.transform_values do |formula|
               Homebrew::API.merge_variations(formula, bottle_tag:)
             end

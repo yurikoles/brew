@@ -126,8 +126,7 @@ module Homebrew
     def self.merge_variations(json, bottle_tag: nil)
       return json unless json.key?("variations")
 
-      bottle_tag ||= ::Utils::Bottles::Tag.new(system: Homebrew::SimulateSystem.current_os,
-                                               arch:   Homebrew::SimulateSystem.current_arch)
+      bottle_tag ||= Homebrew::SimulateSystem.current_tag
 
       if (variation = json.dig("variations", bottle_tag.to_s).presence) ||
          (variation = json.dig("variations", bottle_tag.to_sym).presence)

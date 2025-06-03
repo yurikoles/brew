@@ -70,10 +70,7 @@ module Homebrew
           canonical_json = JSON.pretty_generate(tap.cask_renames)
           File.write("_data/cask_canonical.json", "#{canonical_json}\n") unless args.dry_run?
 
-          OnSystem::ALL_OS_ARCH_COMBINATIONS.filter_map do |os, arch|
-            bottle_tag = Utils::Bottles::Tag.new(system: os, arch:)
-            next unless bottle_tag.valid_combination?
-
+          OnSystem::VALID_OS_ARCH_TAGS.each do |bottle_tag|
             variation_casks = all_casks.transform_values do |cask|
               Homebrew::API.merge_variations(cask, bottle_tag:)
             end
