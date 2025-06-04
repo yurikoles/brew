@@ -1052,6 +1052,14 @@ repository if no formula or cask is provided.
 
 : Treat all named arguments as casks.
 
+### `mcp-server` \[`--debug`\]
+
+Starts the Homebrew MCP (Model Context Protocol) server.
+
+`-d`, `--debug`
+
+: Enable debug logging to stderr.
+
 ### `migrate` \[*`options`*\] *`installed_formula`*\|*`installed_cask`* \[...\]
 
 Migrate renamed packages to new names, where *`formula`* are old names of
