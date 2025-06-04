@@ -71,7 +71,7 @@ module Homebrew
           File.write("_data/cask_canonical.json", "#{canonical_json}\n") unless args.dry_run?
 
           OnSystem::VALID_OS_ARCH_TAGS.each do |bottle_tag|
-            variation_casks = all_casks.transform_values do |cask|
+            variation_casks = all_casks.map do |_, cask|
               Homebrew::API.merge_variations(cask, bottle_tag:)
             end
 

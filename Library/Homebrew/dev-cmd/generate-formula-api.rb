@@ -69,7 +69,7 @@ module Homebrew
           File.write("_data/formula_canonical.json", "#{canonical_json}\n") unless args.dry_run?
 
           OnSystem::VALID_OS_ARCH_TAGS.each do |bottle_tag|
-            variation_formulae = all_formulae.transform_values do |formula|
+            variation_formulae = all_formulae.map do |_, formula|
               Homebrew::API.merge_variations(formula, bottle_tag:)
             end
 
