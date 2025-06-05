@@ -69,7 +69,7 @@ module Homebrew
           File.write("_data/formula_canonical.json", "#{canonical_json}\n") unless args.dry_run?
 
           OnSystem::VALID_OS_ARCH_TAGS.each do |bottle_tag|
-            variation_formulae = all_formulae.map do |_, formula|
+            variation_formulae = all_formulae.to_h do |name, formula|
               formula = Homebrew::API.merge_variations(formula, bottle_tag:)
 
               version = Version.new(formula.dig("versions", "stable"))
@@ -78,7 +78,7 @@ module Homebrew
               sha256 = formula.dig("bottle", "stable", "files", :all, "sha256")
               sha256 ||= formula.dig("bottle", "stable", "files", bottle_tag.to_sym, "sha256")
 
-              [formula["name"], pkg_version.to_s, rebuild, sha256]
+              [name, [pkg_version.to_s, rebuild, sha256]]
             end
 
             unless args.dry_run?
