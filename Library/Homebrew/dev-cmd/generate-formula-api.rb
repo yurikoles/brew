@@ -75,7 +75,14 @@ module Homebrew
               version = Version.new(formula.dig("versions", "stable"))
               pkg_version = PkgVersion.new(version, formula["revision"])
               rebuild = formula.dig("bottle", "stable", "rebuild") || 0
-              sha256 = newest_bottle_sha256(formula, bottle_tag)
+
+              bottle_collector = Utils::Bottles::Collector.new
+              formula.dig("bottle", "stable", "files")&.each do |tag, data|
+                tag = Utils::Bottles::Tag.from_symbol(tag)
+                bottle_collector.add tag, checksum: Checksum.new(data["sha256"]), cellar: :any
+              end
+
+              sha256 = bottle_collector.specification_for(bottle_tag)&.checksum&.to_s
 
               [name, [pkg_version.to_s, rebuild, sha256]]
             end
@@ -85,35 +92,6 @@ module Homebrew
             end
           end
         end
-      end
-
-      sig {
-        params(formula_json: T::Hash[String, T.untyped], bottle_tag: Utils::Bottles::Tag).returns(T.nilable(String))
-      }
-      def newest_bottle_sha256(formula_json, bottle_tag)
-        available_tags = formula_json.dig("bottle", "stable", "files")&.keys&.map(&:to_sym)
-        return unless available_tags
-
-        return formula_json.dig("bottle", "stable", "files", :all, "sha256") if available_tags.include? :all
-
-        if available_tags.include? bottle_tag.to_sym
-          return formula_json.dig("bottle", "stable", "files", bottle_tag.to_sym, "sha256")
-        end
-
-        return unless bottle_tag.macos?
-
-        # If the actual tag is not available, find the newest tag with matching arch that's older than the actual tag
-        newest_viable_macos_tag = available_tags.filter_map do |tag_sym|
-          tag = Utils::Bottles::Tag.from_symbol(tag_sym)
-          next unless tag.macos?
-          next if tag.arch != bottle_tag.arch
-          next if tag.to_macos_version > bottle_tag.to_macos_version
-
-          tag
-        end.max_by(&:to_macos_version)
-        return unless newest_viable_macos_tag
-
-        formula_json.dig("bottle", "stable", "files", newest_viable_macos_tag.to_sym, "sha256")
       end
 
       private
