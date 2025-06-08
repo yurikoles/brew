@@ -336,11 +336,10 @@ module Homebrew
 
         ohai "Looking for bottles..."
 
-        sized_formulae = compute_sized_formulae(formulae, args: args)
-        sizes = compute_total_sizes(sized_formulae, debug: args.debug?)
+        sizes = compute_total_sizes(formulae, debug: args.debug?)
 
-        puts "#{::Utils.pluralize("Formula", sized_formulae.count, plural: "e")} \
-(#{sized_formulae.count}): #{sized_formulae.join(", ")}\n\n"
+        puts "#{::Utils.pluralize("Formula", formulae.count, plural: "e")} \
+(#{formulae.count}): #{formulae.join(", ")}\n\n"
         puts "Download Size: #{disk_usage_readable(sizes[:download])}"
         puts "Install Size:  #{disk_usage_readable(sizes[:installed])}"
         puts "Net Install Size: #{disk_usage_readable(sizes[:net])}" if sizes[:net] != 0
