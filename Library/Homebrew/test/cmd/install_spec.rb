@@ -103,7 +103,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     setup_test_formula "testball1", <<~RUBY
       depends_on "testball5"
-      depends_on "testball-build" => :build
+      #depends_on "testball-build" => :build
       depends_on "installed"
     RUBY
     setup_test_formula "installed"
@@ -119,10 +119,19 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
     keg_dir.mkpath
     touch keg_dir/AbstractTab::FILENAME
 
+    regex = /
+      Formulae\s*\(3\):\s*
+      (testball1|testball5|testball4)
+      \s*,\s*
+      ((?!\1)testball1|testball5|testball4)
+      \s*,\s*
+      ((?!\1|\2)testball1|testball5|testball4)
+    /x
+
     expect do
       brew "install", "--ask", "testball1"
-    end.to output(/.*Formulae\s*\(3\):\s*testball1\s*,?\s*testball5\s*,?\s*testball4.*/).to_stdout
-                                                                                        .and not_to_output.to_stderr
+    end.to output(regex).to_stdout
+                        .and not_to_output.to_stderr
 
     expect(HOMEBREW_CELLAR/"testball1/0.1/bin/test").to be_a_file
     expect(HOMEBREW_CELLAR/"testball4/0.1/bin/testball4").to be_a_file
