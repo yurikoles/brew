@@ -236,34 +236,55 @@ module Homebrew
           verbose:                    args.verbose?,
         )
 
-        dependants = Upgrade.get_dependants(
-          formulae_to_install,
-          flags:                      args.flags_only,
-          dry_run:                    args.dry_run?,
-          ask:                        args.ask?,
-          force_bottle:               args.force_bottle?,
-          build_from_source_formulae: args.build_from_source_formulae,
-          interactive:                args.interactive?,
-          keep_tmp:                   args.keep_tmp?,
-          debug_symbols:              args.debug_symbols?,
-          force:                      args.force?,
-          debug:                      args.debug?,
-          quiet:                      args.quiet?,
-          verbose:                    args.verbose?,
-        )
+        if args.ask?
+          dependants = Upgrade.get_dependants(
+            formulae_to_install,
+            flags:                      args.flags_only,
+            dry_run:                    args.dry_run?,
+            ask:                        args.ask?,
+            force_bottle:               args.force_bottle?,
+            build_from_source_formulae: args.build_from_source_formulae,
+            interactive:                args.interactive?,
+            keep_tmp:                   args.keep_tmp?,
+            debug_symbols:              args.debug_symbols?,
+            force:                      args.force?,
+            debug:                      args.debug?,
+            quiet:                      args.quiet?,
+            verbose:                    args.verbose?,
+          )
 
-        formulae_dependencies = formulae_installer.flat_map do |f|
-          [f.formula, f.compute_dependencies.flatten.filter do |c|
-            c.is_a? Dependency
-          end.flat_map(&:to_formula)]
-        end.flatten.uniq
-        formulae_dependencies.concat(dependants.upgradeable) if dependants
-        # Main block: if asking the user is enabled, show dependency and size information.
-        Install.ask_formulae(formulae_dependencies, args: args) if args.ask?
+          formulae_dependencies = formulae_installer.flat_map do |f|
+            [f.formula, f.compute_dependencies.flatten.filter do |c|
+              c.is_a? Dependency
+            end.flat_map(&:to_formula)]
+          end.flatten.uniq
+          formulae_dependencies.concat(dependants.upgradeable) if dependants
+          # Main block: if asking the user is enabled, show dependency and size information.
+          Install.ask_formulae(formulae_dependencies, args: args)
+
+        end
 
         Upgrade.upgrade_formulae(formulae_installer,
                                  dry_run: args.dry_run?,
                                  verbose: args.verbose?)
+
+        unless args.ask?
+          dependants = Upgrade.get_dependants(
+            formulae_to_install,
+            flags:                      args.flags_only,
+            dry_run:                    args.dry_run?,
+            ask:                        args.ask?,
+            force_bottle:               args.force_bottle?,
+            build_from_source_formulae: args.build_from_source_formulae,
+            interactive:                args.interactive?,
+            keep_tmp:                   args.keep_tmp?,
+            debug_symbols:              args.debug_symbols?,
+            force:                      args.force?,
+            debug:                      args.debug?,
+            quiet:                      args.quiet?,
+            verbose:                    args.verbose?,
+          )
+        end
 
         if dependants
           Upgrade.upgrade_dependents(
