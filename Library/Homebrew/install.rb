@@ -232,7 +232,7 @@ module Homebrew
         false
       end
 
-      def install_formulae(
+      def get_formulae_dependencies(
         formulae_to_install,
         installed_on_request: true,
         installed_as_dependency: false,
@@ -257,11 +257,11 @@ module Homebrew
         skip_post_install: false,
         skip_link: false
       )
-        formula_installers = formulae_to_install.filter_map do |formula|
+        formulae_to_install.filter_map do |formula|
           Migrator.migrate_if_needed(formula, force:, dry_run:)
           build_options = formula.build
 
-          formula_installer = FormulaInstaller.new(
+          FormulaInstaller.new(
             formula,
             options:                    build_options.used_options,
             installed_on_request:,
@@ -286,24 +286,36 @@ module Homebrew
             skip_post_install:,
             skip_link:,
           )
-
-          begin
-            unless dry_run
-              formula_installer.prelude
-              formula_installer.fetch
-            end
-            formula_installer
-          rescue CannotInstallFormulaError => e
-            ofail e.message
-            nil
-          rescue UnsatisfiedRequirements, DownloadError, ChecksumMismatchError => e
-            ofail "#{formula}: #{e}"
-            nil
-          end
         end
+      end
 
+      def install_formulae(
+        formula_installers,
+        installed_on_request: true,
+        installed_as_dependency: false,
+        build_bottle: false,
+        force_bottle: false,
+        bottle_arch: nil,
+        ignore_deps: false,
+        only_deps: false,
+        include_test_formulae: [],
+        build_from_source_formulae: [],
+        cc: nil,
+        git: false,
+        interactive: false,
+        keep_tmp: false,
+        debug_symbols: false,
+        force: false,
+        overwrite: false,
+        debug: false,
+        quiet: false,
+        verbose: false,
+        dry_run: false,
+        skip_post_install: false,
+        skip_link: false
+      )
         if dry_run
-          if (formulae_name_to_install = formulae_to_install.map(&:name))
+          if (formulae_name_to_install = formula_installers.map(&:name))
             ohai "Would install #{Utils.pluralize("formula", formulae_name_to_install.count,
                                                   plural: "e", include_count: true)}:"
             puts formulae_name_to_install.join(" ")
@@ -316,6 +328,18 @@ module Homebrew
         end
 
         formula_installers.each do |fi|
+          begin
+            unless dry_run
+              fi.prelude
+              fi.fetch
+            end
+          rescue CannotInstallFormulaError => e
+            ofail e.message
+            next
+          rescue UnsatisfiedRequirements, DownloadError, ChecksumMismatchError => e
+            ofail "#{formula}: #{e}"
+            next
+          end
           install_formula(fi)
           Cleanup.install_formula_clean!(fi.formula)
         end
