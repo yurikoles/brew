@@ -439,7 +439,7 @@ module Homebrew
       return if dry_run
 
       reinstallable_broken_dependents.each do |formula|
-        Reinstall.reinstall_formula(
+        formula_installer = Reinstall.get_formula_to_reinstall(
           formula,
           flags:,
           force_bottle:,
@@ -451,6 +451,20 @@ module Homebrew
           debug:,
           quiet:,
           verbose:,
+        )
+        Reinstall.reinstall_formula(
+          formula_installer,
+          flags:                      args.flags_only,
+          force_bottle:               args.force_bottle?,
+          build_from_source_formulae: args.build_from_source_formulae,
+          interactive:                args.interactive?,
+          keep_tmp:                   args.keep_tmp?,
+          debug_symbols:              args.debug_symbols?,
+          force:                      args.force?,
+          debug:                      args.debug?,
+          quiet:                      args.quiet?,
+          verbose:                    args.verbose?,
+          git:                        args.git?,
         )
       rescue FormulaInstallationAlreadyAttemptedError
         # We already attempted to reinstall f as part of the dependency tree of

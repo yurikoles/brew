@@ -253,12 +253,7 @@ module Homebrew
             verbose:                    args.verbose?,
           )
 
-          formulae_dependencies = formulae_installer.flat_map do |f|
-            [f.formula, f.compute_dependencies.flatten.filter do |c|
-              c.is_a? Dependency
-            end.flat_map(&:to_formula)]
-          end.flatten.uniq
-          formulae_dependencies.concat(dependants.upgradeable) if dependants
+          formulae_dependencies = Install.get_hierarchy(formulae_installer, dependants)
           # Main block: if asking the user is enabled, show dependency and size information.
           Install.ask_formulae(formulae_dependencies, args: args)
 
@@ -273,7 +268,6 @@ module Homebrew
             formulae_to_install,
             flags:                      args.flags_only,
             dry_run:                    args.dry_run?,
-            ask:                        args.ask?,
             force_bottle:               args.force_bottle?,
             build_from_source_formulae: args.build_from_source_formulae,
             interactive:                args.interactive?,
