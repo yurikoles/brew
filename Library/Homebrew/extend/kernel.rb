@@ -5,6 +5,14 @@
 # TODO: move these out of `Kernel`.
 
 module Kernel
+  sig { params(env: T.nilable(String)).returns(T::Boolean) }
+  def superenv?(env)
+    return false if env == "std"
+
+    !Superenv.bin.nil?
+  end
+  private :superenv?
+
   def require?(path)
     return false if path.nil?
 
