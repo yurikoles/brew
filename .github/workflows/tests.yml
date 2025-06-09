@@ -80,7 +80,7 @@ jobs:
     name: tap syntax
     needs: syntax
     if: github.repository_owner == 'Homebrew'
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -216,7 +216,7 @@ jobs:
           - name: update-test (Linux)
             runs-on: ubuntu-latest
           - name: update-test (macOS)
-            runs-on: macos-15
+            runs-on: macos-latest
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -341,7 +341,7 @@ jobs:
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  test-default-formula:
+  test-bot:
     name: ${{ matrix.name }}
     needs: syntax
     if: github.repository_owner == 'Homebrew' && github.event_name != 'push'
@@ -350,19 +350,19 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: test default formula (Ubuntu 24.04)
-            runs-on: ubuntu-latest
+          - name: test-bot (Linux arm64)
+            runs-on: ubuntu-24.04-arm
             container: ghcr.io/homebrew/ubuntu24.04:latest
-          - name: test default formula (Ubuntu 22.04)
+          - name: test-bot (Linux x86_64)
             runs-on: ubuntu-latest
             container: ghcr.io/homebrew/ubuntu22.04:master
-          # Need to keep this as a target that installs a Homebrew glibc
-          - name: test default formula (Debian Old Stable)
+          # Use Debian Old Stable for testing Homebrew's glibc support.
+          - name: test-bot (Linux Homebrew glibc)
             runs-on: ubuntu-latest
             container: debian:oldstable
-          - name: test default formula (macOS 13 x86_64)
+          - name: test-bot (macOS x86_64)
             runs-on: macos-13
-          - name: test default formula (macOS 15 arm64)
+          - name: test-bot (macOS arm64)
             runs-on: macos-15
     env:
       HOMEBREW_TEST_BOT_ANALYTICS: 1
@@ -411,8 +411,15 @@ jobs:
       - run: brew test-bot --only-cleanup-before
 
       - name: Setup environment variables
-        if: matrix.container == 'debian:oldstable'
-        run: echo "HOMEBREW_GLIBC_TESTING=1" >> "$GITHUB_ENV"
+        run: |
+          # Set enviroment variables to bypass `brew doctor` failures on Tier >=2 configurations
+          if [[ "${MATRIX_NAME}" == "test-bot (Linux arm64)" ]]; then
+            echo "HOMEBREW_ARM64_TESTING=1" >> "$GITHUB_ENV"
+          elif [[ "${MATRIX_NAME}" == "test-bot (Linux Homebrew glibc)" ]]; then
+            echo "HOMEBREW_GLIBC_TESTING=1" >> "$GITHUB_ENV"
+          fi
+        env:
+          MATRIX_NAME: ${{ matrix.name }}
 
       - run: brew test-bot --only-setup
 
@@ -420,7 +427,7 @@ jobs:
 
       - run: brew test-bot --only-formulae --only-json-tab --test-default-formula
 
-  test-brew-bundle-services:
+  bundle-and-services:
     name: ${{ matrix.name }}
     needs: syntax
     if: github.repository_owner == 'Homebrew' && github.event_name != 'push'
@@ -428,10 +435,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: test brew bundle and brew services (Linux)
+          - name: bundle and services (Linux)
             runs-on: ubuntu-latest
-          - name: test brew bundle and brew services (macOS)
-            runs-on: macos-15
+          - name: bundle and services (macOS)
+            runs-on: macos-latest
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -474,13 +481,16 @@ jobs:
           brew services cleanup
           brew bundle cleanup --force
 
-  test-analytics:
-    runs-on: ${{ matrix.os }}
+  analytics:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
+        include:
+          - name: analytics (Linux)
+            runs-on: ubuntu-latest
+          - name: analytics (macOS)
+            runs-on: macos-latest
     needs: syntax
     if: github.repository_owner == 'Homebrew' && github.event_name != 'push'
     steps:
