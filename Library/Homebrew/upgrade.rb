@@ -454,17 +454,16 @@ module Homebrew
         )
         Reinstall.reinstall_formula(
           formula_installer,
-          flags:                      args.flags_only,
-          force_bottle:               args.force_bottle?,
-          build_from_source_formulae: args.build_from_source_formulae,
-          interactive:                args.interactive?,
-          keep_tmp:                   args.keep_tmp?,
-          debug_symbols:              args.debug_symbols?,
-          force:                      args.force?,
-          debug:                      args.debug?,
-          quiet:                      args.quiet?,
-          verbose:                    args.verbose?,
-          git:                        args.git?,
+          flags:,
+          force_bottle:,
+          build_from_source_formulae:,
+          interactive:,
+          keep_tmp:,
+          debug_symbols:,
+          force:,
+          debug:,
+          quiet:,
+          verbose:,
         )
       rescue FormulaInstallationAlreadyAttemptedError
         # We already attempted to reinstall f as part of the dependency tree of
