@@ -232,7 +232,7 @@ module Homebrew
         false
       end
 
-      def install_formulae(
+      def get_formulae_dependencies(
         formulae_to_install,
         installed_on_request: true,
         installed_as_dependency: false,
@@ -257,11 +257,11 @@ module Homebrew
         skip_post_install: false,
         skip_link: false
       )
-        formula_installers = formulae_to_install.filter_map do |formula|
+        formulae_to_install.filter_map do |formula|
           Migrator.migrate_if_needed(formula, force:, dry_run:)
           build_options = formula.build
 
-          formula_installer = FormulaInstaller.new(
+          FormulaInstaller.new(
             formula,
             options:                    build_options.used_options,
             installed_on_request:,
@@ -286,24 +286,36 @@ module Homebrew
             skip_post_install:,
             skip_link:,
           )
-
-          begin
-            unless dry_run
-              formula_installer.prelude
-              formula_installer.fetch
-            end
-            formula_installer
-          rescue CannotInstallFormulaError => e
-            ofail e.message
-            nil
-          rescue UnsatisfiedRequirements, DownloadError, ChecksumMismatchError => e
-            ofail "#{formula}: #{e}"
-            nil
-          end
         end
+      end
 
+      def install_formulae(
+        formula_installers,
+        installed_on_request: true,
+        installed_as_dependency: false,
+        build_bottle: false,
+        force_bottle: false,
+        bottle_arch: nil,
+        ignore_deps: false,
+        only_deps: false,
+        include_test_formulae: [],
+        build_from_source_formulae: [],
+        cc: nil,
+        git: false,
+        interactive: false,
+        keep_tmp: false,
+        debug_symbols: false,
+        force: false,
+        overwrite: false,
+        debug: false,
+        quiet: false,
+        verbose: false,
+        dry_run: false,
+        skip_post_install: false,
+        skip_link: false
+      )
         if dry_run
-          if (formulae_name_to_install = formulae_to_install.map(&:name))
+          if (formulae_name_to_install = formula_installers.map(&:name))
             ohai "Would install #{Utils.pluralize("formula", formulae_name_to_install.count,
                                                   plural: "e", include_count: true)}:"
             puts formulae_name_to_install.join(" ")
@@ -316,6 +328,18 @@ module Homebrew
         end
 
         formula_installers.each do |fi|
+          begin
+            unless dry_run
+              fi.prelude
+              fi.fetch
+            end
+          rescue CannotInstallFormulaError => e
+            ofail e.message
+            next
+          rescue UnsatisfiedRequirements, DownloadError, ChecksumMismatchError => e
+            ofail "#{formula}: #{e}"
+            next
+          end
           install_formula(fi)
           Cleanup.install_formula_clean!(fi.formula)
         end
@@ -330,17 +354,26 @@ module Homebrew
         puts formula_names.join(" ")
       end
 
+      def get_hierarchy(formulae_installer, dependants)
+        formulae_dependencies = formulae_installer.flat_map do |f|
+          [f.formula, f.compute_dependencies.flatten.filter do |c|
+            c.is_a? Dependency
+          end.flat_map(&:to_formula)]
+        end.flatten.uniq
+        formulae_dependencies.concat(dependants.upgradeable) if dependants&.upgradeable
+        formulae_dependencies
+      end
+
       # If asking the user is enabled, show dependency and size information.
       def ask_formulae(formulae, args:)
         return if formulae.empty?
 
         ohai "Looking for bottles..."
 
-        sized_formulae = compute_sized_formulae(formulae, args: args)
-        sizes = compute_total_sizes(sized_formulae, debug: args.debug?)
+        sizes = compute_total_sizes(formulae, debug: args.debug?)
 
-        puts "#{::Utils.pluralize("Formula", sized_formulae.count, plural: "e")} \
-(#{sized_formulae.count}): #{sized_formulae.join(", ")}\n\n"
+        puts "#{::Utils.pluralize("Formula", formulae.count, plural: "e")} \
+(#{formulae.count}): #{formulae.join(", ")}\n\n"
         puts "Download Size: #{disk_usage_readable(sizes[:download])}"
         puts "Install Size:  #{disk_usage_readable(sizes[:installed])}"
         puts "Net Install Size: #{disk_usage_readable(sizes[:net])}" if sizes[:net] != 0
