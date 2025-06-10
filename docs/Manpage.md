@@ -3211,6 +3211,10 @@ Run Homebrew's unit and integration tests.
 
 : Exit early on the first failing test.
 
+`--no-parallel`
+
+: Run tests serially.
+
 `--only`
 
 : Run only `<test_script>_spec.rb`. Appending `:<line_number>` will start at a
