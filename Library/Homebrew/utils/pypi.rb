@@ -85,7 +85,7 @@ module PyPI
       # If there isn't an sdist, we use the first pure Python3 or universal wheel
       if dist.nil?
         dist = json["urls"].find do |url|
-          url["filename"].match?("[.-]py3[^-]*-none-any\.whl$")
+          url["filename"].match?("[.-]py3[^-]*-none-any.whl$")
         end
       end
 
