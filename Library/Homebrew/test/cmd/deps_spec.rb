@@ -8,7 +8,7 @@ RSpec.describe Homebrew::Cmd::Deps do
 
   it_behaves_like "parseable arguments"
 
-  it "outputs all of a Formula's dependencies and their dependencies on separate lines", :integration_test do
+  it "outputs all of a Formula's dependencies and their dependencies on separate lines", :integration_test, :no_api do
     # Included in output
     setup_test_formula "bar"
     setup_test_formula "foo"
