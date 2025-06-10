@@ -37,6 +37,6 @@ RSpec.describe Homebrew::Cmd::Deps do
     expect { brew "deps", "baz", "--include-test", "--missing", "--skip-recommended" }
       .to be_a_success
       .and output("bar\nfoo\ntest\n").to_stdout
-      .and not_to_output.to_stderr
+      .and output(/not the actual runtime dependencies/).to_stderr
   end
 end
