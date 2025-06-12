@@ -1,3 +1,4 @@
+# This file is synced from `Homebrew/brew` by the `.github` repository, do not modify it directly.
 name: Documentation CI
 
 on:
@@ -67,7 +68,7 @@ jobs:
       - name: Generate formulae.brew.sh API samples
         if: github.repository == 'Homebrew/formulae.brew.sh'
         working-directory: docs
-        run: ../script/generate-api-samples.rb
+        run: ../script/generate-api-samples.rb --template
 
       - name: Build the site and check for broken links
         working-directory: docs
