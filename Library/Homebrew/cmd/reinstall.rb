@@ -130,13 +130,13 @@ module Homebrew
         unless formulae.empty?
           Install.perform_preinstall_checks_once
 
-          formulae_keg = formulae.map do |formula|
+          formulae_kegs = formulae.map do |formula|
             if formula.pinned?
               onoe "#{formula.full_name} is pinned. You must unpin it to reinstall."
               next
             end
             Migrator.migrate_if_needed(formula, force: args.force?)
-            Homebrew::Reinstall.get_formula_to_reinstall(
+            Homebrew::Reinstall.formula_installer(
               formula,
               flags:                      args.flags_only,
               force_bottle:               args.force_bottle?,
@@ -153,7 +153,7 @@ module Homebrew
           end
 
           if args.ask?
-            dependants = Upgrade.get_dependants(
+            dependants = Upgrade.dependants(
               formulae,
               flags:                      args.flags_only,
               ask:                        args.ask?,
@@ -168,15 +168,15 @@ module Homebrew
               verbose:                    args.verbose?,
             )
 
-            formulae_dependencies = formulae_keg.map(&:formula_installer)
+            formulae_installer = formulae_kegs.map(&:formula_installer)
 
-            formulae_dependencies = Install.get_hierarchy(formulae_dependencies, dependants)
+            formulae_dependencies = Install.collect_dependencies(formulae_installer, dependants)
             # Main block: if asking the user is enabled, show dependency and size information.
             Install.ask_formulae(formulae_dependencies, args: args)
 
           end
 
-          formulae_keg.each do |f|
+          formulae_kegs.each do |f|
             Homebrew::Reinstall.reinstall_formula(
               f,
               flags:                      args.flags_only,
@@ -195,7 +195,7 @@ module Homebrew
           end
 
           unless args.ask?
-            dependants = Upgrade.get_dependants(
+            dependants = Upgrade.dependants(
               formulae,
               flags:                      args.flags_only,
               force_bottle:               args.force_bottle?,
@@ -210,7 +210,7 @@ module Homebrew
             )
           end
 
-          if dependants
+          if dependants.present?
             Upgrade.upgrade_dependents(
               dependants, formulae,
               flags:                      args.flags_only,

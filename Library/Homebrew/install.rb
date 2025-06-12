@@ -232,7 +232,7 @@ module Homebrew
         false
       end
 
-      def get_formulae_dependencies(
+      def formulae_installer(
         formulae_to_install,
         installed_on_request: true,
         installed_as_dependency: false,
@@ -354,7 +354,7 @@ module Homebrew
         puts formula_names.join(" ")
       end
 
-      def get_hierarchy(formulae_installer, dependants)
+      def collect_dependencies(formulae_installer, dependants)
         formulae_dependencies = formulae_installer.flat_map do |f|
           [f.formula, f.compute_dependencies.flatten.filter do |c|
             c.is_a? Dependency
@@ -444,55 +444,6 @@ module Homebrew
             puts "Invalid input. Please enter 'Y', 'y', or 'yes' to proceed, or 'N' to abort."
           end
         end
-      end
-
-      # Build a unique list of formulae to size by including:
-      # 1. The original formulae to install.
-      # 2. Their outdated dependents (subject to pruning criteria).
-      # 3. Optionally, any installed formula that depends on one of these and is outdated.
-      def compute_sized_formulae(formulae, args:)
-        sized_formulae = formulae.flat_map do |formula|
-          # Always include the formula itself.
-          formula_list = [formula]
-
-          deps = args.build_from_source? ? formula.deps.build : formula.deps.required
-
-          outdated_dependents = deps.map(&:to_formula).reject(&:pinned?).select do |dep|
-            dep.installed_kegs.empty? || (dep.bottled? && dep.outdated?)
-          end
-          deps.map(&:to_formula).each do |f|
-            prune_build = f.recursive_dependencies do |_, dep|
-              :prune if dep.build?
-            end
-            # select the outdated one or not installed
-            outdated_dependents.concat(prune_build.map(&:to_formula).reject(&:pinned?).select do |dep|
-              dep.installed_kegs.empty? || (dep.bottled? && dep.outdated?)
-            end)
-          end
-          formula_list.concat(outdated_dependents)
-
-          formula_list
-        end
-        # Add any installed formula that depends on one of the sized formulae and is outdated.
-        unless Homebrew::EnvConfig.no_installed_dependents_check?
-          loop do
-            new_parents = Formula.installed.select do |installed_formula|
-              next unless installed_formula.bottled?
-              next unless installed_formula.outdated?
-
-              required_deps = installed_formula.deps.required.map(&:to_formula)
-              required_deps.intersect?(sized_formulae)
-            end
-
-            # Exclude anything already in sized_formulae
-            new_parents -= sized_formulae
-            break if new_parents.empty?
-
-            sized_formulae.concat(new_parents)
-          end
-        end
-
-        sized_formulae.uniq(&:to_s).compact
       end
 
       # Compute the total sizes (download, installed, and net) for the given formulae.

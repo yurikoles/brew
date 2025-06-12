@@ -13,7 +13,7 @@ module Homebrew
   module Upgrade
     Dependents = Struct.new(:upgradeable, :pinned, :skipped)
 
-    def self.get_formulae_dependencies(
+    def self.formulae_installer(
       formulae_to_install,
       flags:,
       dry_run: false,
@@ -95,7 +95,7 @@ module Homebrew
         rescue CannotInstallFormulaError => e
           ofail e
         rescue UnsatisfiedRequirements, DownloadError => e
-          ofail "#{formula}: #{e}"
+          ofail "#{fi.formula.full_name}: #{e}"
         end
 
         upgrade_formula(fi, dry_run:, verbose:)
@@ -260,7 +260,7 @@ module Homebrew
       @puts_no_installed_dependents_check_disable_message_if_not_already = true
     end
 
-    def self.get_dependants(
+    def self.dependants(
       formulae,
       flags:,
       dry_run: false,
@@ -285,8 +285,11 @@ module Homebrew
         end
         return
       end
-
-      installed_formulae = ((dry_run || ask) ? formulae : FormulaInstaller.installed.to_a).dup
+      if dry_run || ask
+        installed_formulae = formulae.dup
+      else
+        installed_formulae = FormulaInstaller.installed.to_a.dup
+      end
       installed_formulae.reject! { |f| f.core_formula? && f.versioned_formula? }
       return if installed_formulae.empty?
 
@@ -369,7 +372,7 @@ module Homebrew
       end
 
       unless dry_run
-        formulae_dependencies = get_formulae_dependencies(
+        formulae_dependencies = formulae_installer(
           upgradeable,
           flags:,
           force_bottle:,
@@ -439,7 +442,7 @@ module Homebrew
       return if dry_run
 
       reinstallable_broken_dependents.each do |formula|
-        formula_installer = Reinstall.get_formula_to_reinstall(
+        formula_installer = Reinstall.formula_installer(
           formula,
           flags:,
           force_bottle:,

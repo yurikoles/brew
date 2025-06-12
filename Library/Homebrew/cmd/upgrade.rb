@@ -220,7 +220,7 @@ module Homebrew
 
         Install.perform_preinstall_checks_once
 
-        formulae_installer = Upgrade.get_formulae_dependencies(
+        formulae_installer = Upgrade.formulae_installer(
           formulae_to_install,
           flags:                      args.flags_only,
           dry_run:                    args.dry_run?,
@@ -237,7 +237,7 @@ module Homebrew
         )
 
         if args.ask?
-          dependants = Upgrade.get_dependants(
+          dependants = Upgrade.dependants(
             formulae_to_install,
             flags:                      args.flags_only,
             dry_run:                    args.dry_run?,
@@ -253,7 +253,7 @@ module Homebrew
             verbose:                    args.verbose?,
           )
 
-          formulae_dependencies = Install.get_hierarchy(formulae_installer, dependants)
+          formulae_dependencies = Install.collect_dependencies(formulae_installer, dependants)
           # Main block: if asking the user is enabled, show dependency and size information.
           Install.ask_formulae(formulae_dependencies, args: args)
 
@@ -264,7 +264,7 @@ module Homebrew
                                  verbose: args.verbose?)
 
         unless args.ask?
-          dependants = Upgrade.get_dependants(
+          dependants = Upgrade.dependants(
             formulae_to_install,
             flags:                      args.flags_only,
             dry_run:                    args.dry_run?,
@@ -280,7 +280,7 @@ module Homebrew
           )
         end
 
-        if dependants
+        if dependants.present?
           Upgrade.upgrade_dependents(
             dependants, formulae_to_install,
             flags:                      args.flags_only,
