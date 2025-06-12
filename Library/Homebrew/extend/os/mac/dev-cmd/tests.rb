@@ -11,9 +11,18 @@ module OS
 
         private
 
-        sig { params(bundle_args: T::Array[String]).returns(T::Array[String]) }
-        def os_bundle_args(bundle_args)
+        sig { params(bundle_args: T::Array[String], generic: T::Boolean).returns(T::Array[String]) }
+        def os_bundle_args(bundle_args, generic:)
+          return generic_os_bundle_args(bundle_args, generic:) if generic
+
           non_linux_bundle_args(bundle_args)
+        end
+
+        sig { params(files: T::Array[String], generic: T::Boolean).returns(T::Array[String]) }
+        def os_files(files, generic:)
+          return generic_os_files(files, generic:) if generic
+
+          non_linux_files(files)
         end
       end
     end

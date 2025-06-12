@@ -127,8 +127,8 @@ module Homebrew
           bundle_args << "--tag" << "~needs_network" unless args.online?
           bundle_args << "--tag" << "~needs_ci" unless ENV["CI"]
 
-          bundle_args = os_bundle_args(bundle_args)
-          files = os_files(files)
+          bundle_args = os_bundle_args(bundle_args, generic: args.generic?)
+          files = os_files(files, generic: args.generic?)
 
           puts "Randomized with seed #{seed}"
 
@@ -156,11 +156,12 @@ module Homebrew
 
       private
 
-      sig { params(bundle_args: T::Array[String]).returns(T::Array[String]) }
-      def os_bundle_args(bundle_args)
+      sig { params(bundle_args: T::Array[String], generic: T::Boolean).returns(T::Array[String]) }
+      def os_bundle_args(bundle_args, generic:)
         # for generic tests, remove macOS or Linux specific tests
         non_linux_bundle_args(non_macos_bundle_args(bundle_args))
       end
+      alias generic_os_bundle_args os_bundle_args
 
       sig { params(bundle_args: T::Array[String]).returns(T::Array[String]) }
       def non_macos_bundle_args(bundle_args)
@@ -175,11 +176,12 @@ module Homebrew
         bundle_args << "--tag" << "~needs_linux" << "--tag" << "~needs_systemd"
       end
 
-      sig { params(files: T::Array[String]).returns(T::Array[String]) }
-      def os_files(files)
+      sig { params(files: T::Array[String], generic: T::Boolean).returns(T::Array[String]) }
+      def os_files(files, generic:)
         # for generic tests, remove macOS or Linux specific files
         non_linux_files(non_macos_files(files))
       end
+      alias generic_os_files os_files
 
       sig { params(files: T::Array[String]).returns(T::Array[String]) }
       def non_macos_files(files)
