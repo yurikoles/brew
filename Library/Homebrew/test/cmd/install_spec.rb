@@ -103,7 +103,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     setup_test_formula "testball1", <<~RUBY
       depends_on "testball5"
-      #depends_on "testball-build" => :build
+      #depends_on "build" => :build
       depends_on "installed"
     RUBY
     setup_test_formula "installed"
@@ -112,7 +112,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
     RUBY
     setup_test_formula "testball4", ""
     setup_test_formula "hiop"
-    setup_test_formula "testball-build", ""
+    setup_test_formula "build", ""
 
     # Mock `Formula#any_version_installed?` by creating the tab in a plausible keg directory
     keg_dir = HOMEBREW_CELLAR/"installed"/"1.0"

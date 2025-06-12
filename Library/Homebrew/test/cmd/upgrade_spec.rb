@@ -32,8 +32,7 @@ RSpec.describe Homebrew::Cmd::UpgradeCmd do
   it "upgrades dependencies with asking for user prompts", :integration_test do
     setup_test_formula "testball", <<~RUBY
       depends_on "testball5"
-      # should work as its not building but test doesnt pass if dependant
-      #depends_on "testball-build" => :build
+      #depends_on "build" => :build
       depends_on "installed"
     RUBY
     setup_test_formula "installed"
@@ -42,7 +41,7 @@ RSpec.describe Homebrew::Cmd::UpgradeCmd do
     RUBY
     setup_test_formula "testball4"
     setup_test_formula "hiop"
-    setup_test_formula "testball-build"
+    setup_test_formula "build"
 
     (HOMEBREW_CELLAR/"testball/0.0.1/foo").mkpath
     (HOMEBREW_CELLAR/"testball5/0.0.1/foo").mkpath
@@ -88,7 +87,6 @@ RSpec.describe Homebrew::Cmd::UpgradeCmd do
 
     content = <<~RUBY
       depends_on "testball5"
-      # should work as its not building but test doesnt pass if dependant
       depends_on "testball-build" => :build
       depends_on "installed"
       version "0.1"
