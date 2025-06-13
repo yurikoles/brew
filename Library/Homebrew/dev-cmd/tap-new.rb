@@ -99,7 +99,7 @@ module Homebrew
               steps:
                 - name: Set up Homebrew
                   id: set-up-homebrew
-                  uses: Homebrew/actions/setup-homebrew@master
+                  uses: Homebrew/actions/setup-homebrew@main
                   with:
                     token: ${{ github.token }}
 
@@ -164,12 +164,12 @@ module Homebrew
                 pull-requests: write
               steps:
                 - name: Set up Homebrew
-                  uses: Homebrew/actions/setup-homebrew@master
+                  uses: Homebrew/actions/setup-homebrew@main
                   with:
                     token: ${{ github.token }}
 
                 - name: Set up git
-                  uses: Homebrew/actions/git-user-config@master
+                  uses: Homebrew/actions/git-user-config@main
 
                 - name: Pull bottles
                   env:
@@ -182,7 +182,7 @@ module Homebrew
                   run: brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
 
                 - name: Push commits
-                  uses: Homebrew/actions/git-try-push@master
+                  uses: Homebrew/actions/git-try-push@main
                   with:
                     branch: <%= branch %>
 

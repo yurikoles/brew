@@ -43,7 +43,7 @@ jobs:
 
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
         with:
           core: false
           cask: false
@@ -251,7 +251,7 @@ jobs:
       issues: write
     steps:
       - name: Open, update, or close pkg installer issue
-        uses: Homebrew/actions/create-or-update-issue@master
+        uses: Homebrew/actions/create-or-update-issue@main
         with:
           title: Failed to publish pkg installer
           body: >
