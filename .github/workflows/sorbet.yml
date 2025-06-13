@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
         with:
           core: false
           cask: false
@@ -38,13 +38,13 @@ jobs:
 
       - name: Configure Git user
         if: github.event_name != 'pull_request'
-        uses: Homebrew/actions/git-user-config@master
+        uses: Homebrew/actions/git-user-config@main
         with:
           username: BrewTestBot
 
       - name: Set up commit signing
         if: github.event_name != 'pull_request'
-        uses: Homebrew/actions/setup-commit-signing@master
+        uses: Homebrew/actions/setup-commit-signing@main
         with:
           signing_key: ${{ secrets.BREWTESTBOT_SSH_SIGNING_KEY }}
 
@@ -100,7 +100,7 @@ jobs:
 
       - name: Push commits
         if: steps.commit.outputs.committed == 'true'
-        uses: Homebrew/actions/git-try-push@master
+        uses: Homebrew/actions/git-try-push@main
         with:
           token: ${{ secrets.HOMEBREW_GITHUB_PUBLIC_REPO_TOKEN }}
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
