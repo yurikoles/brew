@@ -263,11 +263,10 @@ module Homebrew
           audit_exceptions << %w[homepage_https_availability] if labels.include?("ci-skip-homepage")
 
           if labels.include?("ci-skip-livecheck")
-            audit_exceptions << %w[hosting_with_livecheck livecheck_https_availability
-                                   livecheck_min_os livecheck_version]
+            audit_exceptions << %w[hosting_with_livecheck livecheck_https_availability livecheck_version min_os]
           end
 
-          audit_exceptions << "livecheck_min_os" if labels.include?("ci-skip-livecheck-min-os")
+          audit_exceptions << "min_os" if labels.include?("ci-skip-livecheck-min-os")
 
           if labels.include?("ci-skip-repository")
             audit_exceptions << %w[github_repository github_prerelease_version
