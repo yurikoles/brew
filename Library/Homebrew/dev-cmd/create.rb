@@ -184,16 +184,15 @@ module Homebrew
         end
 
         fc = FormulaCreator.new(
-          args.set_name,
-          args.set_version,
-          tap:     args.tap,
           url:     args.named.fetch(0),
+          name:    args.set_name,
+          version: args.set_version,
+          tap:     args.tap,
           mode:,
           license: args.set_license,
           fetch:   !args.no_fetch?,
           head:    args.HEAD?,
         )
-        fc.parse_url
         # ask for confirmation if name wasn't passed explicitly
         if args.set_name.blank?
           print "Formula name [#{fc.name}]: "
@@ -205,7 +204,7 @@ module Homebrew
         # Check for disallowed formula, or names that shadow aliases,
         # unless --force is specified.
         unless args.force?
-          if (reason = MissingFormula.disallowed_reason(fc.name))
+          if (reason = MissingFormula.disallowed_reason(T.must(fc.name)))
             odie <<~EOS
               The formula '#{fc.name}' is not allowed to be created.
               #{reason}
@@ -229,7 +228,7 @@ module Homebrew
 
         formula = Homebrew.with_no_api_env do
           CoreTap.instance.clear_cache
-          Formula[fc.name]
+          Formula[T.must(fc.name)]
         end
         PyPI.update_python_resources! formula, ignore_non_pypi_packages: true if args.python?
 
