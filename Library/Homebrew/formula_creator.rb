@@ -116,8 +116,6 @@ module Homebrew
 
     sig { returns(String) }
     def template
-      # FIXME: https://github.com/errata-ai/vale/issues/818
-      # <!-- vale off -->
       <<~ERB
         # Documentation: https://docs.brew.sh/Formula-Cookbook
         #                https://rubydoc.brew.sh/Formula
@@ -261,7 +259,6 @@ module Homebrew
           end
         end
       ERB
-      # <!-- vale on -->
     end
   end
 end
