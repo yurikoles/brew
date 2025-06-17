@@ -378,7 +378,7 @@ module GitHub
         raise_errors: T::Boolean,
       ).returns(T.untyped)
     }
-    def self.open_graphql(query, variables: T.unsafe(nil), scopes: [].freeze, raise_errors: true)
+    def self.open_graphql(query, variables: {}, scopes: [].freeze, raise_errors: true)
       data = { query:, variables: }
       result = open_rest("#{API_URL}/graphql", scopes:, data:, request_method: :POST)
 
@@ -400,11 +400,10 @@ module GitHub
         _block:       T.proc.params(data: T::Hash[String, T.untyped]).returns(T.untyped),
       ).void
     }
-    def self.paginate_graphql(query, variables: T.unsafe(nil), scopes: [].freeze, raise_errors: true, &_block)
+    def self.paginate_graphql(query, variables: {}, scopes: [].freeze, raise_errors: true, &_block)
       result = API.open_graphql(query, variables:, scopes:, raise_errors:)
 
       has_next_page = T.let(true, T::Boolean)
-      variables ||= {}
       while has_next_page
         page_info = yield result
         has_next_page = page_info["hasNextPage"]
