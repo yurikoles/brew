@@ -197,7 +197,7 @@ module Homebrew
         # ask for confirmation if name wasn't passed explicitly
         if args.set_name.blank?
           print "Formula name [#{formula_creator.name}]: "
-          confirmed_name = __gets.presence
+          confirmed_name = __gets
           formula_creator.name = confirmed_name if confirmed_name.present?
         end
 
