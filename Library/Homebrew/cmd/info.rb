@@ -266,7 +266,7 @@ module Homebrew
           cask.sourcefile_path.relative_path_from(tap.path)
         end
 
-        github_remote_path(tap.remote, path)
+        github_remote_path(tap.remote, path.to_s)
       end
 
       sig { params(formula: Formula).void }
