@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 require "digest"
@@ -7,10 +7,10 @@ require "erb"
 module Homebrew
   # Class for generating a formula from a template.
   class FormulaCreator
-    sig { returns(T.nilable(String)) }
+    sig { returns(String) }
     attr_accessor :name
 
-    sig { returns(T.nilable(Version)) }
+    sig { returns(Version) }
     attr_reader :version
 
     sig { returns(T::Boolean) }
@@ -22,55 +22,66 @@ module Homebrew
     }
     def initialize(url:, name: nil, version: nil, tap: nil, mode: nil, license: nil, fetch: false, head: false)
       @url = url
-      @name = name.presence
-      @version = T.let(Version.new(version), T.nilable(Version)) if version.present?
-      @tap = T.let(Tap.fetch(tap.presence || "homebrew/core"), Tap)
-      @mode = T.let(mode.presence, T.nilable(Symbol))
-      @license = T.let(license.presence, T.nilable(String))
-      @fetch = fetch
-      @head = head
 
-      parse_url
-    end
-
-    sig { void }
-    def verify
-      raise TapUnavailableError, @tap.name unless @tap.installed?
-    end
-
-    sig { void }
-    def parse_url
-      @name ||= begin
-        stem = Pathname.new(@url).stem
-        name = if stem.start_with? "index.cgi"
+      if name.blank?
+        stem = Pathname.new(url).stem
+        name = if stem.start_with?("index.cgi") && stem.include?("=")
           # special cases first
           # gitweb URLs e.g. http://www.codesrc.com/gitweb/index.cgi?p=libzipper.git;a=summary
           stem.rpartition("=").last
-        elsif @url =~ %r{github\.com/\S+/(\S+)/(archive|releases)/}
+        elsif url =~ %r{github\.com/\S+/(\S+)/(archive|releases)/}
           # e.g. https://github.com/stella-emu/stella/releases/download/6.7/stella-6.7-src.tar.xz
-          Regexp.last_match(1)
+          T.must(Regexp.last_match(1))
         else
           # e.g. http://digit-labs.org/files/tools/synscan/releases/synscan-5.02.tar.gz
           pathver = Version.parse(stem).to_s
           stem.sub(/[-_.]?#{Regexp.escape(pathver)}$/, "")
         end
         odebug "name from url: #{name}"
-        name
       end
+      @name = T.let(name, String)
 
-      @version ||= Version.detect(@url)
+      version = if version.present?
+        Version.new(version)
+      else
+        Version.detect(url)
+      end
+      @version = T.let(version, Version)
 
-      case @url
+      tap = if tap.blank?
+        CoreTap.instance
+      else
+        Tap.fetch(tap)
+      end
+      @tap = T.let(tap, Tap)
+
+      @mode = T.let(mode.presence, T.nilable(Symbol))
+      @license = T.let(license.presence, T.nilable(String))
+      @fetch = fetch
+
+      case url
       when %r{github\.com/(\S+)/(\S+)\.git}
-        @head = true
+        head = true
         user = Regexp.last_match(1)
-        repo = Regexp.last_match(2)
-        @github = GitHub.repository(user, repo) if @fetch
+        repository = Regexp.last_match(2)
+        github = GitHub.repository(user, repository) if fetch
       when %r{github\.com/(\S+)/(\S+)/(archive|releases)/}
         user = Regexp.last_match(1)
-        repo = Regexp.last_match(2)
-        @github = GitHub.repository(user, repo) if @fetch
+        repository = Regexp.last_match(2)
+        github = GitHub.repository(user, repository) if fetch
       end
+      @head = head
+      @github = T.let(github, T.untyped)
+
+      @sha256 = T.let(nil, T.nilable(String))
+      @desc = T.let(nil, T.nilable(String))
+      @homepage = T.let(nil, T.nilable(String))
+      @license = T.let(nil, T.nilable(String))
+    end
+
+    sig { void }
+    def verify_tap_available!
+      raise TapUnavailableError, @tap.name unless @tap.installed?
     end
 
     sig { returns(Pathname) }
@@ -113,6 +124,8 @@ module Homebrew
       path.write ERB.new(template, trim_mode: ">").result(binding)
       path
     end
+
+    private
 
     sig { params(name: String).returns(String) }
     def latest_versioned_formula(name)
