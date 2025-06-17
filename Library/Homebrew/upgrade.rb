@@ -285,11 +285,7 @@ module Homebrew
         end
         return
       end
-      installed_formulae = if dry_run || ask
-        formulae.dup
-      else
-        FormulaInstaller.installed.to_a.dup
-      end
+      installed_formulae = formulae.dup
       installed_formulae.reject! { |f| f.core_formula? && f.versioned_formula? }
       return if installed_formulae.empty?
 
