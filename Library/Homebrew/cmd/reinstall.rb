@@ -152,28 +152,28 @@ module Homebrew
             )
           end
 
-          if args.ask?
-            dependants = Upgrade.dependants(
-              formulae,
-              flags:                      args.flags_only,
-              ask:                        args.ask?,
-              force_bottle:               args.force_bottle?,
-              build_from_source_formulae: args.build_from_source_formulae,
-              interactive:                args.interactive?,
-              keep_tmp:                   args.keep_tmp?,
-              debug_symbols:              args.debug_symbols?,
-              force:                      args.force?,
-              debug:                      args.debug?,
-              quiet:                      args.quiet?,
-              verbose:                    args.verbose?,
-            )
+          dependants = Upgrade.dependants(
+            formulae,
+            flags:                      args.flags_only,
+            ask:                        args.ask?,
+            force_bottle:               args.force_bottle?,
+            build_from_source_formulae: args.build_from_source_formulae,
+            interactive:                args.interactive?,
+            keep_tmp:                   args.keep_tmp?,
+            debug_symbols:              args.debug_symbols?,
+            force:                      args.force?,
+            debug:                      args.debug?,
+            quiet:                      args.quiet?,
+            verbose:                    args.verbose?,
+          )
 
-            formulae_installer = formulae_kegs.map(&:formula_installer)
+          formulae_installer = formulae_kegs.map(&:formula_installer)
+
+          if args.ask?
 
             formulae_dependencies = Install.collect_dependencies(formulae_installer, dependants)
             # Main block: if asking the user is enabled, show dependency and size information.
             Install.ask_formulae(formulae_dependencies, args: args)
-
           end
 
           formulae_kegs.each do |f|
@@ -192,22 +192,6 @@ module Homebrew
               git:                        args.git?,
             )
             Cleanup.install_formula_clean!(f.formula)
-          end
-
-          unless args.ask?
-            dependants = Upgrade.dependants(
-              formulae,
-              flags:                      args.flags_only,
-              force_bottle:               args.force_bottle?,
-              build_from_source_formulae: args.build_from_source_formulae,
-              interactive:                args.interactive?,
-              keep_tmp:                   args.keep_tmp?,
-              debug_symbols:              args.debug_symbols?,
-              force:                      args.force?,
-              debug:                      args.debug?,
-              quiet:                      args.quiet?,
-              verbose:                    args.verbose?,
-            )
           end
 
           if dependants.present?

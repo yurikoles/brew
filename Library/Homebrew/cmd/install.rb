@@ -336,24 +336,24 @@ module Homebrew
           skip_link:                  args.skip_link?,
         )
 
-        if args.ask?
-          dependants = Upgrade.dependants(
-            installed_formulae,
-            flags:                      args.flags_only,
-            ask:                        args.ask?,
-            installed_on_request:       !args.as_dependency?,
-            force_bottle:               args.force_bottle?,
-            build_from_source_formulae: args.build_from_source_formulae,
-            interactive:                args.interactive?,
-            keep_tmp:                   args.keep_tmp?,
-            debug_symbols:              args.debug_symbols?,
-            force:                      args.force?,
-            debug:                      args.debug?,
-            quiet:                      args.quiet?,
-            verbose:                    args.verbose?,
-            dry_run:                    args.dry_run?,
-          )
+        dependants = Upgrade.dependants(
+          installed_formulae,
+          flags:                      args.flags_only,
+          ask:                        args.ask?,
+          installed_on_request:       !args.as_dependency?,
+          force_bottle:               args.force_bottle?,
+          build_from_source_formulae: args.build_from_source_formulae,
+          interactive:                args.interactive?,
+          keep_tmp:                   args.keep_tmp?,
+          debug_symbols:              args.debug_symbols?,
+          force:                      args.force?,
+          debug:                      args.debug?,
+          quiet:                      args.quiet?,
+          verbose:                    args.verbose?,
+          dry_run:                    args.dry_run?,
+        )
 
+        if args.ask?
           formulae_dependencies = Install.collect_dependencies(formulae_installer, dependants)
           # Main block: if asking the user is enabled, show dependency and size information.
           Install.ask_formulae(formulae_dependencies, args: args)
@@ -362,24 +362,6 @@ module Homebrew
         Install.install_formulae(formulae_installer,
                                  dry_run: args.dry_run?,
                                  verbose: args.verbose?)
-
-        unless args.ask?
-          dependants = Upgrade.dependants(
-            installed_formulae,
-            flags:                      args.flags_only,
-            dry_run:                    args.dry_run?,
-            installed_on_request:       !args.as_dependency?,
-            force_bottle:               args.force_bottle?,
-            build_from_source_formulae: args.build_from_source_formulae,
-            interactive:                args.interactive?,
-            keep_tmp:                   args.keep_tmp?,
-            debug_symbols:              args.debug_symbols?,
-            force:                      args.force?,
-            debug:                      args.debug?,
-            quiet:                      args.quiet?,
-            verbose:                    args.verbose?,
-          )
-        end
 
         if dependants.present?
           Upgrade.upgrade_dependents(
