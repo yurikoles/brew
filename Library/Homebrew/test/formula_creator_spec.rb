@@ -5,35 +5,48 @@ require "formula_creator"
 RSpec.describe Homebrew::FormulaCreator do
   describe ".new" do
     tests = {
-      "generic tarball URL": {
+      "generic tarball URL":       {
         url:     "http://digit-labs.org/files/tools/synscan/releases/synscan-5.02.tar.gz",
         name:    "synscan",
         version: "5.02",
       },
-      "gitweb URL":          {
+      "gitweb URL":                {
         url:  "http://www.codesrc.com/gitweb/index.cgi?p=libzipper.git;a=summary",
         name: "libzipper",
       },
-      "GitHub repo URL":     {
-        url:  "https://github.com/abitrolly/lapce.git",
-        name: "lapce",
-        head: true,
+      "GitHub repo URL with .git": {
+        url:         "https://github.com/Homebrew/brew.git",
+        name:        "brew",
+        head:        true,
+        fetch:       true,
+        github_user: "Homebrew",
+        github_repo: "brew",
       },
-      "GitHub archive URL":  {
-        url:     "https://github.com/abitrolly/lapce/archive/v0.3.0.tar.gz",
-        name:    "lapce",
-        version: "0.3.0",
+      "GitHub archive URL":        {
+        url:         "https://github.com/Homebrew/brew/archive/4.5.7.tar.gz",
+        name:        "brew",
+        version:     "4.5.7",
+        fetch:       true,
+        github_user: "Homebrew",
+        github_repo: "brew",
       },
-      "GitHub download URL": {
-        url:     "https://github.com/stella-emu/stella/releases/download/6.7/stella-6.7-src.tar.xz",
-        name:    "stella",
-        version: "6.7",
+      "GitHub releases URL":       {
+        url:         "https://github.com/stella-emu/stella/releases/download/6.7/stella-6.7-src.tar.xz",
+        name:        "stella",
+        version:     "6.7",
+        fetch:       true,
+        github_user: "stella-emu",
+        github_repo: "stella",
       },
     }
 
     tests.each do |description, test|
       it "parses #{description}" do
-        formula_creator = described_class.new(url: test.fetch(:url))
+        fetch = test.fetch(:fetch, false)
+        allow(GitHub).to receive(:repository).with(test.fetch(:github_user), test.fetch(:github_repo)) if fetch
+
+        formula_creator = described_class.new(url: test.fetch(:url), fetch:)
+
         expect(formula_creator.name).to eq(test.fetch(:name))
         if (version = test[:version])
           expect(formula_creator.version).to eq(version)
