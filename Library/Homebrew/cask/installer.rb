@@ -4,6 +4,7 @@
 require "formula_installer"
 require "unpack_strategy"
 require "utils/topological_hash"
+require "utils/analytics"
 
 require "cask/config"
 require "cask/download"
@@ -303,6 +304,20 @@ on_request: true)
 
         next if artifact.is_a?(Artifact::Binary) && !binaries?
 
+        artifact = T.cast(
+          artifact,
+          T.any(
+            Artifact::AbstractFlightBlock,
+            Artifact::Installer,
+            Artifact::KeyboardLayout,
+            Artifact::Mdimporter,
+            Artifact::Moved,
+            Artifact::Pkg,
+            Artifact::Qlplugin,
+            Artifact::Symlinked,
+          ),
+        )
+
         artifact.install_phase(
           command: @command, verbose: verbose?, adopt: adopt?, auto_updates: @cask.auto_updates,
           force: force?, predecessor:
@@ -548,6 +563,18 @@ on_request: true)
 
       artifacts.each do |artifact|
         if artifact.respond_to?(:uninstall_phase)
+          artifact = T.cast(
+            artifact,
+            T.any(
+              Artifact::AbstractFlightBlock,
+              Artifact::KeyboardLayout,
+              Artifact::Moved,
+              Artifact::Qlplugin,
+              Artifact::Symlinked,
+              Artifact::Uninstall,
+            ),
+          )
+
           odebug "Uninstalling artifact of class #{artifact.class}"
           artifact.uninstall_phase(
             command:   @command,
@@ -561,6 +588,8 @@ on_request: true)
         end
 
         next unless artifact.respond_to?(:post_uninstall_phase)
+
+        artifact = T.cast(artifact, Artifact::Uninstall)
 
         odebug "Post-uninstalling artifact of class #{artifact.class}"
         artifact.post_uninstall_phase(

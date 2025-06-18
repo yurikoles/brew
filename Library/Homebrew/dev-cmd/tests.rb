@@ -51,6 +51,11 @@ module Homebrew
         HOMEBREW_LIBRARY_PATH.cd do
           setup_environment!
 
+          # Needs required here, after `setup_environment!`, so that
+          # `HOMEBREW_TEST_GENERIC_OS` is set and `OS.linux?` and `OS.mac?` both
+          # `return false`.
+          require "extend/os/dev-cmd/tests"
+
           parallel = !args.no_parallel?
 
           only = args.only
@@ -267,5 +272,3 @@ module Homebrew
     end
   end
 end
-
-require "extend/os/dev-cmd/tests"
