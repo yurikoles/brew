@@ -3,6 +3,7 @@
 
 require "digest"
 require "erb"
+require "utils/github"
 
 module Homebrew
   # Class for generating a formula from a template.
