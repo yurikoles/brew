@@ -131,57 +131,34 @@ RSpec.shared_context "integration test" do # rubocop:disable RSpec/ContextWordin
     end
   end
 
-  def setup_test_formula(name, content = nil, testball_bottle: false, tap: CoreTap.instance,
+  def setup_test_formula(name, content = nil, tap: CoreTap.instance,
                          bottle_block: nil, tab_attributes: nil)
     case name
     when /^testball/
-      name_to_prog = {
-        "testball4"              => "testball4",
-        "testball5"              => "testball5",
-        "testball-build"         => "testball-build",
-        "testball-parent"        => "testball-parent",
-        "testball-parent-parent" => "testball-parent-parent",
-        "testball2"              => "test",
-      }
-
-      if (prog = name_to_prog[name])
-        prefix       = name
-        program_name = prog
-      else
-        prefix       = "testball"
-        program_name = "test"
-      end
-
-      tarball_name = "#{prefix}-0.1#{"-linux" if OS.linux?}.tbz"
-      tarball = TEST_FIXTURE_DIR / "tarballs/#{tarball_name}"
-
+      # Use a different tarball for testball2 to avoid lock errors when writing concurrency tests
+      prefix = (name == "testball2") ? "testball2" : "testball"
+      tarball = if OS.linux?
+                  TEST_FIXTURE_DIR/"tarballs/testball-0.1-linux.tbz"
+                  TEST_FIXTURE_DIR/"tarballs/#{prefix}-0.1-linux.tbz"
+                else
+                  TEST_FIXTURE_DIR/"tarballs/testball-0.1.tbz"
+                  TEST_FIXTURE_DIR/"tarballs/#{prefix}-0.1.tbz"
+                end
       content = <<~RUBY
         desc "Some test"
         homepage "https://brew.sh/#{name}"
         url "file://#{tarball}"
-        #{ unless testball_bottle
-             <<~SHA_BLOCK
-               sha256 "#{tarball.sha256}"
-             SHA_BLOCK
-        end }
+        sha256 "#{tarball.sha256}"
+
         option "with-foo", "Build with foo"
-        #{ if testball_bottle
-             tarball_bottle_name = "#{prefix}-0.1.all.bottle.tar.gz"
-             tarball_bottle = TEST_FIXTURE_DIR / "tarballs/#{tarball_bottle_name}"
-             <<~BOTTLE_BLOCK
-               bottle do
-                 root_url "file://#{TEST_FIXTURE_DIR}/tarballs"
-                 sha256 cellar: :any, all: "#{tarball_bottle.sha256}"
-               end
-             BOTTLE_BLOCK
-        end }#{bottle_block}
+        #{bottle_block}
         def install
-          (prefix/"foo"/"#{program_name}").write("#{program_name}") if build.with? "foo"
+          (prefix/"foo"/"test").write("test") if build.with? "foo"
           prefix.install Dir["*"]
-          (buildpath/"#{program_name}.c").write \
-            "#include <stdio.h>\\nint main(){printf(\\"#{program_name}\\");return 0;}"
+          (buildpath/"test.c").write \
+            "#include <stdio.h>\\nint main(){printf(\\"test\\");return 0;}"
           bin.mkpath
-          system ENV.cc, "#{program_name}.c", "-o", bin/"#{program_name}"
+          system ENV.cc, "test.c", "-o", bin/"test"
         end
 
         #{content}

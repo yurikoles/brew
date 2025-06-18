@@ -95,46 +95,4 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     expect(HOMEBREW_CELLAR/"testball1/0.1/bin/test").to be_a_file
   end
-
-  it "installs with asking for user prompts with installed dependent checks", :integration_test do
-    setup_test_formula "testball-parent", <<~RUBY
-      depends_on "testball1"
-    RUBY
-
-    setup_test_formula "testball1", <<~RUBY
-      depends_on "testball5"
-      #depends_on "build" => :build
-      depends_on "installed"
-    RUBY
-    setup_test_formula "installed"
-    setup_test_formula "testball5", <<~RUBY
-      depends_on "testball4"
-    RUBY
-    setup_test_formula "testball4", ""
-    setup_test_formula "hiop"
-    setup_test_formula "build", ""
-
-    # Mock `Formula#any_version_installed?` by creating the tab in a plausible keg directory
-    keg_dir = HOMEBREW_CELLAR/"installed"/"1.0"
-    keg_dir.mkpath
-    touch keg_dir/AbstractTab::FILENAME
-
-    regex = /
-      Formulae\s*\(3\):\s*
-      (testball1|testball5|testball4)
-      \s*,\s*
-      ((?!\1)testball1|testball5|testball4)
-      \s*,\s*
-      ((?!\1|\2)testball1|testball5|testball4)
-    /x
-
-    expect do
-      brew "install", "--ask", "testball1"
-    end.to output(regex).to_stdout
-                        .and not_to_output.to_stderr
-
-    expect(HOMEBREW_CELLAR/"testball1/0.1/bin/test").to be_a_file
-    expect(HOMEBREW_CELLAR/"testball4/0.1/bin/testball4").to be_a_file
-    expect(HOMEBREW_CELLAR/"testball5/0.1/bin/testball5").to be_a_file
-  end
 end
