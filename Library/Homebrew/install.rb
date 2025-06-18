@@ -353,19 +353,11 @@ module Homebrew
         puts formula_names.join(" ")
       end
 
-      def collect_dependencies(formulae_installer, dependants)
-        formulae_dependencies = formulae_installer.flat_map do |f|
-          [f.formula, f.compute_dependencies.flatten.filter do |c|
-            c.is_a? Dependency
-          end.flat_map(&:to_formula)]
-        end.flatten.uniq
-        formulae_dependencies.concat(dependants.upgradeable) if dependants&.upgradeable
-        formulae_dependencies
-      end
-
       # If asking the user is enabled, show dependency and size information.
-      def ask_formulae(formulae, args:)
-        return if formulae.empty?
+      def ask_formulae(formulae_installer, dependants, args:)
+        return if formulae_installer.empty?
+
+        formulae = collect_dependencies(formulae_installer, dependants)
 
         ohai "Looking for bottles..."
 
@@ -468,6 +460,16 @@ module Homebrew
         { download:  total_download_size,
           installed: total_installed_size,
           net:       total_net_size }
+      end
+
+      def collect_dependencies(formulae_installer, dependants)
+        formulae_dependencies = formulae_installer.flat_map do |f|
+          [f.formula, f.compute_dependencies.flatten.filter do |c|
+            c.is_a? Dependency
+          end.flat_map(&:to_formula)]
+        end.flatten.uniq
+        formulae_dependencies.concat(dependants.upgradeable) if dependants&.upgradeable
+        formulae_dependencies
       end
     end
   end

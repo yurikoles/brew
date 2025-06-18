@@ -329,6 +329,8 @@ module Homebrew
                                 debug: false,
                                 quiet: false,
                                 verbose: false)
+      return if deps.blank?
+
       upgradeable = deps.upgradeable
       pinned      = deps.pinned
       skipped     = deps.skipped
