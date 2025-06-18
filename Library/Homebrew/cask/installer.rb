@@ -604,7 +604,6 @@ on_request: true)
 
     def zap
       load_installed_caskfile!
-      ohai "Implied `brew uninstall --cask #{@cask}`"
       uninstall_artifacts
       if (zap_stanzas = @cask.artifacts.select { |a| a.is_a?(Artifact::Zap) }).empty?
         opoo "No zap stanza present for Cask '#{@cask}'"
