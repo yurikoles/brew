@@ -138,12 +138,10 @@ RSpec.shared_context "integration test" do # rubocop:disable RSpec/ContextWordin
       # Use a different tarball for testball2 to avoid lock errors when writing concurrency tests
       prefix = (name == "testball2") ? "testball2" : "testball"
       tarball = if OS.linux?
-                  TEST_FIXTURE_DIR/"tarballs/testball-0.1-linux.tbz"
-                  TEST_FIXTURE_DIR/"tarballs/#{prefix}-0.1-linux.tbz"
-                else
-                  TEST_FIXTURE_DIR/"tarballs/testball-0.1.tbz"
-                  TEST_FIXTURE_DIR/"tarballs/#{prefix}-0.1.tbz"
-                end
+        TEST_FIXTURE_DIR/"tarballs/#{prefix}-0.1-linux.tbz"
+      else
+        TEST_FIXTURE_DIR/"tarballs/#{prefix}-0.1.tbz"
+      end
       content = <<~RUBY
         desc "Some test"
         homepage "https://brew.sh/#{name}"
