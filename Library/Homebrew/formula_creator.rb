@@ -23,20 +23,23 @@ module Homebrew
     }
     def initialize(url:, name: nil, version: nil, tap: nil, mode: nil, license: nil, fetch: false, head: false)
       @url = url
+      @mode = mode
+      @license = license
+      @fetch = fetch
 
-      version = if version.present?
-        odebug "version from user: #{version}"
-        Version.new(version)
+      tap = if tap.blank?
+        CoreTap.instance
       else
-        odebug "version from url: #{version}"
-        Version.detect(url)
+        Tap.fetch(tap)
       end
+      @tap = T.let(tap, Tap)
 
       if (match_github = url.match %r{github\.com/(?<user>[^/]+)/(?<repo>[^/]+).*})
-        user = match_github[:user]
+        user = T.must(match_github[:user])
         repository = T.must(match_github[:repo])
         if repository.end_with?(".git")
-          repository = repository.delete_suffix(".git")
+          # e.g. https://github.com/Homebrew/brew.git
+          repository.delete_suffix!(".git")
           head = true
         end
         odebug "github: #{user} #{repository} head:#{head}"
@@ -44,22 +47,6 @@ module Homebrew
           name = repository
           odebug "name from github: #{name}"
         end
-
-        github = GitHub.repository(user, repository) if fetch
-
-        latest_release = if version.null? && fetch && !head
-          begin
-            GitHub.get_latest_release(user, repository)
-          rescue GitHub::API::HTTPNotFoundError
-            odebug "github: latest_release lookup failed: #{url}"
-            nil
-          end
-        end
-        if latest_release
-          version = Version.new(latest_release["tag_name"])
-          odebug "github: version from latest_release: #{@version}"
-        end
-
       elsif name.blank?
         stem = Pathname.new(url).stem
         name = if stem.start_with?("index.cgi") && stem.include?("=")
@@ -74,21 +61,32 @@ module Homebrew
         odebug "name from url: #{name}"
       end
       @name = T.let(name, String)
+      @head = head
+
+      version = if version.present?
+        odebug "version from user: #{version}"
+        Version.new(version)
+      else
+        odebug "version from url: #{version}"
+        Version.detect(url)
+      end
+
+      if fetch && user && repository
+        github = GitHub.repository(user, repository)
+
+        if version.null? && !head
+          begin
+            latest_release = GitHub.get_latest_release(user, repository)
+            version = Version.new(latest_release.fetch("tag_name"))
+            odebug "github: version from latest_release: #{@version}"
+          rescue GitHub::API::HTTPNotFoundError
+            odebug "github: latest_release lookup failed: #{url}"
+            nil
+          end
+        end
+      end
       @github = T.let(github, T.untyped)
       @version = T.let(version, Version)
-
-      tap = if tap.blank?
-        CoreTap.instance
-      else
-        Tap.fetch(tap)
-      end
-      @tap = T.let(tap, Tap)
-
-      @mode = T.let(mode.presence, T.nilable(Symbol))
-      @license = T.let(license.presence, T.nilable(String))
-      @fetch = fetch
-
-      @head = head
 
       @sha256 = T.let(nil, T.nilable(String))
       @desc = T.let(nil, T.nilable(String))
