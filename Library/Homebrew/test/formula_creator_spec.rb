@@ -43,6 +43,11 @@ RSpec.describe Homebrew::FormulaCreator do
         expected_name:          "pack",
         expected_version:       "v0.37.0",
       },
+      "GitHub URL with name override":   {
+        url:           "https://github.com/RooVetGit/Roo-Code",
+        name:          "roo",
+        expected_name: "roo",
+      },
     }
 
     tests.each do |description, test|
@@ -56,7 +61,7 @@ RSpec.describe Homebrew::FormulaCreator do
           end
         end
 
-        formula_creator = described_class.new(url: test.fetch(:url), fetch:)
+        formula_creator = described_class.new(url: test.fetch(:url), name: test[:name], fetch:)
 
         expect(formula_creator.name).to eq(test.fetch(:expected_name))
         if (expected_version = test[:expected_version])
