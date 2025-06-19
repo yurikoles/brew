@@ -63,12 +63,12 @@ module Homebrew
       @name = T.let(name, String)
       @head = head
 
-      version = if version.present?
+      if version.present?
+        version = Version.new(version)
         odebug "version from user: #{version}"
-        Version.new(version)
       else
+        version = Version.detect(url)
         odebug "version from url: #{version}"
-        Version.detect(url)
       end
 
       if fetch && user && repository
@@ -78,10 +78,9 @@ module Homebrew
           begin
             latest_release = GitHub.get_latest_release(user, repository)
             version = Version.new(latest_release.fetch("tag_name"))
-            odebug "github: version from latest_release: #{@version}"
+            odebug "github: version from latest_release: #{version}"
           rescue GitHub::API::HTTPNotFoundError
             odebug "github: latest_release lookup failed: #{url}"
-            nil
           end
         end
       end
