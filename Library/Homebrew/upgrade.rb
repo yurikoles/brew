@@ -372,7 +372,7 @@ module Homebrew
       end
 
       unless dry_run
-        dependent_installers = formulae_installer(
+        dependent_installers = formula_installers(
           upgradeable,
           flags:,
           force_bottle:,

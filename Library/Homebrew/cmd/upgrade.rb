@@ -220,7 +220,7 @@ module Homebrew
 
         Install.perform_preinstall_checks_once
 
-        formulae_installer = Upgrade.formulae_installer(
+        formulae_installer = Upgrade.formula_installers(
           formulae_to_install,
           flags:                      args.flags_only,
           dry_run:                    args.dry_run?,

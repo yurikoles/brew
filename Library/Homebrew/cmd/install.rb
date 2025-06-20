@@ -310,7 +310,7 @@ module Homebrew
         Install.perform_preinstall_checks_once
         Install.check_cc_argv(args.cc)
 
-        formulae_installer = Install.formulae_installer(
+        formulae_installer = Install.formula_installers(
           installed_formulae,
           installed_on_request:       !args.as_dependency?,
           installed_as_dependency:    args.as_dependency?,
