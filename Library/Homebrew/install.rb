@@ -231,7 +231,7 @@ module Homebrew
         false
       end
 
-      def formulae_installer(
+      def formula_installers(
         formulae_to_install,
         installed_on_request: true,
         installed_as_dependency: false,
