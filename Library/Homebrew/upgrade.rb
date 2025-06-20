@@ -69,7 +69,8 @@ module Homebrew
           )
           fi.fetch_bottle_tab(quiet: !debug)
 
-          if !dry_run && dependents && fi.bottle_tab_runtime_dependencies.presence&.all? do |dependency, hash|
+          if !dry_run && dependents
+            fi.bottle_tab_runtime_dependencies.presence&.all? do |dependency, hash|
               minimum_version = Version.new(hash["version"]) if hash["version"].present?
               Dependency.new(dependency).installed?(minimum_version:, minimum_revision: hash["revision"])
             end
@@ -296,8 +297,8 @@ module Homebrew
       # TODO: this should be refactored to use FormulaInstaller new logic
       outdated_dependents =
         formulae_to_install.flat_map(&:runtime_installed_formula_dependents)
-                          .uniq
-                          .select(&:outdated?)
+                           .uniq
+                           .select(&:outdated?)
 
       # Ensure we never attempt a source build for outdated dependents of upgraded formulae.
       outdated_dependents, skipped_dependents = outdated_dependents.partition do |dependent|
