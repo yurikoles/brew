@@ -130,13 +130,13 @@ module Homebrew
         unless formulae.empty?
           Install.perform_preinstall_checks_once
 
-          formulae_kegs = formulae.map do |formula|
+          install_context = formulae.map do |formula|
             if formula.pinned?
               onoe "#{formula.full_name} is pinned. You must unpin it to reinstall."
               next
             end
             Migrator.migrate_if_needed(formula, force: args.force?)
-            Homebrew::Reinstall.formula_installer(
+            Homebrew::Reinstall.build_install_context(
               formula,
               flags:                      args.flags_only,
               force_bottle:               args.force_bottle?,
@@ -167,12 +167,12 @@ module Homebrew
             verbose:                    args.verbose?,
           )
 
-          formulae_installer = formulae_kegs.map(&:formula_installer)
+          formulae_installer = install_context.map(&:formula_installer)
 
           # Main block: if asking the user is enabled, show dependency and size information.
           Install.ask_formulae(formulae_installer, dependants, args: args) if args.ask?
 
-          formulae_kegs.each do |f|
+          install_context.each do |f|
             Homebrew::Reinstall.reinstall_formula(
               f,
               flags:                      args.flags_only,
