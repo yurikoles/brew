@@ -69,11 +69,12 @@ module Homebrew
           )
           fi.fetch_bottle_tab(quiet: !debug)
 
-          if !dry_run && dependents
-            fi.bottle_tab_runtime_dependencies.presence&.all? do |dependency, hash|
-              minimum_version = Version.new(hash["version"]) if hash["version"].present?
-              Dependency.new(dependency).installed?(minimum_version:, minimum_revision: hash["revision"])
-            end
+          all_runtime_deps_installed = fi.bottle_tab_runtime_dependencies.presence&.all? do |dependency, hash|
+            minimum_version = Version.new(hash["version"]) if hash["version"].present?
+            Dependency.new(dependency).installed?(minimum_version:, minimum_revision: hash["revision"])
+          end
+
+          if !dry_run && dependents && all_runtime_deps_installed
             # Don't need to install this bottle if all of the runtime
             # dependencies have the same or newer version already installed.
             next
@@ -91,8 +92,8 @@ module Homebrew
     end
 
     def self.upgrade_formulae(formula_installers, dry_run: false, verbose: false)
-      formula_installers.each do |fi|
-        begin
+      unless dry_run
+        formula_installers.each do |fi|
           fi.prelude
           fi.fetch
         rescue CannotInstallFormulaError => e
@@ -100,7 +101,9 @@ module Homebrew
         rescue UnsatisfiedRequirements, DownloadError => e
           ofail "#{fi.formula.full_name}: #{e}"
         end
+      end
 
+      formula_installers.each do |fi|
         upgrade_formula(fi, dry_run:, verbose:)
         Cleanup.install_formula_clean!(fi.formula, dry_run:)
       end
@@ -387,7 +390,9 @@ module Homebrew
           quiet:,
           verbose:,
         )
-        upgrade_formulae dependent_installers
+        puts "here", dependent_installers
+        puts "here", upgradeable
+        upgrade_formulae(dependent_installers, dry_run: dry_run, verbose: verbose)
       end
 
       # Update installed formulae after upgrading
