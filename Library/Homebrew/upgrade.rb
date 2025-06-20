@@ -13,7 +13,7 @@ module Homebrew
   module Upgrade
     Dependents = Struct.new(:upgradeable, :pinned, :skipped)
 
-    def self.formulae_installer(
+    def self.formula_installers(
       formulae_to_install,
       flags:,
       dry_run: false,
