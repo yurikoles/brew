@@ -67,10 +67,12 @@ module Homebrew
             quiet:,
             verbose:,
           )
+          fi.fetch_bottle_tab(quiet: !debug)
+
           if !dry_run && dependents && fi.bottle_tab_runtime_dependencies.presence&.all? do |dependency, hash|
-            minimum_version = Version.new(hash["version"]) if hash["version"].present?
-            Dependency.new(dependency).installed?(minimum_version:, minimum_revision: hash["revision"])
-          end
+              minimum_version = Version.new(hash["version"]) if hash["version"].present?
+              Dependency.new(dependency).installed?(minimum_version:, minimum_revision: hash["revision"])
+            end
             # Don't need to install this bottle if all of the runtime
             # dependencies have the same or newer version already installed.
             next
@@ -285,15 +287,15 @@ module Homebrew
         end
         return
       end
-      installed_formulae = formulae.dup
-      installed_formulae.reject! { |f| f.core_formula? && f.versioned_formula? }
-      return if installed_formulae.empty?
+      formulae_to_install = formulae.dup
+      formulae_to_install.reject! { |f| f.core_formula? && f.versioned_formula? }
+      return if formulae_to_install.empty?
 
-      already_broken_dependents = check_broken_dependents(installed_formulae)
+      already_broken_dependents = check_broken_dependents(formulae_to_install)
 
       # TODO: this should be refactored to use FormulaInstaller new logic
       outdated_dependents =
-        installed_formulae.flat_map(&:runtime_installed_formula_dependents)
+        formulae_to_install.flat_map(&:runtime_installed_formula_dependents)
                           .uniq
                           .select(&:outdated?)
 
@@ -304,7 +306,7 @@ module Homebrew
 
       return if outdated_dependents.blank? && already_broken_dependents.blank?
 
-      outdated_dependents -= installed_formulae if dry_run
+      outdated_dependents -= formulae_to_install if dry_run
 
       upgradeable_dependents =
         outdated_dependents.reject(&:pinned?)
@@ -370,7 +372,7 @@ module Homebrew
       end
 
       unless dry_run
-        formulae_dependencies = formulae_installer(
+        dependent_installers = formulae_installer(
           upgradeable,
           flags:,
           force_bottle:,
@@ -384,7 +386,7 @@ module Homebrew
           quiet:,
           verbose:,
         )
-        upgrade_formulae formulae_dependencies
+        upgrade_formulae dependent_installers
       end
 
       # Update installed formulae after upgrading
@@ -440,7 +442,7 @@ module Homebrew
       return if dry_run
 
       reinstallable_broken_dependents.each do |formula|
-        formula_installer = Reinstall.formula_installer(
+        formula_installer = Reinstall.build_install_context(
           formula,
           flags:,
           force_bottle:,
