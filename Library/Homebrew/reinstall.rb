@@ -7,6 +7,7 @@ require "messages"
 
 module Homebrew
   module Reinstall
+    # struct to keep context of the current installer, keg, formula and option
     InstallationContext = Struct.new(:formula_installer, :keg, :formula, :options)
     def self.build_install_context(
       formula,
