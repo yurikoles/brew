@@ -7,8 +7,8 @@ require "messages"
 
 module Homebrew
   module Reinstall
-    FormulaKeg = Struct.new(:formula_installer, :keg, :formula, :options)
-    def self.formula_installer(
+    InstallationContext = Struct.new(:formula_installer, :keg, :formula, :options)
+    def self.build_install_context(
       formula,
       flags:,
       force_bottle: false,
@@ -62,11 +62,11 @@ module Homebrew
           verbose:,
         }.compact,
       )
-      FormulaKeg.new(fi, keg, formula, options)
+      InstallationContext.new(fi, keg, formula, options)
     end
 
     def self.reinstall_formula(
-      formula_keg,
+      install_context,
       flags:,
       force_bottle: false,
       build_from_source_formulae: [],
@@ -79,10 +79,10 @@ module Homebrew
       verbose: false,
       git: false
     )
-      formula_installer = formula_keg.formula_installer
-      keg = formula_keg.keg
-      formula = formula_keg.formula
-      options = formula_keg.options
+      formula_installer = install_context.formula_installer
+      keg = install_context.keg
+      formula = install_context.formula
+      options = install_context.options
       link_keg = keg.linked?
       formula_installer.prelude
       formula_installer.fetch
