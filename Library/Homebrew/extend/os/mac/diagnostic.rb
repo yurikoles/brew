@@ -496,6 +496,28 @@ module OS
             #{installation_instructions}
           EOS
         end
+
+        def check_cask_software_versions
+          super
+          add_info "macOS", MacOS.full_version
+          add_info "SIP", begin
+            csrutil = "/usr/bin/csrutil"
+            if File.executable?(csrutil)
+              Open3.capture2(csrutil, "status")
+                   .first
+                   .gsub("This is an unsupported configuration, likely to break in " \
+                         "the future and leave your machine in an unknown state.", "")
+                   .gsub("System Integrity Protection status: ", "")
+                   .delete("\t.")
+                   .capitalize
+                   .strip
+            else
+              "N/A"
+            end
+          end
+
+          nil
+        end
       end
     end
   end
