@@ -424,18 +424,6 @@ module OS
           EOS
         end
 
-        def check_deprecated_caskroom_taps
-          tapped_caskroom_taps = ::Tap.select { |t| t.user == "caskroom" || t.name == "phinze/cask" }
-                                      .map(&:name)
-          return if tapped_caskroom_taps.empty?
-
-          <<~EOS
-            You have the following deprecated, cask taps tapped:
-              #{tapped_caskroom_taps.join("\n  ")}
-            Untap them with `brew untap`.
-          EOS
-        end
-
         def check_if_supported_sdk_available
           return unless ::DevelopmentTools.installed?
           return unless MacOS.sdk_root_needed?
