@@ -5,18 +5,20 @@ module OS
   module Linux
     module Cask
       module Quarantine
-        extend T::Helpers
+        module ClassMethods
+          extend T::Helpers
 
-        requires_ancestor { ::Cask::Quarantine }
+          requires_ancestor { ::Cask::Quarantine }
 
-        sig { returns(Symbol) }
-        def check_quarantine_support = :linux
+          sig { returns(Symbol) }
+          def check_quarantine_support = :linux
 
-        sig { returns(T::Boolean) }
-        def available? = false
+          sig { returns(T::Boolean) }
+          def available? = false
+        end
       end
     end
   end
 end
 
-Cask::Quarantine.singleton_class.prepend(OS::Linux::Cask::Quarantine)
+Cask::Quarantine.singleton_class.prepend(OS::Linux::Cask::Quarantine::ClassMethods)
