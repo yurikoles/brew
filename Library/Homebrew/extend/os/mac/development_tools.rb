@@ -37,7 +37,7 @@ module OS
       end
 
       sig { returns(Version) }
-      def self.ld64_version
+      def ld64_version
         @ld64_version ||= T.let(begin
           json = Utils.popen_read("/usr/bin/ld", "-version_details")
           if $CHILD_STATUS.success?
