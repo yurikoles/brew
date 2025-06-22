@@ -1009,6 +1009,8 @@ module Homebrew
       end
 
       def check_cask_xattr
+        return "Unable to find `xattr`." unless File.exist?("/usr/bin/xattr")
+
         result = system_command "/usr/bin/xattr", args: ["-h"]
 
         return if result.status.success?
@@ -1031,8 +1033,6 @@ module Homebrew
           end
         elsif result.stderr.include? "pkg_resources.DistributionNotFound"
           "Your Python installation is unable to find `xattr`."
-        elsif result.stderr.include? "No such file or directory"
-          "Unable to find `xattr`."
         else
           "unknown xattr error: #{result.stderr.split("\n").last}"
         end
