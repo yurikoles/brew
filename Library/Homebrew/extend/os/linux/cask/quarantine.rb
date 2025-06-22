@@ -10,13 +10,13 @@ module OS
         requires_ancestor { ::Cask::Quarantine }
 
         sig { returns(Symbol) }
-        def self.check_quarantine_support = :linux
+        def check_quarantine_support = :linux
 
         sig { returns(T::Boolean) }
-        def self.available? = false
+        def available? = false
       end
     end
   end
 end
 
-Cask::Quarantine.prepend(OS::Linux::Cask::Quarantine)
+Cask::Quarantine.singleton_class.prepend(OS::Linux::Cask::Quarantine)
