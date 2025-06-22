@@ -1031,6 +1031,8 @@ module Homebrew
           end
         elsif result.stderr.include? "pkg_resources.DistributionNotFound"
           "Your Python installation is unable to find `xattr`."
+        elsif result.stderr.include? "No such file or directory"
+          "Unable to find `xattr`."
         else
           "unknown xattr error: #{result.stderr.split("\n").last}"
         end
@@ -1044,6 +1046,8 @@ module Homebrew
           "No Cask quarantine support available: there's no working version of `xattr` on this system."
         when :no_swift
           "No Cask quarantine support available: there's no available version of `swift` on this system."
+        when :linux
+          "No Cask quarantine support available: not available on Linux."
         else
           "No Cask quarantine support available: unknown reason."
         end
