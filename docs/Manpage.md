@@ -1987,10 +1987,6 @@ checks. Will exit with a non-zero status if any errors are found.
 
 : Audit for app signatures, which are required by macOS on ARM.
 
-`--token-conflicts`
-
-: Audit for token conflicts.
-
 `--tap`
 
 : Check formulae and casks within the given tap, specified as

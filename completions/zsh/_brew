@@ -486,7 +486,6 @@ _brew_audit() {
     '--skip-style[Skip running non-RuboCop style checks. Useful if you plan on running `brew style` separately. Enabled by default unless a formula is specified by name]' \
     '(--only-cops --except-cops)--strict[Run additional, stricter style checks]' \
     '--tap[Check formulae and casks within the given tap, specified as user`/`repo]' \
-    '--token-conflicts[Audit for token conflicts]' \
     '--verbose[Make some output more verbose]' \
     - formula \
     '(--cask)--formula[Treat all named arguments as formulae]' \
