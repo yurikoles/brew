@@ -363,7 +363,6 @@ __fish_brew_complete_arg 'audit' -l signing -d 'Audit for app signatures, which 
 __fish_brew_complete_arg 'audit' -l skip-style -d 'Skip running non-RuboCop style checks. Useful if you plan on running `brew style` separately. Enabled by default unless a formula is specified by name'
 __fish_brew_complete_arg 'audit' -l strict -d 'Run additional, stricter style checks'
 __fish_brew_complete_arg 'audit' -l tap -d 'Check formulae and casks within the given tap, specified as user`/`repo'
-__fish_brew_complete_arg 'audit' -l token-conflicts -d 'Audit for token conflicts'
 __fish_brew_complete_arg 'audit' -l verbose -d 'Make some output more verbose'
 __fish_brew_complete_arg 'audit; and not __fish_seen_argument -l cask -l casks' -a '(__fish_brew_suggest_formulae_all)'
 __fish_brew_complete_arg 'audit; and not __fish_seen_argument -l formula -l formulae' -a '(__fish_brew_suggest_casks_all)'
