@@ -1009,6 +1009,8 @@ module Homebrew
       end
 
       def check_cask_xattr
+        return "Unable to find `xattr`." unless File.exist?("/usr/bin/xattr")
+
         result = system_command "/usr/bin/xattr", args: ["-h"]
 
         return if result.status.success?
@@ -1044,6 +1046,8 @@ module Homebrew
           "No Cask quarantine support available: there's no working version of `xattr` on this system."
         when :no_swift
           "No Cask quarantine support available: there's no available version of `swift` on this system."
+        when :linux
+          "No Cask quarantine support available: not available on Linux."
         else
           "No Cask quarantine support available: unknown reason."
         end
