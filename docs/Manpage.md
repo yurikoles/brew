@@ -536,7 +536,7 @@ first search, making that search slower than subsequent ones.
 ### `developer` \[*`subcommand`*\]
 
 Control Homebrew's developer mode. When developer mode is enabled, `brew update`
-will update Homebrew to the latest commit on the `master` branch instead of the
+will update Homebrew to the latest commit on the `main` branch instead of the
 latest stable version along with some other behaviour changes.
 
 `brew developer` \[`state`\]
@@ -3200,7 +3200,7 @@ Run Homebrew's unit and integration tests.
 
 `--changed`
 
-: Only runs tests on files that were changed from the master branch.
+: Only runs tests on files that were changed from the `main` branch.
 
 `--fail-fast`
 
@@ -3370,7 +3370,7 @@ Update the list of GitHub Sponsors in the `Homebrew/brew` README.
 ### `update-test` \[*`options`*\]
 
 Run a test of `brew update` with a new repository clone. If no options are
-passed, use `origin/master` as the start commit.
+passed, use `origin/main` as the start commit.
 
 `--to-tag`
 
