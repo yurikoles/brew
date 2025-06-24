@@ -1009,6 +1009,8 @@ module Homebrew
       end
 
       def check_cask_xattr
+        # If quarantine is not available, a warning is already shown by check_cask_quarantine_support so just return
+        return unless Cask::Quarantine.available?
         return "Unable to find `xattr`." unless File.exist?("/usr/bin/xattr")
 
         result = system_command "/usr/bin/xattr", args: ["-h"]
