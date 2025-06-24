@@ -59,9 +59,9 @@
       "name": "AdaCore Doc License",
       "licenseId": "AdaCore-doc",
       "seeAlso": [
-        "https://github.com/AdaCore/xmlada/blob/master/docs/index.rst",
-        "https://github.com/AdaCore/gnatcoll-core/blob/master/docs/index.rst",
-        "https://github.com/AdaCore/gnatcoll-db/blob/master/docs/index.rst"
+        "https://github.com/AdaCore/xmlada/blob/HEAD/docs/index.rst",
+        "https://github.com/AdaCore/gnatcoll-core/blob/HEAD/docs/index.rst",
+        "https://github.com/AdaCore/gnatcoll-db/blob/HEAD/docs/index.rst"
       ],
       "isOsiApproved": false
     },
@@ -85,7 +85,7 @@
       "name": "Adobe Display PostScript License",
       "licenseId": "Adobe-Display-PostScript",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/xserver/-/blob/master/COPYING?ref_type\u003dheads#L752"
+        "https://gitlab.freedesktop.org/xorg/xserver/-/blob/HEAD/COPYING?ref_type\u003dheads#L752"
       ],
       "isOsiApproved": false
     },
@@ -109,7 +109,7 @@
       "name": "Adobe Utopia Font License",
       "licenseId": "Adobe-Utopia",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/font/adobe-utopia-100dpi/-/blob/master/COPYING?ref_type\u003dheads"
+        "https://gitlab.freedesktop.org/xorg/font/adobe-utopia-100dpi/-/blob/HEAD/COPYING?ref_type\u003dheads"
       ],
       "isOsiApproved": false
     },
@@ -667,7 +667,7 @@
       "name": "bcrypt Solar Designer License",
       "licenseId": "bcrypt-Solar-Designer",
       "seeAlso": [
-        "https://github.com/bcrypt-ruby/bcrypt-ruby/blob/master/ext/mri/crypt_blowfish.c"
+        "https://github.com/bcrypt-ruby/bcrypt-ruby/blob/HEAD/ext/mri/crypt_blowfish.c"
       ],
       "isOsiApproved": false
     },
@@ -769,8 +769,8 @@
       "licenseId": "Boehm-GC",
       "seeAlso": [
         "https://fedoraproject.org/wiki/Licensing:MIT#Another_Minimal_variant_(found_in_libatomic_ops)",
-        "https://github.com/uim/libgcroots/blob/master/COPYING",
-        "https://github.com/ivmai/libatomic_ops/blob/master/LICENSE"
+        "https://github.com/uim/libgcroots/blob/HEAD/COPYING",
+        "https://github.com/ivmai/libatomic_ops/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -819,7 +819,7 @@
       "name": "Brian Gladman 3-Clause License",
       "licenseId": "Brian-Gladman-3-Clause",
       "seeAlso": [
-        "https://github.com/SWI-Prolog/packages-clib/blob/master/sha1/brg_endian.h"
+        "https://github.com/SWI-Prolog/packages-clib/blob/HEAD/sha1/brg_endian.h"
       ],
       "isOsiApproved": false
     },
@@ -856,7 +856,7 @@
       "name": "BSD 2-Clause - Ian Darwin variant",
       "licenseId": "BSD-2-Clause-Darwin",
       "seeAlso": [
-        "https://github.com/file/file/blob/master/COPYING"
+        "https://github.com/file/file/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -921,7 +921,7 @@
       "seeAlso": [
         "http://www.freebsd.org/copyright/freebsd-license.html",
         "https://people.freebsd.org/~ivoras/wine/patch-wine-nvidia.sh",
-        "https://github.com/protegeproject/protege/blob/master/license.txt"
+        "https://github.com/protegeproject/protege/blob/HEAD/license.txt"
       ],
       "isOsiApproved": false
     },
@@ -947,7 +947,7 @@
       "name": "BSD 3-Clause acpica variant",
       "licenseId": "BSD-3-Clause-acpica",
       "seeAlso": [
-        "https://github.com/acpica/acpica/blob/master/source/common/acfileio.c#L119"
+        "https://github.com/acpica/acpica/blob/HEAD/source/common/acfileio.c#L119"
       ],
       "isOsiApproved": false
     },
@@ -984,7 +984,7 @@
       "name": "BSD 3-Clause Flex variant",
       "licenseId": "BSD-3-Clause-flex",
       "seeAlso": [
-        "https://github.com/westes/flex/blob/master/COPYING"
+        "https://github.com/westes/flex/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -996,7 +996,7 @@
       "name": "Hewlett-Packard BSD variant license",
       "licenseId": "BSD-3-Clause-HP",
       "seeAlso": [
-        "https://github.com/zdohnal/hplip/blob/master/COPYING#L939"
+        "https://github.com/zdohnal/hplip/blob/HEAD/COPYING#L939"
       ],
       "isOsiApproved": false
     },
@@ -1032,8 +1032,8 @@
       "name": "BSD 3-Clause No Military License",
       "licenseId": "BSD-3-Clause-No-Military-License",
       "seeAlso": [
-        "https://gitlab.syncad.com/hive/dhive/-/blob/master/LICENSE",
-        "https://github.com/greymass/swift-eosio/blob/master/LICENSE"
+        "https://gitlab.syncad.com/hive/dhive/-/blob/HEAD/LICENSE",
+        "https://github.com/greymass/swift-eosio/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -1144,7 +1144,7 @@
       "licenseId": "BSD-4.3RENO",
       "seeAlso": [
         "https://sourceware.org/git/?p\u003dbinutils-gdb.git;a\u003dblob;f\u003dlibiberty/strcasecmp.c;h\u003d131d81c2ce7881fa48c363dc5bf5fb302c61ce0b;hb\u003dHEAD",
-        "https://git.openldap.org/openldap/openldap/-/blob/master/COPYRIGHT#L55-63"
+        "https://git.openldap.org/openldap/openldap/-/blob/HEAD/COPYRIGHT#L55-63"
       ],
       "isOsiApproved": false
     },
@@ -1169,7 +1169,7 @@
       "name": "BSD Advertising Acknowledgement License",
       "licenseId": "BSD-Advertising-Acknowledgement",
       "seeAlso": [
-        "https://github.com/python-excel/xlrd/blob/master/LICENSE#L33"
+        "https://github.com/python-excel/xlrd/blob/HEAD/LICENSE#L33"
       ],
       "isOsiApproved": false
     },
@@ -1181,7 +1181,7 @@
       "name": "BSD with Attribution and HPND disclaimer",
       "licenseId": "BSD-Attribution-HPND-disclaimer",
       "seeAlso": [
-        "https://github.com/cyrusimap/cyrus-sasl/blob/master/COPYING"
+        "https://github.com/cyrusimap/cyrus-sasl/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -1217,7 +1217,7 @@
       "name": "BSD Source Code Attribution - beginning of file variant",
       "licenseId": "BSD-Source-beginning-file",
       "seeAlso": [
-        "https://github.com/lattera/freebsd/blob/master/sys/cam/cam.c#L4"
+        "https://github.com/lattera/freebsd/blob/HEAD/sys/cam/cam.c#L4"
       ],
       "isOsiApproved": false
     },
@@ -1229,7 +1229,7 @@
       "name": "BSD Source Code Attribution",
       "licenseId": "BSD-Source-Code",
       "seeAlso": [
-        "https://github.com/robbiehanson/CocoaHTTPServer/blob/master/LICENSE.txt"
+        "https://github.com/robbiehanson/CocoaHTTPServer/blob/HEAD/LICENSE.txt"
       ],
       "isOsiApproved": false
     },
@@ -1318,7 +1318,7 @@
       "name": "Computational Use of Data Agreement v1.0",
       "licenseId": "C-UDA-1.0",
       "seeAlso": [
-        "https://github.com/microsoft/Computational-Use-of-Data-Agreement/blob/master/C-UDA-1.0.md",
+        "https://github.com/microsoft/Computational-Use-of-Data-Agreement/blob/HEAD/C-UDA-1.0.md",
         "https://cdla.dev/computational-use-of-data-agreement-v1-0/"
       ],
       "isOsiApproved": false
@@ -2315,7 +2315,7 @@
       "name": "Checkmk License",
       "licenseId": "checkmk",
       "seeAlso": [
-        "https://github.com/libcheck/check/blob/master/checkmk/checkmk.in"
+        "https://github.com/libcheck/check/blob/HEAD/checkmk/checkmk.in"
       ],
       "isOsiApproved": false
     },
@@ -2341,7 +2341,7 @@
       "name": "Clips License",
       "licenseId": "Clips",
       "seeAlso": [
-        "https://github.com/DrItanium/maya/blob/master/LICENSE.CLIPS"
+        "https://github.com/DrItanium/maya/blob/HEAD/LICENSE.CLIPS"
       ],
       "isOsiApproved": false
     },
@@ -2426,7 +2426,7 @@
       "name": "Community Specification License 1.0",
       "licenseId": "Community-Spec-1.0",
       "seeAlso": [
-        "https://github.com/CommunitySpecification/1.0/blob/master/1._Community_Specification_License-v1.md"
+        "https://github.com/CommunitySpecification/1.0/blob/HEAD/1._Community_Specification_License-v1.md"
       ],
       "isOsiApproved": false
     },
@@ -2452,7 +2452,7 @@
       "name": "copyleft-next 0.3.0",
       "licenseId": "copyleft-next-0.3.0",
       "seeAlso": [
-        "https://github.com/copyleft-next/copyleft-next/blob/master/Releases/copyleft-next-0.3.0"
+        "https://github.com/copyleft-next/copyleft-next/blob/HEAD/Releases/copyleft-next-0.3.0"
       ],
       "isOsiApproved": false
     },
@@ -2464,7 +2464,7 @@
       "name": "copyleft-next 0.3.1",
       "licenseId": "copyleft-next-0.3.1",
       "seeAlso": [
-        "https://github.com/copyleft-next/copyleft-next/blob/master/Releases/copyleft-next-0.3.1"
+        "https://github.com/copyleft-next/copyleft-next/blob/HEAD/Releases/copyleft-next-0.3.1"
       ],
       "isOsiApproved": false
     },
@@ -2478,7 +2478,7 @@
       "seeAlso": [
         "https://android.googlesource.com/platform/external/dng_sdk/+/refs/heads/master/source/dng_lossless_jpeg.cpp#16",
         "https://www.mssl.ucl.ac.uk/~mcrw/src/20050920/proto.h",
-        "https://gitlab.freedesktop.org/libopenraw/libopenraw/blob/master/lib/ljpegdecompressor.cpp#L32"
+        "https://gitlab.freedesktop.org/libopenraw/libopenraw/blob/HEAD/lib/ljpegdecompressor.cpp#L32"
       ],
       "isOsiApproved": false
     },
@@ -2529,10 +2529,10 @@
       "name": "Cronyx License",
       "licenseId": "Cronyx",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/font/alias/-/blob/master/COPYING",
-        "https://gitlab.freedesktop.org/xorg/font/cronyx-cyrillic/-/blob/master/COPYING",
-        "https://gitlab.freedesktop.org/xorg/font/misc-cyrillic/-/blob/master/COPYING",
-        "https://gitlab.freedesktop.org/xorg/font/screen-cyrillic/-/blob/master/COPYING"
+        "https://gitlab.freedesktop.org/xorg/font/alias/-/blob/HEAD/COPYING",
+        "https://gitlab.freedesktop.org/xorg/font/cronyx-cyrillic/-/blob/HEAD/COPYING",
+        "https://gitlab.freedesktop.org/xorg/font/misc-cyrillic/-/blob/HEAD/COPYING",
+        "https://gitlab.freedesktop.org/xorg/font/screen-cyrillic/-/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -2592,7 +2592,7 @@
       "name": "curl License",
       "licenseId": "curl",
       "seeAlso": [
-        "https://github.com/bagder/curl/blob/master/COPYING"
+        "https://github.com/bagder/curl/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -2635,7 +2635,7 @@
       "name": "DEC 3-Clause License",
       "licenseId": "DEC-3-Clause",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/xserver/-/blob/master/COPYING?ref_type\u003dheads#L239"
+        "https://gitlab.freedesktop.org/xorg/xserver/-/blob/HEAD/COPYING?ref_type\u003dheads#L239"
       ],
       "isOsiApproved": false
     },
@@ -2744,7 +2744,7 @@
       "name": "Detection Rule License 1.0",
       "licenseId": "DRL-1.0",
       "seeAlso": [
-        "https://github.com/Neo23x0/sigma/blob/master/LICENSE.Detection.Rules.md"
+        "https://github.com/Neo23x0/sigma/blob/HEAD/LICENSE.Detection.Rules.md"
       ],
       "isOsiApproved": false
     },
@@ -2780,7 +2780,7 @@
       "name": "David M. Gay dtoa License",
       "licenseId": "dtoa",
       "seeAlso": [
-        "https://github.com/SWI-Prolog/swipl-devel/blob/master/src/os/dtoa.c",
+        "https://github.com/SWI-Prolog/swipl-devel/blob/HEAD/src/os/dtoa.c",
         "https://sourceware.org/git/?p\u003dnewlib-cygwin.git;a\u003dblob;f\u003dnewlib/libc/stdlib/mprec.h;hb\u003dHEAD"
       ],
       "isOsiApproved": false
@@ -2884,7 +2884,7 @@
       "licenseId": "Elastic-2.0",
       "seeAlso": [
         "https://www.elastic.co/licensing/elastic-license",
-        "https://github.com/elastic/elasticsearch/blob/master/licenses/ELASTIC-LICENSE-2.0.txt"
+        "https://github.com/elastic/elasticsearch/blob/HEAD/licenses/ELASTIC-LICENSE-2.0.txt"
       ],
       "isOsiApproved": false
     },
@@ -2960,7 +2960,7 @@
       "name": "Etalab Open License 2.0",
       "licenseId": "etalab-2.0",
       "seeAlso": [
-        "https://github.com/DISIC/politique-de-contribution-open-source/blob/master/LICENSE.pdf",
+        "https://github.com/DISIC/politique-de-contribution-open-source/blob/HEAD/LICENSE.pdf",
         "https://raw.githubusercontent.com/DISIC/politique-de-contribution-open-source/master/LICENSE"
       ],
       "isOsiApproved": false
@@ -3207,7 +3207,7 @@
       "name": "Furuseth License",
       "licenseId": "Furuseth",
       "seeAlso": [
-        "https://git.openldap.org/openldap/openldap/-/blob/master/COPYRIGHT?ref_type\u003dheads#L39-51"
+        "https://git.openldap.org/openldap/openldap/-/blob/HEAD/COPYRIGHT?ref_type\u003dheads#L39-51"
       ],
       "isOsiApproved": false
     },
@@ -3231,7 +3231,7 @@
       "name": "Gnome GCR Documentation License",
       "licenseId": "GCR-docs",
       "seeAlso": [
-        "https://github.com/GNOME/gcr/blob/master/docs/COPYING"
+        "https://github.com/GNOME/gcr/blob/HEAD/docs/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -3255,7 +3255,7 @@
       "name": "Generic XTS License",
       "licenseId": "generic-xts",
       "seeAlso": [
-        "https://github.com/mhogomchungu/zuluCrypt/blob/master/external_libraries/tcplay/generic_xts.c"
+        "https://github.com/mhogomchungu/zuluCrypt/blob/HEAD/external_libraries/tcplay/generic_xts.c"
       ],
       "isOsiApproved": false
     },
@@ -3846,7 +3846,7 @@
       "name": "Graphics Gems License",
       "licenseId": "Graphics-Gems",
       "seeAlso": [
-        "https://github.com/erich666/GraphicsGems/blob/master/LICENSE.md"
+        "https://github.com/erich666/GraphicsGems/blob/HEAD/LICENSE.md"
       ],
       "isOsiApproved": false
     },
@@ -3871,7 +3871,7 @@
       "licenseId": "gtkbook",
       "seeAlso": [
         "https://github.com/slogan621/gtkbook",
-        "https://github.com/oetiker/rrdtool-1.x/blob/master/src/plbasename.c#L8-L11"
+        "https://github.com/oetiker/rrdtool-1.x/blob/HEAD/src/plbasename.c#L8-L11"
       ],
       "isOsiApproved": false
     },
@@ -3919,7 +3919,7 @@
       "name": "HIDAPI License",
       "licenseId": "HIDAPI",
       "seeAlso": [
-        "https://github.com/signal11/hidapi/blob/master/LICENSE-orig.txt"
+        "https://github.com/signal11/hidapi/blob/HEAD/LICENSE-orig.txt"
       ],
       "isOsiApproved": false
     },
@@ -3956,7 +3956,7 @@
       "name": "Hewlett-Packard 1989 License",
       "licenseId": "HP-1989",
       "seeAlso": [
-        "https://github.com/bleargh45/Data-UUID/blob/master/LICENSE"
+        "https://github.com/bleargh45/Data-UUID/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -3982,7 +3982,7 @@
       "name": "Historical Permission Notice and Disclaimer - DEC variant",
       "licenseId": "HPND-DEC",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/app/xkbcomp/-/blob/master/COPYING?ref_type\u003dheads#L69"
+        "https://gitlab.freedesktop.org/xorg/app/xkbcomp/-/blob/HEAD/COPYING?ref_type\u003dheads#L69"
       ],
       "isOsiApproved": false
     },
@@ -3994,8 +3994,8 @@
       "name": "Historical Permission Notice and Disclaimer - documentation variant",
       "licenseId": "HPND-doc",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/lib/libxext/-/blob/master/COPYING?ref_type\u003dheads#L185-197",
-        "https://gitlab.freedesktop.org/xorg/lib/libxtst/-/blob/master/COPYING?ref_type\u003dheads#L70-77"
+        "https://gitlab.freedesktop.org/xorg/lib/libxext/-/blob/HEAD/COPYING?ref_type\u003dheads#L185-197",
+        "https://gitlab.freedesktop.org/xorg/lib/libxtst/-/blob/HEAD/COPYING?ref_type\u003dheads#L70-77"
       ],
       "isOsiApproved": false
     },
@@ -4007,8 +4007,8 @@
       "name": "Historical Permission Notice and Disclaimer - documentation sell variant",
       "licenseId": "HPND-doc-sell",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/lib/libxtst/-/blob/master/COPYING?ref_type\u003dheads#L108-117",
-        "https://gitlab.freedesktop.org/xorg/lib/libxext/-/blob/master/COPYING?ref_type\u003dheads#L153-162"
+        "https://gitlab.freedesktop.org/xorg/lib/libxtst/-/blob/HEAD/COPYING?ref_type\u003dheads#L108-117",
+        "https://gitlab.freedesktop.org/xorg/lib/libxext/-/blob/HEAD/COPYING?ref_type\u003dheads#L153-162"
       ],
       "isOsiApproved": false
     },
@@ -4071,8 +4071,8 @@
       "name": "Historical Permission Notice and Disclaimer - Fenneberg-Livingston variant",
       "licenseId": "HPND-Fenneberg-Livingston",
       "seeAlso": [
-        "https://github.com/FreeRADIUS/freeradius-client/blob/master/COPYRIGHT#L32",
-        "https://github.com/radcli/radcli/blob/master/COPYRIGHT#L34"
+        "https://github.com/FreeRADIUS/freeradius-client/blob/HEAD/COPYRIGHT#L32",
+        "https://github.com/radcli/radcli/blob/HEAD/COPYRIGHT#L34"
       ],
       "isOsiApproved": false
     },
@@ -4084,7 +4084,7 @@
       "name": "Historical Permission Notice and Disclaimer    - INRIA-IMAG variant",
       "licenseId": "HPND-INRIA-IMAG",
       "seeAlso": [
-        "https://github.com/ppp-project/ppp/blob/master/pppd/ipv6cp.c#L75-L83"
+        "https://github.com/ppp-project/ppp/blob/HEAD/pppd/ipv6cp.c#L75-L83"
       ],
       "isOsiApproved": false
     },
@@ -4179,7 +4179,7 @@
       "name": "Historical Permission Notice and Disclaimer - sell xserver variant with MIT disclaimer",
       "licenseId": "HPND-sell-MIT-disclaimer-xserver",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/xserver/-/blob/master/COPYING?ref_type\u003dheads#L1781"
+        "https://gitlab.freedesktop.org/xorg/xserver/-/blob/HEAD/COPYING?ref_type\u003dheads#L1781"
       ],
       "isOsiApproved": false
     },
@@ -4204,7 +4204,7 @@
       "licenseId": "HPND-sell-variant",
       "seeAlso": [
         "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/sunrpc/auth_gss/gss_generic_token.c?h\u003dv4.19",
-        "https://github.com/kfish/xsel/blob/master/COPYING"
+        "https://github.com/kfish/xsel/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -4216,7 +4216,7 @@
       "name": "HPND sell variant with MIT disclaimer",
       "licenseId": "HPND-sell-variant-MIT-disclaimer",
       "seeAlso": [
-        "https://github.com/sigmavirus24/x11-ssh-askpass/blob/master/README"
+        "https://github.com/sigmavirus24/x11-ssh-askpass/blob/HEAD/README"
       ],
       "isOsiApproved": false
     },
@@ -4228,7 +4228,7 @@
       "name": "HPND sell variant with MIT disclaimer - reverse",
       "licenseId": "HPND-sell-variant-MIT-disclaimer-rev",
       "seeAlso": [
-        "https://github.com/sigmavirus24/x11-ssh-askpass/blob/master/dynlist.c"
+        "https://github.com/sigmavirus24/x11-ssh-askpass/blob/HEAD/dynlist.c"
       ],
       "isOsiApproved": false
     },
@@ -4252,7 +4252,7 @@
       "name": "Historical Permission Notice and Disclaimer - University of California, US export warning",
       "licenseId": "HPND-UC-export-US",
       "seeAlso": [
-        "https://github.com/RTimothyEdwards/magic/blob/master/LICENSE"
+        "https://github.com/RTimothyEdwards/magic/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -4494,7 +4494,7 @@
       "licenseId": "ISC-Veillard",
       "seeAlso": [
         "https://raw.githubusercontent.com/GNOME/libxml2/4c2e7c651f6c2f0d1a74f350cbda95f7df3e7017/hash.c",
-        "https://github.com/GNOME/libxml2/blob/master/dict.c",
+        "https://github.com/GNOME/libxml2/blob/HEAD/dict.c",
         "https://sourceforge.net/p/ctrio/git/ci/master/tree/README"
       ],
       "isOsiApproved": false
@@ -4544,7 +4544,7 @@
       "name": "Japan Network Information Center License",
       "licenseId": "JPNIC",
       "seeAlso": [
-        "https://gitlab.isc.org/isc-projects/bind9/blob/master/COPYRIGHT#L366"
+        "https://gitlab.isc.org/isc-projects/bind9/blob/HEAD/COPYRIGHT#L366"
       ],
       "isOsiApproved": false
     },
@@ -4865,7 +4865,7 @@
       "name": "libselinux public domain notice",
       "licenseId": "libselinux-1.0",
       "seeAlso": [
-        "https://github.com/SELinuxProject/selinux/blob/master/libselinux/LICENSE"
+        "https://github.com/SELinuxProject/selinux/blob/HEAD/libselinux/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -5005,9 +5005,9 @@
         "https://gitlab.com/embeddable-common-lisp/ecl/-/blob/develop/src/lsp/loop.lsp",
         "http://git.savannah.gnu.org/cgit/gcl.git/tree/gcl/lsp/gcl_loop.lsp?h\u003dVersion_2_6_13pre",
         "https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/loop.lisp",
-        "https://github.com/cl-adams/adams/blob/master/LICENSE.md",
-        "https://github.com/blakemcbride/eclipse-lisp/blob/master/lisp/loop.lisp",
-        "https://gitlab.common-lisp.net/cmucl/cmucl/-/blob/master/src/code/loop.lisp"
+        "https://github.com/cl-adams/adams/blob/HEAD/LICENSE.md",
+        "https://github.com/blakemcbride/eclipse-lisp/blob/HEAD/lisp/loop.lisp",
+        "https://gitlab.common-lisp.net/cmucl/cmucl/-/blob/HEAD/src/code/loop.lisp"
       ],
       "isOsiApproved": false
     },
@@ -5121,7 +5121,7 @@
       "name": "lsof License",
       "licenseId": "lsof",
       "seeAlso": [
-        "https://github.com/lsof-org/lsof/blob/master/COPYING"
+        "https://github.com/lsof-org/lsof/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -5133,7 +5133,7 @@
       "name": "Lucida Bitmap Fonts License",
       "licenseId": "Lucida-Bitmap-Fonts",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/font/bh-100dpi/-/blob/master/COPYING?ref_type\u003dheads"
+        "https://gitlab.freedesktop.org/xorg/font/bh-100dpi/-/blob/HEAD/COPYING?ref_type\u003dheads"
       ],
       "isOsiApproved": false
     },
@@ -5171,7 +5171,7 @@
       "name": "Mackerras 3-Clause License",
       "licenseId": "Mackerras-3-Clause",
       "seeAlso": [
-        "https://github.com/ppp-project/ppp/blob/master/pppd/chap_ms.c#L6-L28"
+        "https://github.com/ppp-project/ppp/blob/HEAD/pppd/chap_ms.c#L6-L28"
       ],
       "isOsiApproved": false
     },
@@ -5183,7 +5183,7 @@
       "name": "Mackerras 3-Clause - acknowledgment variant",
       "licenseId": "Mackerras-3-Clause-acknowledgment",
       "seeAlso": [
-        "https://github.com/ppp-project/ppp/blob/master/pppd/auth.c#L6-L28"
+        "https://github.com/ppp-project/ppp/blob/HEAD/pppd/auth.c#L6-L28"
       ],
       "isOsiApproved": false
     },
@@ -5255,7 +5255,7 @@
       "name": "metamail License",
       "licenseId": "metamail",
       "seeAlso": [
-        "https://github.com/Dual-Life/mime-base64/blob/master/Base64.xs#L12"
+        "https://github.com/Dual-Life/mime-base64/blob/HEAD/Base64.xs#L12"
       ],
       "isOsiApproved": false
     },
@@ -5268,7 +5268,7 @@
       "licenseId": "Minpack",
       "seeAlso": [
         "http://www.netlib.org/minpack/disclaimer",
-        "https://gitlab.com/libeigen/eigen/-/blob/master/COPYING.MINPACK"
+        "https://gitlab.com/libeigen/eigen/-/blob/HEAD/COPYING.MINPACK"
       ],
       "isOsiApproved": false
     },
@@ -5319,7 +5319,7 @@
       "seeAlso": [
         "https://github.com/aws/mit-0",
         "https://romanrm.net/mit-zero",
-        "https://github.com/awsdocs/aws-cloud9-user-guide/blob/master/LICENSE-SAMPLECODE"
+        "https://github.com/awsdocs/aws-cloud9-user-guide/blob/HEAD/LICENSE-SAMPLECODE"
       ],
       "isOsiApproved": true
     },
@@ -5343,7 +5343,7 @@
       "name": "MIT Click License",
       "licenseId": "MIT-Click",
       "seeAlso": [
-        "https://github.com/kohler/t1utils/blob/master/LICENSE"
+        "https://github.com/kohler/t1utils/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -5392,8 +5392,8 @@
       "name": "MIT Festival Variant",
       "licenseId": "MIT-Festival",
       "seeAlso": [
-        "https://github.com/festvox/flite/blob/master/COPYING",
-        "https://github.com/festvox/speech_tools/blob/master/COPYING"
+        "https://github.com/festvox/flite/blob/HEAD/COPYING",
+        "https://github.com/festvox/speech_tools/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -5431,10 +5431,10 @@
       "name": "MIT Open Group variant",
       "licenseId": "MIT-open-group",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xorg/app/iceauth/-/blob/master/COPYING",
-        "https://gitlab.freedesktop.org/xorg/app/xvinfo/-/blob/master/COPYING",
-        "https://gitlab.freedesktop.org/xorg/app/xsetroot/-/blob/master/COPYING",
-        "https://gitlab.freedesktop.org/xorg/app/xauth/-/blob/master/COPYING"
+        "https://gitlab.freedesktop.org/xorg/app/iceauth/-/blob/HEAD/COPYING",
+        "https://gitlab.freedesktop.org/xorg/app/xvinfo/-/blob/HEAD/COPYING",
+        "https://gitlab.freedesktop.org/xorg/app/xsetroot/-/blob/HEAD/COPYING",
+        "https://gitlab.freedesktop.org/xorg/app/xauth/-/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -5458,7 +5458,7 @@
       "name": "MIT Tom Wu Variant",
       "licenseId": "MIT-Wu",
       "seeAlso": [
-        "https://github.com/chromium/octane/blob/master/crypto.js"
+        "https://github.com/chromium/octane/blob/HEAD/crypto.js"
       ],
       "isOsiApproved": false
     },
@@ -5482,7 +5482,7 @@
       "name": "MMIXware License",
       "licenseId": "MMIXware",
       "seeAlso": [
-        "https://gitlab.lrz.de/mmix/mmixware/-/blob/master/boilerplate.w"
+        "https://gitlab.lrz.de/mmix/mmixware/-/blob/HEAD/boilerplate.w"
       ],
       "isOsiApproved": false
     },
@@ -5609,7 +5609,7 @@
       "licenseId": "MS-LPL",
       "seeAlso": [
         "https://www.openhub.net/licenses/mslpl",
-        "https://github.com/gabegundy/atlserver/blob/master/License.txt",
+        "https://github.com/gabegundy/atlserver/blob/HEAD/License.txt",
         "https://en.wikipedia.org/wiki/Shared_Source_Initiative#Microsoft_Limited_Public_License_(Ms-LPL)"
       ],
       "isOsiApproved": false
@@ -5766,7 +5766,7 @@
         "https://github.com/ncbi/datasets/blob/0ea4cd16b61e5b799d9cc55aecfa016d6c9bd2bf/LICENSE.md",
         "https://github.com/ncbi/gprobe/blob/de64d30fee8b4c4013094d7d3139ea89b5dd1ace/LICENSE",
         "https://github.com/ncbi/egapx/blob/08930b9dec0c69b2d1a05e5153c7b95ef0a3eb0f/LICENSE",
-        "https://github.com/ncbi/datasets/blob/master/LICENSE.md"
+        "https://github.com/ncbi/datasets/blob/HEAD/LICENSE.md"
       ],
       "isOsiApproved": false
     },
@@ -5790,7 +5790,7 @@
       "name": "NCL Source Code License",
       "licenseId": "NCL",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/pipewire/pipewire/-/blob/master/src/modules/module-filter-chain/pffft.c?ref_type\u003dheads#L1-52"
+        "https://gitlab.freedesktop.org/pipewire/pipewire/-/blob/HEAD/src/modules/module-filter-chain/pffft.c?ref_type\u003dheads#L1-52"
       ],
       "isOsiApproved": false
     },
@@ -6050,7 +6050,7 @@
       "name": "NTP No Attribution",
       "licenseId": "NTP-0",
       "seeAlso": [
-        "https://github.com/tytso/e2fsprogs/blob/master/lib/et/et_name.c"
+        "https://github.com/tytso/e2fsprogs/blob/HEAD/lib/et/et_name.c"
       ],
       "isOsiApproved": false
     },
@@ -6544,7 +6544,7 @@
       "name": "OpenPBS v2.3 Software License",
       "licenseId": "OpenPBS-2.3",
       "seeAlso": [
-        "https://github.com/adaptivecomputing/torque/blob/master/PBS_License.txt",
+        "https://github.com/adaptivecomputing/torque/blob/HEAD/PBS_License.txt",
         "https://www.mcs.anl.gov/research/projects/openpbs/PBS_License.txt"
       ],
       "isOsiApproved": false
@@ -6717,7 +6717,7 @@
       "name": "PADL License",
       "licenseId": "PADL",
       "seeAlso": [
-        "https://git.openldap.org/openldap/openldap/-/blob/master/libraries/libldap/os-local.c?ref_type\u003dheads#L19-23"
+        "https://git.openldap.org/openldap/openldap/-/blob/HEAD/libraries/libldap/os-local.c?ref_type\u003dheads#L19-23"
       ],
       "isOsiApproved": false
     },
@@ -6806,7 +6806,7 @@
       "name": "pkgconf License",
       "licenseId": "pkgconf",
       "seeAlso": [
-        "https://github.com/pkgconf/pkgconf/blob/master/cli/main.c#L8"
+        "https://github.com/pkgconf/pkgconf/blob/HEAD/cli/main.c#L8"
       ],
       "isOsiApproved": false
     },
@@ -6996,7 +6996,7 @@
       "name": "Q Public License 1.0 - INRIA 2004 variant",
       "licenseId": "QPL-1.0-INRIA-2004",
       "seeAlso": [
-        "https://github.com/maranget/hevea/blob/master/LICENSE"
+        "https://github.com/maranget/hevea/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -7008,7 +7008,7 @@
       "name": "radvd License",
       "licenseId": "radvd",
       "seeAlso": [
-        "https://github.com/radvd-project/radvd/blob/master/COPYRIGHT"
+        "https://github.com/radvd-project/radvd/blob/HEAD/COPYRIGHT"
       ],
       "isOsiApproved": false
     },
@@ -7219,7 +7219,7 @@
       "name": "Sendmail Open Source License v1.1",
       "licenseId": "Sendmail-Open-Source-1.1",
       "seeAlso": [
-        "https://github.com/trusteddomainproject/OpenDMARC/blob/master/LICENSE.Sendmail"
+        "https://github.com/trusteddomainproject/OpenDMARC/blob/HEAD/LICENSE.Sendmail"
       ],
       "isOsiApproved": false
     },
@@ -7268,7 +7268,7 @@
       "name": "SGI OpenGL License",
       "licenseId": "SGI-OpenGL",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/mesa/glw/-/blob/master/README?ref_type\u003dheads"
+        "https://gitlab.freedesktop.org/mesa/glw/-/blob/HEAD/README?ref_type\u003dheads"
       ],
       "isOsiApproved": false
     },
@@ -7354,7 +7354,7 @@
       "name": "SL License",
       "licenseId": "SL",
       "seeAlso": [
-        "https://github.com/mtoyoda/sl/blob/master/LICENSE"
+        "https://github.com/mtoyoda/sl/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -7404,7 +7404,7 @@
       "name": "Secure Messaging Protocol Public License",
       "licenseId": "SMPPL",
       "seeAlso": [
-        "https://github.com/dcblake/SMP/blob/master/Documentation/License.txt"
+        "https://github.com/dcblake/SMP/blob/HEAD/Documentation/License.txt"
       ],
       "isOsiApproved": false
     },
@@ -7428,7 +7428,7 @@
       "name": "snprintf License",
       "licenseId": "snprintf",
       "seeAlso": [
-        "https://github.com/openssh/openssh-portable/blob/master/openbsd-compat/bsd-snprintf.c#L2"
+        "https://github.com/openssh/openssh-portable/blob/HEAD/openbsd-compat/bsd-snprintf.c#L2"
       ],
       "isOsiApproved": false
     },
@@ -7440,7 +7440,7 @@
       "name": "softSurfer License",
       "licenseId": "softSurfer",
       "seeAlso": [
-        "https://github.com/mm2/Little-CMS/blob/master/src/cmssm.c#L207",
+        "https://github.com/mm2/Little-CMS/blob/HEAD/src/cmssm.c#L207",
         "https://fedoraproject.org/wiki/Licensing/softSurfer"
       ],
       "isOsiApproved": false
@@ -7515,7 +7515,7 @@
       "name": "ssh-keyscan License",
       "licenseId": "ssh-keyscan",
       "seeAlso": [
-        "https://github.com/openssh/openssh-portable/blob/master/LICENCE#L82"
+        "https://github.com/openssh/openssh-portable/blob/HEAD/LICENCE#L82"
       ],
       "isOsiApproved": false
     },
@@ -7602,7 +7602,7 @@
       "name": "Sun PPP License",
       "licenseId": "Sun-PPP",
       "seeAlso": [
-        "https://github.com/ppp-project/ppp/blob/master/pppd/eap.c#L7-L16"
+        "https://github.com/ppp-project/ppp/blob/HEAD/pppd/eap.c#L7-L16"
       ],
       "isOsiApproved": false
     },
@@ -7614,7 +7614,7 @@
       "name": "Sun PPP License (2000)",
       "licenseId": "Sun-PPP-2000",
       "seeAlso": [
-        "https://github.com/ppp-project/ppp/blob/master/modules/ppp_ahdlc.c#L7-L19"
+        "https://github.com/ppp-project/ppp/blob/HEAD/modules/ppp_ahdlc.c#L7-L19"
       ],
       "isOsiApproved": false
     },
@@ -7712,7 +7712,7 @@
       "name": "TermReadKey License",
       "licenseId": "TermReadKey",
       "seeAlso": [
-        "https://github.com/jonathanstowe/TermReadKey/blob/master/README#L9-L10"
+        "https://github.com/jonathanstowe/TermReadKey/blob/HEAD/README#L9-L10"
       ],
       "isOsiApproved": false
     },
@@ -7834,7 +7834,7 @@
       "licenseId": "TTWL",
       "seeAlso": [
         "https://fedoraproject.org/wiki/Licensing/TTWL",
-        "https://github.com/ap/Text-Tabs/blob/master/lib.modern/Text/Tabs.pm#L148"
+        "https://github.com/ap/Text-Tabs/blob/HEAD/lib.modern/Text/Tabs.pm#L148"
       ],
       "isOsiApproved": false
     },
@@ -7895,7 +7895,7 @@
       "name": "UCAR License",
       "licenseId": "UCAR",
       "seeAlso": [
-        "https://github.com/Unidata/UDUNITS-2/blob/master/COPYRIGHT"
+        "https://github.com/Unidata/UDUNITS-2/blob/HEAD/COPYRIGHT"
       ],
       "isOsiApproved": false
     },
@@ -7931,7 +7931,7 @@
       "name": "Michigan/Merit Networks License",
       "licenseId": "UMich-Merit",
       "seeAlso": [
-        "https://github.com/radcli/radcli/blob/master/COPYRIGHT#L64"
+        "https://github.com/radcli/radcli/blob/HEAD/COPYRIGHT#L64"
       ],
       "isOsiApproved": false
     },
@@ -8124,7 +8124,7 @@
       "name": "w3m License",
       "licenseId": "w3m",
       "seeAlso": [
-        "https://github.com/tats/w3m/blob/master/COPYING"
+        "https://github.com/tats/w3m/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -8149,7 +8149,7 @@
       "name": "Widget Workshop License",
       "licenseId": "Widget-Workshop",
       "seeAlso": [
-        "https://github.com/novnc/noVNC/blob/master/core/crypto/des.js#L24"
+        "https://github.com/novnc/noVNC/blob/HEAD/core/crypto/des.js#L24"
       ],
       "isOsiApproved": false
     },
@@ -8224,7 +8224,7 @@
       "name": "X11 License Distribution Modification Variant",
       "licenseId": "X11-distribute-modifications-variant",
       "seeAlso": [
-        "https://github.com/mirror/ncurses/blob/master/COPYING"
+        "https://github.com/mirror/ncurses/blob/HEAD/COPYING"
       ],
       "isOsiApproved": false
     },
@@ -8236,7 +8236,7 @@
       "name": "X11 swapped final paragraphs",
       "licenseId": "X11-swapped",
       "seeAlso": [
-        "https://github.com/fedeinthemix/chez-srfi/blob/master/srfi/LICENSE"
+        "https://github.com/fedeinthemix/chez-srfi/blob/HEAD/srfi/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -8248,7 +8248,7 @@
       "name": "Xdebug License v 1.03",
       "licenseId": "Xdebug-1.03",
       "seeAlso": [
-        "https://github.com/xdebug/xdebug/blob/master/LICENSE"
+        "https://github.com/xdebug/xdebug/blob/HEAD/LICENSE"
       ],
       "isOsiApproved": false
     },
@@ -8272,7 +8272,7 @@
       "name": "Xfig License",
       "licenseId": "Xfig",
       "seeAlso": [
-        "https://github.com/Distrotech/transfig/blob/master/transfig/transfig.c",
+        "https://github.com/Distrotech/transfig/blob/HEAD/transfig/transfig.c",
         "https://fedoraproject.org/wiki/Licensing:MIT#Xfig_Variant",
         "https://sourceforge.net/p/mcj/xfig/ci/master/tree/src/Makefile.am"
       ],
@@ -8312,7 +8312,7 @@
       "name": "xkeyboard-config Zinoviev License",
       "licenseId": "xkeyboard-config-Zinoviev",
       "seeAlso": [
-        "https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config/-/blob/master/COPYING?ref_type\u003dheads#L178"
+        "https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config/-/blob/HEAD/COPYING?ref_type\u003dheads#L178"
       ],
       "isOsiApproved": false
     },
