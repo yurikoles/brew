@@ -1,5 +1,5 @@
 ---
-last_review_date: "2025-06-16"
+last_review_date: 2025-05-18
 ---
 
 # Cask Cookbook
@@ -175,7 +175,7 @@ Each cask must declare one or more [artifacts](https://rubydoc.brew.sh/Cask/Arti
 | `container nested:`                        | no                            | Relative path to an inner container that must be extracted before moving on with the installation. This allows for support of `.dmg` inside `.tar`, `.zip` inside `.dmg`, etc. (Example: [blocs.rb](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/b/blocs.rb#L17-L19)) |
 | `container type:`                          | no                            | Symbol to override container-type autodetect. May be one of: `:air`, `:bz2`, `:cab`, `:dmg`, `:generic_unar`, `:gzip`, `:otf`, `:pkg`, `:rar`, `:seven_zip`, `:sit`, `:tar`, `:ttf`, `:xar`, `:zip`, `:naked`. (Example: [parse.rb](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/p/parse.rb#L10)) |
 | `auto_updates`                             | no                            | `true`. Asserts that the cask artifacts auto-update. Use if `Check for Updates…` or similar is present in an app menu, but not if it only opens a webpage and does not do the download and installation for you. |
-| [`no_autobump!`](#stanza-no_autobump)      | no                            | Allowed symbol or a string. Excludes cask from autobump list if set. |
+| [`no_autobump!`](#stanza-no_autobump)      | no                            | Allowed symbol or a string. Excludes cask from autobumping if set. |
 
 ## Stanza descriptions
 
@@ -648,17 +648,13 @@ Refer to the [`brew livecheck`](Brew-Livecheck.md) documentation for how to writ
 
 The `no_autobump!` stanza excludes the cask for autobump list. That means the future updates will be handled by Homebrew contributors rather than by an automated process.
 
-To use this stanza, a reason must be provided. The preferred way is to use one of the available symbols:
-
-* `:incompatible_version_format`: This reason is used when the `brew bump` command cannot determine a version for the URL or update it.
-* `:bumped_by_upstream`: Some developers whose programs are available in Homebrew want to take care of the updates themselves or even set up a CI action that does this. This `no_autobump!` reason exists for such cases.
-* `:requires_manual_review`: This is a temporary reason and expected to be deprecated in the future. It indicates that this package was not in the `autobump.txt` file before the new autobump list was introduced.
+To use this stanza, a reason must be provided. The preferred way is to use one of the available symbols. These symbols can be found in the [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant).
 
 ```ruby
 no_autobump! because: :incompatible_version_format
 ```
 
-The full list of available symbols is stored in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant) constant. A custom reason can be provided if none of the available symbols fits:
+A custom reason can be provided if none of the available symbols fits:
 
 ```ruby
 no_autobump! because: "some unique reason"
@@ -1174,7 +1170,7 @@ The special value `version :latest` is used when:
 * `url` does not contain any version information and there is no way to retrieve the version using a `livecheck`, or
 * having a correct value for `version` is too difficult or impractical, even with our automated systems. For example, [chromium.rb](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/c/chromium.rb#L4) which releases multiple versions per day.
 
-In both cases, using the special value [`sha256 :no_check`](#special-value-no_check) is also required. Casks that use `version :latest` are excluded from [autobump list](Autobump.md).
+In both cases, using the special value [`sha256 :no_check`](#special-value-no_check) is also required. Casks that use `version :latest` are excluded from [autobumping](Autobump.md).
 
 ### Stanza: `zap`
 

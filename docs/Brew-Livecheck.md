@@ -1,5 +1,5 @@
 ---
-last_review_date: 2025-06-23
+last_review_date: 2025-05-28
 ---
 
 # `brew livecheck`
@@ -438,7 +438,7 @@ livecheck do
 end
 ```
 
-Note that if a package uses this livecheck strategy it will be excluded from [autobump list](Autobump.md).
+Note that if a package uses this livecheck strategy it will be excluded from [autobumping](Autobump.md) as this strategy has negative impact on CI time.
 
 ### `throttle`
 
