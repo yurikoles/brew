@@ -1686,7 +1686,7 @@ __fish_brew_complete_arg 'test' -a '(__fish_brew_suggest_formulae_installed)'
 
 
 __fish_brew_complete_cmd 'tests' 'Run Homebrew\'s unit and integration tests'
-__fish_brew_complete_arg 'tests' -l changed -d 'Only runs tests on files that were changed from the master branch'
+__fish_brew_complete_arg 'tests' -l changed -d 'Only runs tests on files that were changed from the `main` branch'
 __fish_brew_complete_arg 'tests' -l coverage -d 'Generate code coverage reports'
 __fish_brew_complete_arg 'tests' -l debug -d 'Enable debugging using `ruby/debug`, or surface the standard `odebug` output'
 __fish_brew_complete_arg 'tests' -l fail-fast -d 'Exit early on the first failing test'
