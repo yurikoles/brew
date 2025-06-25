@@ -105,7 +105,7 @@
       "name": "Bison exception 1.24",
       "licenseExceptionId": "Bison-exception-1.24",
       "seeAlso": [
-        "https://github.com/arineng/rwhoisd/blob/HEAD/rwhoisd/mkdb/y.tab.c#L180"
+        "https://github.com/arineng/rwhoisd/blob/master/rwhoisd/mkdb/y.tab.c#L180"
       ]
     },
     {
@@ -245,7 +245,7 @@
       "name": "fmt exception",
       "licenseExceptionId": "fmt-exception",
       "seeAlso": [
-        "https://github.com/fmtlib/fmt/blob/HEAD/LICENSE",
+        "https://github.com/fmtlib/fmt/blob/master/LICENSE",
         "https://github.com/fmtlib/fmt/blob/2eb363297b24cd71a68ccfb20ff755430f17e60f/LICENSE#L22C1-L27C62"
       ]
     },
@@ -324,7 +324,7 @@
       "name": "GNAT exception",
       "licenseExceptionId": "GNAT-exception",
       "seeAlso": [
-        "https://github.com/AdaCore/florist/blob/HEAD/libsrc/posix-configurable_file_limits.adb"
+        "https://github.com/AdaCore/florist/blob/master/libsrc/posix-configurable_file_limits.adb"
       ]
     },
     {
@@ -335,7 +335,7 @@
       "name": "GNOME examples exception",
       "licenseExceptionId": "GNOME-examples-exception",
       "seeAlso": [
-        "https://gitlab.gnome.org/Archive/gnome-devel-docs/-/blob/HEAD/platform-demos/C/legal.xml?ref_type\u003dheads",
+        "https://gitlab.gnome.org/Archive/gnome-devel-docs/-/blob/master/platform-demos/C/legal.xml?ref_type\u003dheads",
         "http://meldmerge.org/help/"
       ]
     },
@@ -401,7 +401,7 @@
       "licenseExceptionId": "GPL-3.0-linking-source-exception",
       "seeAlso": [
         "https://www.gnu.org/licenses/gpl-faq.en.html#GPLIncompatibleLibs",
-        "https://github.com/mirror/wget/blob/HEAD/src/http.c#L20"
+        "https://github.com/mirror/wget/blob/master/src/http.c#L20"
       ]
     },
     {
@@ -412,7 +412,7 @@
       "name": "GPL Cooperation Commitment 1.0",
       "licenseExceptionId": "GPL-CC-1.0",
       "seeAlso": [
-        "https://github.com/gplcc/gplcc/blob/HEAD/Project/COMMITMENT",
+        "https://github.com/gplcc/gplcc/blob/master/Project/COMMITMENT",
         "https://gplcc.github.io/gplcc/Project/README-PROJECT.html"
       ]
     },
@@ -446,7 +446,7 @@
       "name": "harbour exception",
       "licenseExceptionId": "harbour-exception",
       "seeAlso": [
-        "https://github.com/harbour/core/blob/HEAD/LICENSE.txt#L44-L66"
+        "https://github.com/harbour/core/blob/master/LICENSE.txt#L44-L66"
       ]
     },
     {
@@ -491,8 +491,8 @@
       "licenseExceptionId": "LGPL-3.0-linking-exception",
       "seeAlso": [
         "https://raw.githubusercontent.com/go-xmlpath/xmlpath/v2/LICENSE",
-        "https://github.com/goamz/goamz/blob/HEAD/LICENSE",
-        "https://github.com/juju/errors/blob/HEAD/LICENSE"
+        "https://github.com/goamz/goamz/blob/master/LICENSE",
+        "https://github.com/juju/errors/blob/master/LICENSE"
       ]
     },
     {
@@ -583,8 +583,8 @@
       "name": "mxml Exception",
       "licenseExceptionId": "mxml-exception",
       "seeAlso": [
-        "https://github.com/michaelrsweet/mxml/blob/HEAD/NOTICE",
-        "https://github.com/michaelrsweet/mxml/blob/HEAD/LICENSE"
+        "https://github.com/michaelrsweet/mxml/blob/master/NOTICE",
+        "https://github.com/michaelrsweet/mxml/blob/master/LICENSE"
       ]
     },
     {
@@ -673,8 +673,8 @@
       "name": "INRIA QPL 1.0 2004 variant exception",
       "licenseExceptionId": "QPL-1.0-INRIA-2004-exception",
       "seeAlso": [
-        "https://git.frama-c.com/pub/frama-c/-/blob/HEAD/licenses/Q_MODIFIED_LICENSE",
-        "https://github.com/maranget/hevea/blob/HEAD/LICENSE"
+        "https://git.frama-c.com/pub/frama-c/-/blob/master/licenses/Q_MODIFIED_LICENSE",
+        "https://github.com/maranget/hevea/blob/master/LICENSE"
       ]
     },
     {
@@ -734,7 +734,7 @@
       "name": "RRDtool FLOSS exception 2.0",
       "licenseExceptionId": "RRDtool-FLOSS-exception-2.0",
       "seeAlso": [
-        "https://github.com/oetiker/rrdtool-1.x/blob/HEAD/COPYRIGHT#L25-L90",
+        "https://github.com/oetiker/rrdtool-1.x/blob/master/COPYRIGHT#L25-L90",
         "https://oss.oetiker.ch/rrdtool/license.en.html"
       ]
     },
@@ -746,9 +746,9 @@
       "name": "SANE Exception",
       "licenseExceptionId": "SANE-exception",
       "seeAlso": [
-        "https://github.com/alexpevzner/sane-airscan/blob/HEAD/LICENSE",
-        "https://gitlab.com/sane-project/backends/-/blob/HEAD/sanei/sanei_pp.c?ref_type\u003dheads",
-        "https://gitlab.com/sane-project/frontends/-/blob/HEAD/sanei/sanei_codec_ascii.c?ref_type\u003dheads"
+        "https://github.com/alexpevzner/sane-airscan/blob/master/LICENSE",
+        "https://gitlab.com/sane-project/backends/-/blob/master/sanei/sanei_pp.c?ref_type\u003dheads",
+        "https://gitlab.com/sane-project/frontends/-/blob/master/sanei/sanei_codec_ascii.c?ref_type\u003dheads"
       ]
     },
     {
@@ -781,7 +781,7 @@
       "name": "stunnel Exception",
       "licenseExceptionId": "stunnel-exception",
       "seeAlso": [
-        "https://github.com/mtrojnar/stunnel/blob/HEAD/COPYING.md"
+        "https://github.com/mtrojnar/stunnel/blob/master/COPYING.md"
       ]
     },
     {
@@ -837,7 +837,7 @@
       "name": "Unmodified Binary Distribution exception",
       "licenseExceptionId": "UBDL-exception",
       "seeAlso": [
-        "https://github.com/ipxe/ipxe/blob/HEAD/COPYING.UBDL"
+        "https://github.com/ipxe/ipxe/blob/master/COPYING.UBDL"
       ]
     },
     {
@@ -861,7 +861,7 @@
       "seeAlso": [
         "https://git.stg.centos.org/source-git/vsftpd/blob/f727873674d9c9cd7afcae6677aa782eb54c8362/f/LICENSE",
         "https://launchpad.net/debian/squeeze/+source/vsftpd/+copyright",
-        "https://github.com/richardcochran/vsftpd/blob/HEAD/COPYING"
+        "https://github.com/richardcochran/vsftpd/blob/master/COPYING"
       ]
     },
     {
@@ -883,7 +883,7 @@
       "name": "x11vnc OpenSSL Exception",
       "licenseExceptionId": "x11vnc-openssl-exception",
       "seeAlso": [
-        "https://github.com/LibVNC/x11vnc/blob/HEAD/src/8to24.c#L22"
+        "https://github.com/LibVNC/x11vnc/blob/master/src/8to24.c#L22"
       ]
     }
   ],
