@@ -748,7 +748,7 @@ For `url`/`regex` guidelines and additional `livecheck` block examples, refer to
 
 ### Excluding formula from autobumping
 
-By default, all new formulae in the Homebrew/core repository are added to the autobump list. It means that future updates will be handled automatically by Homebrew CI jobs, and contributors do not have to do it manually.
+By default, all new formulae in the Homebrew/core repository are autobumped. It means that future updates will be handled automatically by Homebrew CI jobs, and contributors do not have to do it manually.
 
 Sometimes, we want to exclude a formula from this list, for one reason or another. It can be done by adding the `no_autobump!` method in the formula definition, for example:
 
