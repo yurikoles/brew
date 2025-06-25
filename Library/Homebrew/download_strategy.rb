@@ -482,10 +482,17 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
         # The cached location is no longer fresh if either:
         # - Last-Modified value is newer than the file's timestamp
         # - Content-Length value is different than the file's size
-        if cached_location_valid
-          newer_last_modified = last_modified && last_modified > cached_location.mtime
-          different_file_size = file_size&.nonzero? && file_size != cached_location.size
-          cached_location_valid = !(newer_last_modified || different_file_size)
+        if cached_location_valid && last_modified && last_modified > cached_location.mtime
+          ohai "Ignoring #{cached_location}",
+               "Cached modified time #{cached_location.mtime.iso8601} is before" \
+               "Last-Modified header: #{last_modified.iso8601}"
+          cached_location_valid = false
+        end
+        if cached_location_valid && file_size&.nonzero? && file_size != cached_location.size
+          ohai "Ignoring #{cached_location}",
+               "Cached size #{cached_location.size} differs from " \
+               "Content-Length header: #{file_size}"
+          cached_location_valid = false
         end
 
         if cached_location_valid
