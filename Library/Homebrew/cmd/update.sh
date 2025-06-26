@@ -253,9 +253,9 @@ EOS
 
   INITIAL_BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null)"
   if [[ "${INITIAL_BRANCH}" == "master" &&
-        ("${DIR}" == "${HOMEBREW_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CASK_REPOSITORY}") ]]
+        ("${DIR}" == "${HOMEBREW_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CORE_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CASK_REPOSITORY}") ]]
   then
-    # Migrate master to main for Homebrew/brew or Homebrew/homebrew-cask
+    # Migrate master to main for Homebrew/brew, homebrew-core or homebrew-cask
     INITIAL_BRANCH="main"
     SOFT_DELETE_MASTER="1"
   fi
