@@ -252,6 +252,7 @@ EOS
   fi
 
   INITIAL_BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null)"
+  SOFT_DELETE_MASTER=
   if [[ "${INITIAL_BRANCH}" == "master" &&
         ("${DIR}" == "${HOMEBREW_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CORE_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CASK_REPOSITORY}") ]]
   then
@@ -682,6 +683,16 @@ EOS
         UPSTREAM_REPOSITORY_TOKEN="${BASH_REMATCH[1]#*:}"
       fi
 
+      MAIN_MIGRATION_REQUIRED=
+      if [[ "${UPSTREAM_BRANCH_DIR}" == "master" &&
+            ("${DIR}" == "${HOMEBREW_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CORE_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CASK_REPOSITORY}") ]]
+      then
+        # Migrate master to main for Homebrew/brew, homebrew-core or homebrew-cask
+        MAIN_MIGRATION_REQUIRED=1
+        UPSTREAM_BRANCH_DIR="main"
+        declare UPSTREAM_BRANCH"${TAP_VAR}"="main"
+      fi
+
       if [[ -n "${UPSTREAM_REPOSITORY}" ]]
       then
         # UPSTREAM_REPOSITORY_TOKEN is parsed (if exists) from UPSTREAM_REPOSITORY_URL
@@ -791,6 +802,11 @@ EOS
             echo "${DIR}" >>"${missing_remote_ref_dirs_file}"
           fi
         fi
+      fi
+
+      if [[ -n "${MAIN_MIGRATION_REQUIRED}" ]]
+      then
+        git remote set-head origin --auto >/dev/null
       fi
 
       rm -f "${tmp_failure_file}"
