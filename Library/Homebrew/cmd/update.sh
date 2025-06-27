@@ -252,13 +252,12 @@ EOS
   fi
 
   INITIAL_BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null)"
-  SOFT_DELETE_MASTER=
+  MAIN_MIGRATION_REQUIRED=
   if [[ "${INITIAL_BRANCH}" == "master" &&
         ("${DIR}" == "${HOMEBREW_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CORE_REPOSITORY}" || "${DIR}" == "${HOMEBREW_CASK_REPOSITORY}") ]]
   then
     # Migrate master to main for Homebrew/brew, homebrew-core or homebrew-cask
-    INITIAL_BRANCH="main"
-    SOFT_DELETE_MASTER="1"
+    MAIN_MIGRATION_REQUIRED="1"
   fi
 
   if [[ -n "${UPSTREAM_TAG}" ]] ||
@@ -326,7 +325,7 @@ EOS
 
   if [[ -n "${HOMEBREW_NO_UPDATE_CLEANUP}" ]]
   then
-    if [[ "${INITIAL_BRANCH}" != "${UPSTREAM_BRANCH}" && -n "${INITIAL_BRANCH}" ]] &&
+    if [[ -z "${MAIN_MIGRATION_REQUIRED}" && "${INITIAL_BRANCH}" != "${UPSTREAM_BRANCH}" && -n "${INITIAL_BRANCH}" ]] &&
        [[ ! "${INITIAL_BRANCH}" =~ ^v[0-9]+\.[0-9]+\.[0-9]|stable$ ]]
     then
       git checkout "${INITIAL_BRANCH}" "${QUIET_ARGS[@]}"
@@ -337,7 +336,7 @@ EOS
     pop_stash_message
   fi
 
-  if [[ "${SOFT_DELETE_MASTER}" == 1 && -n "$(git config branch.main.remote 2>/dev/null || true)" ]]
+  if [[ -n "${MAIN_MIGRATION_REQUIRED}" && -n "$(git config branch.main.remote 2>/dev/null || true)" ]]
   then
     git branch -d "${QUIET_ARGS[@]}" master
   fi
