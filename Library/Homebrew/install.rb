@@ -321,7 +321,7 @@ module Homebrew
             ofail e.message
             next
           rescue UnsatisfiedRequirements, DownloadError, ChecksumMismatchError => e
-            ofail "#{formula}: #{e}"
+            ofail "#{fi.formula}: #{e}"
             next
           end
         end
