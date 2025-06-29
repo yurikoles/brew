@@ -32,7 +32,6 @@ module Homebrew
           # Store the old environment so we can check if things were already set
           # before we start mutating it.
           old_env = ENV.to_h
-          new_env = T.cast(ENV, Superenv)
 
           # Setup Homebrew's ENV extensions
           ENV.activate_extensions!
@@ -46,7 +45,7 @@ module Homebrew
           require "formula"
           require "formulary"
 
-          new_env.deps = @dsl.entries.filter_map do |entry|
+          ENV.deps = @dsl.entries.filter_map do |entry|
             next if entry.type != :brew
 
             Formulary.factory(entry.name)
@@ -54,20 +53,20 @@ module Homebrew
 
           # Allow setting all dependencies to be keg-only
           # (i.e. should be explicitly in HOMEBREW_*PATHs ahead of HOMEBREW_PREFIX)
-          new_env.keg_only_deps = if ENV["HOMEBREW_BUNDLE_EXEC_ALL_KEG_ONLY_DEPS"].present?
+          ENV.keg_only_deps = if ENV["HOMEBREW_BUNDLE_EXEC_ALL_KEG_ONLY_DEPS"].present?
             ENV.delete("HOMEBREW_BUNDLE_EXEC_ALL_KEG_ONLY_DEPS")
-            new_env.deps
+            ENV.deps
           else
-            new_env.deps.select(&:keg_only?)
+            ENV.deps.select(&:keg_only?)
           end
-          new_env.setup_build_environment
+          ENV.setup_build_environment
 
           # Enable compiler flag filtering
           ENV.refurbish_args
 
           # Set up `nodenv`, `pyenv` and `rbenv` if present.
           env_formulae = %w[nodenv pyenv rbenv]
-          new_env.deps.each do |dep|
+          ENV.deps.each do |dep|
             dep_name = dep.name
             next unless env_formulae.include?(dep_name)
 
@@ -85,7 +84,7 @@ module Homebrew
           end
 
           # Replace the formula versions from the environment variables
-          new_env.deps.each do |formula|
+          ENV.deps.each do |formula|
             formula_name = formula.name
             formula_version = Bundle.formula_versions_from_env(formula_name)
             next unless formula_version
@@ -101,12 +100,7 @@ module Homebrew
                 rejected_opts = []
                 path = PATH.new(ENV.fetch("PATH"))
                            .reject do |path_value|
-                  if path_value.match?(opt)
-                    rejected_opts << path_value
-                    true
-                  else
-                    false
-                  end
+                  rejected_opts << path_value if path_value.match?(opt)
                 end
                 rejected_opts.each do |path_value|
                   path.prepend(path_value.gsub(opt, cellar))
@@ -217,7 +211,7 @@ module Homebrew
               entry:                Homebrew::Bundle::Dsl::Entry,
               info:                 T::Hash[String, T.untyped],
               service_file:         Pathname,
-              conflicting_services: T::Array[T::Hash[String, T.untyped]],
+              conflicting_services: T::Array[T::Hash[String, T.anything]],
             ).void,
           ).void
         }
