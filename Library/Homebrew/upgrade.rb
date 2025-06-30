@@ -375,6 +375,8 @@ module Homebrew
         puts formulae_upgrades.join(", ")
       end
 
+      upgradeable = upgradeable.reject { |f| FormulaInstaller.installed.to_a.include?(f) }
+
       unless dry_run
         dependent_installers = formula_installers(
           upgradeable,
