@@ -377,6 +377,8 @@ module Homebrew
 
       upgradeable = upgradeable.reject { |f| FormulaInstaller.installed.to_a.include?(f) }
 
+      return if upgradeable.blank?
+
       unless dry_run
         dependent_installers = formula_installers(
           upgradeable,
