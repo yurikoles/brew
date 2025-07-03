@@ -470,7 +470,7 @@ module Homebrew
           end.flat_map(&:to_formula)]
         end.flatten.uniq
         formulae_dependencies.concat(dependants.upgradeable) if dependants&.upgradeable
-        formulae_dependencies
+        formulae_dependencies.uniq
       end
     end
   end
