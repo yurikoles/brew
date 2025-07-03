@@ -327,7 +327,7 @@ module Homebrew
         end
 
         if dry_run
-          if (formulae_name_to_install = formula_installers.map(&:formula))
+          if (formulae_name_to_install = formula_installers.map { |fi| fi.formula.name })
             ohai "Would install #{Utils.pluralize("formula", formulae_name_to_install.count,
                                                   plural: "e", include_count: true)}:"
             puts formulae_name_to_install.join(" ")
