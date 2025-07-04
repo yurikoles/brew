@@ -23,7 +23,7 @@ module Homebrew
       def run
         args.named.to_resolved_formulae.each do |f|
           if f.pinned?
-            ofail "#{f.name} already pinned"
+            opoo "#{f.name} already pinned"
           elsif !f.pinnable?
             ofail "#{f.name} not installed"
           else
