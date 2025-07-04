@@ -57,8 +57,7 @@ module Homebrew
         switch "--eval-all",
                depends_on:  "--json",
                description: "Evaluate all available formulae and casks, whether installed or not, to print their " \
-                            "JSON.",
-               env:         :eval_all
+                            "JSON."
         switch "--variations",
                depends_on:  "--json",
                description: "Include the variations hash in each formula's JSON output."
