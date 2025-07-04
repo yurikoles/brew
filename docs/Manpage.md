@@ -723,7 +723,7 @@ Display brief statistics for your Homebrew installation. If a *`formula`* or
 `--eval-all`
 
 : Evaluate all available formulae and casks, whether installed or not, to print
-  their JSON. Enabled by default if `$HOMEBREW_EVAL_ALL` is set.
+  their JSON.
 
 `--variations`
 
