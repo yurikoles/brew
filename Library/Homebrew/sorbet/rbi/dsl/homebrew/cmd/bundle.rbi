@@ -15,9 +15,6 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def all?; end
 
   sig { returns(T::Boolean) }
-  def brews?; end
-
-  sig { returns(T::Boolean) }
   def cask?; end
 
   sig { returns(T::Boolean) }
@@ -43,6 +40,9 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
 
   sig { returns(T::Boolean) }
   def formula?; end
+
+  sig { returns(T::Boolean) }
+  def formulae?; end
 
   sig { returns(T::Boolean) }
   def global?; end
