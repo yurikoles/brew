@@ -97,7 +97,7 @@ module Homebrew
                env:         [:bundle_install_cleanup, "--global"]
         switch "--all",
                description: "`list` all dependencies."
-        switch "--formula", "--formulae",
+        switch "--formula", "--formulae", "--brews",
                description: "`list`, `dump` or `cleanup` Homebrew formula dependencies."
         switch "--cask", "--casks",
                description: "`list`, `dump` or `cleanup` Homebrew cask dependencies."
