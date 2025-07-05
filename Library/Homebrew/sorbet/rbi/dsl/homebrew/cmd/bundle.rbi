@@ -15,6 +15,9 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def all?; end
 
   sig { returns(T::Boolean) }
+  def brews?; end
+
+  sig { returns(T::Boolean) }
   def cask?; end
 
   sig { returns(T::Boolean) }
