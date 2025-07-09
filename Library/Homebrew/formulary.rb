@@ -97,6 +97,11 @@ module Formulary
 
     require "formula"
     require "ignorable"
+    require "stringio"
+
+    # Capture stdout to prevent formulae from printing to stdout unexpectedly.
+    old_stdout = $stdout
+    $stdout = StringIO.new
 
     mod = Module.new
     remove_const(namespace) if const_defined?(namespace)
@@ -133,6 +138,15 @@ module Formulary
       remove_const(namespace)
       raise new_exception, "", e.backtrace
     end
+  ensure
+    printed_to_stdout = $stdout.string.strip
+    if printed_to_stdout.present?
+      opoo <<~WARNING
+        Formula #{name} attempted to print the following while being loaded:
+        #{$stdout.string.strip}
+      WARNING
+    end
+    $stdout = old_stdout
   end
 
   sig { params(identifier: String).returns(String) }
