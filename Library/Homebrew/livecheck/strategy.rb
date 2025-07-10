@@ -228,6 +228,7 @@ module Homebrew
               url,
               wanted_headers:    ["location", "content-disposition"],
               use_homebrew_curl: options.homebrew_curl || false,
+              referer:           options.referer,
               user_agent:,
               **DEFAULT_CURL_OPTIONS,
             )
@@ -274,6 +275,7 @@ module Homebrew
             use_homebrew_curl: options.homebrew_curl ||
                                !curl_supports_fail_with_body? ||
                                false,
+            referer:           options.referer,
             user_agent:
           )
           next unless status.success?

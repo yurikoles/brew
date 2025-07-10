@@ -5,6 +5,8 @@ require "livecheck/options"
 RSpec.describe Homebrew::Livecheck::Options do
   subject(:options) { described_class }
 
+  let(:referer_url) { "https://example.com/referer" }
+
   let(:post_hash) do
     {
       empty:   "",
@@ -18,6 +20,7 @@ RSpec.describe Homebrew::Livecheck::Options do
       homebrew_curl: true,
       post_form:     post_hash,
       post_json:     post_hash,
+      referer:       referer_url,
       user_agent:    :browser,
     }
   end
@@ -38,6 +41,7 @@ RSpec.describe Homebrew::Livecheck::Options do
         homebrew_curl: nil,
         post_form:     nil,
         post_json:     nil,
+        referer:       nil,
         user_agent:    nil,
       })
     end
