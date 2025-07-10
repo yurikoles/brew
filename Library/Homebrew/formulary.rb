@@ -139,11 +139,12 @@ module Formulary
       raise new_exception, "", e.backtrace
     end
   ensure
-    printed_to_stdout = $stdout.string.strip
-    if printed_to_stdout.present?
+    # TODO: Make printing to stdout an error so that we can print a tap name.
+    # See discussion at https://github.com/Homebrew/brew/pull/20226#discussion_r2195886888
+    if (printed_to_stdout = $stdout.string.strip.presence)
       opoo <<~WARNING
         Formula #{name} attempted to print the following while being loaded:
-        #{$stdout.string.strip}
+        #{printed_to_stdout}
       WARNING
     end
     $stdout = old_stdout
