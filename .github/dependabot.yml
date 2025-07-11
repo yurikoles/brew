@@ -19,6 +19,27 @@ updates:
     default-days: 1
     include:
     - "*"
+- package-ecosystem: bundler
+  directories:
+  - "/Library/Homebrew"
+  schedule:
+    interval: weekly
+    day: friday
+    time: '08:00'
+    timezone: Etc/UTC
+  allow:
+  - dependency-type: all
+  groups:
+    dependabot:
+      patterns:
+      - "*"
+  cooldown:
+    default-days: 1
+    semver-major-days: 14
+    semver-minor-days: 7
+    semver-patch-days: 1
+    include:
+    - "*"
 - package-ecosystem: docker
   directory: "/"
   schedule:
@@ -47,6 +68,27 @@ updates:
       - "*"
   cooldown:
     default-days: 1
+    include:
+    - "*"
+- package-ecosystem: pip
+  directories:
+  - "/Library/Homebrew/formula-analytics/"
+  schedule:
+    interval: weekly
+    day: friday
+    time: '08:00'
+    timezone: Etc/UTC
+  allow:
+  - dependency-type: all
+  groups:
+    dependabot:
+      patterns:
+      - "*"
+  cooldown:
+    default-days: 1
+    semver-major-days: 14
+    semver-minor-days: 7
+    semver-patch-days: 1
     include:
     - "*"
 
