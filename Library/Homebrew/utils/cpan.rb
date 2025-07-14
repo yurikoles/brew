@@ -6,7 +6,8 @@ require "utils/inreplace"
 # Helper functions for updating CPAN resources.
 module CPAN
   METACPAN_URL_PREFIX = "https://cpan.metacpan.org/authors/id/"
-  private_constant :METACPAN_URL_PREFIX
+  CPAN_ARCHIVE_REGEX = /^(.+)-([0-9.v]+)\.(?:tar\.gz|tgz)$/
+  private_constant :METACPAN_URL_PREFIX, :CPAN_ARCHIVE_REGEX
 
   # Represents a Perl package from an existing resource.
   class Package
@@ -29,12 +30,6 @@ module CPAN
       @current_version
     end
 
-    sig { returns(T.nilable(String)) }
-    def package_name
-      extract_package_name_from_url if @package_name.blank?
-      @package_name
-    end
-
     sig { returns(T::Boolean) }
     def valid_cpan_package?
       @is_cpan_url
@@ -46,10 +41,7 @@ module CPAN
       return @cpan_info if @cpan_info.present?
       return unless valid_cpan_package?
 
-      pname = package_name
-      return unless pname
-
-      metadata_url = "https://fastapi.metacpan.org/v1/release/#{pname}"
+      metadata_url = "https://fastapi.metacpan.org/v1/download_url/#{@resource_name}"
       result = Utils::Curl.curl_output(metadata_url, "--location", "--fail")
       return unless result.status.success?
 
@@ -62,7 +54,7 @@ module CPAN
       download_url = json["download_url"]
       return unless download_url
 
-      checksum = get_checksum_from_cpan(download_url)
+      checksum = json["checksum_sha256"]
       return unless checksum
 
       @cpan_info = [@resource_name, download_url, checksum, json["version"]]
@@ -79,43 +71,10 @@ module CPAN
     def extract_version_from_url
       return unless @is_cpan_url
 
-      match = File.basename(@resource_url).match(/^(.+)-([0-9.v]+)\.tar\.gz$/)
+      match = File.basename(@resource_url).match(CPAN_ARCHIVE_REGEX)
       return unless match
 
       @current_version = T.let(match[2], T.nilable(String))
-    end
-
-    sig { returns(T.nilable(String)) }
-    def extract_package_name_from_url
-      return unless @is_cpan_url
-
-      match = File.basename(@resource_url).match(/^(.+)-([0-9.v]+)\.tar\.gz$/)
-      return unless match
-
-      @package_name = T.let(match[1], T.nilable(String))
-    end
-
-    # Get SHA256 checksum from CPAN CHECKSUMS file.
-    sig { params(download_url: String).returns(T.nilable(String)) }
-    def get_checksum_from_cpan(download_url)
-      filename = File.basename(download_url)
-      dir_url = File.dirname(download_url)
-
-      checksums_url = "#{dir_url}/CHECKSUMS"
-      checksums_result = Utils::Curl.curl_output(checksums_url, "--location", "--fail")
-
-      return unless checksums_result.status.success?
-
-      checksums_content = checksums_result.stdout
-      file_block_pattern = /'#{Regexp.escape(filename)}'\s*=>\s*\{[^}]*'sha256'\s*=>\s*'([a-f0-9]{64})'/mi
-      sha256_match = checksums_content.match(file_block_pattern)
-      return sha256_match[1] if sha256_match
-
-      alt_pattern = /#{Regexp.escape(filename)}.*?sha256.*?([a-f0-9]{64})/mi
-      alt_match = checksums_content.match(alt_pattern)
-      return alt_match[1] if alt_match
-
-      nil
     end
   end
 
