@@ -26,9 +26,8 @@ module Kernel
       require path
     end
     true
-  rescue LoadError => e
-    # we should raise on syntax errors but not if the file doesn't exist.
-    raise unless e.message.include?(path)
+  rescue LoadError
+    false
   end
 
   def ohai_title(title)
