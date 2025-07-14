@@ -306,7 +306,7 @@ class FormulaInstaller
         if force?
           opoo message
         else
-          GitHub::Actions.puts_annotation_if_env_set(:error, message)
+          GitHub::Actions.puts_annotation_if_env_set!(:error, message)
           raise CannotInstallFormulaError, message
         end
       end
