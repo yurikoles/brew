@@ -3320,6 +3320,22 @@ Update SPDX license data in the Homebrew repository.
 
 Update the list of maintainers in the `Homebrew/brew` README.
 
+### `update-perl-resources` \[*`options`*\] *`formula`* \[...\]
+
+Update versions for CPAN resource blocks in *`formula`*.
+
+`-p`, `--print-only`
+
+: Print the updated resource blocks instead of changing *`formula`*.
+
+`-s`, `--silent`
+
+: Suppress any output.
+
+`--ignore-errors`
+
+: Continue processing even if some resources can't be resolved.
+
 ### `update-python-resources` \[*`options`*\] *`formula`* \[...\]
 
 Update versions for PyPI resource blocks in *`formula`*.

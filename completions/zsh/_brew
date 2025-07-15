@@ -236,6 +236,7 @@ __brew_internal_commands() {
     'update-if-needed:Runs `brew update --auto-update` only if needed'
     'update-license-data:Update SPDX license data in the Homebrew repository'
     'update-maintainers:Update the list of maintainers in the `Homebrew/brew` README'
+    'update-perl-resources:Update versions for CPAN resource blocks in formula'
     'update-python-resources:Update versions for PyPI resource blocks in formula'
     'update-report:The Ruby implementation of `brew update`'
     'update-reset:Fetch and reset Homebrew and all tap repositories (or any specified repository) using `git`(1) to their latest `origin/HEAD`'
@@ -2268,6 +2269,20 @@ _brew_update_maintainers() {
     '--help[Show this message]' \
     '--quiet[Make some output more quiet]' \
     '--verbose[Make some output more verbose]'
+}
+
+# brew update-perl-resources
+_brew_update_perl_resources() {
+  _arguments \
+    '--debug[Display any debugging information]' \
+    '--help[Show this message]' \
+    '--ignore-errors[Continue processing even if some resources can'\''t be resolved]' \
+    '--print-only[Print the updated resource blocks instead of changing formula]' \
+    '--quiet[Make some output more quiet]' \
+    '--silent[Suppress any output]' \
+    '--verbose[Make some output more verbose]' \
+    - formula \
+    '*:formula:__brew_formulae'
 }
 
 # brew update-python-resources
