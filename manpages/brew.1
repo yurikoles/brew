@@ -2111,6 +2111,17 @@ Overwrite the destination directory if it already exists\.
 Update SPDX license data in the Homebrew repository\.
 .SS "\fBupdate\-maintainers\fP"
 Update the list of maintainers in the \fBHomebrew/brew\fP README\.
+.SS "\fBupdate\-perl\-resources\fP \fR[\fIoptions\fP] \fIformula\fP \fR[\.\.\.]"
+Update versions for CPAN resource blocks in \fIformula\fP\&\.
+.TP
+\fB\-p\fP, \fB\-\-print\-only\fP
+Print the updated resource blocks instead of changing \fIformula\fP\&\.
+.TP
+\fB\-s\fP, \fB\-\-silent\fP
+Suppress any output\.
+.TP
+\fB\-\-ignore\-errors\fP
+Continue processing even if some resources can\[u2019]t be resolved\.
 .SS "\fBupdate\-python\-resources\fP \fR[\fIoptions\fP] \fIformula\fP \fR[\.\.\.]"
 Update versions for PyPI resource blocks in \fIformula\fP\&\.
 .TP

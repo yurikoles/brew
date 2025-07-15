@@ -1843,6 +1843,17 @@ __fish_brew_complete_arg 'update-maintainers' -l quiet -d 'Make some output more
 __fish_brew_complete_arg 'update-maintainers' -l verbose -d 'Make some output more verbose'
 
 
+__fish_brew_complete_cmd 'update-perl-resources' 'Update versions for CPAN resource blocks in formula'
+__fish_brew_complete_arg 'update-perl-resources' -l debug -d 'Display any debugging information'
+__fish_brew_complete_arg 'update-perl-resources' -l help -d 'Show this message'
+__fish_brew_complete_arg 'update-perl-resources' -l ignore-errors -d 'Continue processing even if some resources can\'t be resolved'
+__fish_brew_complete_arg 'update-perl-resources' -l print-only -d 'Print the updated resource blocks instead of changing formula'
+__fish_brew_complete_arg 'update-perl-resources' -l quiet -d 'Make some output more quiet'
+__fish_brew_complete_arg 'update-perl-resources' -l silent -d 'Suppress any output'
+__fish_brew_complete_arg 'update-perl-resources' -l verbose -d 'Make some output more verbose'
+__fish_brew_complete_arg 'update-perl-resources' -a '(__fish_brew_suggest_formulae_all)'
+
+
 __fish_brew_complete_cmd 'update-python-resources' 'Update versions for PyPI resource blocks in formula'
 __fish_brew_complete_arg 'update-python-resources' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg 'update-python-resources' -l exclude-packages -d 'Exclude these packages when finding resources'
