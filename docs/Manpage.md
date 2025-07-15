@@ -102,9 +102,9 @@ If no search term is provided, all locally available formulae are listed.
 
 ## COMMANDS
 
-### `alias` \[*`alias`* ... \| *`alias`*=*`command`*\]
+### `alias` \[`--edit`\] \[*`alias`*\|*`alias`*=*`command`*\]
 
-Show existing aliases. If no aliases are given, print the whole list.
+Show an alias's command. If no alias is given, print the whole list.
 
 `--edit`
 

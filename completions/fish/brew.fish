@@ -319,7 +319,7 @@ __fish_brew_complete_arg 'abv; and not __fish_seen_argument -l cask -l casks' -a
 __fish_brew_complete_arg 'abv; and not __fish_seen_argument -l formula -l formulae' -a '(__fish_brew_suggest_casks_all)'
 
 
-__fish_brew_complete_cmd 'alias' 'Show existing aliases'
+__fish_brew_complete_cmd 'alias' 'Show an alias\'s command'
 __fish_brew_complete_arg 'alias' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg 'alias' -l edit -d 'Edit aliases in a text editor. Either one or all aliases may be opened at once. If the given alias doesn\'t exist it\'ll be pre-populated with a template'
 __fish_brew_complete_arg 'alias' -l help -d 'Show this message'
