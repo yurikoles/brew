@@ -121,7 +121,9 @@ module Homebrew
           method or 'livecheck' block with 'skip'.)
         EOS
 
-        odie "You have too many PRs open: close or merge some first!" if GitHub.too_many_open_prs?(tap)
+        if !args.write_only? && GitHub.too_many_open_prs?(tap)
+          odie "You have too many PRs open: close or merge some first!"
+        end
 
         formula_spec = formula.stable
         odie "#{formula}: no stable specification found!" if formula_spec.blank?
@@ -135,7 +137,7 @@ module Homebrew
         remote_branch = tap.git_repository.origin_branch_name
         previous_branch = "-"
 
-        check_pull_requests(formula, tap_remote_repo, state: "open")
+        check_pull_requests(formula, tap_remote_repo, state: "open") unless args.write_only?
 
         all_formulae = []
         if args.bump_synced.present?
@@ -397,12 +399,19 @@ module Homebrew
               nil
             end
 
-            if github_release_data.present?
+            if github_release_data.present? && github_release_data["body"].present?
               pre = "pre" if github_release_data["prerelease"].present?
+              # maximum length of PR body is 65,536 characters so let's truncate release notes to half of that.
+              body = Formatter.truncate(github_release_data["body"], max: 32_768)
+
+              # Ensure the URL is properly HTML encoded to handle any quotes or other special characters
+              html_url = CGI.escapeHTML(github_release_data["html_url"])
+
               formula_pr_message += <<~XML
                 <details>
                   <summary>#{pre}release notes</summary>
-                  <pre>#{github_release_data["body"]}</pre>
+                  <pre>#{body}</pre>
+                  <p>View the full release notes at <a href="#{html_url}">#{html_url}</a>.</p>
                 </details>
               XML
             end
@@ -430,7 +439,7 @@ module Homebrew
           # If `brew audit` fails, revert the changes made to any formula.
           commits.each do |revert|
             revert_formula = Formula[revert[:formula_name]]
-            revert_formula.path.atomic_write(revert[:old_contents]) unless args.dry_run?
+            revert_formula.path.atomic_write(revert[:old_contents]) if !args.dry_run? && !args.write_only?
             revert_alias_rename = revert[:additional_files]
             if revert_alias_rename && (source = revert_alias_rename.first) && (destination = revert_alias_rename.last)
               FileUtils.mv source, destination
@@ -467,7 +476,7 @@ module Homebrew
           tap_remote_repo:,
           pr_message:,
         }
-        GitHub.create_bump_pr(pr_info, args:)
+        GitHub.create_bump_pr(pr_info, args:) unless args.write_only?
       end
 
       private
@@ -580,7 +589,7 @@ module Homebrew
             #{leading_spaces}resource "#{resource.name}" do
             #{leading_spaces}  url "#{new_url}"#{new_mirrors.map { |m| "\n#{leading_spaces}  mirror \"#{m}\"" }.join}
             #{leading_spaces}  sha256 "#{new_hash}"
-            #{forced_version ? "#{leading_spaces}  version \"#{version}\"\n" : ""}
+            #{"#{leading_spaces}  version \"#{version}\"\n" if forced_version}
             #{leading_spaces}  livecheck do
             #{leading_spaces}    formula :parent
             #{leading_spaces}  end

@@ -1,7 +1,7 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
-require "extend/cachable"
+require "cachable"
 require "api/download"
 
 module Homebrew
@@ -12,16 +12,23 @@ module Homebrew
 
       DEFAULT_API_FILENAME = "cask.jws.json"
 
+      sig { returns(String) }
+      def self.api_filename
+        return DEFAULT_API_FILENAME unless ENV.fetch("HOMEBREW_USE_INTERNAL_API", false)
+
+        "cask.#{SimulateSystem.current_tag}.jws.json"
+      end
+
       private_class_method :cache
 
-      sig { params(token: String).returns(Hash) }
+      sig { params(token: String).returns(T::Hash[String, T.untyped]) }
       def self.fetch(token)
         Homebrew::API.fetch "cask/#{token}.json"
       end
 
       sig { params(cask: ::Cask::Cask).returns(::Cask::Cask) }
       def self.source_download(cask)
-        path = cask.ruby_source_path.to_s || "Casks/#{cask.token}.rb"
+        path = cask.ruby_source_path.to_s
         sha256 = cask.ruby_source_checksum[:sha256]
         checksum = Checksum.new(sha256) if sha256
         git_head = cask.tap_git_head || "HEAD"
@@ -40,13 +47,14 @@ module Homebrew
                                           .load(config: cask.config)
       end
 
+      sig { returns(Pathname) }
       def self.cached_json_file_path
-        HOMEBREW_CACHE_API/DEFAULT_API_FILENAME
+        HOMEBREW_CACHE_API/api_filename
       end
 
       sig { returns(T::Boolean) }
       def self.download_and_cache_data!
-        json_casks, updated = Homebrew::API.fetch_json_api_file DEFAULT_API_FILENAME
+        json_casks, updated = Homebrew::API.fetch_json_api_file api_filename
 
         cache["renames"] = {}
         cache["casks"] = json_casks.to_h do |json_cask|
@@ -63,7 +71,7 @@ module Homebrew
       end
       private_class_method :download_and_cache_data!
 
-      sig { returns(T::Hash[String, Hash]) }
+      sig { returns(T::Hash[String, T::Hash[String, T.untyped]]) }
       def self.all_casks
         unless cache.key?("casks")
           json_updated = download_and_cache_data!
@@ -87,7 +95,7 @@ module Homebrew
       def self.write_names(regenerate: false)
         download_and_cache_data! unless cache.key?("casks")
 
-        Homebrew::API.write_names_file(all_casks.keys, "cask", regenerate:)
+        Homebrew::API.write_names_file!(all_casks.keys, "cask", regenerate:)
       end
     end
   end
