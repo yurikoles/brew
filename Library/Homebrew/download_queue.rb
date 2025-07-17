@@ -8,12 +8,13 @@ require "retryable_download"
 
 module Homebrew
   class DownloadQueue
-    sig { params(retries: Integer, force: T::Boolean).void }
-    def initialize(retries: 0, force: false)
+    sig { params(retries: Integer, force: T::Boolean, pour: T::Boolean).void }
+    def initialize(retries: 0, force: false, pour: false)
       @concurrency = T.let(EnvConfig.download_concurrency, Integer)
       @quiet = T.let(@concurrency > 1, T::Boolean)
       @tries = T.let(retries + 1, Integer)
       @force = force
+      @pour = pour
       @pool = T.let(Concurrent::FixedThreadPool.new(concurrency), Concurrent::FixedThreadPool)
     end
 
@@ -24,6 +25,10 @@ module Homebrew
       ) do |download, force, quiet|
         download.clear_cache if force
         download.fetch(quiet:)
+        if pour && download.bottle?
+          UnpackStrategy.detect(download.cached_download, prioritize_extension: true)
+                        .extract_nestedly(to: HOMEBREW_CELLAR)
+        end
       end
     end
 
@@ -167,6 +172,9 @@ module Homebrew
 
     sig { returns(T::Boolean) }
     attr_reader :quiet
+
+    sig { returns(T::Boolean) }
+    attr_reader :pour
 
     sig { returns(T::Hash[Downloadable, Concurrent::Promises::Future]) }
     def downloads
