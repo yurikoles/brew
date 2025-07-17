@@ -8,16 +8,16 @@ require "retryable_download"
 
 module Homebrew
   class DownloadQueue
-    sig { params(concurrency: Integer, retries: Integer, force: T::Boolean).void }
-    def initialize(concurrency:, retries:, force:)
-      @concurrency = concurrency
-      @quiet = T.let(concurrency > 1, T::Boolean)
+    sig { params(retries: Integer, force: T::Boolean).void }
+    def initialize(retries: 0, force: false)
+      @concurrency = T.let(EnvConfig.download_concurrency, Integer)
+      @quiet = T.let(@concurrency > 1, T::Boolean)
       @tries = T.let(retries + 1, Integer)
       @force = force
       @pool = T.let(Concurrent::FixedThreadPool.new(concurrency), Concurrent::FixedThreadPool)
     end
 
-    sig { params(downloadable: T.any(Resource, Bottle, Cask::Download)).void }
+    sig { params(downloadable: Downloadable).void }
     def enqueue(downloadable)
       downloads[downloadable] ||= Concurrent::Promises.future_on(
         pool, RetryableDownload.new(downloadable, tries:), force, quiet
@@ -28,7 +28,7 @@ module Homebrew
     end
 
     sig { void }
-    def start
+    def fetch
       if concurrency == 1
         downloads.each do |downloadable, promise|
           promise.wait!
@@ -133,6 +133,8 @@ module Homebrew
           $stdout.flush
         end
       end
+
+      downloads.clear
     end
 
     sig { void }
@@ -166,10 +168,9 @@ module Homebrew
     sig { returns(T::Boolean) }
     attr_reader :quiet
 
-    sig { returns(T::Hash[T.any(Resource, Bottle, Cask::Download), Concurrent::Promises::Future]) }
+    sig { returns(T::Hash[Downloadable, Concurrent::Promises::Future]) }
     def downloads
-      @downloads ||= T.let({}, T.nilable(T::Hash[T.any(Resource, Bottle, Cask::Download),
-                                                 Concurrent::Promises::Future]))
+      @downloads ||= T.let({}, T.nilable(T::Hash[Downloadable, Concurrent::Promises::Future]))
     end
 
     class Spinner

@@ -26,7 +26,6 @@ module Homebrew
                             "(Pass `all` to download for all architectures.)"
         flag   "--bottle-tag=",
                description: "Download a bottle for given tag."
-        flag "--concurrency=", description: "Number of concurrent downloads.", hidden: true
         switch "--HEAD",
                description: "Fetch HEAD version instead of stable version."
         switch "-f", "--force",
@@ -150,12 +149,7 @@ module Homebrew
                   download_queue.enqueue(resource)
                 end
 
-                formula.resources.each do |r|
-                  download_queue.enqueue(r)
-                  r.patches.each { |patch| download_queue.enqueue(patch.resource) if patch.external? }
-                end
-
-                formula.patchlist.each { |patch| download_queue.enqueue(patch.resource) if patch.external? }
+                formula.enqueue_resources_and_patches(download_queue:)
               end
             end
           else
@@ -181,17 +175,12 @@ module Homebrew
           end
         end
 
-        download_queue.start
+        download_queue.fetch
       ensure
         download_queue.shutdown
       end
 
       private
-
-      sig { returns(Integer) }
-      def concurrency
-        @concurrency ||= T.let(args.concurrency&.to_i || 1, T.nilable(Integer))
-      end
 
       sig { returns(Integer) }
       def retries
@@ -201,7 +190,7 @@ module Homebrew
       sig { returns(DownloadQueue) }
       def download_queue
         @download_queue ||= T.let(begin
-          DownloadQueue.new(concurrency:, retries:, force: args.force?)
+          DownloadQueue.new(retries:, force: args.force?)
         end, T.nilable(DownloadQueue))
       end
     end
