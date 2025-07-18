@@ -314,6 +314,7 @@ module Formulary
       end
 
       if (because = json_formula["no_autobump_msg"])
+        because = because.to_sym if NO_AUTOBUMP_REASONS_LIST.key?(because.to_sym)
         no_autobump!(because:)
       end
 
