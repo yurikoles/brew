@@ -5,10 +5,6 @@ module Homebrew
   class RetryableDownload
     include Downloadable
 
-    sig { returns(Downloadable) }
-    attr_reader :downloadable
-    private :downloadable
-
     sig { override.returns(T.any(NilClass, String, URL)) }
     def url = downloadable.url
 
@@ -92,5 +88,10 @@ module Homebrew
 
     sig { override.returns(String) }
     def download_name = downloadable.download_name
+
+    private
+
+    sig { returns(Downloadable) }
+    attr_reader :downloadable
   end
 end
