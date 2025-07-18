@@ -89,6 +89,9 @@ module Homebrew
     sig { override.returns(String) }
     def download_name = downloadable.download_name
 
+    sig { returns(T::Boolean) }
+    def bottle? = downloadable.is_a?(Bottle)
+
     private
 
     sig { returns(Downloadable) }
