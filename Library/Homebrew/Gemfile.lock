@@ -166,8 +166,8 @@ GEM
 
 PLATFORMS
   aarch64-linux
-  arm64-darwin
-  x86_64-darwin
+  arm-linux
+  universal-darwin
   x86_64-linux
 
 DEPENDENCIES
