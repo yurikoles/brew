@@ -92,6 +92,9 @@ module Homebrew
     sig { returns(T::Boolean) }
     def bottle? = downloadable.is_a?(Bottle)
 
+    sig { returns(T::Boolean) }
+    def api? = downloadable.is_a?(API::Download)
+
     private
 
     sig { returns(Downloadable) }
