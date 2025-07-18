@@ -28,6 +28,8 @@ module Homebrew
         if pour && download.bottle?
           UnpackStrategy.detect(download.cached_download, prioritize_extension: true)
                         .extract_nestedly(to: HOMEBREW_CELLAR)
+        elsif download.api?
+          FileUtils.touch(download.cached_download, mtime: Time.now)
         end
       end
     end
