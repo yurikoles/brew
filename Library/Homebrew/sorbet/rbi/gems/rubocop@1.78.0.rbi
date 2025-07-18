@@ -47,44 +47,50 @@ class RuboCop::CLI
 
   private
 
-  # source://rubocop//lib/rubocop/cli.rb#156
+  # source://rubocop//lib/rubocop/cli.rb#157
   def act_on_options; end
 
-  # source://rubocop//lib/rubocop/cli.rb#198
+  # source://rubocop//lib/rubocop/cli.rb#205
   def apply_default_formatter; end
 
-  # source://rubocop//lib/rubocop/cli.rb#125
+  # source://rubocop//lib/rubocop/cli.rb#126
   def execute_runners; end
 
-  # source://rubocop//lib/rubocop/cli.rb#182
+  # source://rubocop//lib/rubocop/cli.rb#189
   def handle_editor_mode; end
 
   # @raise [Finished]
   #
-  # source://rubocop//lib/rubocop/cli.rb#187
+  # source://rubocop//lib/rubocop/cli.rb#194
   def handle_exiting_options; end
 
-  # source://rubocop//lib/rubocop/cli.rb#144
+  # source://rubocop//lib/rubocop/cli.rb#145
   def parallel_by_default!; end
 
-  # source://rubocop//lib/rubocop/cli.rb#80
+  # source://rubocop//lib/rubocop/cli.rb#81
   def profile_if_needed; end
 
-  # source://rubocop//lib/rubocop/cli.rb#113
+  # source://rubocop//lib/rubocop/cli.rb#219
+  def report_pending_cops; end
+
+  # source://rubocop//lib/rubocop/cli.rb#114
   def require_gem(name); end
 
-  # source://rubocop//lib/rubocop/cli.rb#121
+  # source://rubocop//lib/rubocop/cli.rb#122
   def run_command(name); end
 
-  # source://rubocop//lib/rubocop/cli.rb#174
+  # source://rubocop//lib/rubocop/cli.rb#176
   def set_options_to_config_loader; end
 
-  # source://rubocop//lib/rubocop/cli.rb#133
+  # source://rubocop//lib/rubocop/cli.rb#184
+  def set_options_to_pending_cops_reporter; end
+
+  # source://rubocop//lib/rubocop/cli.rb#134
   def suggest_extensions; end
 
   # @raise [OptionArgumentError]
   #
-  # source://rubocop//lib/rubocop/cli.rb#137
+  # source://rubocop//lib/rubocop/cli.rb#138
   def validate_options_vs_config; end
 end
 
@@ -1006,7 +1012,7 @@ class RuboCop::ConfigLoader
   extend ::RuboCop::FileFinder
 
   class << self
-    # source://rubocop//lib/rubocop/config_loader.rb#152
+    # source://rubocop//lib/rubocop/config_loader.rb#130
     def add_excludes_from_files(config, config_file); end
 
     # Used to add features that were required inside a config or from
@@ -1014,7 +1020,7 @@ class RuboCop::ConfigLoader
     #
     # @api private
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#241
+    # source://rubocop//lib/rubocop/config_loader.rb#204
     def add_loaded_features(loaded_features); end
 
     # Used to add plugins that were required inside a config or from
@@ -1022,13 +1028,13 @@ class RuboCop::ConfigLoader
     #
     # @api private
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#234
+    # source://rubocop//lib/rubocop/config_loader.rb#197
     def add_loaded_plugins(loaded_plugins); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#91
+    # source://rubocop//lib/rubocop/config_loader.rb#83
     def add_missing_namespaces(path, hash); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#41
+    # source://rubocop//lib/rubocop/config_loader.rb#33
     def clear_options; end
 
     # Returns the path of .rubocop.yml searching upwards in the
@@ -1037,90 +1043,90 @@ class RuboCop::ConfigLoader
     # user's home directory is checked. If there's no .rubocop.yml
     # there either, the path to the default file is returned.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#119
+    # source://rubocop//lib/rubocop/config_loader.rb#111
     def configuration_file_for(target_dir); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#123
+    # source://rubocop//lib/rubocop/config_loader.rb#115
     def configuration_from_file(config_file, check: T.unsafe(nil)); end
 
     # Returns the value of attribute debug.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def debug; end
 
     # Sets the attribute debug
     #
     # @param value the value to set the attribute debug to.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def debug=(_arg0); end
 
     # Returns the value of attribute debug.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#38
+    # source://rubocop//lib/rubocop/config_loader.rb#30
     def debug?; end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#162
+    # source://rubocop//lib/rubocop/config_loader.rb#140
     def default_configuration; end
 
     # Sets the attribute default_configuration
     #
     # @param value the value to set the attribute default_configuration to.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#35
+    # source://rubocop//lib/rubocop/config_loader.rb#27
     def default_configuration=(_arg0); end
 
     # Returns the value of attribute disable_pending_cops.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def disable_pending_cops; end
 
     # Sets the attribute disable_pending_cops
     #
     # @param value the value to set the attribute disable_pending_cops to.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def disable_pending_cops=(_arg0); end
 
     # Returns the value of attribute enable_pending_cops.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def enable_pending_cops; end
 
     # Sets the attribute enable_pending_cops
     #
     # @param value the value to set the attribute enable_pending_cops to.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def enable_pending_cops=(_arg0); end
 
     # Returns the value of attribute ignore_parent_exclusion.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def ignore_parent_exclusion; end
 
     # Sets the attribute ignore_parent_exclusion
     #
     # @param value the value to set the attribute ignore_parent_exclusion to.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def ignore_parent_exclusion=(_arg0); end
 
     # Returns the value of attribute ignore_parent_exclusion.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#39
+    # source://rubocop//lib/rubocop/config_loader.rb#31
     def ignore_parent_exclusion?; end
 
     # Returns the value of attribute ignore_unrecognized_cops.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def ignore_unrecognized_cops; end
 
     # Sets the attribute ignore_unrecognized_cops
     #
     # @param value the value to set the attribute ignore_unrecognized_cops to.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#33
+    # source://rubocop//lib/rubocop/config_loader.rb#25
     def ignore_unrecognized_cops=(_arg0); end
 
     # This API is primarily intended for testing and documenting plugins.
@@ -1128,83 +1134,69 @@ class RuboCop::ConfigLoader
     # so this API is usually not needed. It is intended to be used only when implementing tests
     # that do not use `rubocop/rspec/support`.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#174
+    # source://rubocop//lib/rubocop/config_loader.rb#152
     def inject_defaults!(config_yml_path); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#53
+    # source://rubocop//lib/rubocop/config_loader.rb#45
     def load_file(file, check: T.unsafe(nil)); end
 
     # @raise [TypeError]
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#78
+    # source://rubocop//lib/rubocop/config_loader.rb#70
     def load_yaml_configuration(absolute_path); end
 
     # Returns the value of attribute loaded_features.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#36
+    # source://rubocop//lib/rubocop/config_loader.rb#28
     def loaded_features; end
 
     # Returns the value of attribute loaded_plugins.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#36
+    # source://rubocop//lib/rubocop/config_loader.rb#28
     def loaded_plugins; end
 
     # Return a recursive merge of two hashes. That is, a normal hash merge,
     # with the addition that any value that is a hash, and occurs in both
     # arguments, will also be merged. And so on.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#110
+    # source://rubocop//lib/rubocop/config_loader.rb#102
     def merge(base_hash, derived_hash); end
 
     # Merges the given configuration with the default one.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#227
+    # source://rubocop//lib/rubocop/config_loader.rb#190
     def merge_with_default(config, config_file, unset_nil: T.unsafe(nil)); end
-
-    # source://rubocop//lib/rubocop/config_loader.rb#143
-    def pending_cops_only_qualified(pending_cops); end
-
-    # @return [Boolean]
-    #
-    # source://rubocop//lib/rubocop/config_loader.rb#147
-    def possible_new_cops?(config); end
 
     # Returns the path RuboCop inferred as the root of the project. No file
     # searches will go past this directory.
     #
     # @deprecated Use `RuboCop::ConfigFinder.project_root` instead.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#202
+    # source://rubocop//lib/rubocop/config_loader.rb#180
     def project_root; end
-
-    # source://rubocop//lib/rubocop/config_loader.rb#211
-    def warn_on_pending_cops(pending_cops); end
-
-    # source://rubocop//lib/rubocop/config_loader.rb#219
-    def warn_pending_cop(cop); end
 
     private
 
-    # source://rubocop//lib/rubocop/config_loader.rb#255
+    # source://rubocop//lib/rubocop/config_loader.rb#218
     def check_duplication(yaml_code, absolute_path); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#247
+    # source://rubocop//lib/rubocop/config_loader.rb#210
     def file_path(file); end
 
     # Read the specified file, or exit with a friendly, concise message on
     # stderr. Care is taken to use the standard OS exit code for a "file not
     # found" error.
     #
-    # source://rubocop//lib/rubocop/config_loader.rb#275
+    # source://rubocop//lib/rubocop/config_loader.rb#238
     def read_file(absolute_path); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#251
+    # source://rubocop//lib/rubocop/config_loader.rb#214
     def resolver; end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#281
+    # source://rubocop//lib/rubocop/config_loader.rb#244
     def yaml_tree_to_hash(yaml_tree); end
 
-    # source://rubocop//lib/rubocop/config_loader.rb#291
+    # source://rubocop//lib/rubocop/config_loader.rb#254
     def yaml_tree_to_hash!(yaml_tree); end
   end
 end
