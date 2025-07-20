@@ -331,10 +331,14 @@ class FormulaInstaller
     Tab.clear_cache
 
     # Setup bottle_tab_runtime_dependencies for compute_dependencies
-    @bottle_tab_runtime_dependencies = formula.bottle_tab_attributes
-                                              .fetch("runtime_dependencies", []).then { |deps| deps || [] }
-                                              .each_with_object({}) { |dep, h| h[dep["full_name"]] = dep }
-                                              .freeze
+    begin
+      @bottle_tab_runtime_dependencies = formula.bottle_tab_attributes
+                                                .fetch("runtime_dependencies", []).then { |deps| deps || [] }
+                                                .each_with_object({}) { |dep, h| h[dep["full_name"]] = dep }
+                                                .freeze
+    rescue Resource::BottleManifest::Error
+      # If we can't get the bottle manifest, assume a full dependencies install.
+    end
 
     verify_deps_exist unless ignore_deps?
 
