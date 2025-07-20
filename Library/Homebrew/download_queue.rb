@@ -36,7 +36,9 @@ module Homebrew
 
     sig { void }
     def fetch
-      if concurrency == 1
+      return if downloads.empty?
+
+      if concurrency == 1 || downloads.one?
         downloads.each do |downloadable, promise|
           promise.wait!
         rescue ChecksumMismatchError => e
