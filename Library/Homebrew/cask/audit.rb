@@ -486,7 +486,13 @@ module Cask
 
     sig { void }
     def audit_signing
-      return if !signing? || download.blank? || (url = cask.url).nil?
+      return if download.blank?
+
+      url = cask.url
+      return if url.nil?
+
+      return if !cask.tap.official? && !signing?
+      return if cask.deprecated? && cask.deprecation_reason != :unsigned
 
       odebug "Auditing signing"
 
@@ -511,9 +517,15 @@ module Cask
             add_error "Unknown artifact type: #{artifact.class}", location: url.location
           end
 
+          if result.success? && cask.deprecated? && cask.deprecation_reason == :unsigned
+            add_error "Cask is deprecated as unsigned but artifacts are signed!"
+          end
+
+          next if cask.deprecated? && cask.deprecation_reason == :unsigned
+
           next if result.success?
 
-          add_error <<~EOS, location: url.location, strict_only: true
+          add_error <<~EOS, location: url.location
             Signature verification failed:
             #{result.merged_output}
             macOS on ARM requires software to be signed.
