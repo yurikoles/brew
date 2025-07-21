@@ -184,7 +184,7 @@ module Homebrew
 
       sig { returns(Integer) }
       def retries
-        @retries ||= T.let(args.retry? ? FETCH_MAX_TRIES : 0, T.nilable(Integer))
+        @retries ||= T.let(args.retry? ? FETCH_MAX_TRIES : 1, T.nilable(Integer))
       end
 
       sig { returns(DownloadQueue) }
