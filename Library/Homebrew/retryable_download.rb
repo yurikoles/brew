@@ -68,7 +68,7 @@ module Homebrew
       downloadable.verify_download_integrity(download) if verify_download_integrity
 
       download
-    rescue DownloadError, ChecksumMismatchError
+    rescue DownloadError, ChecksumMismatchError, Resource::BottleManifest::Error
       tries_remaining = @tries - @try
       raise if tries_remaining.zero?
 
