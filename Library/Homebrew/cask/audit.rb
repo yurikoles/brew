@@ -512,6 +512,9 @@ module Cask
           when Artifact::App
             system_command("spctl", args: ["--assess", "--type", "execute", path], print_stderr: false)
           when Artifact::Binary
+            # Shell scripts cannot be signed, so we skip them
+            next if path.text_executable?
+
             system_command("codesign",  args: ["--verify", path], print_stderr: false)
           else
             add_error "Unknown artifact type: #{artifact.class}", location: url.location
