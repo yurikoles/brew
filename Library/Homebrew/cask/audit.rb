@@ -510,8 +510,8 @@ module Cask
           when Artifact::Pkg
             system_command("spctl", args: ["--assess", "--type", "install", path], print_stderr: false)
           when Artifact::App
-            if which("syspolicy_check")
-              system_command("syspolicy_check", args: ["distribution", path], print_stderr: false)
+            if which("gktool")
+              system_command("gktool", args: ["scan", path], print_stderr: false)
             else
               system_command("spctl", args: ["--assess", "--type", "execute", path], print_stderr: false)
             end
