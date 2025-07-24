@@ -585,13 +585,15 @@ module Cask
         }.compact
 
         Homebrew::Install.perform_preinstall_checks_once
+        valid_formula_installers = Homebrew::Install.fetch_formulae(primary_container.dependencies)
+
         primary_container.dependencies.each do |dep|
+          next unless valid_formula_installers.include?(dep)
+
           fi = FormulaInstaller.new(
             dep,
             **install_options,
           )
-          fi.prelude
-          fi.fetch
           fi.install
           fi.finish
         end
