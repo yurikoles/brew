@@ -166,7 +166,9 @@ GEM
 
 PLATFORMS
   aarch64-linux
-  universal-darwin
+  arm-linux
+  arm64-darwin
+  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
@@ -218,4 +220,4 @@ RUBY VERSION
    ruby 3.4.5p51
 
 BUNDLED WITH
-   2.6.9
+   2.6.8
