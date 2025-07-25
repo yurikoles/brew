@@ -102,6 +102,24 @@ module Homebrew
         end
         prefix_installed = formula.prefix.exist? && !formula.prefix.children.empty?
 
+        # Check if the installed formula is from a different tap
+        if formula.any_version_installed? &&
+           (current_tap_name = formula.tap&.name.presence) &&
+           (installed_keg_tab = formula.any_installed_keg&.tab.presence) &&
+           (installed_tap_name = installed_keg_tab.tap&.name.presence) &&
+           installed_tap_name != current_tap_name
+          odie <<~EOS
+            #{formula.name} was installed from the #{Formatter.identifier(installed_tap_name)} tap
+            but you are trying to install it from the #{Formatter.identifier(current_tap_name)} tap.
+            Formulae with the same name from different taps cannot be installed at the same time.
+
+            To install this version, you must first uninstall the existing formula:
+              brew uninstall #{formula.name}
+            Then you can install the desired version:
+              brew install #{formula.full_name}
+          EOS
+        end
+
         if formula.keg_only? && formula.any_version_installed? && formula.optlinked? && !force
           # keg-only install is only possible when no other version is
           # linked to opt, because installing without any warnings can break
