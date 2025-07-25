@@ -510,11 +510,9 @@ module Cask
           when Artifact::Pkg
             system_command("spctl", args: ["--assess", "--type", "install", path], print_stderr: false)
           when Artifact::App
-            if which("gktool")
-              system_command("gktool", args: ["scan", path], print_stderr: false)
-            else
-              system_command("spctl", args: ["--assess", "--type", "execute", path], print_stderr: false)
-            end
+            next opoo "gktool not found, skipping app signing audit" unless which("gktool")
+
+            system_command("gktool", args: ["scan", path], print_stderr: false)
           when Artifact::Binary
             # Shell scripts cannot be signed, so we skip them
             next if path.text_executable?
