@@ -317,8 +317,12 @@ class FormulaInstaller
       end
     end
 
-    # Needs to be done before expand_dependencies for compute_dependencies
-    fetch_bottle_tab if pour_bottle?
+    if pour_bottle?
+      # Needs to be done before expand_dependencies for compute_dependencies
+      fetch_bottle_tab
+    elsif formula.loaded_from_api?
+      Homebrew::API::Formula.source_download(formula, download_queue:)
+    end
 
     fetch_fetch_deps unless ignore_deps?
 
@@ -1446,7 +1450,7 @@ on_request: installed_on_request?, options:)
 
       !downloadable_object.cached_download.exist?
     else
-      @formula = Homebrew::API::Formula.source_download(formula) if formula.loaded_from_api?
+      @formula = Homebrew::API::Formula.source_download_formula(formula) if formula.loaded_from_api?
 
       if (download_queue = self.download_queue)
         formula.enqueue_resources_and_patches(download_queue:)
