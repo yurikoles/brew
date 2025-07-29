@@ -187,7 +187,6 @@ module Homebrew
     end
 
     # Returns a `Boolean` describing if a service requires root access.
-    # @return [Boolean]
     sig { returns(T::Boolean) }
     def requires_root?
       @require_root.present? && @require_root == true
@@ -234,7 +233,6 @@ module Homebrew
     end
 
     # Returns a `Boolean` describing if a service is set to be kept alive.
-    # @return [Boolean]
     sig { returns(T::Boolean) }
     def keep_alive?
       !@keep_alive.empty? && @keep_alive[:always] != false
@@ -388,7 +386,6 @@ module Homebrew
     end
 
     # Returns the `String` command to run manually instead of the service.
-    # @return [String]
     sig { returns(String) }
     def manual_command
       vars = @environment_variables.except(:PATH)
@@ -399,14 +396,12 @@ module Homebrew
     end
 
     # Returns a `Boolean` describing if a service is timed.
-    # @return [Boolean]
     sig { returns(T::Boolean) }
     def timed?
       @run_type == RUN_TYPE_CRON || @run_type == RUN_TYPE_INTERVAL
     end
 
     # Returns a `String` plist.
-    # @return [String]
     sig { returns(String) }
     def to_plist
       # command needs to be first because it initializes all other values
@@ -467,7 +462,6 @@ module Homebrew
     end
 
     # Returns a `String` systemd unit.
-    # @return [String]
     sig { returns(String) }
     def to_systemd_unit
       # command needs to be first because it initializes all other values
@@ -500,7 +494,6 @@ module Homebrew
     end
 
     # Returns a `String` systemd unit timer.
-    # @return [String]
     sig { returns(String) }
     def to_systemd_timer
       options = []
