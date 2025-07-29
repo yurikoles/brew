@@ -93,7 +93,7 @@ module Homebrew
       if command
         @run_params = command
       elsif macos || linux
-        @run_params = { macos:, linux: }.compact, T.any(RunParam, T::Hash[Symbol, RunParam])
+        @run_params = { macos:, linux: }.compact
       end
 
       command ||= on_system_conditional(macos:, linux:)
@@ -569,7 +569,7 @@ module Homebrew
         process_type:          @process_type,
         macos_legacy_timers:   @macos_legacy_timers,
         sockets:               sockets_var,
-      }.compact
+      }.compact_blank
     end
 
     # Turn the service API hash values back into what is expected by the formula DSL.
