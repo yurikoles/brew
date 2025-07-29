@@ -634,9 +634,16 @@ module Homebrew
     sig { returns(Integer) }
     def download_concurrency
       # TODO: document this variable when ready to publicly announce it.
-      concurrency = ENV.fetch("HOMEBREW_DOWNLOAD_CONCURRENCY", 1).to_i
-      concurrency = 1 if concurrency <= 1
-      concurrency
+      concurrency = ENV.fetch("HOMEBREW_DOWNLOAD_CONCURRENCY", 1)
+      concurrency = if concurrency == "auto"
+        require "os"
+        require "hardware"
+        Hardware::CPU.cores * 2
+      else
+        concurrency.to_i
+      end
+
+      [concurrency, 1].max
     end
   end
 end
