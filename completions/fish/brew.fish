@@ -1922,7 +1922,7 @@ __fish_brew_complete_arg 'upgrade' -l fontdir -d 'Target location for Fonts (def
 __fish_brew_complete_arg 'upgrade' -l force -d 'Install formulae without checking for previously installed keg-only or non-migrated versions. When installing casks, overwrite existing files (binaries and symlinks are excluded, unless originally from the same cask)'
 __fish_brew_complete_arg 'upgrade' -l force-bottle -d 'Install from a bottle if it exists for the current or newest version of macOS, even if it would not normally be used for installation'
 __fish_brew_complete_arg 'upgrade' -l formula -d 'Treat all named arguments as formulae. If no named arguments are specified, upgrade only outdated formulae'
-__fish_brew_complete_arg 'upgrade' -l greedy -d 'Also include casks with `auto_updates true` or `version :latest`'
+__fish_brew_complete_arg 'upgrade' -l greedy -d 'Also include casks with `auto_updates true` or `version :latest`. Enabled by default if `$HOMEBREW_UPGRADE_GREEDY` is set'
 __fish_brew_complete_arg 'upgrade' -l greedy-auto-updates -d 'Also include casks with `auto_updates true`'
 __fish_brew_complete_arg 'upgrade' -l greedy-latest -d 'Also include casks with `version :latest`'
 __fish_brew_complete_arg 'upgrade' -l help -d 'Show this message'
