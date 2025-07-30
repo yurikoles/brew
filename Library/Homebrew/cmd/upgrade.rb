@@ -91,6 +91,7 @@ module Homebrew
           }],
           [:switch, "-g", "--greedy", {
             description: "Also include casks with `auto_updates true` or `version :latest`.",
+            env:         :upgrade_greedy,
           }],
           [:switch, "--greedy-latest", {
             description: "Also include casks with `version :latest`.",
