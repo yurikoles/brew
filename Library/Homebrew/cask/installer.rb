@@ -21,14 +21,14 @@ module Cask
         skip_cask_deps: T::Boolean, binaries: T::Boolean, verbose: T::Boolean, zap: T::Boolean,
         require_sha: T::Boolean, upgrade: T::Boolean, reinstall: T::Boolean, installed_as_dependency: T::Boolean,
         installed_on_request: T::Boolean, quarantine: T::Boolean, verify_download_integrity: T::Boolean,
-        quiet: T::Boolean
+        quiet: T::Boolean, download_queue: T.nilable(Homebrew::DownloadQueue)
       ).void
     }
     def initialize(cask, command: SystemCommand, force: false, adopt: false,
                    skip_cask_deps: false, binaries: true, verbose: false,
                    zap: false, require_sha: false, upgrade: false, reinstall: false,
                    installed_as_dependency: false, installed_on_request: true,
-                   quarantine: true, verify_download_integrity: true, quiet: false)
+                   quarantine: true, verify_download_integrity: true, quiet: false, download_queue: nil)
       @cask = cask
       @command = command
       @force = force
@@ -45,6 +45,7 @@ module Cask
       @quarantine = quarantine
       @verify_download_integrity = verify_download_integrity
       @quiet = quiet
+      @download_queue = download_queue
     end
 
     sig { returns(T::Boolean) }
@@ -104,14 +105,14 @@ module Cask
     def fetch(quiet: nil, timeout: nil)
       odebug "Cask::Installer#fetch"
 
-      load_cask_from_source_api! if @cask.loaded_from_api? && @cask.caskfile_only?
+      load_cask_from_source_api! if cask_from_source_api?
       verify_has_sha if require_sha? && !force?
       check_requirements
 
       forbidden_tap_check
       forbidden_cask_and_formula_check
 
-      download(quiet:, timeout:)
+      download(quiet:, timeout:) if @download_queue.nil?
 
       satisfy_cask_and_formula_dependencies
     end
@@ -790,9 +791,20 @@ on_request: true)
       )
     end
 
+    sig { void }
+    def enqueue_downloads
+      download_queue = @download_queue
+      return if download_queue.nil?
+
+      Homebrew::API::Cask.source_download(@cask, download_queue:) if cask_from_source_api?
+
+      download_queue.enqueue(downloader)
+    end
+
     private
 
     # load the same cask file that was used for installation, if possible
+    sig { void }
     def load_installed_caskfile!
       Migrator.migrate_if_needed(@cask)
 
@@ -807,12 +819,18 @@ on_request: true)
         end
       end
 
-      load_cask_from_source_api! if @cask.loaded_from_api? && @cask.caskfile_only?
+      load_cask_from_source_api! if cask_from_source_api?
       # otherwise we default to the current cask
     end
 
+    sig { void }
     def load_cask_from_source_api!
-      @cask = Homebrew::API::Cask.source_download(@cask)
+      @cask = Homebrew::API::Cask.source_download_cask(@cask)
+    end
+
+    sig { returns(T::Boolean) }
+    def cask_from_source_api?
+      @cask.loaded_from_api? && @cask.caskfile_only?
     end
   end
 end
