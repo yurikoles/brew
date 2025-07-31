@@ -661,7 +661,7 @@ module Formulary
 
       # Cache compiled regex
       @uri_regex ||= begin
-        uri_regex = ::URI::DEFAULT_PARSER.make_regexp
+        uri_regex = ::URI::RFC2396_PARSER.make_regexp
         Regexp.new("\\A#{uri_regex.source}\\Z", uri_regex.options)
       end
 
