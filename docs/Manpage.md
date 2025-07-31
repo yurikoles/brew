@@ -1754,7 +1754,8 @@ for the upgraded formulae or, every 30 days, for all formulae.
 
 `-g`, `--greedy`
 
-: Also include casks with `auto_updates true` or `version :latest`.
+: Also include casks with `auto_updates true` or `version :latest`. Enabled by
+  default if `$HOMEBREW_UPGRADE_GREEDY` is set.
 
 `--greedy-latest`
 
