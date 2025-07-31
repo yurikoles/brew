@@ -47,7 +47,7 @@ module Homebrew
 
         if download_queue
           download_queue.enqueue(download)
-        elsif !download.cache.exist?
+        elsif !download.symlink_location.exist?
           download.fetch
         end
 
