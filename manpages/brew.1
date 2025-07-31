@@ -2617,6 +2617,13 @@ Use this base64 encoded username and password for authenticating with a Docker r
 \fBHOMEBREW_DOCKER_REGISTRY_TOKEN\fP
 Use this bearer token for authenticating with a Docker registry proxying GitHub Packages\. Preferred over \fB$HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN\fP\&\.
 .TP
+\fBHOMEBREW_DOWNLOAD_CONCURRENCY\fP
+If set, Homebrew will download in parallel using this many concurrent connections\. Setting to \fBauto\fP will use twice the number of available CPU cores (what our benchmarks showed to produce the best performance)\. If set to \fB1\fP (the default), Homebrew will download in serial\.
+.RS
+.P
+\fIDefault:\fP \fB1\fP\&\.
+.RE
+.TP
 \fBHOMEBREW_EDITOR\fP
 Use this editor when editing a single formula, or several formulae in the same directory\.
 .RS
