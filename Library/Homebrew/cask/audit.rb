@@ -324,7 +324,6 @@ module Cask
       return if cask.deprecated? || cask.disabled?
       return if cask.version&.latest?
       return if (url = cask.url).nil?
-      return if block_url_offline?
       return if cask.livecheck_defined?
       return if livecheck_result == :auto_detected
 
@@ -348,7 +347,6 @@ module Cask
     sig { void }
     def audit_download_url_format
       return if (url = cask.url).nil?
-      return if block_url_offline?
 
       odebug "Auditing URL format"
       return unless bad_sourceforge_url?
@@ -360,7 +358,6 @@ module Cask
     sig { void }
     def audit_download_url_is_osdn
       return if (url = cask.url).nil?
-      return if block_url_offline?
       return unless bad_osdn_url?
 
       add_error "OSDN download urls are disabled.", location: url.location, strict_only: true
@@ -372,7 +369,6 @@ module Cask
     sig { void }
     def audit_unnecessary_verified
       return unless cask.url
-      return if block_url_offline?
       return unless verified_present?
       return unless url_match_homepage?
       return unless verified_matches_url?
@@ -385,7 +381,6 @@ module Cask
     sig { void }
     def audit_missing_verified
       return unless cask.url
-      return if block_url_offline?
       return if file_url?
       return if url_match_homepage?
       return if verified_present?
@@ -398,7 +393,6 @@ module Cask
     sig { void }
     def audit_no_match
       return if (url = cask.url).nil?
-      return if block_url_offline?
       return unless verified_present?
       return if verified_matches_url?
 
@@ -1189,13 +1183,6 @@ module Cask
     sig { returns(T::Boolean) }
     def file_url?
       URI(cask.url.to_s).scheme == "file"
-    end
-
-    sig { returns(T::Boolean) }
-    def block_url_offline?
-      return false if online?
-
-      !!cask.url&.from_block?
     end
 
     sig { returns(Tap) }

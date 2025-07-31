@@ -155,14 +155,6 @@ class Tap
   # @api public
   attr_reader :repository
 
-  # @deprecated
-  sig { returns(T::Boolean) }
-  def repo
-    # delete this whole function when removing odisabled
-    odisabled "Tap#repo", "Tap#repository"
-    repository
-  end
-
   # The name of this {Tap}. It combines {#user} and {#repository} with a slash.
   # {#name} is always in lowercase.
   # e.g. `user/repository`
@@ -277,14 +269,6 @@ class Tap
     @remote_repository ||= T.must(match[:remote_repository])
   end
 
-  # @deprecated
-  sig { returns(T.nilable(String)) }
-  def remote_repo
-    # delete this whole function when removing odisabled
-    odisabled "Tap#remote_repo", "Tap#remote_repository"
-    remote_repository
-  end
-
   # The default remote path to this {Tap}.
   sig { returns(String) }
   def default_remote
@@ -297,14 +281,6 @@ class Tap
                                    .delete_prefix(HOMEBREW_TAP_DIRECTORY.to_s)
                                    .tr("^A-Za-z0-9", "_")
                                    .upcase
-  end
-
-  # @deprecated
-  sig { returns(String) }
-  def repo_var_suffix
-    # delete this whole function when removing odisabled
-    odisabled "Tap#repo_var_suffix", "Tap#repository_var_suffix"
-    repository_var_suffix
   end
 
   # Check whether this {Tap} is a Git repository.

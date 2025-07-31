@@ -2796,24 +2796,6 @@ class Formula
     self.class.on_system_blocks_exist? || @on_system_blocks_exist
   end
 
-  sig {
-    params(
-      verify_download_integrity: T::Boolean,
-      timeout:                   T.nilable(T.any(Integer, Float)),
-      quiet:                     T::Boolean,
-    ).returns(Pathname)
-  }
-  def fetch(verify_download_integrity: true, timeout: nil, quiet: false)
-    odisabled "Formula#fetch", "Resource#fetch on Formula#resource"
-    active_spec.fetch(verify_download_integrity:, timeout:, quiet:)
-  end
-
-  sig { params(filename: T.any(Pathname, String)).void }
-  def verify_download_integrity(filename)
-    odisabled "Formula#verify_download_integrity", "Resource#verify_download_integrity on Formula#resource"
-    active_spec.verify_download_integrity(filename)
-  end
-
   sig { params(keep_tmp: T::Boolean).returns(T.untyped) }
   def run_test(keep_tmp: false)
     @prefix_returns_versioned_prefix = T.let(true, T.nilable(T::Boolean))
@@ -2909,22 +2891,15 @@ class Formula
   # @api public
   sig {
     params(
-      paths:            T.any(T::Enumerable[T.any(String, Pathname)], String, Pathname),
-      before:           T.nilable(T.any(Pathname, Regexp, String)),
-      after:            T.nilable(T.any(Pathname, String, Symbol)),
-      old_audit_result: T.nilable(T::Boolean),
-      audit_result:     T::Boolean,
-      global:           T::Boolean,
-      block:            T.nilable(T.proc.params(s: StringInreplaceExtension).void),
+      paths:        T.any(T::Enumerable[T.any(String, Pathname)], String, Pathname),
+      before:       T.nilable(T.any(Pathname, Regexp, String)),
+      after:        T.nilable(T.any(Pathname, String, Symbol)),
+      audit_result: T::Boolean,
+      global:       T::Boolean,
+      block:        T.nilable(T.proc.params(s: StringInreplaceExtension).void),
     ).void
   }
-  def inreplace(paths, before = nil, after = nil, old_audit_result = nil, audit_result: true, global: true, &block)
-    # NOTE: must check for `#nil?` and not `#blank?`, or else `old_audit_result = false` will not call `odeprecated`.
-    unless old_audit_result.nil?
-      odisabled "inreplace(paths, before, after, #{old_audit_result})",
-                "inreplace(paths, before, after, audit_result: #{old_audit_result})"
-      audit_result = old_audit_result
-    end
+  def inreplace(paths, before = nil, after = nil, audit_result: true, global: true, &block)
     Utils::Inreplace.inreplace(paths, before, after, audit_result:, global:, &block)
   rescue Utils::Inreplace::Error => e
     onoe e.to_s
@@ -3558,7 +3533,7 @@ class Formula
     # and `false` otherwise.
     sig { returns(T::Boolean) }
     def livecheckable?
-      odeprecated "`livecheckable?`", "`livecheck_defined?`"
+      odisabled "`livecheckable?`", "`livecheck_defined?`"
       @livecheck_defined == true
     end
 
