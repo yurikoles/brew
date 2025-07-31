@@ -1320,6 +1320,7 @@ class Formula
       path = Pathname.new(path)
       path.extend(InstallRenamed)
       path.cp_path_sub(bottle_prefix, HOMEBREW_PREFIX)
+      path
     end
   end
 
