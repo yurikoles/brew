@@ -4043,6 +4043,15 @@ command execution e.g. `$(cat file)`.
 : Use this bearer token for authenticating with a Docker registry proxying
   GitHub Packages. Preferred over `$HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN`.
 
+`HOMEBREW_DOWNLOAD_CONCURRENCY`
+
+: If set, Homebrew will download in parallel using this many concurrent
+  connections. Setting to `auto` will use twice the number of available CPU
+  cores (what our benchmarks showed to produce the best performance). If set to
+  `1` (the default), Homebrew will download in serial.
+  
+  *Default:* `1`.
+
 `HOMEBREW_EDITOR`
 
 : Use this editor when editing a single formula, or several formulae in the same

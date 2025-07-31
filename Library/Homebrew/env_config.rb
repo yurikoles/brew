@@ -182,6 +182,13 @@ module Homebrew
         description: "Use this bearer token for authenticating with a Docker registry proxying GitHub Packages. " \
                      "Preferred over `$HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN`.",
       },
+      HOMEBREW_DOWNLOAD_CONCURRENCY:             {
+        description: "If set, Homebrew will download in parallel using this many concurrent connections. " \
+                     "Setting to `auto` will use twice the number of available CPU cores " \
+                     "(what our benchmarks showed to produce the best performance). " \
+                     "If set to `1` (the default), Homebrew will download in serial.",
+        default:     1,
+      },
       HOMEBREW_EDITOR:                           {
         description:  "Use this editor when editing a single formula, or several formulae in the " \
                       "same directory." \
@@ -633,7 +640,6 @@ module Homebrew
 
     sig { returns(Integer) }
     def download_concurrency
-      # TODO: document this variable when ready to publicly announce it.
       concurrency = ENV.fetch("HOMEBREW_DOWNLOAD_CONCURRENCY", 1)
       concurrency = if concurrency == "auto"
         require "os"
