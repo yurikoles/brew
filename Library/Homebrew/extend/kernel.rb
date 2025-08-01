@@ -234,13 +234,8 @@ module Kernel
     odeprecated(method, replacement, disable: true, disable_on:, disable_for_developers:, caller:)
   end
 
-  sig { params(formula: Formula).returns(String) }
-  def pretty_installed(formula)
-    pretty_installed_string(formula.to_s)
-  end
-
   sig { params(string: String).returns(String) }
-  def pretty_installed_string(string)
+  def pretty_installed(string)
     if !$stdout.tty?
       string
     elsif Homebrew::EnvConfig.no_emoji?
@@ -250,13 +245,8 @@ module Kernel
     end
   end
 
-  sig { params(formula: Formula).returns(String) }
-  def pretty_outdated(formula)
-    pretty_outdated_string(formula.to_s)
-  end
-
   sig { params(string: String).returns(String) }
-  def pretty_outdated_string(string)
+  def pretty_outdated(string)
     if !$stdout.tty?
       string
     elsif Homebrew::EnvConfig.no_emoji?
@@ -266,13 +256,8 @@ module Kernel
     end
   end
 
-  sig { params(formula: Formula).returns(String) }
-  def pretty_uninstalled(formula)
-    pretty_uninstalled_string(formula.to_s)
-  end
-
   sig { params(string: String).returns(String) }
-  def pretty_uninstalled_string(string)
+  def pretty_uninstalled(string)
     if !$stdout.tty?
       string
     elsif Homebrew::EnvConfig.no_emoji?

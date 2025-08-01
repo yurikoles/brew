@@ -371,9 +371,9 @@ module Homebrew
       def decorate_dependencies(dependencies)
         deps_status = dependencies.map do |dep|
           if dep.satisfied?([])
-            pretty_installed_string(dep_display_s(dep))
+            pretty_installed(dep_display_s(dep))
           else
-            pretty_uninstalled_string(dep_display_s(dep))
+            pretty_uninstalled(dep_display_s(dep))
           end
         end
         deps_status.join(", ")
