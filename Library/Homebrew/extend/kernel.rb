@@ -449,7 +449,7 @@ module Kernel
   }
   def ensure_formula_installed!(formula_name, reason: "", latest: false,
                                 output_to_stderr: true, quiet: false)
-    # odeprecated "ensure_formula_installed!", "Formula[\"#{formula_name}\"].ensure_installed!"
+    odeprecated "ensure_formula_installed!", "Formula[\"#{formula_name}\"].ensure_installed!"
 
     if output_to_stderr || quiet
       file = if quiet
