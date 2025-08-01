@@ -137,12 +137,13 @@ class Resource
         verify_download_integrity: T::Boolean,
         timeout:                   T.nilable(T.any(Integer, Float)),
         quiet:                     T::Boolean,
+        skip_patches:              T::Boolean,
       ).returns(Pathname)
   }
-  def fetch(verify_download_integrity: true, timeout: nil, quiet: false)
-    fetch_patches
+  def fetch(verify_download_integrity: true, timeout: nil, quiet: false, skip_patches: false)
+    fetch_patches unless skip_patches
 
-    super
+    super(verify_download_integrity:, timeout:, quiet:)
   end
 
   # {Livecheck} can be used to check for newer versions of the software.
@@ -345,6 +346,9 @@ class Resource
     sig { override.returns(String) }
     def download_type = "Bottle Manifest"
 
+    sig { override.returns(String) }
+    def name = bottle.name
+
     private
 
     def manifest_annotations
@@ -400,6 +404,15 @@ class Resource
 
     sig { override.returns(String) }
     def download_type = "Patch"
+
+    sig { override.returns(String) }
+    def name
+      if (url = self.url)
+        url.to_s.split("/").last
+      else
+        super
+      end
+    end
   end
 end
 

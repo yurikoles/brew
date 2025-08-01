@@ -60,7 +60,11 @@ module Homebrew
 
       already_downloaded = downloadable.downloaded?
 
-      download = downloadable.fetch(verify_download_integrity: false, timeout:, quiet:)
+      download = if downloadable.is_a?(Resource) && (resource = T.cast(downloadable, Resource))
+        resource.fetch(verify_download_integrity: false, timeout:, quiet:, skip_patches: true)
+      else
+        downloadable.fetch(verify_download_integrity: false, timeout:, quiet:)
+      end
 
       return download unless download.file?
 
