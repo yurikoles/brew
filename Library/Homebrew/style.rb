@@ -320,12 +320,6 @@ module Homebrew
       HOMEBREW_REPOSITORY.glob(".github/workflows/*.yml")
     end
 
-    def self.rubocop
-      require "formula"
-      ensure_formula_installed!("rubocop", latest: true,
-                                           reason: "Ruby style checks").opt_bin/"rubocop"
-    end
-
     def self.shellcheck
       require "formula"
       ensure_formula_installed!("shellcheck", latest: true,
