@@ -234,36 +234,36 @@ module Kernel
     odeprecated(method, replacement, disable: true, disable_on:, disable_for_developers:, caller:)
   end
 
-  sig { params(formula: T.any(String, Formula)).returns(String) }
-  def pretty_installed(formula)
+  sig { params(string: String).returns(String) }
+  def pretty_installed(string)
     if !$stdout.tty?
-      formula.to_s
+      string
     elsif Homebrew::EnvConfig.no_emoji?
-      Formatter.success("#{Tty.bold}#{formula} (installed)#{Tty.reset}")
+      Formatter.success("#{Tty.bold}#{string} (installed)#{Tty.reset}")
     else
-      "#{Tty.bold}#{formula} #{Formatter.success("✔")}#{Tty.reset}"
+      "#{Tty.bold}#{string} #{Formatter.success("✔")}#{Tty.reset}"
     end
   end
 
-  sig { params(formula: T.any(String, Formula)).returns(String) }
-  def pretty_outdated(formula)
+  sig { params(string: String).returns(String) }
+  def pretty_outdated(string)
     if !$stdout.tty?
-      formula.to_s
+      string
     elsif Homebrew::EnvConfig.no_emoji?
-      Formatter.error("#{Tty.bold}#{formula} (outdated)#{Tty.reset}")
+      Formatter.error("#{Tty.bold}#{string} (outdated)#{Tty.reset}")
     else
-      "#{Tty.bold}#{formula} #{Formatter.warning("⚠")}#{Tty.reset}"
+      "#{Tty.bold}#{string} #{Formatter.warning("⚠")}#{Tty.reset}"
     end
   end
 
-  sig { params(formula: T.any(String, Formula)).returns(String) }
-  def pretty_uninstalled(formula)
+  sig { params(string: String).returns(String) }
+  def pretty_uninstalled(string)
     if !$stdout.tty?
-      formula.to_s
+      string
     elsif Homebrew::EnvConfig.no_emoji?
-      Formatter.error("#{Tty.bold}#{formula} (uninstalled)#{Tty.reset}")
+      Formatter.error("#{Tty.bold}#{string} (uninstalled)#{Tty.reset}")
     else
-      "#{Tty.bold}#{formula} #{Formatter.error("✘")}#{Tty.reset}"
+      "#{Tty.bold}#{string} #{Formatter.error("✘")}#{Tty.reset}"
     end
   end
 
