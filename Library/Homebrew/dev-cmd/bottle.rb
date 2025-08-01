@@ -354,7 +354,7 @@ module Homebrew
         end
         return if gnu_tar_formula.blank?
 
-        ensure_formula_installed!(gnu_tar_formula, reason: "bottling")
+        ensure_formula_installed!(gnu_tar_formula.name, reason: "bottling")
 
         gnu_tar_formula
       end
