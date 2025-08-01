@@ -289,15 +289,27 @@ class Pathname
   end
 
   # Writes an exec script that sets environment variables.
-  sig { params(target: Pathname, args: T.any(T::Array[String], T::Hash[String, String]), env: T.nilable(T::Hash[String, String])).void }
-  def write_env_script(target, args, env = nil)
-    unless env
-      env = args
-      args = nil
+  sig {
+    params(target:      Pathname,
+           args_or_env: T.any(String, T::Array[String], T::Hash[String, String], T::Hash[Symbol, String]),
+           env:         T.any(T::Hash[String, String], T::Hash[Symbol, String])).void
+  }
+  def write_env_script(target, args_or_env, env = T.unsafe(nil))
+    args = if env.nil?
+      env = args_or_env if args_or_env.is_a?(Hash)
+
+      nil
+    elsif args_or_env.is_a?(Array)
+      args_or_env.join(" ")
+    else
+      T.cast(args_or_env, T.nilable(String))
     end
+
     env_export = +""
     env.each { |key, value| env_export << "#{key}=\"#{value}\" " }
+
     dirname.mkpath
+
     write <<~SH
       #!/bin/bash
       #{env_export}exec "#{target}" #{args} "$@"
