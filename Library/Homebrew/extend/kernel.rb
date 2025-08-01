@@ -442,10 +442,10 @@ module Kernel
   # Ensure the given formula is installed
   # This is useful for installing a utility formula (e.g. `shellcheck` for `brew style`)
   sig {
-    params(formula_or_name: T.any(String, Formula), reason: String, latest: T::Boolean, output_to_stderr: T::Boolean,
+    params(formula_name: String, reason: String, latest: T::Boolean, output_to_stderr: T::Boolean,
            quiet: T::Boolean).returns(Formula)
   }
-  def ensure_formula_installed!(formula_or_name, reason: "", latest: false,
+  def ensure_formula_installed!(formula_name, reason: "", latest: false,
                                 output_to_stderr: true, quiet: false)
     if output_to_stderr || quiet
       file = if quiet
@@ -455,19 +455,14 @@ module Kernel
       end
       # Call this method itself with redirected stdout
       redirect_stdout(file) do
-        return ensure_formula_installed!(formula_or_name, latest:,
+        return ensure_formula_installed!(formula_name, latest:,
                                          reason:, output_to_stderr: false)
       end
     end
 
     require "formula"
 
-    formula = if formula_or_name.is_a?(Formula)
-      formula_or_name
-    else
-      Formula[formula_or_name]
-    end
-
+    formula = Formula[formula_name]
     reason = " for #{reason}" if reason.present?
 
     unless formula.any_version_installed?
