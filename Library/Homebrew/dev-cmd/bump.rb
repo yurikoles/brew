@@ -135,10 +135,7 @@ module Homebrew
 
           if args.repology? && !Utils::Curl.curl_supports_tls13?
             begin
-              unless HOMEBREW_BREWED_CURL_PATH.exist?
-                require "formula"
-                ensure_formula_installed!("curl", reason: "Repology queries")
-              end
+              Formula["curl"].ensure_installed!(reason: "Repology queries") unless HOMEBREW_BREWED_CURL_PATH.exist?
             rescue FormulaUnavailableError
               opoo "A newer `curl` is required for Repology queries."
             end

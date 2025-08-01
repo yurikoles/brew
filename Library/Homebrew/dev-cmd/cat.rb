@@ -31,8 +31,7 @@ module Homebrew
             ENV["BAT_CONFIG_PATH"] = Homebrew::EnvConfig.bat_config_path
             ENV["BAT_THEME"] = Homebrew::EnvConfig.bat_theme
             require "formula"
-            ensure_formula_installed!(
-              "bat",
+            Formula["bat"].ensure_installed!(
               reason:           "displaying <formula>/<cask> source",
               # The user might want to capture the output of `brew cat ...`
               # Redirect stdout to stderr

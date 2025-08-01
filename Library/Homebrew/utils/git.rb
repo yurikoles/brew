@@ -104,7 +104,7 @@ module Utils
           raise "Refusing to install Git on a generic OS." if ENV["HOMEBREW_TEST_GENERIC_OS"]
 
           require "formula"
-          ensure_formula_installed!("git")
+          Formula["git"].ensure_installed!
           clear_available_cache
         rescue
           raise "Git is unavailable"

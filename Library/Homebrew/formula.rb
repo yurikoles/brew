@@ -302,6 +302,44 @@ class Formula
     Requirement.clear_cache
   end
 
+  # Ensure the given formula is installed
+  # This is useful for installing a utility formula (e.g. `shellcheck` for `brew style`)
+  sig {
+    params(
+      reason:           String,
+      latest:           T::Boolean,
+      output_to_stderr: T::Boolean,
+      quiet:            T::Boolean,
+    ).returns(T.self_type)
+  }
+  def ensure_installed!(reason: "", latest: false, output_to_stderr: true, quiet: false)
+    if output_to_stderr || quiet
+      file = if quiet
+        File::NULL
+      else
+        $stderr
+      end
+      # Call this method itself with redirected stdout
+      redirect_stdout(file) do
+        return ensure_installed!(latest:, reason:, output_to_stderr: false)
+      end
+    end
+
+    reason = " for #{reason}" if reason.present?
+
+    unless any_version_installed?
+      ohai "Installing `#{name}`#{reason}..."
+      safe_system HOMEBREW_BREW_FILE, "install", "--formula", full_name
+    end
+
+    if latest && !latest_version_installed?
+      ohai "Upgrading `#{name}`#{reason}..."
+      safe_system HOMEBREW_BREW_FILE, "upgrade", "--formula", full_name
+    end
+
+    self
+  end
+
   private
 
   # Allow full name logic to be re-used between names, aliases and installed aliases.
