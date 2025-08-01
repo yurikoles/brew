@@ -153,7 +153,7 @@ module PyPI
         @version ||= T.let(match[2], T.nilable(String))
       elsif @is_url
         require "formula"
-        ensure_formula_installed!(@python_name)
+        Formula[@python_name].ensure_installed!
 
         # The URL might be a source distribution hosted somewhere;
         # try and use `pip install -q --no-deps --dry-run --report ...` to get its
@@ -262,7 +262,7 @@ module PyPI
       odie "Missing #{missing_msg}" unless install_dependencies
       ohai "Installing #{missing_msg}"
       require "formula"
-      missing_dependencies.each(&:ensure_formula_installed!)
+      missing_dependencies.each { |dep| Formula[dep].ensure_installed! }
     end
 
     python_deps = formula.deps
@@ -337,7 +337,7 @@ module PyPI
     end
 
     require "formula"
-    ensure_formula_installed!(python_name)
+    Formula[python_name].ensure_installed!
 
     # Resolve the dependency tree of all input packages
     show_info = !print_only && !silent

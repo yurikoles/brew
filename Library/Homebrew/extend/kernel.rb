@@ -449,6 +449,8 @@ module Kernel
   }
   def ensure_formula_installed!(formula_name, reason: "", latest: false,
                                 output_to_stderr: true, quiet: false)
+    # odeprecated "ensure_formula_installed!", "Formula[\"#{formula_name}\"].ensure_installed!"
+
     if output_to_stderr || quiet
       file = if quiet
         File::NULL
@@ -496,7 +498,7 @@ module Kernel
     return executable if executable.exist?
 
     require "formula"
-    ensure_formula_installed!(formula_name, reason:, latest:).opt_bin/name
+    Formula[formula_name].ensure_installed!(reason:, latest:).opt_bin/name
   end
 
   sig { returns(T::Array[Pathname]) }
