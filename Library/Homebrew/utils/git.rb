@@ -103,6 +103,7 @@ module Utils
           # and will also likely fail due to `OS::Linux` and `OS::Mac` being undefined.
           raise "Refusing to install Git on a generic OS." if ENV["HOMEBREW_TEST_GENERIC_OS"]
 
+          require "formula"
           ensure_formula_installed!("git")
           clear_available_cache
         rescue

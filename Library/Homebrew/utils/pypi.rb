@@ -152,6 +152,7 @@ module PyPI
         @extras ||= T.let([], T.nilable(T::Array[String]))
         @version ||= T.let(match[2], T.nilable(String))
       elsif @is_url
+        require "formula"
         ensure_formula_installed!(@python_name)
 
         # The URL might be a source distribution hosted somewhere;
@@ -260,6 +261,7 @@ module PyPI
       missing_msg = "formulae required to update \"#{formula.name}\" resources: #{missing_dependencies.join(", ")}"
       odie "Missing #{missing_msg}" unless install_dependencies
       ohai "Installing #{missing_msg}"
+      require "formula"
       missing_dependencies.each(&:ensure_formula_installed!)
     end
 
@@ -334,6 +336,7 @@ module PyPI
       end
     end
 
+    require "formula"
     ensure_formula_installed!(python_name)
 
     # Resolve the dependency tree of all input packages

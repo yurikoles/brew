@@ -441,6 +441,8 @@ module Kernel
 
   # Ensure the given formula is installed
   # This is useful for installing a utility formula (e.g. `shellcheck` for `brew style`)
+  # NOTE: One must `require "formula"` before using this method. Doing `require "formula"` inside the method
+  # doesn't help, and therefore is useless to add.
   sig {
     params(formula_name: String, reason: String, latest: T::Boolean, output_to_stderr: T::Boolean,
            quiet: T::Boolean).returns(Formula)
@@ -460,8 +462,8 @@ module Kernel
       end
     end
 
-    require "formula"
-
+    # Do not `require "formula"` here. It will mask misuse of this method when
+    # it is called without doing `require "formula"` first.
     formula = Formula[formula_name]
     reason = " for #{reason}" if reason.present?
 
@@ -493,6 +495,7 @@ module Kernel
     ].compact.first
     return executable if executable.exist?
 
+    require "formula"
     ensure_formula_installed!(formula_name, reason:, latest:).opt_bin/name
   end
 
