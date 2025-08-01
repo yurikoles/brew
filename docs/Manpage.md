@@ -3571,6 +3571,10 @@ and Linux workers.
 
 : Clean all state from the Homebrew directory. Use with care!
 
+`--concurrent-downloads`
+
+: Invoke `brew` with `HOMEBREW_DOWNLOAD_CONCURRENCY=auto`.
+
 `--skip-setup`
 
 : Don't check if the local system is set up correctly.
