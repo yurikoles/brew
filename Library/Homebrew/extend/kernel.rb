@@ -223,16 +223,15 @@ module Kernel
   end
 
   sig {
-    params(method: String, replacement: T.nilable(T.any(String, Symbol)), disable: T::Boolean,
+    params(method: String, replacement: T.nilable(T.any(String, Symbol)),
            disable_on: T.nilable(Time), disable_for_developers: T::Boolean, caller: T::Array[String]).void
   }
   def odisabled(method, replacement = nil,
-                disable:                false,
                 disable_on:             nil,
                 disable_for_developers: true,
                 caller:                 send(:caller))
     # This odeprecated should stick around indefinitely.
-    odeprecated(method, replacement, disable:, disable_on:, disable_for_developers:, caller:)
+    odeprecated(method, replacement, disable: true, disable_on:, disable_for_developers:, caller:)
   end
 
   sig { params(formula: T.any(String, Formula)).returns(String) }
