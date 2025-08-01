@@ -903,7 +903,7 @@ class ReporterHub
   sig { void }
   def dump_deleted_formula_report
     formulae = select_formula_or_cask(:D).sort.filter_map do |name|
-      pretty_uninstalled(name) if installed?(name)
+      pretty_uninstalled_string(name) if installed?(name)
     end
 
     output_dump_formula_or_cask_report "Deleted Installed Formulae", formulae
@@ -915,7 +915,7 @@ class ReporterHub
 
     casks = select_formula_or_cask(:DC).sort.filter_map do |name|
       name = T.must(name.split("/").last)
-      pretty_uninstalled(name) if cask_installed?(name)
+      pretty_uninstalled_string(name) if cask_installed?(name)
     end
 
     output_dump_formula_or_cask_report "Deleted Installed Casks", casks
