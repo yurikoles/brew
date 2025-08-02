@@ -13,7 +13,6 @@ module Homebrew
         description <<~EOS
           Display the source of a <formula> or <cask>.
         EOS
-
         switch "--formula", "--formulae",
                description: "Treat all named arguments as formulae."
         switch "--cask", "--casks",

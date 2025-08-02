@@ -17,7 +17,6 @@ module Homebrew
         description <<~EOS
           Generate the template files for a new tap.
         EOS
-
         switch "--no-git",
                description: "Don't initialize a Git repository for the tap."
         flag   "--pull-label=",

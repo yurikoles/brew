@@ -17,19 +17,19 @@ module Homebrew
                description: "Query from the specified days ago until the present. The default is 30 days."
         switch "--install",
                description: "Output the number of specifically requested installations or installation as " \
-                            "dependencies of the formula. This is the default."
+                            "dependencies of formulae. This is the default."
+        switch "--install-on-request",
+               description: "Output the number of specifically requested installations of formulae."
         switch "--cask-install",
                description: "Output the number of installations of casks."
-        switch "--install-on-request",
-               description: "Output the number of specifically requested installations of the formula."
         switch "--build-error",
-               description: "Output the number of build errors for the formulae."
+               description: "Output the number of build errors for formulae."
         switch "--os-version",
-               description: "Output OS versions."
+               description: "Output the number of events by OS name and version."
         switch "--homebrew-devcmdrun-developer",
-               description: "Output devcmdrun/HOMEBREW_DEVELOPER."
+               description: "Output the number of devcmdrun/HOMEBREW_DEVELOPER events."
         switch "--homebrew-os-arch-ci",
-               description: "Output OS/Architecture/CI."
+               description: "Output the number of OS/Architecture/CI events."
         switch "--homebrew-prefixes",
                description: "Output Homebrew prefixes."
         switch "--homebrew-versions",
@@ -47,10 +47,12 @@ module Homebrew
                             "Homebrew/homebrew-core formulae."
         switch "--setup",
                description: "Install the necessary gems, require them and exit without running a query."
+
         conflicts "--install", "--cask-install", "--install-on-request", "--build-error", "--os-version",
                   "--homebrew-devcmdrun-developer", "--homebrew-os-arch-ci", "--homebrew-prefixes",
                   "--homebrew-versions", "--brew-command-run", "--brew-command-run-options", "--brew-test-bot-test"
         conflicts "--json", "--all-core-formulae-json", "--setup"
+
         named_args :none
       end
 
