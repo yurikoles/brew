@@ -82,8 +82,21 @@ RSpec.describe RuboCop::Cop::FormulaAudit::ComponentsRedundancy do
           end
 
           head do
-          ^^^^^^^ FormulaAudit/ComponentsRedundancy: `head do` should not be present with only `url`
+          ^^^^^^^ FormulaAudit/ComponentsRedundancy: `head do` should not be present with only url/branch
             url "https://brew.sh/foo.git"
+          end
+        end
+      RUBY
+    end
+
+    it "reports an offense if `head do` is present with only `url` and `branch`" do
+      expect_offense(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+
+          head do
+          ^^^^^^^ FormulaAudit/ComponentsRedundancy: `head do` should not be present with only url/branch
+            url "https://brew.sh/foo.git", branch: "develop"
           end
         end
       RUBY
