@@ -693,7 +693,7 @@ __fish_brew_complete_arg 'desc; and not __fish_seen_argument -l formula -l formu
 __fish_brew_complete_cmd 'determine-test-runners' 'Determines the runners used to test formulae or their dependents'
 __fish_brew_complete_arg 'determine-test-runners' -l all-supported -d 'Instead of selecting runners based on the chosen formula, return all supported runners'
 __fish_brew_complete_arg 'determine-test-runners' -l debug -d 'Display any debugging information'
-__fish_brew_complete_arg 'determine-test-runners' -l dependents -d 'Determine runners for testing dependents. Requires `--eval-all` or `$HOMEBREW_EVAL_ALL` to be set'
+__fish_brew_complete_arg 'determine-test-runners' -l dependents -d 'Determine runners for testing dependents. Requires `--eval-all` or `HOMEBREW_EVAL_ALL=1` to be set'
 __fish_brew_complete_arg 'determine-test-runners' -l eval-all -d 'Evaluate all available formulae, whether installed or not, to determine testing dependents. Enabled by default if `$HOMEBREW_EVAL_ALL` is set'
 __fish_brew_complete_arg 'determine-test-runners' -l help -d 'Show this message'
 __fish_brew_complete_arg 'determine-test-runners' -l quiet -d 'Make some output more quiet'

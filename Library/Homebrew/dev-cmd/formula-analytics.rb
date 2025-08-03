@@ -109,10 +109,10 @@ module Homebrew
 
         return if args.setup?
 
-        odie "HOMEBREW_NO_ANALYTICS is set!" if ENV["HOMEBREW_NO_ANALYTICS"]
+        odie "`$HOMEBREW_NO_ANALYTICS` is set!" if ENV["HOMEBREW_NO_ANALYTICS"]
 
         token = ENV.fetch("HOMEBREW_INFLUXDB_TOKEN", nil)
-        odie "No InfluxDB credentials found in HOMEBREW_INFLUXDB_TOKEN!" unless token
+        odie "No InfluxDB credentials found in `$HOMEBREW_INFLUXDB_TOKEN`!" unless token
 
         client = InfluxDBClient3.new(
           token:,
@@ -203,7 +203,7 @@ module Homebrew
             client.query(query:, language: "sql").to_batches
           rescue PyCall::PyError => e
             if e.message.include?("message: unauthenticated")
-              odie "Could not authenticate with InfluxDB! Please check your HOMEBREW_INFLUXDB_TOKEN!"
+              odie "Could not authenticate with InfluxDB! Please check your `$HOMEBREW_INFLUXDB_TOKEN`!"
             end
             raise
           end

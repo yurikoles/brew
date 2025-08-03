@@ -143,7 +143,7 @@ module Homebrew
             unless eval_all
               # This odisabled should probably stick around indefinitely.
               odisabled "brew audit",
-                        "brew audit --eval-all or HOMEBREW_EVAL_ALL"
+                        "`brew audit --eval-all` or set `HOMEBREW_EVAL_ALL=1`"
             end
             no_named_args = true
             [

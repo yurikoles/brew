@@ -97,7 +97,7 @@ module Formulary
 
   using PathnameWriteMkpath
   def self.load_formula(name, path, contents, namespace, flags:, ignore_errors:)
-    raise "Formula loading disabled by HOMEBREW_DISABLE_LOAD_FORMULA!" if Homebrew::EnvConfig.disable_load_formula?
+    raise "Formula loading disabled by `$HOMEBREW_DISABLE_LOAD_FORMULA`!" if Homebrew::EnvConfig.disable_load_formula?
 
     require "formula"
     require "ignorable"

@@ -475,7 +475,7 @@ module Homebrew
                           which resolves to: #{HOMEBREW_CELLAR.realpath}
 
           The recommended Homebrew installations are either:
-          (A) Have Cellar be a real directory inside of your HOMEBREW_PREFIX
+          (A) Have Cellar be a real directory inside of your `$HOMEBREW_PREFIX`
           (B) Symlink "bin/brew" into your prefix, but don't symlink "Cellar".
 
           Older installations of Homebrew may have created a symlinked Cellar, but this can
