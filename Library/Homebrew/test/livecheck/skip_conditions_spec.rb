@@ -82,7 +82,7 @@ RSpec.describe Homebrew::Livecheck::SkipConditions do
       basic:                   Cask::Cask.new("test") do
         version "0.0.1,2"
 
-        url "https://brew.sh/test-0.0.1.tgz"
+        url "https://brew.sh/test-#{version.csv.first}.tgz"
         name "Test"
         desc "Test cask"
         homepage "https://brew.sh"
@@ -96,7 +96,7 @@ RSpec.describe Homebrew::Livecheck::SkipConditions do
         version "0.0.1"
         sha256 :no_check
 
-        url "https://brew.sh/test-0.0.1.tgz"
+        url "https://brew.sh/test-#{version}.tgz"
         name "Test Deprecate"
         desc "Deprecated test cask"
         homepage "https://brew.sh"
@@ -107,7 +107,7 @@ RSpec.describe Homebrew::Livecheck::SkipConditions do
         version "0.0.1"
         sha256 :no_check
 
-        url "https://brew.sh/test-0.0.1.tgz"
+        url "https://brew.sh/test-#{version}.tgz"
         name "Test Disable"
         desc "Disabled test cask"
         homepage "https://brew.sh"
@@ -127,7 +127,7 @@ RSpec.describe Homebrew::Livecheck::SkipConditions do
       extract_plist:           Cask::Cask.new("test_extract_plist_skip") do
         version "0.0.1"
 
-        url "https://brew.sh/test-0.0.1.tgz"
+        url "https://brew.sh/test-#{version}.tgz"
         name "Test ExtractPlist Skip"
         desc "Skipped test cask"
         homepage "https://brew.sh"
@@ -157,7 +157,7 @@ RSpec.describe Homebrew::Livecheck::SkipConditions do
       skip:                    Cask::Cask.new("test_skip") do
         version "0.0.1"
 
-        url "https://brew.sh/test-0.0.1.tgz"
+        url "https://brew.sh/test-#{version}.tgz"
         name "Test Skip"
         desc "Skipped test cask"
         homepage "https://brew.sh"
@@ -169,7 +169,7 @@ RSpec.describe Homebrew::Livecheck::SkipConditions do
       skip_with_message:       Cask::Cask.new("test_skip_with_message") do
         version "0.0.1"
 
-        url "https://brew.sh/test-0.0.1.tgz"
+        url "https://brew.sh/test-#{version}.tgz"
         name "Test Skip"
         desc "Skipped test cask"
         homepage "https://brew.sh"
