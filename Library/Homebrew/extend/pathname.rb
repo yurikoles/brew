@@ -271,7 +271,7 @@ class Pathname
   end
 
   # Writes an exec script in this folder for each target pathname.
-  sig { params(targets: T::Array[Pathname]).void }
+  sig { params(targets: T.any(T::Array[T.any(String, Pathname)], String, Pathname)).void }
   def write_exec_script(*targets)
     targets.flatten!
     if targets.empty?
