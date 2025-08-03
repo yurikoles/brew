@@ -389,10 +389,10 @@ module Kernel
     editor
   end
 
-  sig { params(filename: T.any(String, Pathname)).void }
-  def exec_editor(filename)
-    puts "Editing #{filename}"
-    with_homebrew_path { safe_system(*which_editor.shellsplit, filename) }
+  sig { params(filenames: T.any(String, Pathname)).void }
+  def exec_editor(*filenames)
+    puts "Editing #{filenames.join "\n"}"
+    with_homebrew_path { safe_system(*which_editor.shellsplit, *filenames) }
   end
 
   sig { params(args: T.any(String, Pathname)).void }
