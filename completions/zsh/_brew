@@ -875,7 +875,7 @@ _brew_determine_test_runners() {
   _arguments \
     '(--dependents)--all-supported[Instead of selecting runners based on the chosen formula, return all supported runners]' \
     '--debug[Display any debugging information]' \
-    '(--all-supported)--dependents[Determine runners for testing dependents. Requires `--eval-all` or `$HOMEBREW_EVAL_ALL` to be set]' \
+    '(--all-supported)--dependents[Determine runners for testing dependents. Requires `--eval-all` or `HOMEBREW_EVAL_ALL=1` to be set]' \
     '--eval-all[Evaluate all available formulae, whether installed or not, to determine testing dependents. Enabled by default if `$HOMEBREW_EVAL_ALL` is set]' \
     '--help[Show this message]' \
     '--quiet[Make some output more quiet]' \

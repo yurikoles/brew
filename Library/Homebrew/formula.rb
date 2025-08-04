@@ -1973,7 +1973,7 @@ class Formula
   sig { params(source: Pathname, target: Pathname).returns(String) }
   def rpath(source: bin, target: lib)
     unless target.to_s.start_with?(HOMEBREW_PREFIX)
-      raise "rpath `target` should only be used for paths inside HOMEBREW_PREFIX!"
+      raise "rpath `target` should only be used for paths inside `$HOMEBREW_PREFIX`!"
     end
 
     "#{loader_path}/#{target.relative_path_from(source)}"
@@ -2244,7 +2244,7 @@ class Formula
   sig { params(eval_all: T::Boolean).returns(T::Array[Formula]) }
   def self.all(eval_all: false)
     if !eval_all && !Homebrew::EnvConfig.eval_all?
-      raise ArgumentError, "Formula#all without `--eval-all` or HOMEBREW_EVAL_ALL"
+      raise ArgumentError, "Formula#all cannot be used without `--eval-all` or `HOMEBREW_EVAL_ALL=1`"
     end
 
     (core_names + tap_files).filter_map do |name_or_file|

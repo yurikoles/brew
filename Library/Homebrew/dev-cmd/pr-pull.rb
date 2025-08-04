@@ -481,7 +481,7 @@ module Homebrew
 
           name = "#{tap.name}/#{File.basename(line.chomp, ".rb")}"
           if Homebrew::EnvConfig.disable_load_formula?
-            opoo "Can't check if updated bottles are necessary as HOMEBREW_DISABLE_LOAD_FORMULA is set!"
+            opoo "Can't check if updated bottles are necessary as `$HOMEBREW_DISABLE_LOAD_FORMULA` is set!"
             break
           end
           begin
