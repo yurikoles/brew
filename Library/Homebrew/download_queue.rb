@@ -32,11 +32,11 @@ module Homebrew
     def fetch
       return if downloads.empty?
 
-      if concurrency == 1 || downloads.one?
+      if concurrency == 1
         downloads.each do |downloadable, promise|
           promise.wait!
         rescue ChecksumMismatchError => e
-          opoo "#{downloadable.download_type} reports different checksum: #{e.expected}"
+          opoo "#{downloadable.download_queue_type} reports different checksum: #{e.expected}"
           Homebrew.failed = true if downloadable.is_a?(Resource::Patch)
         rescue => e
           raise e unless bottle_manifest_error?(downloadable, e)
@@ -73,7 +73,7 @@ module Homebrew
             exception = future.reason if future.rejected?
             next 1 if bottle_manifest_error?(downloadable, exception)
 
-            message = "#{downloadable.download_type} #{downloadable.name}"
+            message = "#{downloadable.download_queue_type} #{downloadable.download_queue_name}"
             if tty
               stdout_print_and_flush "#{status} #{message}#{"\n" unless last}"
             elsif status
@@ -82,7 +82,7 @@ module Homebrew
 
             if future.rejected?
               if exception.is_a?(ChecksumMismatchError)
-                opoo "#{downloadable.download_type} reports different checksum: #{exception.expected}"
+                opoo "#{downloadable.download_queue_type} reports different checksum: #{exception.expected}"
                 Homebrew.failed = true if downloadable.is_a?(Resource::Patch)
                 next 2
               else

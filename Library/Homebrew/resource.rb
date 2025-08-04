@@ -57,19 +57,8 @@ class Resource
     patches.each { |p| p.owner = owner }
   end
 
-  # Removes /s from resource names; this allows Go package names
-  # to be used as resource names without confusing software that
-  # interacts with {download_name}, e.g. `github.com/foo/bar`.
-  def escaped_name
-    name.tr("/", "-")
-  end
-
-  def download_name
-    return owner.name if name.nil?
-    return escaped_name if owner.nil?
-
-    "#{owner.name}--#{escaped_name}"
-  end
+  sig { override.returns(String) }
+  def download_queue_type = "Resource"
 
   # Verifies download and unpacks it.
   # The block may call `|resource, staging| staging.retain!` to retain the staging
@@ -236,9 +225,6 @@ class Resource
     @url&.specs || {}.freeze
   end
 
-  sig { override.returns(String) }
-  def download_type = "Resource"
-
   protected
 
   def stage_resource(prefix, debug_symbols: false, &block)
@@ -246,6 +232,19 @@ class Resource
   end
 
   private
+
+  sig { override.returns(String) }
+  def download_name
+    return owner.name if name.nil?
+
+    # Removes /s from resource names; this allows Go package names
+    # to be used as resource names without confusing software that
+    # interacts with {download_name}, e.g. `github.com/foo/bar`.
+    escaped_name = name.tr("/", "-")
+    return escaped_name if owner.nil?
+
+    "#{owner.name}--#{escaped_name}"
+  end
 
   def determine_url_mirrors
     extra_urls = []
@@ -288,14 +287,10 @@ class Resource
   # A resource for a formula.
   class Formula < Resource
     sig { override.returns(String) }
-    def name
-      T.must(owner).name
-    end
+    def download_queue_type = "Formula"
 
     sig { override.returns(String) }
-    def download_name
-      name
-    end
+    def download_queue_name = "#{T.must(owner).name} (#{version})"
   end
 
   # A resource containing a Go package.
@@ -344,10 +339,10 @@ class Resource
     end
 
     sig { override.returns(String) }
-    def download_type = "Bottle Manifest"
+    def download_queue_type = "Bottle Manifest"
 
     sig { override.returns(String) }
-    def name = bottle.name
+    def download_queue_name = "#{bottle.name} (#{bottle.resource.version})"
 
     private
 
@@ -403,15 +398,15 @@ class Resource
     end
 
     sig { override.returns(String) }
-    def download_type = "Patch"
+    def download_queue_type = "Patch"
 
     sig { override.returns(String) }
-    def name
-      if (url = self.url)
-        url.to_s.split("/").last
-      else
-        super
+    def download_queue_name
+      if (last_url_component = url.to_s.split("/").last)
+        return last_url_component
       end
+
+      super
     end
   end
 end
