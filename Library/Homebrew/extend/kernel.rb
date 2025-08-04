@@ -439,49 +439,6 @@ module Kernel
     out.close
   end
 
-  # Ensure the given formula is installed
-  # This is useful for installing a utility formula (e.g. `shellcheck` for `brew style`)
-  # NOTE: One must `require "formula"` before using this method. Doing `require "formula"` inside the method
-  # doesn't help, and therefore is useless to add.
-  sig {
-    params(formula_name: String, reason: String, latest: T::Boolean, output_to_stderr: T::Boolean,
-           quiet: T::Boolean).returns(Formula)
-  }
-  def ensure_formula_installed!(formula_name, reason: "", latest: false,
-                                output_to_stderr: true, quiet: false)
-    odeprecated "ensure_formula_installed!", "Formula[\"#{formula_name}\"].ensure_installed!"
-
-    if output_to_stderr || quiet
-      file = if quiet
-        File::NULL
-      else
-        $stderr
-      end
-      # Call this method itself with redirected stdout
-      redirect_stdout(file) do
-        return ensure_formula_installed!(formula_name, latest:,
-                                         reason:, output_to_stderr: false)
-      end
-    end
-
-    # Do not `require "formula"` here. It will mask misuse of this method when
-    # it is called without doing `require "formula"` first.
-    formula = Formula[formula_name]
-    reason = " for #{reason}" if reason.present?
-
-    unless formula.any_version_installed?
-      ohai "Installing `#{formula.name}`#{reason}..."
-      safe_system HOMEBREW_BREW_FILE, "install", "--formula", formula.full_name
-    end
-
-    if latest && !formula.latest_version_installed?
-      ohai "Upgrading `#{formula.name}`#{reason}..."
-      safe_system HOMEBREW_BREW_FILE, "upgrade", "--formula", formula.full_name
-    end
-
-    formula
-  end
-
   # Ensure the given executable is exist otherwise install the brewed version
   sig { params(name: String, formula_name: T.nilable(String), reason: String, latest: T::Boolean).returns(T.nilable(Pathname)) }
   def ensure_executable!(name, formula_name = nil, reason: "", latest: false)
