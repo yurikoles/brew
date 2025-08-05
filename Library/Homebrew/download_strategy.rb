@@ -663,7 +663,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   end
 end
 
-# Strategy for downloading a file using homebrew's curl.
+# Strategy for downloading a file using Homebrew's `curl`.
 #
 # @api public
 class HomebrewCurlDownloadStrategy < CurlDownloadStrategy
