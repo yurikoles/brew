@@ -742,6 +742,10 @@ Display brief statistics for your Homebrew installation. If a *`formula`* or
 
 : Treat all named arguments as casks.
 
+`--sizes`
+
+: Show the size of installed formulae and casks.
+
 ### `install` \[*`options`*\] *`formula`*\|*`cask`* \[...\]
 
 Install a *`formula`* or *`cask`*. Additional options specific to a *`formula`*
