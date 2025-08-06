@@ -529,9 +529,9 @@ module Homebrew
 
       return { name: name_params }.compact_blank if @run_params.blank?
 
-      cron_string = unless @cron.empty?
+      cron_string = if @cron.present?
         [:Minute, :Hour, :Day, :Month, :Weekday]
-          .map { |key| @cron[key].to_s }
+          .filter_map { |key| @cron[key].to_s.presence }
           .join(" ")
       end
 
@@ -555,7 +555,7 @@ module Homebrew
         run:                   @run_params,
         run_type:              @run_type,
         interval:              @interval,
-        cron:                  cron_string,
+        cron:                  cron_string.presence,
         keep_alive:            @keep_alive,
         launch_only_once:      @launch_only_once,
         require_root:          @require_root,
