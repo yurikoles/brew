@@ -748,37 +748,23 @@ For `url`/`regex` guidelines and additional `livecheck` block examples, refer to
 
 ### Excluding formula from autobumping
 
-By default, all new formulae in the Homebrew/core repository are autobumped. It means that future updates will be handled automatically by Homebrew CI jobs, and contributors do not have to do it manually.
+By default, all new formulae in the `Homebrew/homebrew-core` repository are autobumped. This means that future updates are handled automatically by Homebrew CI jobs, and contributors do not have to submit pull requests.
 
-Sometimes, we want to exclude a formula from this list, for one reason or another. It can be done by adding the `no_autobump!` method in the formula definition, for example:
-
-```ruby
-class Foo < Formula
-  # ...
-  url "https://example.com/foo-1.0.tar.gz"
-
-  livecheck do
-    url "https://example.com/foo/download.html"
-    regex(/href=.*?foo[._-]v?(\d+(?:\.\d+)+)\.t/i)
-  end
-
-  no_autobump! because: :bumped_by_upstream
-end
-```
-
-To use this method, a reason must be provided. The preferred way is to use one of the available symbols. These reasons can be found in the [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant).
+Sometimes, we want to exclude a formula from this list, for one reason or another. This can be done by adding the `no_autobump!` method in the formula definition; a reason must be provided with the `because:` parameter. It accepts a symbol that corresponds to a preset reason, for example:
 
 ```ruby
-no_autobump! because: :incompatible_version_format
+no_autobump! because: :bumped_by_upstream
 ```
 
-A custom reason can be provided if none of the available symbols fits:
+A complete list of allowed symbols can be found in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant).
+
+A custom reason can also be provided if none of the available symbols fit, for example:
 
 ```ruby
 no_autobump! because: "some unique reason"
 ```
 
-More information about the autobump process can be found on the [Autobump](Autobump.md) page.
+See our [Autobump](Autobump.md) documentation for more information about the autobump process.
 
 ### URL download strategies
 
