@@ -539,7 +539,7 @@ module Homebrew
         @sockets.transform_values { |info| "#{info[:type]}://#{info[:host]}:#{info[:port]}" }
                 .then do |sockets_hash|
                   # TODO: Remove this code when all users are running on versions of Homebrew
-                  # that can process sockets hashes (this commit or later).
+                  #       that can process sockets hashes (this commit or later).
                   if sockets_hash.size == 1 && sockets_hash.key?(:listeners)
                     # When original #sockets argument was a string: `sockets "tcp://127.0.0.1:80"`
                     sockets_hash.fetch(:listeners)
