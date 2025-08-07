@@ -455,7 +455,7 @@ class Pathname
     end
   end
 
-  sig { params(src: T.any(String, Pathname), new_basename: String).void }
+  sig { params(src: T.any(String, Pathname), new_basename: T.any(String, Pathname)).void }
   def install_symlink_p(src, new_basename)
     mkpath
     dstdir = realpath
