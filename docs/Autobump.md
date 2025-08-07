@@ -4,8 +4,6 @@ last_review_date: "2025-08-06"
 
 # Autobump
 
-## Overview
-
 In official repositories, [BrewTestBot](BrewTestBot.md) automatically checks for available updates to packages that are in Homebrew's "autobump list". These packages do not need to be bumped (i.e. have their version number increased) manually by a contributor. Instead, every 3 hours, a GitHub Action opens a new pull request to upgrade them to the latest version, if needed.
 
 ## Excluding packages from autobumping
@@ -22,12 +20,7 @@ Other formula and cask specific reasons for why a package is not autobumped are 
 
 When using `no_autobump!`, a reason for exclusion must be provided.
 
-There are two ways to indicate the reason. The preferred way is to use a pre-existing symbol to indicate the reason. The available symbols are listed below and can be found in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant):
-
-* `:incompatible_version_format`: the package has a version format that can only be updated manually
-* `:bumped_by_upstream`: updates to the package are handled by the upstream developers
-
-These reasons can be specified by their symbols:
+There are two ways to indicate the reason. The preferred way is to use a pre-existing symbol, which can be found in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant), for example:
 
 ```ruby
 no_autobump! because: :bumped_by_upstream

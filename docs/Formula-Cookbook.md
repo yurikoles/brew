@@ -750,19 +750,13 @@ For `url`/`regex` guidelines and additional `livecheck` block examples, refer to
 
 By default, all new formulae in the `Homebrew/homebrew-core` repository are autobumped. This means that future updates are handled automatically by Homebrew CI jobs, and contributors do not have to submit pull requests.
 
-Sometimes, we want to exclude a formula from this list, for one reason or another. This can be done by adding the `no_autobump!` method in the formula definition; a reason must be provided with the `because:` parameter. It accepts a symbol that corresponds to a preset reason, for example:
+Sometimes, we want to exclude a formula from this list, for one reason or another. This can be done by adding the `no_autobump!` method in the formula definition; a reason must be provided with the `because:` parameter. It accepts a string or a symbol that corresponds to a preset reason, for example:
 
 ```ruby
 no_autobump! because: :bumped_by_upstream
 ```
 
 A complete list of allowed symbols can be found in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant).
-
-A custom reason can also be provided if none of the available symbols fit, for example:
-
-```ruby
-no_autobump! because: "some unique reason"
-```
 
 See our [Autobump](Autobump.md) documentation for more information about the autobump process.
 
