@@ -290,7 +290,7 @@ class Pathname
 
   # Writes an exec script that sets environment variables.
   sig {
-    params(target:      Pathname,
+    params(target:      T.any(Pathname, String),
            args_or_env: T.any(String, T::Array[String], T::Hash[String, String], T::Hash[Symbol, String]),
            env:         T.any(T::Hash[String, String], T::Hash[Symbol, String])).void
   }
