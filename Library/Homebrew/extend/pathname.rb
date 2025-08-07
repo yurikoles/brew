@@ -430,7 +430,7 @@ class Pathname
   private
 
   sig {
-    params(src: T.any(String, Pathname), new_basename: String,
+    params(src: T.any(String, Pathname), new_basename: T.any(String, Pathname),
            _block: T.nilable(T.proc.params(src: Pathname, dst: Pathname).returns(T.nilable(Pathname)))).void
   }
   def install_p(src, new_basename, &_block)
