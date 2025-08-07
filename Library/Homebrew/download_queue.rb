@@ -82,7 +82,9 @@ module Homebrew
 
             if future.rejected?
               if exception.is_a?(ChecksumMismatchError)
+                actual = Digest::SHA256.file(downloadable.cached_download).hexdigest
                 opoo "#{downloadable.download_queue_type} reports different checksum: #{exception.expected}"
+                puts (" " * downloadable.download_queue_type.size) + " SHA-256 checksum of downloaded file: #{actual}"
                 Homebrew.failed = true if downloadable.is_a?(Resource::Patch)
                 next 2
               else
