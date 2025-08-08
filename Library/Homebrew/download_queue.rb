@@ -5,6 +5,7 @@ require "downloadable"
 require "concurrent/promises"
 require "concurrent/executors"
 require "retryable_download"
+require "resource"
 
 module Homebrew
   class DownloadQueue
