@@ -715,16 +715,17 @@ RSpec.describe Homebrew::FormulaAuditor do
     end
 
     it "requires `branch:` to be specified for Git head URLs" do
-      fa = formula_auditor "foo", <<~RUBY
+      fa = formula_auditor "foo", <<~RUBY, online: true
         class Foo < Formula
           url "https://brew.sh/foo-1.0.tgz"
           sha256 "31cccfc6630528db1c8e3a06f6decf2a370060b982841cfab2b8677400a5092e"
-          head "https://github.com/example/foo.git"
+          head "https://github.com/Homebrew/homebrew-test-bot.git"
         end
       RUBY
 
       fa.audit_specs
-      expect(fa.problems.first[:message]).to match("Git `head` URL must specify a branch name")
+      # This is `.last` because the first problem is the unreachable stable URL.
+      expect(fa.problems.last[:message]).to match("Git `head` URL must specify a branch name")
     end
 
     it "suggests a detected default branch for Git head URLs" do
@@ -732,17 +733,31 @@ RSpec.describe Homebrew::FormulaAuditor do
         class Foo < Formula
           url "https://brew.sh/foo-1.0.tgz"
           sha256 "31cccfc6630528db1c8e3a06f6decf2a370060b982841cfab2b8677400a5092e"
-          head "https://github.com/Homebrew/homebrew-core.git", branch: "master"
+          head "https://github.com/Homebrew/homebrew-test-bot.git", branch: "master"
+        end
+      RUBY
+
+      message = "Git `head` URL must specify a branch name - try `branch: \"main\"`"
+      fa.audit_specs
+      # This is `.last` because the first problem is the unreachable stable URL.
+      expect(fa.problems.last[:message]).to match(message)
+    end
+
+    it "ignores a pre-existing correct HEAD branch name" do
+      fa = formula_auditor "foo", <<~RUBY, online: true
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          sha256 "31cccfc6630528db1c8e3a06f6decf2a370060b982841cfab2b8677400a5092e"
+          head "https://github.com/Homebrew/homebrew-test-bot.git", branch: "main"
         end
       RUBY
 
       fa.audit_specs
-      # This is `.last` because the first problem is the unreachable stable URL.
-      expect(fa.problems.last[:message]).to match('Detected a default branch "main", not "master"')
+      expect(fa.problems).not_to match("Git `head` URL must specify a branch name")
     end
 
     it "ignores `branch:` for non-Git head URLs" do
-      fa = formula_auditor "foo", <<~RUBY
+      fa = formula_auditor "foo", <<~RUBY, online: true
         class Foo < Formula
           url "https://brew.sh/foo-1.0.tgz"
           sha256 "31cccfc6630528db1c8e3a06f6decf2a370060b982841cfab2b8677400a5092e"
@@ -755,7 +770,7 @@ RSpec.describe Homebrew::FormulaAuditor do
     end
 
     it "ignores `branch:` for `resource` URLs" do
-      fa = formula_auditor "foo", <<~RUBY
+      fa = formula_auditor "foo", <<~RUBY, online: true
         class Foo < Formula
           url "https://brew.sh/foo-1.0.tgz"
           sha256 "31cccfc6630528db1c8e3a06f6decf2a370060b982841cfab2b8677400a5092e"
@@ -768,7 +783,7 @@ RSpec.describe Homebrew::FormulaAuditor do
       RUBY
 
       fa.audit_specs
-      expect(fa.problems).to be_empty
+      expect(fa.problems).not_to match("Git `head` URL must specify a branch name")
     end
 
     it "allows versions with no throttle rate" do

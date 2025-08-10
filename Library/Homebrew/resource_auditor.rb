@@ -178,23 +178,22 @@ module Homebrew
     end
 
     def audit_head_branch
+      return unless @online
       return if spec_name != :head
       return if specs[:tag].present?
       return if specs[:revision].present?
       # Skip `resource` URLs as they use SHAs instead of branch specifiers.
       return if name != owner.name
       return unless url.end_with?(".git")
-
-      problem "Git `head` URL must specify a branch name" if specs[:branch].blank?
-
-      return unless @online
       return unless Utils::Git.remote_exists?(url)
 
       detected_branch = Utils.popen_read("git", "ls-remote", "--symref", url, "HEAD")
                              .match(%r{ref: refs/heads/(.*?)\s+HEAD})&.to_a&.second
-      return if detected_branch.blank? || detected_branch == specs[:branch]
 
-      problem "Detected a default branch \"#{detected_branch}\", not \"#{specs[:branch]}\""
+      message = "Git `head` URL must specify a branch name"
+      message += " - try `branch: \"#{detected_branch}\"`" if detected_branch.present?
+
+      problem message if specs[:branch].blank? || detected_branch != specs[:branch]
     end
 
     def problem(text)
