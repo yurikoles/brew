@@ -19,6 +19,9 @@ class Keg
 
   def change_rpath!(file, old_prefix, new_prefix)
     return false if !file.elf? || !file.dynamic_elf?
+    # Skip relocation of files with `protodesc_cold` sections because patchelf.rb seems to break them.
+    # https://github.com/Homebrew/homebrew-core/pull/232490#issuecomment-3161362452
+    return false if Hardware::CPU.intel? && file.section_names.include?("protodesc_cold")
 
     updated = {}
     old_rpath = file.rpath

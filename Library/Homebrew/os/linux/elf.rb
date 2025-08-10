@@ -143,9 +143,17 @@ module ELFShim
     save_using_patchelf_rb interpreter, rpath
   end
 
+  def elf_parser
+    @elf_parser ||= patchelf_patcher.elf
+  end
+
   sig { returns(T::Boolean) }
   def dynamic_elf?
-    @dynamic_elf ||= patchelf_patcher.elf.segment_by_type(:DYNAMIC).present?
+    @dynamic_elf ||= elf_parser.segment_by_type(:DYNAMIC).present?
+  end
+
+  def section_names
+    @section_names ||= elf_parser.sections.map(&:name).compact_blank
   end
 
   # Helper class for reading metadata from an ELF file.
@@ -194,7 +202,7 @@ module ELFShim
       end
 
       # Check if DF_1_NODEFLIB is set
-      dt_flags_1 = path.patchelf_patcher.elf.segment_by_type(:dynamic)&.tag_by_type(:flags_1)
+      dt_flags_1 = path.elf_parser.segment_by_type(:dynamic)&.tag_by_type(:flags_1)
       nodeflib_flag = if dt_flags_1.nil?
         false
       else
