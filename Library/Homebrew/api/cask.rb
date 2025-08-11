@@ -16,9 +16,23 @@ module Homebrew
 
       private_class_method :cache
 
-      sig { params(token: String).returns(T::Hash[String, T.untyped]) }
-      def self.fetch(token)
-        Homebrew::API.fetch "cask/#{token}.json"
+      sig { params(name: String).returns(T::Hash[String, T.untyped]) }
+      def self.cask_json(name)
+        fetch_cask_json! name if !cache.key?("cask_json") || !cache.fetch("cask_json").key?(name)
+
+        cache.fetch("cask_json").fetch(name)
+      end
+
+      sig { params(name: String, download_queue: T.nilable(DownloadQueue)).void }
+      def self.fetch_cask_json!(name, download_queue: nil)
+        endpoint = "cask/#{name}.json"
+        json_cask, updated = Homebrew::API.fetch_json_api_file endpoint, download_queue: download_queue
+        return if download_queue
+
+        json_cask = JSON.parse((HOMEBREW_CACHE_API/endpoint).read) unless updated
+
+        cache["cask_json"] ||= {}
+        cache["cask_json"][name] = json_cask
       end
 
       sig { params(cask: ::Cask::Cask, download_queue: T.nilable(Homebrew::DownloadQueue)).returns(Homebrew::API::SourceDownload) }
