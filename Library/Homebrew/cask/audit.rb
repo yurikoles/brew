@@ -542,12 +542,14 @@ module Cask
           true
         end
 
-        if cask.deprecated? && cask.deprecation_reason == :unsigned && !any_signing_failure
-          add_error <<~EOS
-            Cask is deprecated as unsigned but all artifacts are signed!
-            Remove the deprecate/disable stanza or update the deprecate/disable reason.
-          EOS
-        end
+        return if any_signing_failure
+        return unless cask.deprecated?
+        return if cask.deprecation_reason != :unsigned
+
+        add_error <<~EOS
+          Cask is deprecated as unsigned but all artifacts are signed!
+          Remove the deprecate/disable stanza or update the deprecate/disable reason.
+        EOS
       end
     end
 
