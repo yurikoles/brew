@@ -3,6 +3,7 @@
 
 require "cask/denylist"
 require "cask/download"
+require "cask/installer"
 require "digest"
 require "livecheck/livecheck"
 require "source_location"
@@ -630,6 +631,11 @@ module Cask
         UnpackStrategy.detect(@tmpdir/nested_container, merge_xattrs: true)
                       .extract_nestedly(to: @tmpdir, verbose: false)
       end
+
+      # Process rename operations after extraction
+      # Create a temporary installer to process renames in the audit directory
+      temp_installer = Installer.new(@cask)
+      temp_installer.process_rename_operations(target_dir: @tmpdir)
 
       # Set the flag to indicate that extraction has occurred.
       @artifacts_extracted = T.let(true, T.nilable(TrueClass))
