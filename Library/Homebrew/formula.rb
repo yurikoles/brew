@@ -3067,7 +3067,9 @@ class Formula
                    cmd_base:   File.basename(cmd).split.first)
     logs.mkpath
 
-    File.open(logfn, "w") do |log|
+    # Append `.log` here instead of in the definition of `logfn` to avoid
+    # log files named `xy.cmake.log.cc.log` from `shims/super/cc`.
+    File.open("#{logfn}.log", "w") do |log|
       log.puts Time.now, "", cmd, args, ""
       log.flush
 
