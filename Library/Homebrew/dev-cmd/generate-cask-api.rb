@@ -72,14 +72,14 @@ module Homebrew
 
           OnSystem::VALID_OS_ARCH_TAGS.each do |bottle_tag|
             renames = {}
-            variation_casks = all_casks.map do |token, cask|
+            variation_casks = all_casks.to_h do |token, cask|
               cask = Homebrew::API.merge_variations(cask, bottle_tag:)
 
               cask["old_tokens"]&.each do |old_token|
                 renames[old_token] = token
               end
 
-              cask
+              [token, cask]
             end
 
             json_contents = {
