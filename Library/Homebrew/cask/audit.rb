@@ -502,6 +502,8 @@ module Cask
 
       odebug "Auditing signing"
 
+      is_in_skiplist = cask.tap&.audit_exception(:signing_audit_skiplist, cask.token)
+
       extract_artifacts do |artifacts, tmpdir|
         is_container = artifacts.any? { |a| a.is_a?(Artifact::App) || a.is_a?(Artifact::Pkg) }
 
@@ -531,6 +533,7 @@ module Cask
 
           next false if result.success?
           next true if cask.deprecated? && cask.deprecation_reason == :unsigned
+          next true if is_in_skiplist
 
           add_error <<~EOS, location: url.location
             Signature verification failed:
@@ -543,6 +546,9 @@ module Cask
         end
 
         return if any_signing_failure
+
+        add_error "Cask is in the signing audit skiplist, but does not need to be skipped!" if is_in_skiplist
+
         return unless cask.deprecated?
         return if cask.deprecation_reason != :unsigned
 
