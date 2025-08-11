@@ -682,7 +682,7 @@ module Cask
             next
           end
 
-          next true if result.merged_output.exclude?("arm64") && result.merged_output.include?("x86_64")
+          result.merged_output.exclude?("arm64") && result.merged_output.include?("x86_64")
         end
 
         if any_requires_rosetta
