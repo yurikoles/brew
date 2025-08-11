@@ -196,7 +196,7 @@ module ELFShim
       end
 
       @interpreter = patcher.interpreter
-      @rpath = patcher.rpath || patcher.runpath
+      @rpath = patcher.runpath || patcher.rpath
       @section_names = patcher.elf.sections.map(&:name).compact_blank
 
       @dt_flags_1 = dynamic_segment&.tag_by_type(:flags_1)&.value
