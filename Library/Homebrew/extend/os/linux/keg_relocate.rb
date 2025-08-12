@@ -20,6 +20,13 @@ class Keg
   def change_rpath!(file, old_prefix, new_prefix)
     return false if !file.elf? || !file.dynamic_elf?
 
+    bottling = old_prefix.to_s.start_with?(HOMEBREW_PREFIX.to_s)
+    bottling &&= !new_prefix.to_s.start_with?(HOMEBREW_PREFIX.to_s)
+    # Skip relocation of files with `protodesc_cold` sections because patchelf.rb seems to break them,
+    # but only when bottling (as we don't want to break existing bottles that require relocation).
+    # https://github.com/Homebrew/homebrew-core/pull/232490#issuecomment-3161362452
+    return false if bottling && file.section_names.include?("protodesc_cold")
+
     updated = {}
     old_rpath = file.rpath
     new_rpath = if old_rpath
