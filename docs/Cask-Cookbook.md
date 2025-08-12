@@ -66,6 +66,8 @@ Having a common order for stanzas makes casks easier to update and parse. Below 
     depends_on
     container
 
+    rename
+
     suite
     app
     pkg
@@ -176,6 +178,7 @@ Each cask must declare one or more [artifacts](https://rubydoc.brew.sh/Cask/Arti
 | `container type:`                          | no                            | Symbol to override container-type autodetect. May be one of: `:air`, `:bz2`, `:cab`, `:dmg`, `:generic_unar`, `:gzip`, `:otf`, `:pkg`, `:rar`, `:seven_zip`, `:sit`, `:tar`, `:ttf`, `:xar`, `:zip`, `:naked`. (Example: [parse.rb](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/p/parse.rb#L10)) |
 | `auto_updates`                             | no                            | `true`. Asserts that the cask artifacts auto-update. Use if `Check for Updates…` or similar is present in an app menu, but not if it only opens a webpage and does not do the download and installation for you. |
 | [`no_autobump!`](#stanza-no_autobump)      | no                            | Allowed symbol or a string. Excludes cask from autobumping if set. |
+| [`rename`](#stanza-rename)      | yes                            | A pair of strings. |
 
 ## Stanza descriptions
 
@@ -251,6 +254,18 @@ binary "#{appdir}/Atom.app/Contents/Resources/app/atom.sh", target: "atom"
 ```
 
 Behaviour and usage of `target:` is [the same as with `app`](#renaming-the-target). However, for `binary` the select cases don’t apply as rigidly. It’s fine to take extra liberties with `target:` to be consistent with other command-line tools, like [changing case](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/g/godot.rb#L19), [removing an extension](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/f/filebot.rb#L19), or [cleaning up the name](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/f/fig.rb#L21).
+
+### Stanza: `rename`
+
+The `rename` stanza provides a convenience method to rename files to provide more practical access to them.
+This stanza should be used sparingly, and is reserved for scenarios where a the path of a file/directory is impossible to pre-determine.
+
+The example below can be used when the `pkg` path has a value such as timestamp that can't be detected without extracting the archive it is distributed within.
+
+```ruby
+# Upstream provides a `pkg` - "foobar-<timestamp>.pkg"
+rename "foobar-*.pkg", "foobar.pkg"
+```
 
 ### Stanza: `caveats`
 
