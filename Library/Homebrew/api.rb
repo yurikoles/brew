@@ -154,7 +154,7 @@ module Homebrew
 
     sig { params(download_queue: T.nilable(DownloadQueue), stale_seconds: Integer).void }
     def self.fetch_api_files!(download_queue: nil, stale_seconds: Homebrew::EnvConfig.api_auto_update_secs.to_i)
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.fetch_formula_api!(download_queue:, stale_seconds:)
         Homebrew::API::Internal.fetch_cask_api!(download_queue:, stale_seconds:)
       else
@@ -167,7 +167,7 @@ module Homebrew
 
     sig { void }
     def self.write_names_and_aliases
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", nil)
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.write_formula_names_and_aliases
         Homebrew::API::Internal.write_cask_names
       else
@@ -244,7 +244,7 @@ module Homebrew
 
     sig { returns(T::Array[String]) }
     def self.formula_names
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.formula_arrays.keys
       else
         Homebrew::API::Formula.all_formulae.keys
@@ -253,7 +253,7 @@ module Homebrew
 
     sig { returns(T::Hash[String, String]) }
     def self.formula_aliases
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.formula_aliases
       else
         Homebrew::API::Formula.all_aliases
@@ -262,7 +262,7 @@ module Homebrew
 
     sig { returns(T::Hash[String, String]) }
     def self.formula_renames
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.formula_renames
       else
         Homebrew::API::Formula.all_renames
@@ -271,7 +271,7 @@ module Homebrew
 
     sig { returns(T::Hash[String, String]) }
     def self.formula_tap_migrations
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.formula_tap_migrations
       else
         Homebrew::API::Formula.tap_migrations
@@ -280,7 +280,7 @@ module Homebrew
 
     sig { returns(T::Array[String]) }
     def self.cask_tokens
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.cask_hashes.keys
       else
         Homebrew::API::Cask.all_casks.keys
@@ -289,7 +289,7 @@ module Homebrew
 
     sig { returns(T::Hash[String, String]) }
     def self.cask_renames
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.cask_renames
       else
         Homebrew::API::Cask.all_renames
@@ -298,7 +298,7 @@ module Homebrew
 
     sig { returns(T::Hash[String, String]) }
     def self.cask_tap_migrations
-      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+      if Homebrew::EnvConfig.use_internal_api?
         Homebrew::API::Internal.cask_tap_migrations
       else
         Homebrew::API::Cask.tap_migrations
