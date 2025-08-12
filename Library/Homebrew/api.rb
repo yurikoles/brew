@@ -152,6 +152,30 @@ module Homebrew
       json.except("variations")
     end
 
+    sig { params(download_queue: T.nilable(DownloadQueue), stale_seconds: Integer).void }
+    def self.fetch_api_files!(download_queue: nil, stale_seconds: Homebrew::EnvConfig.api_auto_update_secs.to_i)
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.fetch_formula_api!(download_queue:, stale_seconds:)
+        Homebrew::API::Internal.fetch_cask_api!(download_queue:, stale_seconds:)
+      else
+        Homebrew::API::Formula.fetch_api!(download_queue:, stale_seconds:)
+        Homebrew::API::Formula.fetch_tap_migrations!(download_queue:, stale_seconds:)
+        Homebrew::API::Cask.fetch_api!(download_queue:, stale_seconds:)
+        Homebrew::API::Cask.fetch_tap_migrations!(download_queue:, stale_seconds:)
+      end
+    end
+
+    sig { void }
+    def self.write_names_and_aliases
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", nil)
+        Homebrew::API::Internal.write_formula_names_and_aliases
+        Homebrew::API::Internal.write_cask_names
+      else
+        Homebrew::API::Formula.write_names_and_aliases
+        Homebrew::API::Cask.write_names
+      end
+    end
+
     sig { params(names: T::Array[String], type: String, regenerate: T::Boolean).returns(T::Boolean) }
     def self.write_names_file!(names, type, regenerate:)
       names_path = HOMEBREW_CACHE_API/"#{type}_names.txt"
