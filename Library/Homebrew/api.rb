@@ -4,6 +4,7 @@
 require "api/analytics"
 require "api/cask"
 require "api/formula"
+require "api/internal"
 require "base64"
 
 module Homebrew
@@ -215,6 +216,69 @@ module Homebrew
       return if org.blank? || repo.blank?
 
       Tap.fetch(org, repo)
+    end
+
+    sig { returns(T::Array[String]) }
+    def self.formula_names
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.formula_arrays.keys
+      else
+        Homebrew::API::Formula.all_formulae.keys
+      end
+    end
+
+    sig { returns(T::Hash[String, String]) }
+    def self.formula_aliases
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.formula_aliases
+      else
+        Homebrew::API::Formula.all_aliases
+      end
+    end
+
+    sig { returns(T::Hash[String, String]) }
+    def self.formula_renames
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.formula_renames
+      else
+        Homebrew::API::Formula.all_renames
+      end
+    end
+
+    sig { returns(T::Hash[String, String]) }
+    def self.formula_tap_migrations
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.formula_tap_migrations
+      else
+        Homebrew::API::Formula.tap_migrations
+      end
+    end
+
+    sig { returns(T::Array[String]) }
+    def self.cask_tokens
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.cask_hashes.keys
+      else
+        Homebrew::API::Cask.all_casks.keys
+      end
+    end
+
+    sig { returns(T::Hash[String, String]) }
+    def self.cask_renames
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.cask_renames
+      else
+        Homebrew::API::Cask.all_renames
+      end
+    end
+
+    sig { returns(T::Hash[String, String]) }
+    def self.cask_tap_migrations
+      if ENV.fetch("HOMEBREW_USE_INTERNAL_API", false).present?
+        Homebrew::API::Internal.cask_tap_migrations
+      else
+        Homebrew::API::Cask.tap_migrations
+      end
     end
   end
 
