@@ -3067,14 +3067,12 @@ class Formula
 
     @exec_count ||= T.let(0, T.nilable(Integer))
     @exec_count += 1
-    logfn = format("#{logs}/#{active_log_prefix}%02<exec_count>d.%<cmd_base>s",
+    logfn = format("#{logs}/#{active_log_prefix}%02<exec_count>d.%<cmd_base>s.log",
                    exec_count: @exec_count,
                    cmd_base:   File.basename(cmd).split.first)
     logs.mkpath
 
-    # Append `.log` here instead of in the definition of `logfn` to avoid
-    # log files named `xy.cmake.log.cc.log` from `shims/super/cc`.
-    File.open("#{logfn}.log", "w") do |log|
+    File.open(logfn, "w") do |log|
       log.puts Time.now, "", cmd, args, ""
       log.flush
 
