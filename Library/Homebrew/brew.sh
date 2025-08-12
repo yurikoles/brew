@@ -600,7 +600,7 @@ then
 
   if [[ "$(sysctl -n hw.optional.arm64 2>/dev/null)" == "1" ]]
   then
-    # used in vendor-install.sh
+    # used in vendor-install.sh and update.sh
     # shellcheck disable=SC2034
     HOMEBREW_PHYSICAL_PROCESSOR="arm64"
   fi

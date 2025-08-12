@@ -19,6 +19,7 @@ class MacOSVersion < Version
 
   # NOTE: When removing symbols here, ensure that they are added
   #       to `DEPRECATED_MACOS_VERSIONS` in `MacOSRequirement`.
+  # NOTE: Changes to this list must match `macos_version_name` in `cmd/update.sh`.
   SYMBOLS = T.let({
     tahoe:       "26",
     sequoia:     "15",
