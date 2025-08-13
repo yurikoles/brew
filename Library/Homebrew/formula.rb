@@ -3807,12 +3807,12 @@ class Formula
     # If called as a method this provides just the {url} for the {SoftwareSpec}.
     # If a block is provided you can also add {.depends_on} and {Patch}es just to the {.head} {SoftwareSpec}.
     # The download strategies (e.g. `:using =>`) are the same as for {url}.
-    # `master` is the default branch for Git and doesn't need stating with a `branch:` parameter.
+    # Git repositories must always specify `branch:`.
     #
     # ### Example
     #
     # ```ruby
-    # head "https://we.prefer.https.over.git.example.com/.git"
+    # head "https://we.prefer.https.over.git.example.com/.git", branch: "main"
     # ```
     #
     # ```ruby
