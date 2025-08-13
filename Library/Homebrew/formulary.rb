@@ -617,7 +617,8 @@ module Formulary
       return unless path.expand_path.exist?
 
       return if Homebrew::EnvConfig.forbid_packages_from_paths? &&
-                !path.realpath.to_s.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/")
+                !path.realpath.to_s.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/",
+                                                "#{HOMEBREW_CACHE}/")
 
       if (tap = Tap.from_path(path))
         # Only treat symlinks in taps as aliases.

@@ -141,6 +141,21 @@ RSpec.describe Formulary do
         end.to raise_error(FormulaUnavailableError)
       end
 
+      it "allows cache paths even when paths are disabled" do
+        ENV["HOMEBREW_FORBID_PACKAGES_FROM_PATHS"] = "1"
+        cache_dir = HOMEBREW_CACHE/"test_formula_cache"
+        cache_dir.mkpath
+        cache_formula_path = cache_dir/formula_path.basename
+        FileUtils.cp formula_path, cache_formula_path
+        begin
+          formula = described_class.factory(cache_formula_path)
+          expect(formula).to be_a(Formula)
+        ensure
+          cache_formula_path.unlink if cache_formula_path.exist?
+          cache_dir.rmdir if cache_dir.exist?
+        end
+      end
+
       context "when given a bottle" do
         subject(:formula) { described_class.factory(bottle) }
 
