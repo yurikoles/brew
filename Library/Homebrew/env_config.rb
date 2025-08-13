@@ -87,6 +87,12 @@ module Homebrew
         description: "Use this URL as the Homebrew/brew `git`(1) remote.",
         default:     HOMEBREW_BREW_DEFAULT_GIT_REMOTE,
       },
+      HOMEBREW_BREW_WRAPPER:                     {
+        description: "If set, use wrapper to call `brew` rather than auto-detecting it.",
+        # TODO: uncomment line below and remove the line above when odeprecated.
+        # We use backticks to render "Deprecated:" in bold.
+        # description: "`Deprecated:` If set, use wrapper to call `brew` rather than auto-detecting it.",
+      },
       HOMEBREW_BROWSER:                          {
         description:  "Use this as the browser when opening project homepages.",
         default_text: "`$BROWSER` or the OS's default browser.",
@@ -390,6 +396,13 @@ module Homebrew
         description: "If set, do not print any hints about changing Homebrew's behaviour with environment variables.",
         boolean:     true,
       },
+      HOMEBREW_NO_FORCE_BREW_WRAPPER:            {
+        description: "If set, disables `$HOMEBREW_FORCE_BREW_WRAPPER` behaviour, even if set.",
+        # TODO: uncomment line below and remove the line above when odeprecated.
+        # We use backticks to render "Deprecated:" in bold.
+        # description: "`Deprecated:` If set, disables `$HOMEBREW_FORCE_BREW_WRAPPER` behaviour, even if set.",
+        boolean:     true,
+      },
       HOMEBREW_NO_GITHUB_API:                    {
         description: "If set, do not use the GitHub API, e.g. for searches or fetching relevant issues " \
                      "after a failed install.",
@@ -558,6 +571,7 @@ module Homebrew
         define_method(method_name) do
           env_value = ENV.fetch(env, nil)
 
+          # odeprecated "`HOMEBREW_NO_FORCE_BREW_WRAPPER`" if env == "HOMEBREW_NO_FORCE_BREW_WRAPPER"
           falsy_values = %w[false no off nil 0]
           if falsy_values.include?(env_value&.downcase)
             odisabled "#{env}=#{env_value}", <<~EOS.chomp
@@ -574,6 +588,8 @@ module Homebrew
         end
       else
         define_method(method_name) do
+          # odeprecated "`HOMEBREW_BREW_WRAPPER`" if env == "HOMEBREW_BREW_WRAPPER"
+
           ENV[env].presence
         end
       end
