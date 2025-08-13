@@ -875,9 +875,9 @@ module Formulary
       return if Homebrew::EnvConfig.no_install_from_api?
       return unless ref.is_a?(String)
       return unless (name = ref[HOMEBREW_DEFAULT_TAP_FORMULA_REGEX, :name])
-      if !Homebrew::API::Formula.all_formulae.key?(name) &&
-         !Homebrew::API::Formula.all_aliases.key?(name) &&
-         !Homebrew::API::Formula.all_renames.key?(name)
+      if Homebrew::API.formula_names.exclude?(name) &&
+         !Homebrew::API.formula_aliases.key?(name) &&
+         !Homebrew::API.formula_renames.key?(name)
         return
       end
 
