@@ -143,4 +143,53 @@ RSpec.describe Homebrew::Diagnostic::Checks do
       expect(checks.check_pkgconf_macos_sdk_mismatch).to include("brew reinstall pkgconf")
     end
   end
+
+  describe "#check_cask_quarantine_support" do
+    it "returns nil when quarantine is available" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:quarantine_available, nil])
+      expect(checks.check_cask_quarantine_support).to be_nil
+    end
+
+    it "returns error when xattr is broken" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:xattr_broken, nil])
+      expect(checks.check_cask_quarantine_support)
+        .to match("there's no working version of `xattr` on this system")
+    end
+
+    it "returns error when swift is not available" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:no_swift, nil])
+      expect(checks.check_cask_quarantine_support)
+        .to match("there's no available version of `swift` on this system")
+    end
+
+    it "returns error when swift is broken due to missing CLT" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:swift_broken_clt, nil])
+      expect(checks.check_cask_quarantine_support)
+        .to match("Swift is not working due to missing Command Line Tools")
+    end
+
+    it "returns error when swift compilation failed" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:swift_compilation_failed, nil])
+      expect(checks.check_cask_quarantine_support)
+        .to match("Swift compilation failed")
+    end
+
+    it "returns error when swift runtime error occurs" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:swift_runtime_error, nil])
+      expect(checks.check_cask_quarantine_support)
+        .to match("Swift runtime error")
+    end
+
+    it "returns error when swift is not executable" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:swift_not_executable, nil])
+      expect(checks.check_cask_quarantine_support)
+        .to match("Swift is not executable")
+    end
+
+    it "returns error when swift returns unexpected error" do
+      allow(Cask::Quarantine).to receive(:check_quarantine_support).and_return([:swift_unexpected_error, "whoopsie"])
+      expect(checks.check_cask_quarantine_support)
+        .to match("whoopsie")
+    end
+  end
 end
