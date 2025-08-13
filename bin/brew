@@ -133,6 +133,9 @@ export_homebrew_env_file() {
   done <"${env_file}"
 }
 
+# We only want to be able to set this in `brew.env` files.
+unset HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER
+
 # First, load the system-wide configuration.
 export_homebrew_env_file "/etc/homebrew/brew.env"
 
