@@ -26,6 +26,8 @@ class Tap
   private_constant :HOMEBREW_TAP_PYPI_FORMULA_MAPPINGS_FILE
   HOMEBREW_TAP_SYNCED_VERSIONS_FORMULAE_FILE = "synced_versions_formulae.json"
   private_constant :HOMEBREW_TAP_SYNCED_VERSIONS_FORMULAE_FILE
+  HOMEBREW_TAP_DISABLED_NEW_USR_LOCAL_RELOCATION_FORMULAE_FILE = "disabled_new_usr_local_relocation_formulae.json"
+  private_constant :HOMEBREW_TAP_DISABLED_NEW_USR_LOCAL_RELOCATION_FORMULAE_FILE
   HOMEBREW_TAP_AUDIT_EXCEPTIONS_DIR = "audit_exceptions"
   private_constant :HOMEBREW_TAP_AUDIT_EXCEPTIONS_DIR
   HOMEBREW_TAP_STYLE_EXCEPTIONS_DIR = "style_exceptions"
@@ -37,6 +39,7 @@ class Tap
     #{HOMEBREW_TAP_MIGRATIONS_FILE}
     #{HOMEBREW_TAP_PYPI_FORMULA_MAPPINGS_FILE}
     #{HOMEBREW_TAP_SYNCED_VERSIONS_FORMULAE_FILE}
+    #{HOMEBREW_TAP_DISABLED_NEW_USR_LOCAL_RELOCATION_FORMULAE_FILE}
     #{HOMEBREW_TAP_AUDIT_EXCEPTIONS_DIR}/*.json
     #{HOMEBREW_TAP_STYLE_EXCEPTIONS_DIR}/*.json
   ].freeze, T::Array[String])
@@ -1096,6 +1099,19 @@ class Tap
         []
       end,
       T.nilable(T::Array[T::Array[String]]),
+    )
+  end
+
+  # Array with formulae that should not be relocated to new /usr/local
+  sig { overridable.returns(T::Array[String]) }
+  def disabled_new_usr_local_relocation_formulae
+    @disabled_new_usr_local_relocation_formulae ||= T.let(
+      if (synced_file = path/HOMEBREW_TAP_DISABLED_NEW_USR_LOCAL_RELOCATION_FORMULAE_FILE).file?
+        JSON.parse(synced_file.read)
+      else
+        []
+      end,
+      T.nilable(T::Array[String]),
     )
   end
 
