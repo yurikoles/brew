@@ -15,6 +15,7 @@ class Version
   # A part of a {Version}.
   class Token
     extend T::Helpers
+
     abstract!
 
     include Comparable
