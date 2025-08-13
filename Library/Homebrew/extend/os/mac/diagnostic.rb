@@ -542,6 +542,52 @@ module OS
             We'd welcome a PR to automatically mitigate this instead of just warning about it.
           EOS
         end
+
+        def check_cask_quarantine_support
+          status, check_output = ::Cask::Quarantine.check_quarantine_support
+
+          case status
+          when :quarantine_available
+            nil
+          when :xattr_broken
+            "No Cask quarantine support available: there's no working version of `xattr` on this system."
+          when :no_swift
+            "No Cask quarantine support available: there's no available version of `swift` on this system."
+          when :swift_broken_clt
+            <<~EOS
+              No Cask quarantine support available: Swift is not working due to missing Command Line Tools.
+              #{MacOS::CLT.installation_then_reinstall_instructions}
+            EOS
+          when :swift_compilation_failed
+            <<~EOS
+              No Cask quarantine support available: Swift compilation failed.
+              This is usually due to a broken or incompatible Command Line Tools installation.
+              #{MacOS::CLT.installation_then_reinstall_instructions}
+            EOS
+          when :swift_runtime_error
+            <<~EOS
+              No Cask quarantine support available: Swift runtime error.
+              Your Command Line Tools installation may be broken or incomplete.
+              #{MacOS::CLT.installation_then_reinstall_instructions}
+            EOS
+          when :swift_not_executable
+            <<~EOS
+              No Cask quarantine support available: Swift is not executable.
+              Your Command Line Tools installation may be incomplete.
+              #{MacOS::CLT.installation_then_reinstall_instructions}
+            EOS
+          when :swift_unexpected_error
+            <<~EOS
+              No Cask quarantine support available: Swift returned an unexpected error:
+              #{check_output}
+            EOS
+          else
+            <<~EOS
+              No Cask quarantine support available: unknown reason: #{status.inspect}:
+              #{check_output}
+            EOS
+          end
+        end
       end
     end
   end
