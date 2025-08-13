@@ -247,6 +247,13 @@ then
   else
     HOMEBREW_BREW_CALLER="$(readlink -f "/proc/${PPID}/exe")"
   fi
+  HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE="$?"
+
+  if [[ "${HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE}" -ne 0 ]]
+  then
+    # Error message already printed above when populating `HOMEBREW_BREW_CALLER`.
+    odie "failed to check the path to the parent process!"
+  fi
 
   if [[ "${HOMEBREW_BREW_CALLER:-}" != "${HOMEBREW_FORCE_BREW_WRAPPER}" ]]
   then
@@ -269,7 +276,7 @@ or that ${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW} comes before ${HOMEBREW_PREF
 EOS
   fi
 
-  unset HOMEBREW_BREW_CALLER
+  unset HOMEBREW_BREW_CALLER HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE
 fi
 
 # commands that take a single or no arguments and need to write to HOMEBREW_PREFIX.

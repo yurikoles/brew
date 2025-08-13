@@ -3,7 +3,7 @@
 # frozen_string_literal: true
 
 pid = ARGV[0]&.to_i
-exit 1 unless pid
+raise "Missing `pid` argument!" unless pid
 
 require "fiddle"
 
@@ -29,4 +29,8 @@ pointer_to_buffer = Fiddle::Pointer.to_ptr(buffer)
 # https://github.com/chromium/chromium/blob/86df41504a235f9369f6f53887da12a718a19db4/base/process/process_handle_mac.cc#L37-L44
 # https://github.com/apple-oss-distributions/xnu/blob/e3723e1f17661b24996789d8afc084c0c3303b26/libsyscall/wrappers/libproc/libproc.c#L263-L283
 return_value = libproc_proc_pidpath_function.call(pid, pointer_to_buffer, buffer_size)
-puts pointer_to_buffer.to_s.strip if return_value.positive?
+if return_value.positive?
+  puts pointer_to_buffer.to_s.strip
+else
+  raise "Call to `proc_pidpath` failed! `proc_pidpath` returned #{return_value}."
+end
