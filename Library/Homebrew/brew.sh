@@ -1102,6 +1102,9 @@ then
 fi
 unset SUDO
 
+# Remove internal variables
+unset HOMEBREW_INTERNAL_ALLOW_PACKAGES_FROM_PATHS
+
 if [[ -n "${HOMEBREW_BASH_COMMAND}" ]]
 then
   # source rather than executing directly to ensure the entire file is read into
