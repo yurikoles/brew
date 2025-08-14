@@ -41,11 +41,11 @@ module RuboCop
           problem "Please use the ASCII (Punycode-encoded host, URL-encoded path and query) version of #{url}."
         end
 
-        # GNU URLs; doesn't apply to mirrors
-        gnu_pattern = %r{^(?:https?|ftp)://ftpmirror\.gnu\.org/(.*)}
-        audit_urls(urls, gnu_pattern) do |match, url|
-          problem "#{url} should be: https://ftp.gnu.org/gnu/#{match[1]}"
-        end
+        # TODO: Re-add the following audit after homebrew/core migration.
+        # gnu_pattern = %r{^(?:https?|ftp)://ftp\.gnu\.org/(.*)}
+        # audit_urls(urls, gnu_pattern) do |match, url|
+        #   problem "#{url} should be: https://ftpmirror.gnu.org/gnu/#{match[1]}"
+        # end
 
         # Fossies upstream requests they aren't used as primary URLs
         # https://github.com/Homebrew/homebrew-core/issues/14486#issuecomment-307753234
