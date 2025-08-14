@@ -502,7 +502,6 @@ module Cask
       return if !cask.tap.official? && !signing?
       return if cask.deprecated? && cask.deprecation_reason != :unsigned
 
-      # Check if quarantine support is available
       unless Quarantine.available?
         odebug "Quarantine support is not available, skipping signing audit"
         return
@@ -522,7 +521,6 @@ module Cask
 
           path = tmpdir/artifact_path.relative_path_from(cask.staged_path)
 
-          # Check if the artifact has quarantine attributes
           unless Quarantine.detect(path)
             odebug "#{path} does not have quarantine attributes, skipping signing audit"
             next false
