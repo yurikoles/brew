@@ -622,7 +622,7 @@ module Formulary
         if !path_realpath.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/", "#{HOMEBREW_CACHE}/") &&
            (path_string.include?("/") || path_string.end_with?(".rb"))
           raise <<~WARNING
-            Rejecting formula at #{!path_realpath} because it's not in a tap.
+            Rejecting formula at #{path_string} because it's not in a tap.
                    Homebrew requires formulae to be in a tap.
 
             To create a tap, run e.g.

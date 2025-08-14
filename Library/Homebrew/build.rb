@@ -268,7 +268,7 @@ rescue Exception => e # rubocop:disable Lint/RescueException
     error_hash["output"] = e.output
   end
 
-  error_pipe.puts error_hash.to_json
-  error_pipe.close
+  error_pipe&.puts error_hash.to_json
+  error_pipe&.close
   exit! 1
 end
