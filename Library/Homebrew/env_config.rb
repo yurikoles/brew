@@ -632,6 +632,9 @@ module Homebrew
 
     sig { returns(T::Boolean) }
     def forbid_packages_from_paths?
+      # Undocumented opt-out for internal use.
+      return false if ENV["HOMEBREW_INTERNAL_ALLOW_PACKAGES_FROM_PATHS"].present?
+
       return true if ENV["HOMEBREW_FORBID_PACKAGES_FROM_PATHS"].present?
 
       # Provide an opt-out for tests and developers.

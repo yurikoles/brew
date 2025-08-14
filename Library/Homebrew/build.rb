@@ -227,7 +227,10 @@ class Build
 end
 
 begin
-  ENV.delete("HOMEBREW_FORBID_PACKAGES_FROM_PATHS")
+  # Undocumented opt-out for internal use.
+  # We need to allow formulae from paths here due to how we pass them through.
+  ENV["HOMEBREW_INTERNAL_ALLOW_PACKAGES_FROM_PATHS"] = "1"
+
   args = Homebrew::Cmd::InstallCmd.new.args
   Context.current = args.context
 
