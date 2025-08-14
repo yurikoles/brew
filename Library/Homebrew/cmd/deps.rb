@@ -10,6 +10,7 @@ module Homebrew
   module Cmd
     class Deps < AbstractCommand
       include DependenciesHelpers
+
       cmd_args do
         description <<~EOS
           Show dependencies for <formula>. When given multiple formula arguments,

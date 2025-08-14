@@ -5,6 +5,7 @@ require "cmd/upgrade"
 
 RSpec.describe Homebrew::Cmd::UpgradeCmd do
   include FileUtils
+
   it_behaves_like "parseable arguments"
 
   it "upgrades a Formula and cleans up old versions", :integration_test do

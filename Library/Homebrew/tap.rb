@@ -146,6 +146,7 @@ class Tap
 
   class << self
     extend T::Generic
+
     Elem = type_member(:out) { { fixed: Tap } }
 
     # @api public

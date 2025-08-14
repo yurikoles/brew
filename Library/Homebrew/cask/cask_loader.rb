@@ -18,6 +18,7 @@ module Cask
 
     module ILoader
       extend T::Helpers
+
       interface!
 
       sig { abstract.params(config: T.nilable(Config)).returns(Cask) }
@@ -28,6 +29,7 @@ module Cask
     class AbstractContentLoader
       include ILoader
       extend T::Helpers
+
       abstract!
 
       sig { returns(String) }
