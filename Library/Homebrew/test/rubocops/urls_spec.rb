@@ -211,10 +211,11 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Urls do
         offenses = inspect_source(source)
 
         expected_offenses.zip(offenses.reverse).each do |expected, actual|
-          expect(actual&.message).to eq(expected[:message])
-          expect(actual&.severity).to eq(expected[:severity])
-          expect(actual&.line).to eq(expected[:line])
-          expect(actual&.column).to eq(expected[:column])
+          expect(actual).not_to be_nil
+          expect(actual.message).to eq(expected[:message])
+          expect(actual.severity).to eq(expected[:severity])
+          expect(actual.line).to eq(expected[:line])
+          expect(actual.column).to eq(expected[:column])
         end
       end
     end
