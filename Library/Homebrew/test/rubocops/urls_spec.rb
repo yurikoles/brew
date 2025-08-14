@@ -6,14 +6,12 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Urls do
   subject(:cop) { described_class.new }
 
   let(:offense_list) do
-    # TODO: Re-add the following to the offense list after homebrew/core migration.
-    # {
-    #   "url" => "https://ftpmirror.gnu.org/lightning/lightning-2.1.0.tar.gz",
-    #   "msg" => "https://ftpmirror.gnu.org/lightning/lightning-2.1.0.tar.gz should be: " \
-    #            "https://ftp.gnu.org/gnu/lightning/lightning-2.1.0.tar.gz",
-    #   "col" => 2,
-    # }
     [{
+      "url" => "https://ftp.gnu.org/lightning/lightning-2.1.0.tar.gz",
+      "msg" => "https://ftp.gnu.org/lightning/lightning-2.1.0.tar.gz should be: " \
+               "https://ftpmirror.gnu.org/gnu/lightning/lightning-2.1.0.tar.gz",
+      "col" => 2,
+    }, {
       "url" => "https://fossies.org/linux/privat/monit-5.23.0.tar.gz",
       "msg" => "Please don't use \"fossies.org\" in the `url` (using as a mirror is fine)",
       "col" => 2,
