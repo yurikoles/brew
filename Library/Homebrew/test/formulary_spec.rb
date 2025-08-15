@@ -126,7 +126,7 @@ RSpec.describe Formulary do
           described_class.factory(temp_formula_path)
         ensure
           temp_formula_path.unlink
-        end.to raise_error(RuntimeError, /Rejecting formula at/)
+        end.to raise_error(RuntimeError, /requires formulae to be in a tap, rejecting/)
       end
 
       it "returns a Formula when given a URL", :needs_utils_curl do

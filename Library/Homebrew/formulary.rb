@@ -619,12 +619,13 @@ module Formulary
       if Homebrew::EnvConfig.forbid_packages_from_paths?
         path_realpath = path.realpath.to_s
         path_string = path.to_s
-        if !path_realpath.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/", "#{HOMEBREW_CACHE}/") &&
+        if (path_realpath.end_with?(".rb") || path_string.end_with?(".rb")) &&
+           !path_realpath.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/", "#{HOMEBREW_CACHE}/") &&
            !path_string.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/", "#{HOMEBREW_CACHE}/")
           if path_string.include?("./") || path_string.end_with?(".rb") || path_string.count("/") != 2
             raise <<~WARNING
-              Rejecting formula at #{path_string} because it's not in a tap.
-                    Homebrew requires formulae to be in a tap.
+              Homebrew requires formulae to be in a tap, rejecting:
+                #{path_string} (#{path_realpath})
 
               To create a tap, run e.g.
                 brew tap-new <user|org>/<repository>
