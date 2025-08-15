@@ -80,10 +80,10 @@ class DependencyCollector
     parse_spec(spec, Array(tags))
   end
 
-  sig { params(related_formula_names: T::Array[String]).returns(T.nilable(Dependency)) }
+  sig { params(related_formula_names: T::Set[String]).returns(T.nilable(Dependency)) }
   def gcc_dep_if_needed(related_formula_names); end
 
-  sig { params(related_formula_names: T::Array[String]).returns(T.nilable(Dependency)) }
+  sig { params(related_formula_names: T::Set[String]).returns(T.nilable(Dependency)) }
   def glibc_dep_if_needed(related_formula_names); end
 
   def git_dep_if_needed(tags)

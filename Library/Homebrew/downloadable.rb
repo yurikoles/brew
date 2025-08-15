@@ -32,7 +32,7 @@ module Downloadable
     @download_name = T.let(nil, T.nilable(String))
   end
 
-  sig { params(other: Object).void }
+  sig { overridable.params(other: Downloadable).void }
   def initialize_dup(other)
     super
     @checksum = @checksum.dup
