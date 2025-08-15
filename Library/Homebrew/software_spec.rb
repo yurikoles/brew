@@ -152,12 +152,12 @@ class SoftwareSpec
     !bottle_specification.collector.tags.empty?
   end
 
-  sig { params(tag: T.nilable(Utils::Bottles::Tag)).returns(T::Boolean) }
+  sig { params(tag: T.nilable(T.any(Utils::Bottles::Tag, Symbol))).returns(T::Boolean) }
   def bottle_tag?(tag = nil)
     bottle_specification.tag?(Utils::Bottles.tag(tag))
   end
 
-  sig { params(tag: T.nilable(Utils::Bottles::Tag)).returns(T::Boolean) }
+  sig { params(tag: T.nilable(T.any(Utils::Bottles::Tag, Symbol))).returns(T::Boolean) }
   def bottled?(tag = nil)
     return false unless bottle_tag?(tag)
 
