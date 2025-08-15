@@ -1681,7 +1681,10 @@ class Formula
         # don't consider this keg current if there's a newer formula available
         next if follow_installed_alias? && new_formula_available?
 
-        # this keg is the current version of the formula, so it's not outdated
+        # this keg is the current version of the formula, but only consider it current
+        # if it's actually linked - an unlinked current version means we're outdated
+        next if !keg.optlinked? && !keg.linked? && !pinned?
+
         current_version = true
         break
       end
