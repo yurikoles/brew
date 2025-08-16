@@ -44,11 +44,13 @@ module Kernel
     Formatter.headline(title, color: :blue)
   end
 
+  sig { params(title: T.any(String, Exception), sput: T.anything).void }
   def ohai(title, *sput)
     puts ohai_title(title.to_s)
     puts sput
   end
 
+  sig { params(title: T.any(String, Exception), sput: T.anything, always_display: T::Boolean).void }
   def odebug(title, *sput, always_display: false)
     debug = if respond_to?(:debug)
       T.unsafe(self).debug?
