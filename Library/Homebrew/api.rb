@@ -27,7 +27,7 @@ module Homebrew
         api_url = "#{HOMEBREW_API_DEFAULT_DOMAIN}/#{endpoint}"
         output = Utils::Curl.curl_output("--fail", api_url)
       end
-      raise ArgumentError, "No file found at #{Tty.underline}#{api_url}#{Tty.reset}" unless output.success?
+      raise ArgumentError, "No file found at: #{Tty.underline}#{api_url}#{Tty.reset}" unless output.success?
 
       cache[endpoint] = JSON.parse(output.stdout, freeze: true)
     rescue JSON::ParserError

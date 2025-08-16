@@ -417,7 +417,7 @@ module OS
             macOS won't move relative symlinks across volumes unless the target file already
             exists. Formulae known to be affected by this are Git and Narwhal.
 
-            You should set the "HOMEBREW_TEMP" environment variable to a suitable
+            You should set the `$HOMEBREW_TEMP` environment variable to a suitable
             directory on the same volume as your Cellar.
 
             #{support_tier_message(tier: 2)}
