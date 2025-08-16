@@ -196,41 +196,13 @@ source "${HOMEBREW_LIBRARY}/Homebrew/utils/helpers.sh"
 if [[ -z "${HOMEBREW_NO_FORCE_BREW_WRAPPER:-}" && -n "${HOMEBREW_FORCE_BREW_WRAPPER:-}" &&
       -z "${HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER:-}" ]]
 then
-  HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW="${HOMEBREW_FORCE_BREW_WRAPPER%/brew}"
+  source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
   if [[ -z "${HOMEBREW_BREW_WRAPPER:-}" ]]
   then
-    # HOMEBREW_ORIGINAL_BREW_FILE set by bin/brew
-    # shellcheck disable=SC2154
-    odie <<EOS
-conflicting Homebrew wrapper configuration!
-HOMEBREW_FORCE_BREW_WRAPPER was set to ${HOMEBREW_FORCE_BREW_WRAPPER}
-but   HOMEBREW_BREW_WRAPPER was unset.
-
-$(bold "Ensure you run ${HOMEBREW_FORCE_BREW_WRAPPER} directly (not ${HOMEBREW_ORIGINAL_BREW_FILE})")!
-
-Manually setting your PATH can interfere with Homebrew wrappers.
-Ensure your shell configuration contains:
-  eval "\$(${HOMEBREW_BREW_FILE} shellenv)"
-or that ${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW} comes before ${HOMEBREW_PREFIX}/bin in your PATH:
-  export PATH="${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW}:${HOMEBREW_PREFIX}/bin:\$PATH"
-EOS
+    odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER was unset."
   elif [[ "${HOMEBREW_FORCE_BREW_WRAPPER}" != "${HOMEBREW_BREW_WRAPPER}" ]]
   then
-    # HOMEBREW_ORIGINAL_BREW_FILE set by bin/brew
-    # shellcheck disable=SC2154
-    odie <<EOS
-conflicting Homebrew wrapper configuration!
-HOMEBREW_FORCE_BREW_WRAPPER was set to ${HOMEBREW_FORCE_BREW_WRAPPER}
-but HOMEBREW_BREW_WRAPPER   was set to ${HOMEBREW_BREW_WRAPPER}
-
-$(bold "Ensure you run ${HOMEBREW_FORCE_BREW_WRAPPER} directly (not ${HOMEBREW_ORIGINAL_BREW_FILE})")!
-
-Manually setting your PATH can interfere with Homebrew wrappers.
-Ensure your shell configuration contains:
-  eval "\$(${HOMEBREW_BREW_FILE} shellenv)"
-or that ${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW} comes before ${HOMEBREW_PREFIX}/bin in your PATH:
-  export PATH="${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW}:${HOMEBREW_PREFIX}/bin:\$PATH"
-EOS
+    odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER   was set to ${HOMEBREW_BREW_WRAPPER}"
   fi
 fi
 
@@ -249,7 +221,7 @@ then
   fi
   HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE="$?"
 
-  if [[ "${HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE}" -ne 0 ]]
+  if ((HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE != 0))
   then
     # Error message already printed above when populating `HOMEBREW_BREW_CALLER`.
     odie "failed to check the path to the parent process!"
@@ -257,23 +229,8 @@ then
 
   if [[ "${HOMEBREW_BREW_CALLER:-}" != "${HOMEBREW_FORCE_BREW_WRAPPER}" ]]
   then
-    HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW="${HOMEBREW_FORCE_BREW_WRAPPER%/brew}"
-
-    # HOMEBREW_ORIGINAL_BREW_FILE set by bin/brew
-    # shellcheck disable=SC2154
-    odie <<EOS
-conflicting Homebrew wrapper configuration!
-HOMEBREW_FORCE_BREW_WRAPPER was set to ${HOMEBREW_FORCE_BREW_WRAPPER}
-but \`brew\` was invoked by ${HOMEBREW_BREW_CALLER}.
-
-$(bold "Ensure you run ${HOMEBREW_FORCE_BREW_WRAPPER} directly (not ${HOMEBREW_ORIGINAL_BREW_FILE})")!
-
-Manually setting your PATH can interfere with Homebrew wrappers.
-Ensure your shell configuration contains:
-  eval "\$(${HOMEBREW_BREW_FILE} shellenv)"
-or that ${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW} comes before ${HOMEBREW_PREFIX}/bin in your PATH:
-  export PATH="${HOMEBREW_FORCE_BREW_WRAPPER_WITHOUT_BREW}:${HOMEBREW_PREFIX}/bin:\$PATH"
-EOS
+    source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
+    odie-with-wrapper-message "but \`brew\` was invoked by ${HOMEBREW_BREW_CALLER}."
   fi
 
   unset HOMEBREW_BREW_CALLER HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE
