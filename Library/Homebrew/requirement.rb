@@ -172,10 +172,6 @@ class Requirement
     super(cmd, PATH.new(ORIGINAL_PATHS))
   end
 
-  def which_all(cmd)
-    super(cmd, PATH.new(ORIGINAL_PATHS))
-  end
-
   class << self
     include BuildEnvironment::DSL
 
