@@ -89,7 +89,7 @@ RSpec.describe Homebrew::Services::Cli do
       expect(Homebrew::Services::System).not_to receive(:root?)
       expect do
         services_cli.start(["service_name"], "/non/existent/path")
-      end.to raise_error(UsageError, "Invalid usage: Provided service file does not exist")
+      end.to raise_error(UsageError, "Invalid usage: Provided service file does not exist.")
     end
 
     it "checks empty targets cause no error" do
@@ -112,7 +112,7 @@ RSpec.describe Homebrew::Services::Cli do
       expect(Homebrew::Services::System).not_to receive(:root?)
       expect do
         services_cli.start(["service_name"], "/hfdkjshksdjhfkjsdhf/fdsjghsdkjhb")
-      end.to raise_error(UsageError, "Invalid usage: Provided service file does not exist")
+      end.to raise_error(UsageError, "Invalid usage: Provided service file does not exist.")
     end
 
     it "checks empty targets cause no error" do
@@ -165,7 +165,7 @@ RSpec.describe Homebrew::Services::Cli do
       service = instance_double(Homebrew::Services::FormulaWrapper, name: "name", installed?: false)
       expect do
         services_cli.install_service_file(service, nil)
-      end.to raise_error(UsageError, "Invalid usage: Formula `name` is not installed")
+      end.to raise_error(UsageError, "Invalid usage: Formula `name` is not installed.")
     end
 
     it "checks service file exists" do

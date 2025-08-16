@@ -45,7 +45,7 @@ module Homebrew
 
     def audit_version
       if version.nil?
-        problem "missing version"
+        problem "Missing version"
       elsif owner.is_a?(Formula) && !version.to_s.match?(GitHubPackages::VALID_OCI_TAG_REGEX) &&
             (owner.core_formula? ||
             (owner.bottle_defined? && GitHubPackages::URL_REGEX.match?(owner.bottle_specification.root_url)))
@@ -137,7 +137,7 @@ module Homebrew
       # TODO: try remove the OS/env conditional
       if Homebrew::SimulateSystem.simulating_or_running_on_macos? && spec_name == :stable &&
          owner.name != "ca-certificates" && curl_dep && !urls.find { |u| u.start_with?("http://") }
-        problem "should always include at least one HTTP mirror"
+        problem "Should always include at least one HTTP mirror"
       end
 
       return unless @online

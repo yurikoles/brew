@@ -834,7 +834,7 @@ RSpec.describe Homebrew::FormulaAuditor do
       RUBY
 
       fa.audit_specs
-      expect(fa.problems.first[:message]).to match "should only be updated every 10 releases on multiples of 10"
+      expect(fa.problems.first[:message]).to match "Should only be updated every 10 releases on multiples of 10"
     end
 
     it "allows non-versioned formulae to have a `HEAD` spec" do

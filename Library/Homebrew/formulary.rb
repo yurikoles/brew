@@ -711,7 +711,7 @@ module Formulary
       if ALLOWED_URL_SCHEMES.exclude?(url_scheme)
         raise UnsupportedInstallationMethod,
               "Non-checksummed download of #{name} formula file from an arbitrary URL is unsupported! " \
-              "`brew extract` or `brew create` and `brew tap-new` to create a formula file in a tap " \
+              "Use `brew extract` or `brew create` and `brew tap-new` to create a formula file in a tap " \
               "on GitHub instead."
       end
       HOMEBREW_CACHE_FORMULA.mkpath

@@ -169,7 +169,7 @@ class DependencyCollector
     when :maximum_macos then MacOSRequirement.new(tags, comparator: "<=")
     when :xcode         then XcodeRequirement.new(tags)
     else
-      raise ArgumentError, "Unsupported special dependency #{spec.inspect}"
+      raise ArgumentError, "Unsupported special dependency: #{spec.inspect}"
     end
   end
 
