@@ -112,7 +112,7 @@ module Homebrew
         ]
         if no_named_formula_commands.include?(subcommand)
           raise UsageError, "The `#{subcommand}` subcommand does not accept a formula argument!" if formulae.present?
-          raise UsageError, "The `#{subcommand}` subcommand does not accept the --all argument!" if args.all?
+          raise UsageError, "The `#{subcommand}` subcommand does not accept the `--all` argument!" if args.all?
         end
 
         if args.file
@@ -122,22 +122,25 @@ module Homebrew
             *Homebrew::Services::Commands::Restart::TRIGGERS,
           ]
           if file_commands.exclude?(subcommand)
-            raise UsageError, "The `#{subcommand}` subcommand does not accept the --file= argument!"
+            raise UsageError, "The `#{subcommand}` subcommand does not accept the `--file=` argument!"
           elsif args.all?
             raise UsageError,
-                  "The `#{subcommand}` subcommand does not accept the --all and --file= arguments at the same time!"
+                  "The `#{subcommand}` subcommand does not accept the `--all` and `--file=` arguments at the same time!"
           end
         end
 
         unless Homebrew::Services::Commands::Stop::TRIGGERS.include?(subcommand)
-          raise UsageError, "The `#{subcommand}` subcommand does not accept the --keep argument!" if args.keep?
-          raise UsageError, "The `#{subcommand}` subcommand does not accept the --no-wait argument!" if args.no_wait?
+          raise UsageError, "The `#{subcommand}` subcommand does not accept the `--keep` argument!" if args.keep?
+
+          if args.no_wait?
+            raise UsageError, "The `#{subcommand}` subcommand does not accept the `--no-wait` argument!"
+          end
           if args.max_wait
-            raise UsageError, "The `#{subcommand}` subcommand does not accept the --max-wait= argument!"
+            raise UsageError, "The `#{subcommand}` subcommand does not accept the `--max-wait=` argument!"
           end
         end
 
-        opoo "The --all argument overrides provided formula argument!" if formulae.present? && args.all?
+        opoo "The `--all` argument overrides provided formula argument!" if formulae.present? && args.all?
 
         targets = if args.all?
           if subcommand == "start"

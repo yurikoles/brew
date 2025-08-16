@@ -46,14 +46,15 @@ RSpec.describe Homebrew::Services::Cli do
     it "checks the input does not exist" do
       expect do
         services_cli.check!([])
-      end.to raise_error(UsageError, "Invalid usage: Formula(e) missing, please provide a formula name or use --all")
+      end.to raise_error(UsageError,
+                         "Invalid usage: Formula(e) missing, please provide a formula name or use `--all`.")
     end
 
     it "checks the input exists" do
       expect do
         services_cli.check!("hello")
       end.not_to raise_error(UsageError,
-                             "Invalid usage: Formula(e) missing, please provide a formula name or use --all")
+                             "Invalid usage: Formula(e) missing, please provide a formula name or use `--all`.")
     end
   end
 
@@ -178,7 +179,7 @@ RSpec.describe Homebrew::Services::Cli do
         services_cli.install_service_file(service, nil)
       end.to raise_error(
         UsageError,
-        "Invalid usage: Formula `name` has not implemented #plist, #service or installed a locatable service file",
+        "Invalid usage: Formula `name` has not implemented #plist, #service or provided a locatable service file.",
       )
     end
   end

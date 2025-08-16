@@ -537,8 +537,8 @@ module Cask
             # Shell scripts cannot be signed, so we skip them
             next false if path.text_executable?
 
-            system_command("codesign",  args:         ["--verify", "-R=notarized", "--check-notarization", path],
-                                        print_stderr: false)
+            system_command("codesign", args:         ["--verify", "-R=notarized", "--check-notarization", path],
+                                       print_stderr: false)
           else
             add_error "Unknown artifact type: #{artifact.class}", location: url.location
           end

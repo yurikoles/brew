@@ -382,7 +382,7 @@ class FormulaInstaller
     check_installation_already_attempted
 
     if force_bottle? && !pour_bottle?
-      raise CannotInstallFormulaError, "--force-bottle passed but #{formula.full_name} has no bottle!"
+      raise CannotInstallFormulaError, "`--force-bottle` passed but #{formula.full_name} has no bottle!"
     end
 
     if Homebrew.default_prefix? &&
