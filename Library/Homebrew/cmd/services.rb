@@ -25,27 +25,27 @@ module Homebrew
           If `sudo` is passed, operate on `/Library/LaunchDaemons` or `/usr/lib/systemd/system` (started at boot).
           Otherwise, operate on `~/Library/LaunchAgents` or `~/.config/systemd/user` (started at login).
 
-          [`sudo`] `brew services` [`list`] (`--json`) (`--debug`):
+          [`sudo`] `brew services` [`list`] [`--json`] [`--debug`]:
           List information about all managed services for the current user (or root).
           Provides more output from Homebrew and `launchctl`(1) or `systemctl`(1) if run with `--debug`.
 
-          [`sudo`] `brew services info` (<formula>|`--all`|`--json`):
+          [`sudo`] `brew services info` (<formula>|`--all`) [`--json`]:
           List all managed services for the current user (or root).
 
-          [`sudo`] `brew services run` (<formula>|`--all`|`--file=`):
+          [`sudo`] `brew services run` (<formula>|`--all`) [`--file=`]:
           Run the service <formula> without registering to launch at login (or boot).
 
-          [`sudo`] `brew services start` (<formula>|`--all`|`--file=`):
+          [`sudo`] `brew services start` (<formula>|`--all`) [`--file=`]:
           Start the service <formula> immediately and register it to launch at login (or boot).
 
-          [`sudo`] `brew services stop` (`--keep`) (`--no-wait`|`--max-wait=`) (<formula>|`--all`):
+          [`sudo`] `brew services stop` [`--keep`] [`--no-wait`|`--max-wait=`] (<formula>|`--all`):
           Stop the service <formula> immediately and unregister it from launching at login (or boot),
           unless `--keep` is specified.
 
           [`sudo`] `brew services kill` (<formula>|`--all`):
           Stop the service <formula> immediately but keep it registered to launch at login (or boot).
 
-          [`sudo`] `brew services restart` (<formula>|`--all`|`--file=`):
+          [`sudo`] `brew services restart` (<formula>|`--all`) [`--file=`]:
           Stop (if necessary) and start the service <formula> immediately and register it to launch at login (or boot).
 
           [`sudo`] `brew services cleanup`:
@@ -58,15 +58,16 @@ module Homebrew
         flag   "--max-wait=",
                description: "Wait at most this many seconds for `stop` to finish stopping a service. " \
                             "Defaults to 60. Set this to zero (0) seconds to wait indefinitely."
-        switch "--all",
-               description: "Run <subcommand> on all services."
-        switch "--json",
-               description: "Output as JSON."
         switch "--no-wait",
                description: "Don't wait for `stop` to finish stopping the service."
         switch "--keep",
                description: "When stopped, don't unregister the service from launching at login (or boot)."
+        switch "--all",
+               description: "Run <subcommand> on all services."
+        switch "--json",
+               description: "Output as JSON."
 
+        conflicts "--all", "--file"
         conflicts "--max-wait=", "--no-wait"
 
         named_args %w[list info run start stop kill restart cleanup]
@@ -123,9 +124,6 @@ module Homebrew
           ]
           if file_commands.exclude?(subcommand)
             raise UsageError, "The `#{subcommand}` subcommand does not accept the `--file=` argument!"
-          elsif args.all?
-            raise UsageError,
-                  "The `#{subcommand}` subcommand does not accept the `--all` and `--file=` arguments at the same time!"
           end
         end
 
