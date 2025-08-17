@@ -669,7 +669,7 @@ The `no_autobump!` stanza excludes a cask from the autobump list. This means all
 no_autobump! because: :incompatible_version_format
 ```
 
-A complete list of allowed symbols can be found in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace.html#NO_AUTOBUMP_REASONS_LIST-constant).
+A complete list of allowed symbols can be found in [`NO_AUTOBUMP_REASONS_LIST`](https://rubydoc.brew.sh/top-level-namespace#NO_AUTOBUMP_REASONS_LIST-constant).
 
 Casks that use `strategy :extract_plist` in their `livecheck` block or have `version :latest` are always excluded from the autobump list and do not require `no_autobump!` to be declared.
 
@@ -681,7 +681,7 @@ Refer to the [Autobump](Autobump.md) page for more information about the autobum
 
 Unlike the [token](#token-reference), which is simplified and reduced to a limited set of characters, the `name` stanza can include the proper capitalization, spacing and punctuation to match the official name of the software. For disambiguation purposes, it is recommended to spell out the name of the application, including the vendor name if necessary. A good example is the [`pycharm-ce`](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/p/pycharm-ce.rb#L9-L10) cask, whose name is spelled out as `Jetbrains PyCharm Community Edition`, even though it is likely never referenced as such anywhere.
 
-Additional details about the software can be provided in the [`desc` stanza](#stanza-desc).
+Additional details about the software can be provided in the [`desc`](#stanza-desc) stanza.
 
 The `name` stanza can be repeated multiple times if there are useful alternative names. The first instance should use the Latin alphabet. For example, see the [`cave-story`](https://github.com/Homebrew/homebrew-cask/blob/aa461148bbb5119af26b82cccf5003e2b4e50d95/Casks/c/cave-story.rb#L58-L60) cask, whose original name does not use the Latin alphabet.
 
@@ -968,7 +968,7 @@ Arguments to `uninstall delete:` should use the following basic rules:
 * Paths must be absolute.
 * Glob expansion is performed using the [standard set of characters](https://en.wikipedia.org/wiki/Glob_(programming)).
 
-To remove user-specific files, use the [`zap` stanza](#stanza-zap).
+To remove user-specific files, use the [`zap`](#stanza-zap) stanza.
 
 #### `uninstall` *trash*
 
@@ -1212,7 +1212,7 @@ brew uninstall --zap --force firefox
 
 #### `zap` syntax
 
-The form of the `zap` stanza follows the [`uninstall` stanza](#stanza-uninstall). All the same directives are available. The `trash:` key is preferred over `delete:`.
+The form of the `zap` stanza follows the [`uninstall`](#stanza-uninstall) stanza. All the same directives are available. The `trash:` key is preferred over `delete:`.
 
 Example: [dropbox.rb](https://github.com/Homebrew/homebrew-cask/blob/974a55ade77bb4edc8bbb80ef72eec83ae0e76c0/Casks/d/dropbox.rb#L30-L68)
 
@@ -1304,11 +1304,11 @@ cask "calibre" do
 end
 ```
 
-Such `on_<system>` blocks can be nested and contain other stanzas not listed here. However, they should not contain `depends_on macos:` stanzas, which should occur once below the `on_<system>` blocks and encompass all releases listed in the cask. Examples: [calhash.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/c/calhash.rb), [openzfs.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/o/openzfs.rb), [r.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/r/r.rb), [wireshark.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/w/wireshark.rb)
+Such `on_<system>` blocks can be nested and contain other stanzas not listed here. However, they should not contain `depends_on macos:` stanzas, which should occur once below the `on_<system>` blocks and encompass all releases listed in the cask. Examples: [calhash.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/c/calhash.rb), [r.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/r/r.rb), [wireshark.rb](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/w/wireshark.rb)
 
 ### Switch between languages or regions
 
-If a cask is available in multiple languages, you can use the [`language` stanza](#stanza-language) to switch between languages or regions based on the system locale.
+If a cask is available in multiple languages, you can use the [`language`](#stanza-language) stanza to switch between languages or regions based on the system locale.
 
 ## Arbitrary Ruby methods
 
@@ -1448,7 +1448,7 @@ To convert the App’s simplified name (above) to a token:
 
 #### Casks pinned to specific versions
 
-Casks pinned to a specific version of the application (i.e. [`carbon-copy-cloner@5`](https://github.com/Homebrew/homebrew-cask/blob/1b8f44198e5e184c597ee07454a1e10f97f36b15/Casks/c/carbon-copy-cloner%405.rb)) should use the same token as the standard cask with a suffix of `@<version-number>`. For Carbon Copy Cloner (`carbon-copy-cloner`), pinned to version 5, the token should be `carbon-copy-cloner@5`.
+Casks pinned to a specific version of the application (e.g. [`carbon-copy-cloner@5`](https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/c/carbon-copy-cloner%405.rb)) should use the same token as the standard cask with a suffix of `@<version-number>`. For Carbon Copy Cloner (`carbon-copy-cloner`), pinned to version 6, the token is `carbon-copy-cloner@6`.
 
 #### Casks pinned to development channels
 
