@@ -929,6 +929,20 @@ module Cask
     end
 
     sig { void }
+    def audit_forgejo_prerelease_version
+      return if (url = cask.url).nil?
+
+      odebug "Auditing Forgejo prerelease"
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if online?
+      return if user.nil? || repo.nil?
+
+      tag = SharedAudits.forgejo_tag_from_url(url.to_s)
+      tag ||= cask.version
+      error = SharedAudits.forgejo_release(user, repo, tag, cask:)
+      add_error error, location: url.location if error
+    end
+
+    sig { void }
     def audit_github_repository_archived
       # Deprecated/disabled casks may have an archived repository.
       return if cask.deprecated? || cask.disabled?
@@ -958,6 +972,23 @@ module Cask
       return if metadata.nil?
 
       add_error "GitLab repo is archived", location: url.location if metadata["archived"]
+    end
+
+    sig { void }
+    def audit_forgejo_repository_archived
+      return if cask.deprecated? || cask.disabled?
+      return if (url = cask.url).nil?
+
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if online?
+      return if user.nil? || repo.nil?
+
+      metadata = SharedAudits.forgejo_repo_data(user, repo)
+      return if metadata.nil?
+
+      return unless metadata["archived"]
+
+      add_error "Forgejo repository is archived since #{metadata["archived_at"]}",
+                location: url.location
     end
 
     sig { void }
@@ -999,6 +1030,20 @@ module Cask
       odebug "Auditing Bitbucket repo"
 
       error = SharedAudits.bitbucket(user, repo)
+      add_error error, location: url.location if error
+    end
+
+    sig { void }
+    def audit_forgejo_repository
+      return unless new_cask?
+      return if (url = cask.url).nil?
+
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*})
+      return if user.nil? || repo.nil?
+
+      odebug "Auditing Forgejo repo"
+
+      error = SharedAudits.forgejo(user, repo)
       add_error error, location: url.location if error
     end
 

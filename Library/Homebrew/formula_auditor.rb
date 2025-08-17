@@ -677,6 +677,19 @@ module Homebrew
       problem "GitLab repository is archived" if metadata["archived"]
     end
 
+    sig { void }
+    def audit_forgejo_repository_archived
+      return if formula.deprecated? || formula.disabled?
+
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if @online
+      return if user.blank?
+
+      metadata = SharedAudits.forgejo_repo_data(user, repo)
+      return if metadata.nil?
+
+      problem "Forgejo repository is archived since #{metadata["archived_at"]}" if metadata["archived"]
+    end
+
     def audit_github_repository
       user, repo = get_repo_data(%r{https?://github\.com/([^/]+)/([^/]+)/?.*}) if @new_formula
 
@@ -703,6 +716,17 @@ module Homebrew
       return if user.blank?
 
       warning = SharedAudits.bitbucket(user, repo)
+      return if warning.nil?
+
+      new_formula_problem warning
+    end
+
+    sig { void }
+    def audit_forgejo_repository
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if @new_formula
+      return if user.blank?
+
+      warning = SharedAudits.forgejo(user, repo)
       return if warning.nil?
 
       new_formula_problem warning
@@ -837,6 +861,16 @@ module Homebrew
 
         if @online && !tag.nil?
           error = SharedAudits.github_release(owner, repo, tag, formula:)
+          problem error if error
+        end
+      when %r{^https://codeberg\.org/([\w-]+)/([\w-]+)}
+        owner = T.must(Regexp.last_match(1))
+        repo = T.must(Regexp.last_match(2))
+        tag = SharedAudits.forgejo_tag_from_url(url)
+        tag ||= formula.stable.specs[:tag]
+
+        if @online && !tag.nil?
+          error = SharedAudits.forgejo_release(owner, repo, tag, formula:)
           problem error if error
         end
       end
