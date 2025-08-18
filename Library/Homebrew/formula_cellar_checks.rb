@@ -234,7 +234,7 @@ module FormulaCellarChecks
     keg = Keg.new(prefix)
 
     matches = []
-    keg.each_unique_file_matching(HOMEBREW_SHIMS_PATH) do |f|
+    keg.each_unique_file_matching(HOMEBREW_SHIMS_PATH.to_s) do |f|
       match = f.relative_path_from(keg.to_path)
 
       next if match.to_s.match? %r{^share/doc/.+?/INFO_BIN$}

@@ -2024,7 +2024,7 @@ class Formula
 
     raise "No universal binaries found to deuniversalize" if targets.blank?
 
-    targets&.each do |target|
+    targets.compact.each do |target|
       extract_macho_slice_from(Pathname(target), Hardware::CPU.arch)
     end
   end
