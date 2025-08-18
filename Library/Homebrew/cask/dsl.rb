@@ -625,6 +625,9 @@ module Cask
         raise ArgumentError, "more than one of replacement, replacement_formula and/or replacement_cask specified!"
       end
 
+      # odeprecate: remove this remapping when the :unsigned reason is removed
+      because = :fails_gatekeeper_check if because == :unsigned
+
       if replacement
         odeprecated(
           "deprecate!(:replacement)",
@@ -650,6 +653,9 @@ module Cask
       if [replacement, replacement_formula, replacement_cask].filter_map(&:presence).length > 1
         raise ArgumentError, "more than one of replacement, replacement_formula and/or replacement_cask specified!"
       end
+
+      # odeprecate: remove this remapping when the :unsigned reason is removed
+      because = :fails_gatekeeper_check if because == :unsigned
 
       if replacement
         odeprecated(
