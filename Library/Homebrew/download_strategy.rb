@@ -148,15 +148,15 @@ class AbstractDownloadStrategy
     cached_location.basename
   end
 
+  sig { override.params(title: T.any(String, Exception), sput: T.anything).void }
+  def ohai(title, *sput)
+    super unless quiet?
+  end
+
   private
 
   sig { params(args: T.anything).void }
   def puts(*args)
-    super unless quiet?
-  end
-
-  sig { params(args: T.anything).void }
-  def ohai(*args)
     super unless quiet?
   end
 
