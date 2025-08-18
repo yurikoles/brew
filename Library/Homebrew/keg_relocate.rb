@@ -97,9 +97,21 @@ class Keg
         old: "/usr/local/Caskroom",
         new: "#{PREFIX_PLACEHOLDER}/Caskroom",
       },
+      etc_name:     {
+        old: "/usr/local/etc/#{name}",
+        new: "#{PREFIX_PLACEHOLDER}/etc/#{name}",
+      },
       var_homebrew: {
         old: "/usr/local/var/homebrew",
         new: "#{PREFIX_PLACEHOLDER}/var/homebrew",
+      },
+      var_name:     {
+        old: "/usr/local/var/#{name}",
+        new: "#{PREFIX_PLACEHOLDER}/var/#{name}",
+      },
+      var_log_name: {
+        old: "/usr/local/var/log/#{name}",
+        new: "#{PREFIX_PLACEHOLDER}/var/log/#{name}",
       },
     }
   end
