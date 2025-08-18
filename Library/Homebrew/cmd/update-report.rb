@@ -932,23 +932,9 @@ class ReporterHub
     (HOMEBREW_CELLAR/formula.split("/").last).directory?
   end
 
-  sig { params(formula: String).returns(T::Boolean) }
-  def outdated?(formula)
-    Formula[formula].outdated?
-  rescue FormulaUnavailableError
-    false
-  end
-
   sig { params(cask: String).returns(T::Boolean) }
   def cask_installed?(cask)
     (Cask::Caskroom.path/cask).directory?
-  end
-
-  sig { params(cask: String).returns(T::Boolean) }
-  def cask_outdated?(cask)
-    Cask::CaskLoader.load(cask).outdated?
-  rescue Cask::CaskError
-    false
   end
 
   sig { returns(T::Array[T.untyped]) }
