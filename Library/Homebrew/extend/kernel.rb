@@ -458,11 +458,6 @@ module Kernel
     Formula[formula_name].ensure_installed!(reason:, latest:).opt_bin/name
   end
 
-  sig { returns(T::Array[Pathname]) }
-  def paths
-    @paths ||= T.let(ORIGINAL_PATHS.uniq.map(&:to_s), T.nilable(T::Array[Pathname]))
-  end
-
   sig { params(size_in_bytes: T.any(Integer, Float)).returns(String) }
   def disk_usage_readable(size_in_bytes)
     if size_in_bytes.abs >= 1_073_741_824
