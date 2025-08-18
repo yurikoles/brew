@@ -357,19 +357,6 @@ module Kernel
     nil
   end
 
-  def which_all(cmd, path = ENV.fetch("PATH"))
-    PATH.new(path).filter_map do |p|
-      begin
-        pcmd = File.expand_path(cmd, p)
-      rescue ArgumentError
-        # File.expand_path will raise an ArgumentError if the path is malformed.
-        # See https://github.com/Homebrew/legacy-homebrew/issues/32789
-        next
-      end
-      Pathname.new(pcmd) if File.file?(pcmd) && File.executable?(pcmd)
-    end.uniq
-  end
-
   def which_editor(silent: false)
     editor = Homebrew::EnvConfig.editor
     return editor if editor

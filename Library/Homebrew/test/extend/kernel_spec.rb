@@ -144,32 +144,6 @@ RSpec.describe Kernel do
     end
   end
 
-  describe "#which_all" do
-    let(:cmd_foo) { dir/"foo" }
-    let(:cmd_foo_bar) { dir/"bar/foo" }
-    let(:cmd_bar_baz_foo) { dir/"bar/baz/foo" }
-
-    before do
-      (dir/"bar/baz").mkpath
-
-      FileUtils.touch cmd_foo_bar
-
-      [cmd_foo, cmd_bar_baz_foo].each do |cmd|
-        FileUtils.touch cmd
-        cmd.chmod 0744
-      end
-    end
-
-    it "returns an array of all executables that are found" do
-      path = [
-        "#{dir}/bar/baz",
-        "#{dir}/baz:#{dir}",
-        "~baduserpath",
-      ].join(File::PATH_SEPARATOR)
-      expect(which_all("foo", path)).to eq([cmd_bar_baz_foo, cmd_foo])
-    end
-  end
-
   specify "#which_editor" do
     ENV["HOMEBREW_EDITOR"] = "vemate -w"
     ENV["HOMEBREW_PATH"] = dir
