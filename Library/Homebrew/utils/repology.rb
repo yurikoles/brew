@@ -24,7 +24,7 @@ module Repology
     if Homebrew::EnvConfig.developer?
       $stderr.puts result&.stderr
     else
-      odebug result&.stderr
+      odebug result&.stderr.to_s
     end
 
     raise

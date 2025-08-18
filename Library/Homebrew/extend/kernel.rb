@@ -44,11 +44,13 @@ module Kernel
     Formatter.headline(title, color: :blue)
   end
 
+  sig { params(title: T.any(String, Exception), sput: T.anything).void }
   def ohai(title, *sput)
     puts ohai_title(title.to_s)
     puts sput
   end
 
+  sig { params(title: T.any(String, Exception), sput: T.anything, always_display: T::Boolean).void }
   def odebug(title, *sput, always_display: false)
     debug = if respond_to?(:debug)
       T.unsafe(self).debug?
@@ -355,19 +357,6 @@ module Kernel
     nil
   end
 
-  def which_all(cmd, path = ENV.fetch("PATH"))
-    PATH.new(path).filter_map do |p|
-      begin
-        pcmd = File.expand_path(cmd, p)
-      rescue ArgumentError
-        # File.expand_path will raise an ArgumentError if the path is malformed.
-        # See https://github.com/Homebrew/legacy-homebrew/issues/32789
-        next
-      end
-      Pathname.new(pcmd) if File.file?(pcmd) && File.executable?(pcmd)
-    end.uniq
-  end
-
   def which_editor(silent: false)
     editor = Homebrew::EnvConfig.editor
     return editor if editor
@@ -456,11 +445,6 @@ module Kernel
 
     require "formula"
     Formula[formula_name].ensure_installed!(reason:, latest:).opt_bin/name
-  end
-
-  sig { returns(T::Array[Pathname]) }
-  def paths
-    @paths ||= T.let(ORIGINAL_PATHS.uniq.map(&:to_s), T.nilable(T::Array[Pathname]))
   end
 
   sig { params(size_in_bytes: T.any(Integer, Float)).returns(String) }

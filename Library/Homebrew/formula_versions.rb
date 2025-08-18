@@ -60,6 +60,7 @@ class FormulaVersions
     # We rescue these so that we can skip bad versions and
     # continue walking the history
     odebug "#{e} in #{name} at revision #{revision}", Utils::Backtrace.clean(e)
+    nil
   rescue FormulaUnavailableError
     nil
   ensure

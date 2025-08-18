@@ -148,15 +148,15 @@ class AbstractDownloadStrategy
     cached_location.basename
   end
 
+  sig { override.params(title: T.any(String, Exception), sput: T.anything).void }
+  def ohai(title, *sput)
+    super unless quiet?
+  end
+
   private
 
   sig { params(args: T.anything).void }
   def puts(*args)
-    super unless quiet?
-  end
-
-  sig { params(args: T.anything).void }
-  def ohai(*args)
     super unless quiet?
   end
 
@@ -1106,20 +1106,25 @@ class GitDownloadStrategy < VCSDownloadStrategy
     # Convert any shallow clone to full clone
     if shallow_dir?
       command! "git",
-               args:    ["fetch", "origin", "--unshallow"],
-               chdir:   cached_location,
-               timeout: Utils::Timer.remaining(timeout)
+               args:      ["fetch", "origin", "--unshallow"],
+               chdir:     cached_location,
+               timeout:   Utils::Timer.remaining(timeout),
+               reset_uid: true
     else
       command! "git",
-               args:    ["fetch", "origin"],
-               chdir:   cached_location,
-               timeout: Utils::Timer.remaining(timeout)
+               args:      ["fetch", "origin"],
+               chdir:     cached_location,
+               timeout:   Utils::Timer.remaining(timeout),
+               reset_uid: true
     end
   end
 
   sig { override.params(timeout: T.nilable(Time)).void }
   def clone_repo(timeout: nil)
-    command! "git", args: clone_args, timeout: Utils::Timer.remaining(timeout)
+    command! "git",
+             args:      clone_args,
+             timeout:   Utils::Timer.remaining(timeout),
+             reset_uid: true
 
     command! "git",
              args:    ["config", "homebrew.cacheversion", cache_version],
@@ -1595,7 +1600,7 @@ class DownloadStrategyDetector
       detect_from_symbol(using)
     else
       raise TypeError,
-            "Unknown download strategy specification #{using.inspect}"
+            "Unknown download strategy specification: #{using.inspect}"
     end
   end
 

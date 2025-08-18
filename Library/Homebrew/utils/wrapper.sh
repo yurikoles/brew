@@ -34,7 +34,7 @@ check-brew-wrapper() {
   then
     if [[ -z "${HOMEBREW_BREW_WRAPPER:-}" ]]
     then
-      odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER was unset."
+      odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER   was unset."
     elif [[ "${HOMEBREW_FORCE_BREW_WRAPPER}" != "${HOMEBREW_BREW_WRAPPER}" ]]
     then
       odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER   was set to ${HOMEBREW_BREW_WRAPPER}"

@@ -3,6 +3,8 @@
 
 require "cask/denylist"
 require "cask/download"
+require "cask/installer"
+require "cask/quarantine"
 require "digest"
 require "livecheck/livecheck"
 require "source_location"
@@ -498,19 +500,31 @@ module Cask
       return if url.nil?
 
       return if !cask.tap.official? && !signing?
-      return if cask.deprecated? && cask.deprecation_reason != :unsigned
+      return if cask.deprecated? && cask.deprecation_reason != :fails_gatekeeper_check
+
+      unless Quarantine.available?
+        odebug "Quarantine support is not available, skipping signing audit"
+        return
+      end
 
       odebug "Auditing signing"
+
+      is_in_skiplist = cask.tap&.audit_exception(:signing_audit_skiplist, cask.token)
 
       extract_artifacts do |artifacts, tmpdir|
         is_container = artifacts.any? { |a| a.is_a?(Artifact::App) || a.is_a?(Artifact::Pkg) }
 
-        artifacts.each do |artifact|
-          next if artifact.is_a?(Artifact::Binary) && is_container == true
+        any_signing_failure = artifacts.any? do |artifact|
+          next false if artifact.is_a?(Artifact::Binary) && is_container == true
 
           artifact_path = artifact.is_a?(Artifact::Pkg) ? artifact.path : artifact.source
 
           path = tmpdir/artifact_path.relative_path_from(cask.staged_path)
+
+          unless Quarantine.detect(path)
+            odebug "#{path} does not have quarantine attributes, skipping signing audit"
+            next false
+          end
 
           result = case artifact
           when Artifact::Pkg
@@ -521,21 +535,17 @@ module Cask
             system_command("gktool", args: ["scan", path], print_stderr: false)
           when Artifact::Binary
             # Shell scripts cannot be signed, so we skip them
-            next if path.text_executable?
+            next false if path.text_executable?
 
-            system_command("codesign",  args:         ["--verify", "-R=notarized", "--check-notarization", path],
-                                        print_stderr: false)
+            system_command("codesign", args:         ["--verify", "-R=notarized", "--check-notarization", path],
+                                       print_stderr: false)
           else
             add_error "Unknown artifact type: #{artifact.class}", location: url.location
           end
 
-          if result.success? && cask.deprecated? && cask.deprecation_reason == :unsigned
-            add_error "Cask is deprecated as unsigned but artifacts are signed!"
-          end
-
-          next if cask.deprecated? && cask.deprecation_reason == :unsigned
-
-          next if result.success?
+          next false if result.success?
+          next true if cask.deprecated? && cask.deprecation_reason == :fails_gatekeeper_check
+          next true if is_in_skiplist
 
           add_error <<~EOS, location: url.location
             Signature verification failed:
@@ -543,7 +553,21 @@ module Cask
             macOS on ARM requires software to be signed.
             Please contact the upstream developer to let them know they should sign and notarize their software.
           EOS
+
+          true
         end
+
+        return if any_signing_failure
+
+        add_error "Cask is in the signing audit skiplist, but does not need to be skipped!" if is_in_skiplist
+
+        return unless cask.deprecated?
+        return if cask.deprecation_reason != :fails_gatekeeper_check
+
+        add_error <<~EOS
+          Cask is deprecated because it failed Gatekeeper checks but all artifacts now pass!
+          Remove the deprecate/disable stanza or update the deprecate/disable reason.
+        EOS
       end
     end
 
@@ -619,6 +643,11 @@ module Cask
                       .extract_nestedly(to: @tmpdir, verbose: false)
       end
 
+      # Process rename operations after extraction
+      # Create a temporary installer to process renames in the audit directory
+      temp_installer = Installer.new(@cask)
+      temp_installer.process_rename_operations(target_dir: @tmpdir)
+
       # Set the flag to indicate that extraction has occurred.
       @artifacts_extracted = T.let(true, T.nilable(TrueClass))
 
@@ -640,10 +669,20 @@ module Cask
       extract_artifacts do |artifacts, tmpdir|
         is_container = artifacts.any? { |a| a.is_a?(Artifact::App) || a.is_a?(Artifact::Pkg) }
 
-        artifacts.each do |artifact|
-          next if !artifact.is_a?(Artifact::App) && !artifact.is_a?(Artifact::Binary)
-          next if artifact.is_a?(Artifact::Binary) && is_container
+        mentions_rosetta = cask.caveats.include?("requires Rosetta 2")
+        requires_intel = cask.depends_on.arch&.any? { |arch| arch[:type] == :intel }
 
+        artifacts_to_test = artifacts.filter do |artifact|
+          next false if !artifact.is_a?(Artifact::App) && !artifact.is_a?(Artifact::Binary)
+          next false if artifact.is_a?(Artifact::Binary) && is_container
+
+          true
+        end
+
+        next if artifacts_to_test.blank?
+
+        any_requires_rosetta = artifacts_to_test.any? do |artifact|
+          artifact = T.cast(artifact, T.any(Artifact::App, Artifact::Binary))
           path = tmpdir/artifact.source.relative_path_from(cask.staged_path)
 
           result = case artifact
@@ -665,7 +704,7 @@ module Cask
           end
 
           # binary stanza can contain shell scripts, so we just continue if lipo fails.
-          next unless result.success?
+          next false unless result.success?
 
           odebug "Architectures: #{result.merged_output}"
 
@@ -675,17 +714,17 @@ module Cask
             next
           end
 
-          supports_arm = result.merged_output.include?("arm64")
-          mentions_rosetta = cask.caveats.include?("requires Rosetta 2")
-          requires_intel = cask.depends_on.arch&.any? { |arch| arch[:type] == :intel }
+          result.merged_output.exclude?("arm64") && result.merged_output.include?("x86_64")
+        end
 
-          if supports_arm && mentions_rosetta
-            add_error "Artifacts do not require Rosetta 2 but the caveats say otherwise!",
-                      location: url.location
-          elsif !supports_arm && !mentions_rosetta && !requires_intel
-            add_error "Artifacts require Rosetta 2 but this is not indicated by the caveats!",
+        if any_requires_rosetta
+          if !mentions_rosetta && !requires_intel
+            add_error "At least one artifact requires Rosetta 2 but this is not indicated by the caveats!",
                       location: url.location
           end
+        elsif mentions_rosetta
+          add_error "No artifacts require Rosetta 2 but the caveats say otherwise!",
+                    location: url.location
         end
       end
     end
@@ -897,6 +936,20 @@ module Cask
     end
 
     sig { void }
+    def audit_forgejo_prerelease_version
+      return if (url = cask.url).nil?
+
+      odebug "Auditing Forgejo prerelease"
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if online?
+      return if user.nil? || repo.nil?
+
+      tag = SharedAudits.forgejo_tag_from_url(url.to_s)
+      tag ||= cask.version
+      error = SharedAudits.forgejo_release(user, repo, tag, cask:)
+      add_error error, location: url.location if error
+    end
+
+    sig { void }
     def audit_github_repository_archived
       # Deprecated/disabled casks may have an archived repository.
       return if cask.deprecated? || cask.disabled?
@@ -926,6 +979,23 @@ module Cask
       return if metadata.nil?
 
       add_error "GitLab repo is archived", location: url.location if metadata["archived"]
+    end
+
+    sig { void }
+    def audit_forgejo_repository_archived
+      return if cask.deprecated? || cask.disabled?
+      return if (url = cask.url).nil?
+
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if online?
+      return if user.nil? || repo.nil?
+
+      metadata = SharedAudits.forgejo_repo_data(user, repo)
+      return if metadata.nil?
+
+      return unless metadata["archived"]
+
+      add_error "Forgejo repository is archived since #{metadata["archived_at"]}",
+                location: url.location
     end
 
     sig { void }
@@ -967,6 +1037,20 @@ module Cask
       odebug "Auditing Bitbucket repo"
 
       error = SharedAudits.bitbucket(user, repo)
+      add_error error, location: url.location if error
+    end
+
+    sig { void }
+    def audit_forgejo_repository
+      return unless new_cask?
+      return if (url = cask.url).nil?
+
+      user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*})
+      return if user.nil? || repo.nil?
+
+      odebug "Auditing Forgejo repo"
+
+      error = SharedAudits.forgejo(user, repo)
       add_error error, location: url.location if error
     end
 
