@@ -365,21 +365,14 @@ module Homebrew
       def format_os_version_dimension(dimension)
         return if dimension.blank?
 
+        require "macos_version"
+
         dimension = dimension.gsub(/^Intel ?/, "")
                              .gsub(/^macOS ?/, "")
                              .gsub(/ \(.+\)$/, "")
         case dimension
-        when "10.11", /^10\.11\.?/ then "OS X El Capitan (10.11)"
-        when "10.12", /^10\.12\.?/ then "macOS Sierra (10.12)"
-        when "10.13", /^10\.13\.?/ then "macOS High Sierra (10.13)"
-        when "10.14", /^10\.14\.?/ then "macOS Mojave (10.14)"
-        when "10.15", /^10\.15\.?/ then "macOS Catalina (10.15)"
-        when "10.16", /^11\.?/ then "macOS Big Sur (11)"
-        when /^12\.?/ then "macOS Monterey (12)"
-        when /^13\.?/ then "macOS Ventura (13)"
-        when /^14\.?/ then "macOS Sonoma (14)"
-        when /^15\.?/ then "macOS Sequoia (15)"
-        when /^26\.?/ then "macOS Tahoe (26)"
+        when (macos_pretty_name = ::MacOSVersion.analytics_pretty_name(dimension))
+          macos_pretty_name
         when /Ubuntu(-Server)? (14|16|18|20|22)\.04/ then "Ubuntu #{Regexp.last_match(2)}.04 LTS"
         when /Ubuntu(-Server)? (\d+\.\d+).\d ?(LTS)?/
           "Ubuntu #{Regexp.last_match(2)} #{Regexp.last_match(3)}".strip
