@@ -869,8 +869,9 @@ class ReporterHub
     return if formulae.blank?
 
     ohai "New Formulae"
+    should_display_desc = !Homebrew::EnvConfig.no_install_from_api? || formulae.size <= 100
     formulae.each do |formula|
-      if (desc = description(formula))
+      if should_display_desc && (desc = description(formula))
         puts "#{formula}: #{desc}"
       else
         puts formula
@@ -888,8 +889,9 @@ class ReporterHub
     return if casks.blank?
 
     ohai "New Casks"
+    should_display_desc = !Homebrew::EnvConfig.no_install_from_api? || casks.size <= 100
     casks.each do |cask|
-      if (desc = cask_description(cask))
+      if should_display_desc && (desc = cask_description(cask))
         puts "#{cask}: #{desc}"
       else
         puts cask
@@ -971,19 +973,27 @@ class ReporterHub
 
   sig { params(formula: String).returns(T.nilable(String)) }
   def description(formula)
-    return if Homebrew::EnvConfig.no_install_from_api?
+    if Homebrew::EnvConfig.no_install_from_api?
+      return if formula.include?("/")
 
-    all_formula_json.find { |f| f["name"] == formula }
-                    &.fetch("desc", nil)
-                    &.presence
+      Formula[formula].desc&.presence
+    else
+      all_formula_json.find { |f| f["name"] == formula }
+                      &.fetch("desc", nil)
+                      &.presence
+    end
   end
 
   sig { params(cask: String).returns(T.nilable(String)) }
   def cask_description(cask)
-    return if Homebrew::EnvConfig.no_install_from_api?
+    if Homebrew::EnvConfig.no_install_from_api?
+      return if cask.include?("/")
 
-    all_cask_json.find { |f| f["token"] == cask }
-                 &.fetch("desc", nil)
-                 &.presence
+      Cask::CaskLoader.load(cask).desc&.presence
+    else
+      all_cask_json.find { |f| f["token"] == cask }
+                   &.fetch("desc", nil)
+                   &.presence
+    end
   end
 end
