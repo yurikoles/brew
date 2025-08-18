@@ -155,11 +155,6 @@ RSpec.describe Formulary do
           cache_dir.rmdir if cache_dir.exist?
         end
 
-        it "allows cache paths when paths are implicitly disabled" do
-          allow(Homebrew::EnvConfig).to receive(:forbid_packages_from_paths?).and_return(true)
-          expect(described_class.factory(cache_formula_path)).to be_a(Formula)
-        end
-
         it "disallows cache paths when paths are explicitly disabled" do
           ENV["HOMEBREW_FORBID_PACKAGES_FROM_PATHS"] = "1"
           expect do

@@ -619,15 +619,9 @@ module Formulary
       if Homebrew::EnvConfig.forbid_packages_from_paths?
         path_realpath = path.realpath.to_s
         path_string = path.to_s
-        allowed_paths = ["#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/"]
-
-        # Do not allow the cache if we explicitly set HOMEBREW_FORBID_PACKAGES_FROM_PATHS
-        # as the cache can contain arbitrary downloads. Allow it otherwise for convenience.
-        allowed_paths << "#{HOMEBREW_CACHE}/" unless ENV["HOMEBREW_FORBID_PACKAGES_FROM_PATHS"].present?
-
         if (path_realpath.end_with?(".rb") || path_string.end_with?(".rb")) &&
-           !path_realpath.start_with?(*allowed_paths) &&
-           !path_string.start_with?(*allowed_paths)
+           !path_realpath.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/") &&
+           !path_string.start_with?("#{HOMEBREW_CELLAR}/", "#{HOMEBREW_LIBRARY}/Taps/")
           if path_string.include?("./") || path_string.end_with?(".rb") || path_string.count("/") != 2
             raise <<~WARNING
               Homebrew requires formulae to be in a tap, rejecting:
