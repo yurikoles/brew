@@ -69,6 +69,9 @@ module DeprecateDisable
       formula_or_cask.disable_reason
     end
 
+    # odeprecate: remove this remapping in a future release
+    reason = :fails_gatekeeper_check if reason == :unsigned
+
     reason = if formula_or_cask.is_a?(Formula) && FORMULA_DEPRECATE_DISABLE_REASONS.key?(reason)
       FORMULA_DEPRECATE_DISABLE_REASONS[reason]
     elsif formula_or_cask.is_a?(Cask::Cask) && CASK_DEPRECATE_DISABLE_REASONS.key?(reason)
