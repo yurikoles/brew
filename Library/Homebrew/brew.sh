@@ -187,54 +187,10 @@ case "$@" in
     ;;
 esac
 
-# Include some helper functions.
-source "${HOMEBREW_LIBRARY}/Homebrew/utils/helpers.sh"
-
-# Require HOMEBREW_BREW_WRAPPER to be set if HOMEBREW_FORCE_BREW_WRAPPER is set
-# (and HOMEBREW_NO_FORCE_BREW_WRAPPER and HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER are not set)
-# for all non-trivial commands (i.e. not defined above this line e.g. formulae or --cellar).
-if [[ -z "${HOMEBREW_NO_FORCE_BREW_WRAPPER:-}" && -n "${HOMEBREW_FORCE_BREW_WRAPPER:-}" &&
-      -z "${HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER:-}" ]]
-then
-  source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
-  if [[ -z "${HOMEBREW_BREW_WRAPPER:-}" ]]
-  then
-    odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER was unset."
-  elif [[ "${HOMEBREW_FORCE_BREW_WRAPPER}" != "${HOMEBREW_BREW_WRAPPER}" ]]
-  then
-    odie-with-wrapper-message "but HOMEBREW_BREW_WRAPPER   was set to ${HOMEBREW_BREW_WRAPPER}"
-  fi
-fi
-
-# If HOMEBREW_FORCE_BREW_WRAPPER and HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER are set,
-# verify that the path to our parent process is the same as the value of HOMEBREW_FORCE_BREW_WRAPPER for all
-# non-trivial commands (i.e. not defined above this line e.g. formulae or --cellar).
-if [[ -n "${HOMEBREW_FORCE_BREW_WRAPPER:-}" && -n "${HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER:-}" ]]
-then
-  if [[ -n "${HOMEBREW_MACOS:-}" ]]
-  then
-    source "${HOMEBREW_LIBRARY}/Homebrew/utils/ruby.sh"
-    setup-ruby-path
-    HOMEBREW_BREW_CALLER="$("${HOMEBREW_RUBY_PATH}" "${HOMEBREW_LIBRARY}/Homebrew/utils/pid_path.rb" "${PPID}")"
-  else
-    HOMEBREW_BREW_CALLER="$(readlink -f "/proc/${PPID}/exe")"
-  fi
-  HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE="$?"
-
-  if ((HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE != 0))
-  then
-    # Error message already printed above when populating `HOMEBREW_BREW_CALLER`.
-    odie "failed to check the path to the parent process!"
-  fi
-
-  if [[ "${HOMEBREW_BREW_CALLER:-}" != "${HOMEBREW_FORCE_BREW_WRAPPER}" ]]
-  then
-    source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
-    odie-with-wrapper-message "but \`brew\` was invoked by ${HOMEBREW_BREW_CALLER}."
-  fi
-
-  unset HOMEBREW_BREW_CALLER HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE
-fi
+# Check `HOMEBREW_FORCE_BREW_WRAPPER` for all non-trivial commands
+# (i.e. not defined above this line e.g. formulae or --cellar).
+source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
+check-brew-wrapper
 
 # commands that take a single or no arguments and need to write to HOMEBREW_PREFIX.
 # HOMEBREW_LIBRARY set by bin/brew
@@ -253,6 +209,8 @@ esac
 #####
 ##### Next, define all other helper functions.
 #####
+
+source "${HOMEBREW_LIBRARY}/Homebrew/utils/helpers.sh"
 
 check-run-command-as-root() {
   [[ "${EUID}" == 0 || "${UID}" == 0 ]] || return
