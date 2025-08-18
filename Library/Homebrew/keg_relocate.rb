@@ -167,7 +167,7 @@ class Keg
     relocation
   end
 
-  sig { params(files: T::Array[Pathname], skip_linkage: T::Boolean).void }
+  sig { params(files: T.nilable(T::Array[Pathname]), skip_linkage: T::Boolean).void }
   def replace_placeholders_with_locations(files, skip_linkage: false)
     relocation = prepare_relocation_to_locations.freeze
     relocate_dynamic_linkage(relocation) unless skip_linkage
