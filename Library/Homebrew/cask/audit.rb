@@ -672,10 +672,17 @@ module Cask
         mentions_rosetta = cask.caveats.include?("requires Rosetta 2")
         requires_intel = cask.depends_on.arch&.any? { |arch| arch[:type] == :intel }
 
-        any_requires_rosetta = artifacts.any? do |artifact|
+        artifacts_to_test = artifacts.filter do |artifact|
           next false if !artifact.is_a?(Artifact::App) && !artifact.is_a?(Artifact::Binary)
           next false if artifact.is_a?(Artifact::Binary) && is_container
 
+          true
+        end
+
+        next if artifacts_to_test.blank?
+
+        any_requires_rosetta = artifacts_to_test.any? do |artifact|
+          artifact = T.cast(artifact, T.any(Artifact::App, Artifact::Binary))
           path = tmpdir/artifact.source.relative_path_from(cask.staged_path)
 
           result = case artifact
