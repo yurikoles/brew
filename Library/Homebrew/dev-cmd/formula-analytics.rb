@@ -370,10 +370,13 @@ module Homebrew
         dimension = dimension.gsub(/^Intel ?/, "")
                              .gsub(/^macOS ?/, "")
                              .gsub(/ \(.+\)$/, "")
+
+        if (macos_pretty_name = ::MacOSVersion.analytics_pretty_name(dimension))
+          return macos_pretty_name
+        end
+
         case dimension
-        when (macos_pretty_name = ::MacOSVersion.analytics_pretty_name(dimension))
-          macos_pretty_name
-        when /Ubuntu(-Server)? (14|16|18|20|22)\.04/ then "Ubuntu #{Regexp.last_match(2)}.04 LTS"
+        when /Ubuntu(-Server)? (14|16|18|20|22|24)\.04/ then "Ubuntu #{Regexp.last_match(2)}.04 LTS"
         when /Ubuntu(-Server)? (\d+\.\d+).\d ?(LTS)?/
           "Ubuntu #{Regexp.last_match(2)} #{Regexp.last_match(3)}".strip
         when %r{Debian GNU/Linux (\d+)\.\d+} then "Debian #{Regexp.last_match(1)} #{Regexp.last_match(2)}"
