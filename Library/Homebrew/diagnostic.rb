@@ -1000,12 +1000,15 @@ module Homebrew
 
         locale_variables = ENV.keys.grep(/^(?:LC_\S+|LANG|LANGUAGE)\Z/).sort
 
-        add_info "Cask Environment Variables:", (locale_variables + environment_variables).sort.each do |var|
+        cask_environment_variables = (locale_variables + environment_variables).sort.each do |var|
           next unless ENV.key?(var)
 
           var = %Q(#{var}="#{ENV.fetch(var)}")
           user_tilde(var)
         end
+        add_info "Cask Environment Variables:", cask_environment_variables
+
+        nil
       end
 
       def check_cask_xattr
