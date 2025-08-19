@@ -84,7 +84,12 @@ module Homebrew
 
       sig { params(path: String).returns(String) }
       def user_tilde(path)
-        path.gsub(Dir.home, "~")
+        home = Dir.home
+        if path == home
+          "~"
+        else
+          path.gsub(%r{^#{home}/}, "~/")
+        end
       end
 
       sig { returns(T.nilable(String)) }
@@ -1068,11 +1073,10 @@ module Homebrew
 
         locale_variables = ENV.keys.grep(/^(?:LC_\S+|LANG|LANGUAGE)\Z/).sort
 
-        cask_environment_variables = (locale_variables + environment_variables).sort.each do |var|
+        cask_environment_variables = (locale_variables + environment_variables).sort.filter_map do |var|
           next unless ENV.key?(var)
 
-          var = %Q(#{var}="#{ENV.fetch(var)}")
-          user_tilde(var)
+          %Q(#{var}="#{Utils::Shell.sh_quote(ENV.fetch(var))}")
         end
         add_info "Cask Environment Variables:", cask_environment_variables
 
