@@ -1076,8 +1076,7 @@ module Homebrew
         cask_environment_variables = (locale_variables + environment_variables).sort.filter_map do |var|
           next unless ENV.key?(var)
 
-          var = %Q(#{var}="#{ENV.fetch(var)}")
-          user_tilde(var)
+          %Q(#{var}="#{Utils::Shell.sh_quote(ENV.fetch(var))}")
         end
         add_info "Cask Environment Variables:", cask_environment_variables
 
