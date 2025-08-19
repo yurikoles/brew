@@ -23,7 +23,7 @@ module Cask
         options.assert_valid_keys(*VALID_KEYS, *ODEPRECATED_KEYS)
 
         options.keys.intersection(ODEPRECATED_KEYS).each do |key|
-          odeprecated "conflicts_with #{key}:"
+          Kernel.odeprecated "conflicts_with #{key}:"
         end
 
         conflicts = options.transform_values { |v| Set.new(Kernel.Array(v)) }
