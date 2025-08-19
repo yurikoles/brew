@@ -29,7 +29,6 @@ module OS
             check_glibc_minimum_version
             check_kernel_minimum_version
             check_supported_architecture
-            check_for_symlinked_home
           ].freeze
         end
 
