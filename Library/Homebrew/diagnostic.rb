@@ -97,7 +97,7 @@ module Homebrew
         "<NONE>"
       end
 
-      sig { params(args: T.anything).returns(T.nilable(String)) }
+      sig { params(args: T.anything).void }
       def add_info(*args)
         ohai(*args) if @verbose
       end
