@@ -61,13 +61,13 @@ check-brew-wrapper() {
 
     if ((HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE != 0))
     then
+      source "${HOMEBREW_LIBRARY}/Homebrew/utils/helpers.sh"
       # Error message already printed above when populating `HOMEBREW_BREW_CALLER`.
       odie "failed to check the path to the parent process!"
     fi
 
     if [[ "${HOMEBREW_BREW_CALLER:-}" != "${HOMEBREW_FORCE_BREW_WRAPPER}" ]]
     then
-      source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
       odie-with-wrapper-message "but \`brew\` was invoked by ${HOMEBREW_BREW_CALLER}."
     fi
   fi
