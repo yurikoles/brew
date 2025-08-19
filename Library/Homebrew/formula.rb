@@ -271,6 +271,7 @@ class Formula
     @prefix_returns_versioned_prefix = T.let(false, T.nilable(T::Boolean))
     @oldname_locks = T.let([], T::Array[FormulaLock])
     @on_system_blocks_exist = T.let(false, T::Boolean)
+    @fully_loaded_formula = T.let(nil, T.nilable(Formula))
   end
 
   sig { params(spec_sym: Symbol).void }
@@ -557,11 +558,33 @@ class Formula
   # @see .loaded_from_api?
   delegate loaded_from_api?: :"self.class"
 
+  # Whether this formula was loaded using the formulae.brew.sh API.
+  # @!method loaded_from_stub?
+  # @see .loaded_from_stub?
+  delegate loaded_from_stub?: :"self.class"
+
   # The API source data used to load this formula.
   # Returns `nil` if the formula was not loaded from the API.
   # @!method api_source
   # @see .api_source
   delegate api_source: :"self.class"
+
+  sig { returns(Formula) }
+  def fully_loaded_formula
+    @fully_loaded_formula ||= if loaded_from_stub?
+      json_contents = Homebrew::API::Formula.formula_json(name)
+      Formulary.from_json_contents(name, json_contents)
+    else
+      self
+    end
+  end
+
+  sig { params(download_queue: T.nilable(Homebrew::DownloadQueue)).void }
+  def fetch_fully_loaded_formula!(download_queue: nil)
+    return unless loaded_from_stub?
+
+    Homebrew::API::Formula.fetch_formula_json!(name, download_queue:)
+  end
 
   sig { void }
   def update_head_version
@@ -3366,6 +3389,7 @@ class Formula
         @skip_clean_paths = T.let(Set.new, T.nilable(T::Set[T.any(String, Symbol)]))
         @link_overwrite_paths = T.let(Set.new, T.nilable(T::Set[String]))
         @loaded_from_api = T.let(false, T.nilable(T::Boolean))
+        @loaded_from_stub = T.let(false, T.nilable(T::Boolean))
         @api_source = T.let(nil, T.nilable(T::Hash[String, T.untyped]))
         @on_system_blocks_exist = T.let(false, T.nilable(T::Boolean))
         @network_access_allowed = T.let(SUPPORTED_NETWORK_ACCESS_PHASES.to_h do |phase|
@@ -3390,6 +3414,10 @@ class Formula
     # Whether this formula was loaded using the formulae.brew.sh API.
     sig { returns(T::Boolean) }
     def loaded_from_api? = !!@loaded_from_api
+
+    # Whether this formula was loaded using the internal formulae.brew.sh API.
+    sig { returns(T::Boolean) }
+    def loaded_from_stub? = !!@loaded_from_stub
 
     # Whether this formula was loaded using the formulae.brew.sh API.
     sig { returns(T.nilable(T::Hash[String, T.untyped])) }
