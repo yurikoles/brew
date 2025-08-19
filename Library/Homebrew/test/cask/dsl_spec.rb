@@ -501,6 +501,14 @@ RSpec.describe Cask::DSL, :cask, :no_api do
         expect { cask }.to raise_error(Cask::CaskInvalidError)
       end
     end
+
+    context "with deprecated conflicts_with key" do
+      let(:token) { "conflicts-with-deprecated-key" }
+
+      it "loads but shows deprecation warning for deprecated key" do
+        expect { cask.conflicts_with }.to raise_error(Cask::CaskInvalidError, /is deprecated/)
+      end
+    end
   end
 
   describe "installer stanza" do
