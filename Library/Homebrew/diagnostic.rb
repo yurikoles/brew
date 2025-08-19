@@ -84,7 +84,12 @@ module Homebrew
 
       sig { params(path: String).returns(String) }
       def user_tilde(path)
-        path.gsub(Dir.home, "~")
+        home = Dir.home
+        if path == home
+          "~"
+        else
+          path.gsub(%r{^#{home}/}, "~/")
+        end
       end
 
       sig { returns(T.nilable(String)) }
