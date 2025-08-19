@@ -826,6 +826,8 @@ class Formula
   # This directory points to {#opt_prefix} if it exists and if {#prefix} is not
   # called from within the same formula's {#install} or {#post_install} methods.
   # Otherwise, return the full path to the formula's keg (versioned Cellar path).
+  #
+  # @api public
   sig { params(version: T.any(String, PkgVersion)).returns(Pathname) }
   def prefix(version = pkg_version)
     versioned_prefix = versioned_prefix(version)
@@ -1230,6 +1232,8 @@ class Formula
   # installed.
   # This is symlinked into `HOMEBREW_PREFIX` after installation or with
   # `brew link` for formulae that are not keg-only.
+  #
+  # @api public
   sig { returns(Pathname) }
   def pwsh_completion = share/"pwsh/completions"
 
