@@ -23,6 +23,9 @@ cask "everything" do
   depends_on cask: "something"
   container type: :naked
 
+  rename "Foobar.app", "Foo.app"
+  rename "Foo.app", "Bar.app"
+
   app "Everything.app"
   installer script: {
     executable:   "~/just/another/path/install.sh",

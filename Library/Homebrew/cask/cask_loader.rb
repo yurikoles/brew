@@ -384,6 +384,12 @@ module Cask
           auto_updates json_cask[:auto_updates] unless json_cask[:auto_updates].nil?
           conflicts_with(**json_cask[:conflicts_with]) if json_cask[:conflicts_with].present?
 
+          if json_cask[:rename].present?
+            json_cask[:rename].each do |rename_operation|
+              rename rename_operation.fetch(:from), rename_operation.fetch(:to)
+            end
+          end
+
           if json_cask[:depends_on].present?
             dep_hash = json_cask[:depends_on].to_h do |dep_key, dep_value|
               # Arch dependencies are encoded like `{ type: :intel, bits: 64 }`
