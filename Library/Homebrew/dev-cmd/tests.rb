@@ -230,6 +230,25 @@ module Homebrew
           ENV.delete(env)
         end
 
+        # Fetch JSON API files if needed.
+        download_queue = if Homebrew::EnvConfig.download_concurrency > 1
+          require "download_queue"
+          Homebrew::DownloadQueue.new
+        end
+
+        require "api"
+        require "api/formula"
+        require "api/cask"
+
+        stale_seconds = 86400 # 1 day
+        Homebrew::API.fetch_api_files!(download_queue:, stale_seconds:)
+
+        begin
+          download_queue&.fetch
+        ensure
+          download_queue&.shutdown
+        end
+
         # Codespaces HOMEBREW_PREFIX and /tmp are mounted 755 which makes Ruby warn constantly.
         if (ENV["HOMEBREW_CODESPACES"] == "true") && (HOMEBREW_TEMP.to_s == "/tmp")
           # Need to keep this fairly short to avoid socket paths being too long in tests.
