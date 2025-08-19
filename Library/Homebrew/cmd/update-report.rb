@@ -869,9 +869,13 @@ class ReporterHub
     return if formulae.blank?
 
     ohai "New Formulae"
-    should_display_desc = !Homebrew::EnvConfig.no_install_from_api? || formulae.size <= 100
+    should_display_descriptions = if Homebrew::EnvConfig.no_install_from_api?
+      formulae.size <= 100
+    else
+      true
+    end
     formulae.each do |formula|
-      if should_display_desc && (desc = description(formula))
+      if should_display_descriptions && (desc = description(formula))
         puts "#{formula}: #{desc}"
       else
         puts formula
@@ -883,18 +887,21 @@ class ReporterHub
   def dump_new_cask_report
     return unless Cask::Caskroom.any_casks_installed?
 
-    casks = select_formula_or_cask(:AC).sort.filter_map do |name|
-      name.split("/").last unless cask_installed?(name)
-    end
+    casks = select_formula_or_cask(:AC).sort.reject { |name| cask_installed?(name) }
     return if casks.blank?
 
     ohai "New Casks"
-    should_display_desc = !Homebrew::EnvConfig.no_install_from_api? || casks.size <= 100
+    should_display_descriptions = if Homebrew::EnvConfig.no_install_from_api?
+      casks.size <= 100
+    else
+      true
+    end
     casks.each do |cask|
-      if should_display_desc && (desc = cask_description(cask))
-        puts "#{cask}: #{desc}"
+      cask_token = T.must(cask.split("/").last)
+      if should_display_descriptions && (desc = cask_description(cask))
+        puts "#{cask_token}: #{desc}"
       else
-        puts cask
+        puts cask_token
       end
     end
   end
@@ -960,6 +967,7 @@ class ReporterHub
   sig { params(formula: String).returns(T.nilable(String)) }
   def description(formula)
     if Homebrew::EnvConfig.no_install_from_api?
+      # Skip non-homebrew/core formulae for security.
       return if formula.include?("/")
 
       Formula[formula].desc&.presence
@@ -973,6 +981,7 @@ class ReporterHub
   sig { params(cask: String).returns(T.nilable(String)) }
   def cask_description(cask)
     if Homebrew::EnvConfig.no_install_from_api?
+      # Skip non-homebrew/cask formulae for security.
       return if cask.include?("/")
 
       Cask::CaskLoader.load(cask).desc&.presence
