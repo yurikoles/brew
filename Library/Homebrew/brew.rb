@@ -89,18 +89,8 @@ begin
     Homebrew.running_command = cmd
     if cmd_class
       if !Homebrew::EnvConfig.no_install_from_api? && Homebrew::EnvConfig.download_concurrency > 1
-        require "download_queue"
         require "api"
-        require "api/formula"
-        require "api/cask"
-        download_queue = Homebrew::DownloadQueue.new
-        stale_seconds = 86400 # 1 day
-        Homebrew::API.fetch_api_files!(download_queue:, stale_seconds:)
-        begin
-          download_queue.fetch
-        ensure
-          download_queue.shutdown
-        end
+        Homebrew::API.fetch_api_files!
       end
 
       command_instance = cmd_class.new
