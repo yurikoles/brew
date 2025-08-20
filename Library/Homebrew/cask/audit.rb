@@ -14,12 +14,14 @@ require "formula_name_cask_token_auditor"
 require "utils/curl"
 require "utils/git"
 require "utils/shared_audits"
+require "utils/output"
 
 module Cask
   # Audit a cask for various problems.
   class Audit
     include SystemCommand::Mixin
     include ::Utils::Curl
+    include ::Utils::Output::Mixin
 
     Error = T.type_alias do
       {

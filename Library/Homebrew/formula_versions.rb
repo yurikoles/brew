@@ -2,12 +2,14 @@
 # frozen_string_literal: true
 
 require "formula"
+require "utils/output"
 
 # Helper class for traversing a formula's previous versions.
 #
 # @api internal
 class FormulaVersions
   include Context
+  include Utils::Output::Mixin
 
   IGNORED_EXCEPTIONS = [
     ArgumentError, NameError, SyntaxError, TypeError,

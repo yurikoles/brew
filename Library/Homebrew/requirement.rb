@@ -5,12 +5,14 @@ require "dependable"
 require "dependency"
 require "dependencies"
 require "build_environment"
+require "utils/output"
 
 # A base class for non-formula requirements needed by formulae.
 # A fatal requirement is one that will fail the build if it is not present.
 # By default, requirements are non-fatal.
 class Requirement
   include Dependable
+  include Utils::Output::Mixin
   extend Cachable
   extend T::Helpers
 

@@ -425,6 +425,8 @@ end
 require "extend/os/cmd/update-report"
 
 class Reporter
+  include Utils::Output::Mixin
+
   class ReporterRevisionUnsetError < RuntimeError
     sig { params(var_name: String).void }
     def initialize(var_name)
@@ -782,6 +784,8 @@ class Reporter
 end
 
 class ReporterHub
+  include Utils::Output::Mixin
+
   sig { returns(T::Array[Reporter]) }
   attr_reader :reporters
 

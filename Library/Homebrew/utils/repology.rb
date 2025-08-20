@@ -2,9 +2,12 @@
 # frozen_string_literal: true
 
 require "utils/curl"
+require "utils/output"
 
 # Repology API client.
 module Repology
+  extend Utils::Output::Mixin
+
   HOMEBREW_CORE = "homebrew"
   HOMEBREW_CASK = "homebrew_casks"
   MAX_PAGINATION = 15

@@ -1,11 +1,16 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "utils/output"
+
 module Homebrew
   # Helper module for querying Homebrew-specific environment variables.
   #
   # @api internal
   module EnvConfig
+    include Utils::Output::Mixin
+    extend Utils::Output::Mixin
+
     module_function
 
     ENVS = T.let({

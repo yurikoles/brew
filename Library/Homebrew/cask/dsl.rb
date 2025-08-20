@@ -5,6 +5,7 @@ require "autobump_constants"
 require "locale"
 require "lazy_object"
 require "livecheck"
+require "utils/output"
 
 require "cask/artifact"
 require "cask/artifact_set"
@@ -32,6 +33,8 @@ require "on_system"
 module Cask
   # Class representing the domain-specific language used for casks.
   class DSL
+    include ::Utils::Output::Mixin
+
     ORDINARY_ARTIFACT_CLASSES = [
       Artifact::Installer,
       Artifact::App,

@@ -6,6 +6,7 @@ require "cachable"
 require "tab"
 require "utils"
 require "utils/bottles"
+require "utils/output"
 require "service"
 require "utils/curl"
 require "deprecate_disable"
@@ -18,6 +19,8 @@ require "tap"
 module Formulary
   extend Context
   extend Cachable
+  extend Utils::Output::Mixin
+  include Utils::Output::Mixin
 
   ALLOWED_URL_SCHEMES = %w[file].freeze
   private_constant :ALLOWED_URL_SCHEMES
@@ -559,6 +562,7 @@ module Formulary
   # Subclasses implement loaders for particular sources of formulae.
   class FormulaLoader
     include Context
+    include Utils::Output::Mixin
 
     # The formula's name.
     sig { returns(String) }
@@ -609,6 +613,8 @@ module Formulary
 
   # Loads a formula from a bottle.
   class FromBottleLoader < FormulaLoader
+    include Utils::Output::Mixin
+
     sig {
       params(ref: T.any(String, Pathname, URI::Generic), from: T.nilable(Symbol), warn: T::Boolean)
         .returns(T.nilable(T.attached_class))

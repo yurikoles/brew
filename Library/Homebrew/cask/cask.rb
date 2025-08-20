@@ -8,6 +8,7 @@ require "cask/dsl"
 require "cask/metadata"
 require "cask/tab"
 require "utils/bottles"
+require "utils/output"
 require "api_hashable"
 
 module Cask
@@ -15,6 +16,7 @@ module Cask
   class Cask
     extend Forwardable
     extend APIHashable
+    extend ::Utils::Output::Mixin
     include Metadata
 
     # The token of this {Cask}.

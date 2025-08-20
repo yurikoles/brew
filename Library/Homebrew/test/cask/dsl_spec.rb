@@ -22,9 +22,7 @@ RSpec.describe Cask::DSL, :cask, :no_api do
     it "prints an error that it has encountered an unexpected method" do
       expected = Regexp.compile(<<~EOS.lines.map(&:chomp).join)
         (?m)
-        Error:
-        .*
-        Unexpected method 'future_feature' called on Cask unexpected-method-cask\\.
+        Error: Unexpected method 'future_feature' called on Cask unexpected-method-cask\\.
         .*
         https://github.com/Homebrew/homebrew-cask#reporting-bugs
       EOS
