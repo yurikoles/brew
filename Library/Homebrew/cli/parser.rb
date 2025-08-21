@@ -231,7 +231,8 @@ module Homebrew
         end
 
         env_value = value_for_env(env)
-        set_switch(*names, value: env_value, from: :env) unless env_value.nil?
+        value = env_value&.present?
+        set_switch(*names, value:, from: :env) unless value.nil?
       end
       alias switch_option switch
 
