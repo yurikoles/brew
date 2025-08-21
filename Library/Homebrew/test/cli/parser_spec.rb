@@ -10,12 +10,15 @@ RSpec.describe Homebrew::CLI::Parser do
       described_class.new(Cmd) do
         switch "--more-verbose", description: "Flag for higher verbosity"
         switch "--pry", env: :pry
+        switch "--bar", env: :bar
         switch "--hidden", hidden: true
       end
     end
 
     before do
       allow(Homebrew::EnvConfig).to receive(:pry?).and_return(true)
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with("HOMEBREW_BAR", nil).and_return("1")
     end
 
     context "when using binary options" do
@@ -113,6 +116,7 @@ RSpec.describe Homebrew::CLI::Parser do
     it "maps environment var to an option" do
       args = parser.parse([])
       expect(args.pry?).to be true
+      expect(args.bar?).to be true
     end
   end
 
