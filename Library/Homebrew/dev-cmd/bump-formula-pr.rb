@@ -599,7 +599,7 @@ module Homebrew
             end\s
           /x
 
-          leading_spaces = T.must(formula.path.read.match(/^([ ]+)resource "#{resource.name}"/)).captures.first
+          leading_spaces = T.must(formula.path.read.match(/^( +)resource "#{resource.name}"/)).captures.first
           new_resource_block = <<~EOS
             #{leading_spaces}resource "#{resource.name}" do
             #{leading_spaces}  url "#{new_url}"#{new_mirrors.map { |m| "\n#{leading_spaces}  mirror \"#{m}\"" }.join}
