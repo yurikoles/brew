@@ -371,7 +371,10 @@ module FormulaCellarChecks
     mismatches = mismatches.to_h
 
     universal_binaries_expected = if (formula_tap = formula.tap).present? && formula_tap.core_tap?
-      formula_tap.audit_exception(:universal_binary_allowlist, formula.name)
+      formula_name = formula.name
+      # Apply audit exception to versioned formulae too from the unversioned name.
+      formula_name.gsub!(/@\d+(\.\d+)*$/, "") if formula.versioned_formula?
+      formula_tap.audit_exception(:universal_binary_allowlist, formula_name)
     else
       true
     end
