@@ -2429,6 +2429,7 @@ _brew_style() {
     -*)
       __brewcomp "
       --cask
+      --changed
       --debug
       --except-cops
       --fix

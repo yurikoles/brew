@@ -1960,6 +1960,7 @@ _brew_shellenv() {
 # brew style
 _brew_style() {
   _arguments \
+    '--changed[Check files that were changed from the `main` branch]' \
     '--debug[Display any debugging information]' \
     '(--only-cops)--except-cops[Specify a comma-separated cops list to skip checking for violations of the listed RuboCop cops]' \
     '--fix[Fix style violations automatically using RuboCop'\''s auto-correct feature]' \

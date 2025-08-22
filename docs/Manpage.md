@@ -3121,6 +3121,10 @@ core code and all formulae.
 
 : Reset the RuboCop cache.
 
+`--changed`
+
+: Check files that were changed from the `main` branch.
+
 `--formula`
 
 : Treat all named arguments as formulae.
