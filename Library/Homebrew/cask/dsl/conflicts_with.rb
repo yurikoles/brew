@@ -3,6 +3,7 @@
 
 require "delegate"
 require "extend/hash/keys"
+require "utils/output"
 
 module Cask
   class DSL
@@ -23,7 +24,7 @@ module Cask
         options.assert_valid_keys(*VALID_KEYS, *ODEPRECATED_KEYS)
 
         options.keys.intersection(ODEPRECATED_KEYS).each do |key|
-          Kernel.odeprecated "conflicts_with #{key}:"
+          ::Utils::Output.odeprecated "conflicts_with #{key}:"
         end
 
         conflicts = options.transform_values { |v| Set.new(Kernel.Array(v)) }

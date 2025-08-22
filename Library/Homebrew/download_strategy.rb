@@ -7,6 +7,7 @@ require "unpack_strategy"
 require "lazy_object"
 require "lock_file"
 require "system_command"
+require "utils/output"
 
 # Need to define this before requiring Mechanize to avoid:
 #   uninitialized constant Mechanize
@@ -27,6 +28,7 @@ class AbstractDownloadStrategy
   include FileUtils
   include Context
   include SystemCommand::Mixin
+  include Utils::Output::Mixin
 
   abstract!
 

@@ -41,6 +41,7 @@ require "utils/spdx"
 require "on_system"
 require "api"
 require "api_hashable"
+require "utils/output"
 
 # A formula provides instructions and metadata for Homebrew to install a piece
 # of software. Every Homebrew formula is a {Formula}.
@@ -75,6 +76,7 @@ class Formula
   include FileUtils
   include Utils::Shebang
   include Utils::Shell
+  include Utils::Output::Mixin
   include Context
   include OnSystem::MacOSAndLinux
   include Homebrew::Livecheck::Constants
@@ -82,6 +84,7 @@ class Formula
   extend Cachable
   extend APIHashable
   extend T::Helpers
+  extend Utils::Output::Mixin
 
   abstract!
 

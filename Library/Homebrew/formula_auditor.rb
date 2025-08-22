@@ -6,12 +6,14 @@ require "formula_versions"
 require "formula_name_cask_token_auditor"
 require "resource_auditor"
 require "utils/shared_audits"
+require "utils/output"
 
 module Homebrew
   # Auditor for checking common violations in {Formula}e.
   class FormulaAuditor
     include FormulaCellarChecks
     include Utils::Curl
+    include Utils::Output::Mixin
 
     attr_reader :formula, :text, :problems, :new_formula_problems
 

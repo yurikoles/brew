@@ -8,6 +8,7 @@ require "formulary"
 require "version"
 require "development_tools"
 require "utils/shell"
+require "utils/output"
 require "system_config"
 require "cask/caskroom"
 require "cask/quarantine"
@@ -16,6 +17,8 @@ require "system_command"
 module Homebrew
   # Module containing diagnostic checks.
   module Diagnostic
+    extend Utils::Output::Mixin
+
     sig {
       params(formulae: T::Array[Formula], hide: T::Array[String], _block: T.nilable(
         T.proc.params(formula_name: String, missing_dependencies: T::Array[Formula]).void,

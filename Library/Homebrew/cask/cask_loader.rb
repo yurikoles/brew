@@ -5,6 +5,7 @@ require "cask/cache"
 require "cask/cask"
 require "uri"
 require "utils/curl"
+require "utils/output"
 require "extend/hash/keys"
 require "api"
 
@@ -12,12 +13,14 @@ module Cask
   # Loads a cask from various sources.
   module CaskLoader
     extend Context
+    extend ::Utils::Output::Mixin
 
     ALLOWED_URL_SCHEMES = %w[file].freeze
     private_constant :ALLOWED_URL_SCHEMES
 
     module ILoader
       extend T::Helpers
+      include ::Utils::Output::Mixin
 
       interface!
 

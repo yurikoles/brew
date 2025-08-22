@@ -1,9 +1,13 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "utils/output"
+
 # A {Messages} object collects messages that may need to be displayed together
 # at the end of a multi-step `brew` command run.
 class Messages
+  include ::Utils::Output::Mixin
+
   sig { returns(T::Array[{ package: String, caveats: T.any(String, Caveats) }]) }
   attr_reader :caveats
 

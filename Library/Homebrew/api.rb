@@ -6,10 +6,13 @@ require "api/cask"
 require "api/formula"
 require "api/internal"
 require "base64"
+require "utils/output"
 
 module Homebrew
   # Helper functions for using Homebrew's formulae.brew.sh API.
   module API
+    extend Utils::Output::Mixin
+
     extend Cachable
 
     HOMEBREW_CACHE_API = T.let((HOMEBREW_CACHE/"api").freeze, Pathname)
