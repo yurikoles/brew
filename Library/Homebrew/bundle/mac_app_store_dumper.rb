@@ -22,7 +22,7 @@ module Homebrew
             # Strip unprintable characters
             if app_details
               name = T.must(app_details[:name])
-              [T.must(app_details[:id]), name.gsub(/[[:cntrl:]]|[\p{C}]/, "")]
+              [T.must(app_details[:id]), name.gsub(/[[:cntrl:]]|\p{C}/, "")]
             end
           end
         else
