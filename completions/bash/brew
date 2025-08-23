@@ -310,6 +310,7 @@ _brew__s() {
   case "${cur}" in
     -*)
       __brewcomp "
+      --alpine
       --archlinux
       --cask
       --closed
@@ -2321,6 +2322,7 @@ _brew_search() {
   case "${cur}" in
     -*)
       __brewcomp "
+      --alpine
       --archlinux
       --cask
       --closed

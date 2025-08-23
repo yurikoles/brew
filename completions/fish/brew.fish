@@ -271,6 +271,7 @@ __fish_brew_complete_arg '--version' -l verbose -d 'Make some output more verbos
 
 
 __fish_brew_complete_cmd '-S' 'Perform a substring search of cask tokens and formula names for text'
+__fish_brew_complete_arg '-S' -l alpine -d 'Search for text in the given database'
 __fish_brew_complete_arg '-S' -l archlinux -d 'Search for text in the given database'
 __fish_brew_complete_arg '-S' -l cask -d 'Search for casks'
 __fish_brew_complete_arg '-S' -l closed -d 'Search for only closed GitHub pull requests'
@@ -1529,6 +1530,7 @@ __fish_brew_complete_arg 'rubydoc' -l verbose -d 'Make some output more verbose'
 
 
 __fish_brew_complete_cmd 'search' 'Perform a substring search of cask tokens and formula names for text'
+__fish_brew_complete_arg 'search' -l alpine -d 'Search for text in the given database'
 __fish_brew_complete_arg 'search' -l archlinux -d 'Search for text in the given database'
 __fish_brew_complete_arg 'search' -l cask -d 'Search for casks'
 __fish_brew_complete_arg 'search' -l closed -d 'Search for only closed GitHub pull requests'
