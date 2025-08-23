@@ -362,6 +362,7 @@ module Homebrew
       when :style
         style_args = []
         style_args << "--fix" if arguments["fix"]
+        style_args << "--changed" if arguments["changed"]
         file_arguments = arguments.fetch("files", "").strip.split
         style_args.concat(file_arguments) unless file_arguments.empty?
         style_args
