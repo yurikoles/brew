@@ -57,6 +57,7 @@ module Homebrew
     # Diagnostic checks.
     class Checks
       include SystemCommand::Mixin
+      include Utils::Output::Mixin
 
       sig { params(verbose: T::Boolean).void }
       def initialize(verbose: true)
