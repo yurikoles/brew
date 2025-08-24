@@ -34,14 +34,14 @@ module Formulary
   # @api internal
   sig { void }
   def self.enable_factory_cache!
-    @factory_cache_enabled = T.let(true, T.nilable(T::Boolean))
+    @factory_cache_enabled = T.let(true, T.nilable(TrueClass))
     cache[platform_cache_tag] ||= {}
     cache[platform_cache_tag][:formulary_factory] ||= {}
   end
 
   sig { returns(T::Boolean) }
   def self.factory_cached?
-    !@factory_cache_enabled.nil?
+    !!@factory_cache_enabled
   end
 
   sig { returns(String) }
