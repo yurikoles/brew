@@ -10,7 +10,10 @@ module OS
           @volumes = T.let(get_mounts, T::Array[String])
         end
 
-        sig { params(path: T.nilable(Pathname)).returns(Integer) }
+        # This is a pre-existing violation that should be refactored
+        # rubocop:todo Sorbet/AllowIncompatibleOverride
+        sig { override(allow_incompatible: true).params(path: T.nilable(Pathname)).returns(Integer) }
+        # rubocop:enable Sorbet/AllowIncompatibleOverride
         def which(path)
           vols = get_mounts path
 
