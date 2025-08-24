@@ -40,7 +40,11 @@ module Homebrew
       yield if block_given?
       args.map!(&:to_s)
       begin
-        exec(cmd, argv0, *args, **options)
+        if argv0
+          exec(cmd, argv0, *args, **options)
+        else
+          exec(cmd, *args, **options)
+        end
       rescue
         nil
       end
