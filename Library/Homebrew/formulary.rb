@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
 require "digest/sha2"
@@ -116,7 +116,6 @@ module Formulary
     # TODO: migrate away from refinements here, they don't play nicely with Sorbet
     # rubocop:todo Sorbet/BlockMethodDefinition
     refine Pathname do
-      sig { params(content: Object, offset: T.nilable(Integer), open_args: T.untyped).returns(Integer) }
       def write(content, offset = nil, **open_args)
         T.bind(self, Pathname)
         raise "Will not overwrite #{self}" if exist? && !offset && !open_args[:mode]&.match?(/^a\+?$/)
