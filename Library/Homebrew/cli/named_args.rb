@@ -81,7 +81,7 @@ module Homebrew
           {}, T.nilable(T::Hash[T.nilable(Symbol), T::Array[T.any(Formula, Keg, Cask::Cask)]])
         )
         @to_formulae_and_casks[only] ||= begin
-          download_queue = Homebrew::DownloadQueue.new if Homebrew::EnvConfig.download_concurrency > 1
+          download_queue = Homebrew::DownloadQueue.new_if_concurrency_enabled
 
           formulae_and_casks = downcased_unique_named.flat_map do |name|
             load_and_fetch_full_formula_or_cask(name, only:, method:, warn:, download_queue:)
@@ -160,7 +160,7 @@ module Homebrew
           ]),
         )
         @to_formulae_casks_unknowns[method] = begin
-          download_queue = Homebrew::DownloadQueue.new if Homebrew::EnvConfig.download_concurrency > 1
+          download_queue = Homebrew::DownloadQueue.new_if_concurrency_enabled
 
           formulae_and_casks = downcased_unique_named.map do |name|
             load_and_fetch_full_formula_or_cask(name, only:, method:, download_queue:)
