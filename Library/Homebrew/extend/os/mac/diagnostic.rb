@@ -11,7 +11,7 @@ module OS
         end
 
         sig { params(path: T.nilable(Pathname)).returns(Integer) }
-        def which(path)
+        def index_of(path)
           vols = get_mounts path
 
           # no volume found
@@ -426,13 +426,13 @@ module OS
 
           # Find the volumes for the TMP folder & HOMEBREW_CELLAR
           real_cellar = HOMEBREW_CELLAR.realpath
-          where_cellar = volumes.which real_cellar
+          where_cellar = volumes.index_of real_cellar
 
           begin
             tmp = Pathname.new(Dir.mktmpdir("doctor", HOMEBREW_TEMP))
             begin
               real_tmp = tmp.realpath.parent
-              where_tmp = volumes.which real_tmp
+              where_tmp = volumes.index_of real_tmp
             ensure
               Dir.delete tmp.to_s
             end
