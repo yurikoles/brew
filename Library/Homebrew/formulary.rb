@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 require "digest/sha2"
@@ -111,24 +111,6 @@ module Formulary
 
     super
   end
-
-  module PathnameWriteMkpath
-    # TODO: migrate away from refinements here, they don't play nicely with Sorbet
-    # rubocop:todo Sorbet/BlockMethodDefinition
-    refine Pathname do
-      def write(content, offset = nil, **open_args)
-        T.bind(self, Pathname)
-        raise "Will not overwrite #{self}" if exist? && !offset && !open_args[:mode]&.match?(/^a\+?$/)
-
-        dirname.mkpath
-
-        super
-      end
-    end
-    # rubocop:enable Sorbet/BlockMethodDefinition
-  end
-
-  using PathnameWriteMkpath
 
   sig {
     params(
