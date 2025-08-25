@@ -1,9 +1,6 @@
 # typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
-# Used to track formulae that cannot be installed at the same time.
-FormulaConflict = Struct.new(:name, :reason)
-
 # Used to annotate formulae that duplicate macOS-provided software
 # or cause conflicts when linked in.
 class KegOnlyReason
@@ -33,7 +30,7 @@ class KegOnlyReason
   sig { returns(T::Boolean) }
   def applicable?
     # macOS reasons aren't applicable on other OSs
-    # (see extend/os/mac/formula_support for override on macOS)
+    # (see extend/os/mac/keg_only_reason for override on macOS)
     !by_macos?
   end
 
@@ -74,4 +71,4 @@ class KegOnlyReason
   end
 end
 
-require "extend/os/formula_support"
+require "extend/os/keg_only_reason"
