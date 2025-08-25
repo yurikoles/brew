@@ -97,11 +97,7 @@ module Homebrew
 
           download_queue&.fetch
 
-          formulae_and_casks.map do |formula_or_cask|
-            next formula_or_cask unless formula_or_cask.is_a?(Formula)
-
-            formula_or_cask.fully_loaded_formula
-          end
+          map_to_fully_loaded(formulae_and_casks)
         end.freeze
 
         if uniq
@@ -174,11 +170,7 @@ module Homebrew
 
           download_queue&.fetch
 
-          formulae_and_casks.map do |formula_or_cask|
-            next formula_or_cask unless formula_or_cask.is_a?(Formula)
-
-            formula_or_cask.fully_loaded_formula
-          end
+          map_to_fully_loaded(formulae_and_casks)
         end.freeze
       end
 
@@ -610,6 +602,19 @@ module Homebrew
         return if cask&.old_tokens&.include?(ref)
 
         opoo package_conflicts_message(ref, loaded_type, cask)
+      end
+
+      sig {
+        type_parameters(:U)
+          .params(formulae_and_casks: T::Array[T.all(T.type_parameter(:U), Object)])
+          .returns(T::Array[T.all(T.type_parameter(:U), Object)])
+      }
+      def map_to_fully_loaded(formulae_and_casks)
+        formulae_and_casks.map do |formula_or_cask|
+          next formula_or_cask unless formula_or_cask.is_a?(Formula)
+
+          T.cast(formula_or_cask.fully_loaded_formula, T.all(T.type_parameter(:U), Object))
+        end
       end
     end
   end
