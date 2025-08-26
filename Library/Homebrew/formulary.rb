@@ -504,6 +504,16 @@ module Formulary
       define_method :install do
         raise NotImplementedError, "Cannot build from source from abstract stubbed formula."
       end
+
+      @aliases_array = formula_stub.aliases
+      define_method(:aliases) do
+        self.class.instance_variable_get(:@aliases_array)
+      end
+
+      @oldnames_array = formula_stub.oldnames
+      define_method(:oldnames) do
+        self.class.instance_variable_get(:@oldnames_array)
+      end
     end
 
     mod.const_set(class_name, klass)
