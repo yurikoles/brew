@@ -36,7 +36,7 @@ begin
     raise "Cannot kill child processes without `pkill`, please install!" unless which("pkill")
   end
 
-  formula = T.must(args.named.to_resolved_formulae.first)
+  formula = args.named.to_resolved_formulae.fetch(0)
   formula.extend(Homebrew::Assertions)
   formula.extend(Homebrew::FreePort)
   if args.debug? && !Homebrew::EnvConfig.disable_debrew?
