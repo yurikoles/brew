@@ -2884,7 +2884,7 @@ the repository.
 
 `--branch`
 
-: Branch to use the workflow from (default: `master`).
+: Branch to use the workflow from (default: `main`).
 
 `--message`
 
