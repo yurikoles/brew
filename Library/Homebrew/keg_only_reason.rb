@@ -1,28 +1,34 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 # Used to annotate formulae that duplicate macOS-provided software
 # or cause conflicts when linked in.
 class KegOnlyReason
+  sig { returns(T.any(Symbol, String)) }
   attr_reader :reason
 
+  sig { params(reason: T.any(Symbol, String), explanation: String).void }
   def initialize(reason, explanation)
     @reason = reason
     @explanation = explanation
   end
 
+  sig { returns(T::Boolean) }
   def versioned_formula?
     @reason == :versioned_formula
   end
 
+  sig { returns(T::Boolean) }
   def provided_by_macos?
     @reason == :provided_by_macos
   end
 
+  sig { returns(T::Boolean) }
   def shadowed_by_macos?
     @reason == :shadowed_by_macos
   end
 
+  sig { returns(T::Boolean) }
   def by_macos?
     provided_by_macos? || shadowed_by_macos?
   end
@@ -53,10 +59,11 @@ class KegOnlyReason
         parallel can cause all kinds of trouble
       EOS
     else
-      @reason
+      @reason.to_s
     end.strip
   end
 
+  sig { returns(T::Hash[String, String]) }
   def to_hash
     reason_string = if @reason.is_a?(Symbol)
       @reason.inspect
