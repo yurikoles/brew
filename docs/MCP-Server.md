@@ -4,7 +4,7 @@ last_review_date: "2025-07-18"
 
 # Homebrew's MCP Server
 
-Homebrew's MCP Server is the official MCP ([Model Context Protocol](https://modelcontextprotocol.io/)) server for Homebrew, enabling AI assistants like Cursor to interact with Homebrew directly, providing tools for package management, system diagnostics, and development workflows. It exposes common operations like package search/lookup, installation and removal, system updates, diagnostics, and development tools so AI assistants can help maintain your system and develop new formulas.
+Homebrew's MCP Server is the official MCP ([Model Context Protocol](https://modelcontextprotocol.io/)) server for Homebrew, enabling AI assistants like Cursor to interact with Homebrew directly, providing tools for package management, system diagnostics, and development workflows. It exposes common operations like package search/lookup, installation and removal, system updates, diagnostics and development tools so AI assistants can help maintain your system and develop new formulas.
 
 You don't need to do anything to install it.
 It's provided by default with Homebrew through the `brew mcp-server` command.
