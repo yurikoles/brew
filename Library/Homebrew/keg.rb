@@ -589,7 +589,7 @@ class Keg
           # pod2man embeds the perl version used into the 5th field of the footer
           parts[4]&.gsub!(/^"perl v.*"$/, "\"\"")
           # man extension remove in man files
-          parts[2]&.gsub!(/([1-9]){,p,pm}/, "\\1")
+          parts[2]&.gsub!(/([1-9])(?:pm|p)?/, "\\1")
 
           "#{parts.join(" ")}\n"
         elsif line.start_with?(".IX")
@@ -599,7 +599,7 @@ class Keg
           next line if parts[1] != "Title"
 
           # man extension remove in man files
-          parts[2]&.gsub!(/\s+([1-9]){,p,pm}/, "\\1")
+          parts[2]&.gsub!(/([1-9])(?:pm|p)?/, "\\1")
 
           "#{parts.join(" ")}\n"
         else
