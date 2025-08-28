@@ -377,12 +377,16 @@ module Formulary
 
       if (deprecation_date = json_formula["deprecation_date"].presence)
         reason = DeprecateDisable.to_reason_string_or_symbol json_formula["deprecation_reason"], type: :formula
-        deprecate! date: deprecation_date, because: reason
+        replacement_formula = json_formula["deprecation_replacement_formula"]
+        replacement_cask = json_formula["deprecation_replacement_cask"]
+        deprecate! date: deprecation_date, because: reason, replacement_formula:, replacement_cask:
       end
 
       if (disable_date = json_formula["disable_date"].presence)
         reason = DeprecateDisable.to_reason_string_or_symbol json_formula["disable_reason"], type: :formula
-        disable! date: disable_date, because: reason
+        replacement_formula = json_formula["disable_replacement_formula"]
+        replacement_cask = json_formula["disable_replacement_cask"]
+        disable! date: disable_date, because: reason, replacement_formula:, replacement_cask:
       end
 
       json_formula["conflicts_with"]&.each_with_index do |conflict, index|
