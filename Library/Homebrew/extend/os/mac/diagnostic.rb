@@ -376,7 +376,7 @@ module OS
 
             return if @found.all? do |path|
               realpath = Pathname.new(path).realpath.to_s
-              allowlist.any? { |rack| realpath.start_with?(rack) }
+              realpath.start_with?(*allowlist)
             end
           end
 
