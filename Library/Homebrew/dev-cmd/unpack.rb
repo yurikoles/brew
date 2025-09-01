@@ -114,14 +114,12 @@ module Homebrew
 
         download = Cask::Download.new(cask, quarantine: true)
         
-        # Check if already downloaded to avoid unnecessary fetch output
         if download.downloaded?
           downloaded_path = download.cached_download
         else
           downloaded_path = download.fetch(quiet: false)
         end
 
-        # Extract to destination
         stage_dir.mkpath
         UnpackStrategy.detect(downloaded_path).extract_nestedly(to: stage_dir, verbose: true)
       end
