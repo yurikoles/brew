@@ -15,7 +15,7 @@ module Homebrew
 
       cmd_args do
         description <<~EOS
-          Unpack the source files for <formula> and binaries for <cask> into subdirectories of the current
+          Unpack the files for the <formula> or <cask> into subdirectories of the current
           working directory.
         EOS
         flag   "--destdir=",
@@ -42,9 +42,9 @@ module Homebrew
 
       sig { override.void }
       def run
-        formulae_and_casks = if args.cask?
+        formulae_and_casks = if args.casks?
           args.named.to_formulae_and_casks(only: :cask)
-        elsif args.formula?
+        elsif args.formulae?
           args.named.to_formulae_and_casks(only: :formula)
         else
           args.named.to_formulae_and_casks
@@ -60,10 +60,9 @@ module Homebrew
         odie "Cannot write to #{unpack_dir}" unless unpack_dir.writable?
 
         formulae_and_casks.each do |formula_or_cask|
-          case formula_or_cask
-          when Formula
+          if formula_or_cask.is_a?(Formula)
             unpack_formula(formula_or_cask, unpack_dir)
-          when Cask::Cask
+          else
             unpack_cask(formula_or_cask, unpack_dir)
           end
         end
@@ -113,9 +112,14 @@ module Homebrew
 
         oh1 "Unpacking #{Formatter.identifier(cask.full_name)} to: #{stage_dir}"
 
-        # Download the cask
-        download = Cask::Download.new(cask, quarantine: false)
-        downloaded_path = download.fetch(quiet: false)
+        download = Cask::Download.new(cask, quarantine: true)
+        
+        # Check if already downloaded to avoid unnecessary fetch output
+        if download.downloaded?
+          downloaded_path = download.cached_download
+        else
+          downloaded_path = download.fetch(quiet: false)
+        end
 
         # Extract to destination
         stage_dir.mkpath

@@ -18,6 +18,13 @@ RSpec.describe Homebrew::DevCmd::Unpack do
   end
 
   it "unpacks a given Cask's archive", :integration_test do
-    skip "Cask unpacking requires network access to download files"
+    caffeine_cask = Cask::CaskLoader.load("local-caffeine")
+
+    mktmpdir do |path|
+      expect { brew "unpack", "local-caffeine", "--destdir=#{path}" }
+        .to be_a_success
+
+      expect(path/"local-caffeine-#{caffeine_cask.version}").to be_a_directory
+    end
   end
 end
