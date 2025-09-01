@@ -85,6 +85,9 @@ module Homebrew
         end
       end
 
+      # TODO: Remove this exception for `lsr` after support for tangled.sh
+      # Git URLs is available in a brew release.
+      return if name == "lsr"
       return if url_strategy != DownloadStrategyDetector.detect("", using)
 
       problem "Redundant `using:` value in URL"
