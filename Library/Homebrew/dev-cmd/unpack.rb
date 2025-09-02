@@ -60,10 +60,10 @@ module Homebrew
         odie "Cannot write to #{unpack_dir}" unless unpack_dir.writable?
 
         formulae_and_casks.each do |formula_or_cask|
-          if formula_or_cask.is_a?(Formula)
-            unpack_formula(formula_or_cask, unpack_dir)
-          else
+          if formula_or_cask.is_a?(Cask::Cask)
             unpack_cask(formula_or_cask, unpack_dir)
+          elsif (formula = T.cast(formula_or_cask, Formula))
+            unpack_formula(formula, unpack_dir)
           end
         end
       end
