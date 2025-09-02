@@ -1778,16 +1778,19 @@ __fish_brew_complete_arg 'unlink' -l verbose -d 'Make some output more verbose'
 __fish_brew_complete_arg 'unlink' -a '(__fish_brew_suggest_formulae_installed)'
 
 
-__fish_brew_complete_cmd 'unpack' 'Unpack the source files for formula into subdirectories of the current working directory'
+__fish_brew_complete_cmd 'unpack' 'Unpack the files for the formula or cask into subdirectories of the current working directory'
+__fish_brew_complete_arg 'unpack' -l cask -d 'Treat all named arguments as casks'
 __fish_brew_complete_arg 'unpack' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg 'unpack' -l destdir -d 'Create subdirectories in the directory named by path instead'
 __fish_brew_complete_arg 'unpack' -l force -d 'Overwrite the destination directory if it already exists'
+__fish_brew_complete_arg 'unpack' -l formula -d 'Treat all named arguments as formulae'
 __fish_brew_complete_arg 'unpack' -l git -d 'Initialise a Git repository in the unpacked source. This is useful for creating patches for the software'
 __fish_brew_complete_arg 'unpack' -l help -d 'Show this message'
 __fish_brew_complete_arg 'unpack' -l patch -d 'Patches for formula will be applied to the unpacked source'
 __fish_brew_complete_arg 'unpack' -l quiet -d 'Make some output more quiet'
 __fish_brew_complete_arg 'unpack' -l verbose -d 'Make some output more verbose'
-__fish_brew_complete_arg 'unpack' -a '(__fish_brew_suggest_formulae_all)'
+__fish_brew_complete_arg 'unpack; and not __fish_seen_argument -l cask -l casks' -a '(__fish_brew_suggest_formulae_all)'
+__fish_brew_complete_arg 'unpack; and not __fish_seen_argument -l formula -l formulae' -a '(__fish_brew_suggest_casks_all)'
 
 
 __fish_brew_complete_cmd 'unpin' 'Unpin formula, allowing them to be upgraded by `brew upgrade` formula'
