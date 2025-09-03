@@ -755,9 +755,9 @@ module Cask
       latest_version = Homebrew::Livecheck.latest_version(
         cask,
         referenced_formula_or_cask: referenced_cask,
-      )&.fetch(:latest)
+      )&.fetch(:latest, nil)
 
-      return :auto_detected if cask.version.to_s == latest_version.to_s
+      return :auto_detected if latest_version && (cask.version.to_s == latest_version.to_s)
 
       add_error "Version '#{cask.version}' differs from '#{latest_version}' retrieved by livecheck."
 
