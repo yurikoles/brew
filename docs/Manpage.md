@@ -3807,6 +3807,10 @@ Database update for `brew which-formula`.
 
 : Specify a maximum number of formulae to download and update.
 
+`--summary-file`
+
+: Output a summary of the changes to a file.
+
 ## CUSTOM EXTERNAL COMMANDS
 
 Homebrew, like `git`(1), supports external commands. These are executable
