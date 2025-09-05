@@ -23,7 +23,7 @@ Initialized empty Git repository in /opt/homebrew/Library/Taps/$YOUR_GITHUB_USER
 Next, you can push it to a new GitHub repository:
 
 ```console
-$  gh repo create $YOUR_GITHUB_USERNAME/homebrew-tap --push --public --source "$(brew --repository $YOUR_GITHUB_USERNAME/homebrew-tap)"
+$ gh repo create $YOUR_GITHUB_USERNAME/homebrew-tap --push --public --source "$(brew --repository $YOUR_GITHUB_USERNAME/homebrew-tap)"
 ✓ Created repository $YOUR_GITHUB_USERNAME/homebrew-tap on github.com
   https://github.com/$YOUR_GITHUB_USERNAME/homebrew-tap
 ✓ Added remote https://github.com/$YOUR_GITHUB_USERNAME/homebrew-tap.git
