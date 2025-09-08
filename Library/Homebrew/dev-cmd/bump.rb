@@ -399,7 +399,8 @@ module Homebrew
 
           newer_than_upstream[version_type] =
             (current_version_value = current_version.send(version_type)).is_a?(Version) &&
-            (current_version_value > new_version_value)
+            (Livecheck::LivecheckVersion.create(formula_or_cask, current_version_value) >
+              Livecheck::LivecheckVersion.create(formula_or_cask, new_version_value))
         end
 
         if !args.no_pull_requests? &&
