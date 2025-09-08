@@ -407,7 +407,7 @@ module Homebrew
            (new_version.general != "unable to get versions") &&
            (new_version.general != "skipped") &&
            (new_version != current_version) &&
-           !newer_than_upstream.all?
+           !newer_than_upstream.all? { |_k, v| v == true }
           # We use the ARM version for the pull request version. This is
           # consistent with the behavior of bump-cask-pr.
           pull_request_version = if multiple_versions
@@ -458,7 +458,7 @@ module Homebrew
         repology_latest = version_info.repology_latest
 
         versions_equal = (new_version == current_version)
-        all_newer_than_upstream = version_info.newer_than_upstream.all?
+        all_newer_than_upstream = version_info.newer_than_upstream.all? { |_k, v| v == true }
 
         title_name = ambiguous_cask ? "#{name} (cask)" : name
         title = if (repology_latest == current_version.general || !repology_latest.is_a?(Version)) && versions_equal
