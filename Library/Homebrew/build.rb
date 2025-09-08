@@ -232,12 +232,13 @@ class Build
       formula.linked_keg.resolved_path
     elsif formula.prefix.directory?
       formula.prefix
-    elsif (kids = formula.rack.children).size == 1 && T.must(kids.first).directory?
-      kids.first
+    elsif (children = formula.rack.children.presence) && children.size == 1 &&
+          (first_child = children.first.presence) && first_child.directory?
+      first_child
     else
       raise
     end
-    Keg.new(T.must(path)).optlink(verbose: args.verbose?)
+    Keg.new(path).optlink(verbose: args.verbose?)
   rescue
     raise "#{formula.opt_prefix} not present or broken\nPlease reinstall #{formula.full_name}. Sorry :("
   end
@@ -262,9 +263,9 @@ begin
 
   trap("INT", old_trap)
 
-  formula = args.named.to_formulae.first
+  formula = args.named.to_formulae.fetch(0)
   options = Options.create(args.flags_only)
-  build   = Build.new(T.must(formula), options, args:)
+  build   = Build.new(formula, options, args:)
 
   build.install
 # Any exception means the build did not complete.
