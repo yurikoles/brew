@@ -22,7 +22,7 @@ module OS
       sig { params(version: MacOSVersion, path: T.any(String, Pathname), source: Symbol).void }
       def initialize(version, path, source)
         @version = version
-        @path = T.let(Pathname.new(path), Pathname)
+        @path = T.let(Pathname(path), Pathname)
         @source = source
       end
     end
@@ -39,6 +39,7 @@ module OS
       sig { void }
       def initialize
         @all_sdks = T.let([], T::Array[SDK])
+        @sdk_prefix = T.let(nil, T.nilable(String))
       end
 
       sig { params(version: MacOSVersion).returns(SDK) }
@@ -150,7 +151,7 @@ module OS
 
       sig { override.returns(String) }
       def sdk_prefix
-        @sdk_prefix ||= T.let(begin
+        @sdk_prefix ||= begin
           # Xcode.prefix is pretty smart, so let's look inside to find the sdk
           sdk_prefix = "#{Xcode.prefix}/Platforms/MacOSX.platform/Developer/SDKs"
           # Finally query Xcode itself (this is slow, so check it last)
@@ -158,7 +159,7 @@ module OS
           sdk_prefix = File.join(sdk_platform_path, "Developer", "SDKs") unless File.directory? sdk_prefix
 
           sdk_prefix
-        end, T.nilable(String))
+        end
       end
     end
 
@@ -180,11 +181,11 @@ module OS
       # return `nil` SDKs for Xcode 9 and older.
       sig { override.returns(String) }
       def sdk_prefix
-        @sdk_prefix ||= T.let(if CLT.provides_sdk?
-                                "#{CLT::PKG_PATH}/SDKs"
-                              else
-                                ""
-        end, T.nilable(String))
+        @sdk_prefix ||= if CLT.provides_sdk?
+          "#{CLT::PKG_PATH}/SDKs"
+        else
+          ""
+        end
       end
     end
   end

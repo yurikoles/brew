@@ -70,35 +70,34 @@ module MachOShim
 
   # TODO: See if the `#write!` call can be delayed until
   #       we know we're not making any changes to the rpaths.
-  sig { params(rpath: String, options: T::Boolean).void }
-  def delete_rpath(rpath, **options)
+  sig { params(rpath: String).void }
+  def delete_rpath(rpath)
     candidates = rpaths(resolve_variable_references: false).select do |r|
       resolve_variable_name(r) == resolve_variable_name(rpath)
     end
 
     # Delete the last instance to avoid changing the order in which rpaths are searched.
     rpath_to_delete = candidates.last
-    options[:last] = true
 
-    macho.delete_rpath(rpath_to_delete, options)
+    macho.delete_rpath(rpath_to_delete, { last: true })
     macho.write!
   end
 
-  sig { params(old: String, new: String, options: T::Boolean).void }
-  def change_rpath(old, new, **options)
-    macho.change_rpath(old, new, options)
+  sig { params(old: String, new: String, uniq: T::Boolean, last: T::Boolean).void }
+  def change_rpath(old, new, uniq: false, last: false)
+    macho.change_rpath(old, new, { uniq: uniq, last: last })
     macho.write!
   end
 
-  sig { params(id: String, options: T::Boolean).void }
-  def change_dylib_id(id, **options)
-    macho.change_dylib_id(id, options)
+  sig { params(id: String).void }
+  def change_dylib_id(id)
+    macho.change_dylib_id(id)
     macho.write!
   end
 
-  sig { params(old: String, new: String, options: T::Boolean).void }
-  def change_install_name(old, new, **options)
-    macho.change_install_name(old, new, options)
+  sig { params(old: String, new: String).void }
+  def change_install_name(old, new)
+    macho.change_install_name(old, new)
     macho.write!
   end
 
