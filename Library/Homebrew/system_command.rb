@@ -112,6 +112,7 @@ class SystemCommand
       sudo_as_root: T::Boolean,
       env:          T::Hash[String, String],
       input:        T.any(String, T::Array[String]),
+      must_succeed: T::Boolean,
       print_stdout: T.any(T::Boolean, Symbol),
       print_stderr: T.any(T::Boolean, Symbol),
       debug:        T.nilable(T::Boolean),
@@ -122,9 +123,10 @@ class SystemCommand
       timeout:      T.nilable(T.any(Integer, Float)),
     ).returns(SystemCommand::Result)
   }
-  def self.run!(executable, args: [], sudo: false, sudo_as_root: false, env: {}, input: [], print_stdout: false,
-                print_stderr: true, debug: nil, verbose: nil, secrets: [], chdir: nil, reset_uid: false, timeout: nil)
-    run(executable, args:, sudo:, sudo_as_root:, env:, input:, must_succeed: true, print_stdout:, print_stderr:,
+  def self.run!(executable, args: [], sudo: false, sudo_as_root: false, env: {}, input: [], must_succeed: true,
+                print_stdout: false, print_stderr: true, debug: nil, verbose: nil, secrets: [], chdir: nil,
+                reset_uid: false, timeout: nil)
+    run(executable, args:, sudo:, sudo_as_root:, env:, input:, must_succeed:, print_stdout:, print_stderr:,
         debug:, verbose:, secrets:, chdir:, reset_uid:, timeout:)
   end
 
