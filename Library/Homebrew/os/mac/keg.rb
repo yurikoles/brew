@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 class Keg
@@ -6,7 +6,7 @@ class Keg
   def change_dylib_id(id, file)
     return false if file.dylib_id == id
 
-    @require_relocation = true
+    @require_relocation = T.let(true, T.nilable(T::Boolean))
     odebug "Changing dylib ID of #{file}\n  from #{file.dylib_id}\n    to #{id}"
     file.change_dylib_id(id, strict: false)
     true
@@ -23,7 +23,7 @@ class Keg
   def change_install_name(old, new, file)
     return false if old == new
 
-    @require_relocation = true
+    @require_relocation = T.let(true, T.nilable(T::Boolean))
     odebug "Changing install name in #{file}\n  from #{old}\n    to #{new}"
     file.change_install_name(old, new, strict: false)
     true
@@ -36,10 +36,11 @@ class Keg
     raise
   end
 
+  sig { params(old: String, new: String, file: Pathname).returns(T::Boolean) }
   def change_rpath(old, new, file)
     return false if old == new
 
-    @require_relocation = true
+    @require_relocation = T.let(true, T.nilable(T::Boolean))
     odebug "Changing rpath in #{file}\n  from #{old}\n    to #{new}"
     file.change_rpath(old, new, strict: false)
     true
