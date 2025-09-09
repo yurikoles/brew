@@ -32,8 +32,9 @@ module MachOShim
       machos = []
       mach_data = []
 
-      if macho.is_a?(MachO::FatFile)
-        machos = T.cast(macho, MachO::FatFile).machos
+      case (macho = self.macho)
+      when MachO::FatFile
+        machos = macho.machos
       else
         machos << macho
       end
@@ -70,8 +71,8 @@ module MachOShim
 
   # TODO: See if the `#write!` call can be delayed until
   #       we know we're not making any changes to the rpaths.
-  sig { params(rpath: String).void }
-  def delete_rpath(rpath)
+  sig { params(rpath: String, strict: T::Boolean).void }
+  def delete_rpath(rpath, strict: true)
     candidates = rpaths(resolve_variable_references: false).select do |r|
       resolve_variable_name(r) == resolve_variable_name(rpath)
     end
@@ -79,25 +80,25 @@ module MachOShim
     # Delete the last instance to avoid changing the order in which rpaths are searched.
     rpath_to_delete = candidates.last
 
-    macho.delete_rpath(rpath_to_delete, { last: true })
+    macho.delete_rpath(rpath_to_delete, { last: true, strict: })
     macho.write!
   end
 
-  sig { params(old: String, new: String, uniq: T::Boolean, last: T::Boolean).void }
-  def change_rpath(old, new, uniq: false, last: false)
-    macho.change_rpath(old, new, { uniq: uniq, last: last })
+  sig { params(old: String, new: String, uniq: T::Boolean, last: T::Boolean, strict: T::Boolean).void }
+  def change_rpath(old, new, uniq: false, last: false, strict: true)
+    macho.change_rpath(old, new, { uniq:, last:, strict: })
     macho.write!
   end
 
-  sig { params(id: String).void }
-  def change_dylib_id(id)
-    macho.change_dylib_id(id)
+  sig { params(id: String, strict: T::Boolean).void }
+  def change_dylib_id(id, strict: true)
+    macho.change_dylib_id(id, { strict: })
     macho.write!
   end
 
-  sig { params(old: String, new: String).void }
-  def change_install_name(old, new)
-    macho.change_install_name(old, new)
+  sig { params(old: String, new: String, strict: T::Boolean).void }
+  def change_install_name(old, new, strict: true)
+    macho.change_install_name(old, new, { strict: })
     macho.write!
   end
 

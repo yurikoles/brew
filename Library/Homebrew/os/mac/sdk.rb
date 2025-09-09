@@ -38,7 +38,7 @@ module OS
 
       sig { void }
       def initialize
-        @all_sdks = T.let([], T::Array[SDK])
+        @all_sdks = T.let(nil, T.nilable(T::Array[SDK]))
         @sdk_prefix = T.let(nil, T.nilable(String))
       end
 
@@ -52,7 +52,9 @@ module OS
 
       sig { returns(T::Array[SDK]) }
       def all_sdks
-        return @all_sdks unless @all_sdks.empty?
+        return @all_sdks if @all_sdks
+
+        @all_sdks = []
 
         # Bail out if there is no SDK prefix at all
         return @all_sdks unless File.directory? sdk_prefix

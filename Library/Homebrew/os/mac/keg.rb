@@ -6,7 +6,7 @@ class Keg
   def initialize(path)
     super
 
-    @require_relocation = T.let(nil, T.nilable(T::Boolean))
+    @require_relocation = T.let(false, T::Boolean)
   end
 
   sig { params(id: String, file: Pathname).returns(T::Boolean) }
@@ -15,7 +15,7 @@ class Keg
 
     @require_relocation = true
     odebug "Changing dylib ID of #{file}\n  from #{file.dylib_id}\n    to #{id}"
-    file.change_dylib_id(id)
+    file.change_dylib_id(id, strict: false)
     true
   rescue MachO::MachOError
     onoe <<~EOS
@@ -32,7 +32,7 @@ class Keg
 
     @require_relocation = true
     odebug "Changing install name in #{file}\n  from #{old}\n    to #{new}"
-    file.change_install_name(old, new)
+    file.change_install_name(old, new, strict: false)
     true
   rescue MachO::MachOError
     onoe <<~EOS
@@ -49,7 +49,7 @@ class Keg
 
     @require_relocation = true
     odebug "Changing rpath in #{file}\n  from #{old}\n    to #{new}"
-    file.change_rpath(old, new)
+    file.change_rpath(old, new, strict: false)
     true
   rescue MachO::MachOError
     onoe <<~EOS
@@ -63,7 +63,7 @@ class Keg
   sig { params(rpath: String, file: MachOShim).returns(T::Boolean) }
   def delete_rpath(rpath, file)
     odebug "Deleting rpath #{rpath} in #{file}"
-    file.delete_rpath(rpath)
+    file.delete_rpath(rpath, strict: false)
     true
   rescue MachO::MachOError
     onoe <<~EOS
