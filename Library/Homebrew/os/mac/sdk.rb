@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 require "system_command"
@@ -22,7 +22,7 @@ module OS
       sig { params(version: MacOSVersion, path: T.any(String, Pathname), source: Symbol).void }
       def initialize(version, path, source)
         @version = version
-        @path = Pathname.new(path)
+        @path = T.let(Pathname.new(path), Pathname)
         @source = source
       end
     end
@@ -36,6 +36,11 @@ module OS
 
       class NoSDKError < StandardError; end
 
+      sig { void }
+      def initialize
+        @all_sdks = T.let([], T::Array[SDK])
+      end
+
       sig { params(version: MacOSVersion).returns(SDK) }
       def sdk_for(version)
         sdk = all_sdks.find { |s| s.version == version }
@@ -46,9 +51,7 @@ module OS
 
       sig { returns(T::Array[SDK]) }
       def all_sdks
-        return @all_sdks if @all_sdks
-
-        @all_sdks = []
+        return @all_sdks unless @all_sdks.empty?
 
         # Bail out if there is no SDK prefix at all
         return @all_sdks unless File.directory? sdk_prefix
@@ -147,7 +150,7 @@ module OS
 
       sig { override.returns(String) }
       def sdk_prefix
-        @sdk_prefix ||= begin
+        @sdk_prefix ||= T.let(begin
           # Xcode.prefix is pretty smart, so let's look inside to find the sdk
           sdk_prefix = "#{Xcode.prefix}/Platforms/MacOSX.platform/Developer/SDKs"
           # Finally query Xcode itself (this is slow, so check it last)
@@ -155,7 +158,7 @@ module OS
           sdk_prefix = File.join(sdk_platform_path, "Developer", "SDKs") unless File.directory? sdk_prefix
 
           sdk_prefix
-        end
+        end, T.nilable(String))
       end
     end
 
@@ -177,11 +180,11 @@ module OS
       # return `nil` SDKs for Xcode 9 and older.
       sig { override.returns(String) }
       def sdk_prefix
-        @sdk_prefix ||= if CLT.provides_sdk?
-          "#{CLT::PKG_PATH}/SDKs"
-        else
-          ""
-        end
+        @sdk_prefix ||= T.let(if CLT.provides_sdk?
+                                "#{CLT::PKG_PATH}/SDKs"
+                              else
+                                ""
+        end, T.nilable(String))
       end
     end
   end
