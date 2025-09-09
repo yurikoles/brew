@@ -1,11 +1,11 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 module OS
   module Mac
     # Helper module for querying Xcode information.
     module Xcode
-      DEFAULT_BUNDLE_PATH = Pathname("/Applications/Xcode.app").freeze
+      DEFAULT_BUNDLE_PATH = T.let(Pathname("/Applications/Xcode.app").freeze, Pathname)
       BUNDLE_ID = "com.apple.dt.Xcode"
       OLD_BUNDLE_ID = "com.apple.Xcode"
       APPLE_DEVELOPER_DOWNLOAD_URL = "https://developer.apple.com/download/all/"
@@ -98,7 +98,7 @@ module OS
       # directory or nil if Xcode.app is not installed.
       sig { returns(T.nilable(Pathname)) }
       def self.prefix
-        @prefix ||= begin
+        @prefix ||= T.let(begin
           dir = MacOS.active_developer_dir
 
           if dir.empty? || dir == CLT::PKG_PATH || !File.directory?(dir)
@@ -108,7 +108,7 @@ module OS
             # Use cleanpath to avoid pathological trailing slash
             Pathname.new(dir).cleanpath
           end
-        end
+        end, T.nilable(Pathname))
       end
 
       sig { returns(Pathname) }
@@ -134,7 +134,7 @@ module OS
 
       sig { returns(XcodeSDKLocator) }
       def self.sdk_locator
-        @sdk_locator ||= XcodeSDKLocator.new
+        @sdk_locator ||= T.let(XcodeSDKLocator.new, T.nilable(OS::Mac::XcodeSDKLocator))
       end
 
       sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(SDK)) }
@@ -183,7 +183,7 @@ module OS
         # may return a version string
         # that is guessed based on the compiler, so do not
         # use it in order to check if Xcode is installed.
-        if @version ||= detect_version
+        if @version ||= T.let(detect_version, T.nilable(String))
           ::Version.new @version
         else
           ::Version::NULL
@@ -293,7 +293,7 @@ module OS
 
       sig { returns(CLTSDKLocator) }
       def self.sdk_locator
-        @sdk_locator ||= CLTSDKLocator.new
+        @sdk_locator ||= T.let(CLTSDKLocator.new, T.nilable(OS::Mac::CLTSDKLocator))
       end
 
       sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(SDK)) }
@@ -444,7 +444,7 @@ module OS
       # @api internal
       sig { returns(::Version) }
       def self.version
-        if @version ||= detect_version
+        if @version ||= T.let(detect_version, T.nilable(String))
           ::Version.new @version
         else
           ::Version::NULL
