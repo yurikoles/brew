@@ -68,17 +68,21 @@ module GitHub
     class RateLimitExceededError < Error
       sig { params(reset: Integer, github_message: String).void }
       def initialize(reset, github_message)
+        @reset = T.let(reset, Integer)
         new_pat_message = ", or:\n#{GitHub.pat_blurb}" if API.credentials.blank?
         message = <<~EOS
           GitHub API Error: #{github_message}
-          Try again in #{pretty_ratelimit_reset(reset)}#{new_pat_message}
+          Try again in #{pretty_ratelimit_reset}#{new_pat_message}
         EOS
         super(message, github_message)
       end
 
-      sig { params(reset: Integer).returns(String) }
-      def pretty_ratelimit_reset(reset)
-        pretty_duration(Time.at(reset) - Time.now)
+      sig { returns(Integer) }
+      attr_reader :reset
+
+      sig { returns(String) }
+      def pretty_ratelimit_reset
+        pretty_duration(Time.at(@reset) - Time.now)
       end
     end
 
