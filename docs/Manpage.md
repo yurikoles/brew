@@ -2414,11 +2414,17 @@ Summarise contributions to Homebrew repositories.
 
 `--repositories`
 
-: Specify a comma-separated list of repositories to search. Supported
-  repositories: `brew`, `core`, `cask`, `command-not-found` and `test-bot`.
-  Omitting this flag, or specifying `--repositories=primary`, searches only the
-  main repositories: `brew`, `core`, `cask`. Specifying `--repositories=all`
-  searches all repositories.
+: Specify a comma-separated list of repositories to search. All repositories
+  must be under the same user or organisation. Omitting this flag, or specifying
+  `--repositories=primary`, searches only the main repositories:
+  `Homebrew/brew`, `Homebrew/homebrew-core`, `Homebrew/homebrew-cask`.
+  Specifying `--repositories=all` searches all non-deprecated Homebrew
+  repositories.
+
+`--organisation`
+
+: Specify the organisation to populate sources repositories from. Omitting this
+  flag searches the Homebrew primary repositories.
 
 `--from`
 

@@ -818,6 +818,7 @@ _brew_contributions() {
       --debug
       --from
       --help
+      --organisation
       --quiet
       --repositories
       --to
