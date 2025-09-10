@@ -372,7 +372,7 @@ module OS
       sig { returns(String) }
       def self.latest_clang_version
         case MacOS.version
-        when "26" then "1700.3.9.908"
+        when "26" then "1700.3.19.1"
         when "15" then "1700.0.13.5"
         when "14" then "1600.0.26.6"
         when "13" then "1500.1.0.2.5"
