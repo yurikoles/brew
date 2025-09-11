@@ -119,10 +119,11 @@ module GitHub
     API.open_rest(url, data:, scopes:)
   end
 
+  # We default to private if we aren't sure or if the GitHub API is disabled.
   sig { params(full_name: String).returns(T::Boolean) }
   def self.private_repo?(full_name)
     uri = url_to "repos", full_name
-    API.open_rest(uri) { |json| json["private"] }
+    API.open_rest(uri) { |json| json["private"].nil? || json["private"] }
   end
 
   def self.search_query_string(*main_params, **qualifiers)
