@@ -123,7 +123,7 @@ module GitHub
   sig { params(full_name: String).returns(T::Boolean) }
   def self.private_repo?(full_name)
     uri = url_to "repos", full_name
-    API.open_rest(uri) { |json| json["private"].nil? || json["private"] }
+    API.open_rest(uri) { |json| json.fetch("private", true) }
   end
 
   def self.search_query_string(*main_params, **qualifiers)
