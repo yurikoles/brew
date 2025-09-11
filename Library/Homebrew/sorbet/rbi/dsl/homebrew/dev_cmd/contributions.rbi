@@ -18,6 +18,9 @@ class Homebrew::DevCmd::Contributions::Args < Homebrew::CLI::Args
   def from; end
 
   sig { returns(T.nilable(String)) }
+  def org; end
+
+  sig { returns(T.nilable(String)) }
   def organisation; end
 
   sig { returns(T.nilable(String)) }
