@@ -2426,6 +2426,11 @@ Summarise contributions to Homebrew repositories.
 : Specify the organisation to populate sources repositories from. Omitting this
   flag searches the Homebrew primary repositories.
 
+`--team`
+
+: Specify the team to populate users from. The first part of the team name will
+  be used as the organisation.
+
 `--from`
 
 : Date (ISO 8601 format) to start searching contributions. Omitting this flag

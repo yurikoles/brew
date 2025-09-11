@@ -30,6 +30,9 @@ class Homebrew::DevCmd::Contributions::Args < Homebrew::CLI::Args
   def repositories; end
 
   sig { returns(T.nilable(String)) }
+  def team; end
+
+  sig { returns(T.nilable(String)) }
   def to; end
 
   sig { returns(T.nilable(T::Array[String])) }

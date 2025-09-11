@@ -42,6 +42,9 @@ module Homebrew
         flag   "--organisation=", "--organization=", "--org=",
                description: "Specify the organisation to populate sources repositories from. " \
                             "Omitting this flag searches the Homebrew primary repositories."
+        flag   "--team=",
+               description: "Specify the team to populate users from. " \
+                            "The first part of the team name will be used as the organisation."
         flag   "--from=",
                description: "Date (ISO 8601 format) to start searching contributions. " \
                             "Omitting this flag searches the past year."
@@ -50,6 +53,8 @@ module Homebrew
         switch "--csv",
                description: "Print a CSV of contributions across repositories over the time period."
         conflicts "--organisation", "--repositories"
+        conflicts "--organisation", "--team"
+        conflicts "--user", "--team"
       end
 
       sig { override.void }
@@ -58,15 +63,34 @@ module Homebrew
 
         Homebrew.install_bundler_gems!(groups: ["contributions"]) if args.csv?
 
+        require "utils/github"
+
         results = {}
         grand_totals = {}
-
         from = args.from.presence || Date.today.prev_year.iso8601
         to = args.to.presence || (Date.today + 1).iso8601
-
         organisation = nil
-        repositories = if (org = args.organisation.presence)
+
+        users = if (team = args.team.presence)
+          team_sections = team.split("/")
+          organisation = team_sections.first.presence
+          team_name = team_sections.last.presence
+          if team_sections.length != 2 || organisation.nil? || team_name.nil?
+            odie "Team must be in the format `organisation/team`!"
+          end
+
+          puts "Getting members for #{organisation}/#{team_name}..." if args.verbose?
+          GitHub.members_by_team(organisation, team_name).keys
+        elsif (users = args.user.presence)
+          users
+        else
+          puts "Getting members for Homebrew/maintainers..." if args.verbose?
+          GitHub.members_by_team("Homebrew", "maintainers").keys
+        end
+
+        repositories = if (org = organisation.presence) || (org = args.organisation.presence)
           organisation = org
+          puts "Getting repositories for #{organisation}..." if args.verbose?
           GitHub.organisation_repositories(organisation, from, to, args.verbose?)
         elsif (repos = args.repositories.presence) && repos.length == 1 && (first_repository = repos.first)
           case first_repository
@@ -87,8 +111,6 @@ module Homebrew
         end
         organisation ||= T.must(repositories.fetch(0).split("/").first)
 
-        require "utils/github"
-        users = args.user.presence || GitHub.members_by_team("Homebrew", "maintainers").keys
         users.each do |username|
           # TODO: Using the GitHub username to scan the `git log` undercounts some
           #       contributions as people might not always have configured their Git
