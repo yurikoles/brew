@@ -738,7 +738,7 @@ class Tap
     end
 
     if (formula_count = formula_files.count).positive?
-      contents << Utils.pluralize("formula", formula_count, plural: "e", include_count: true)
+      contents << Utils.pluralize("formula", formula_count, include_count: true)
     end
 
     contents

@@ -842,7 +842,7 @@ class ReporterHub
     msg = ""
 
     if outdated_formulae.positive?
-      noun = Utils.pluralize("formula", outdated_formulae, plural: "e")
+      noun = Utils.pluralize("formula", outdated_formulae)
       msg += "#{Tty.bold}#{outdated_formulae}#{Tty.reset} outdated #{noun}"
     end
 
