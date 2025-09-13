@@ -974,7 +974,11 @@ class ReporterHub
       # Skip non-homebrew/core formulae for security.
       return if formula.include?("/")
 
-      Formula[formula].desc&.presence
+      begin
+        Formula[formula].desc&.presence
+      rescue FormulaUnavailableError
+        nil
+      end
     else
       all_formula_json.find { |f| f["name"] == formula }
                       &.fetch("desc", nil)
