@@ -654,7 +654,7 @@ module GitHub
     end
   end
 
-  sig { params(tap_remote_repo: String, pull_request: String).returns(T::Array[T.untyped]) }
+  sig { params(tap_remote_repo: String, pull_request: T.any(String, Integer)).returns(T::Array[T.untyped]) }
   def self.get_pull_request_changed_files(tap_remote_repo, pull_request)
     files = []
     API.paginate_rest(url_to("repos", tap_remote_repo, "pulls", pull_request, "files")) do |result|
