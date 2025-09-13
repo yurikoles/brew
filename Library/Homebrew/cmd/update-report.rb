@@ -992,7 +992,11 @@ class ReporterHub
       # Skip non-homebrew/cask formulae for security.
       return if cask.include?("/")
 
-      Cask::CaskLoader.load(cask).desc&.presence
+      begin
+        Cask::CaskLoader.load(cask).desc&.presence
+      rescue Cask::CaskError
+        nil
+      end
     else
       all_cask_json.find { |f| f["token"] == cask }
                    &.fetch("desc", nil)
