@@ -4,9 +4,12 @@ require "cmd/update-report"
 require "formula_versions"
 require "yaml"
 require "cmd/shared_examples/args_parse"
+require "cmd/shared_examples/reinstall_pkgconf_if_needed_spec"
 
 RSpec.describe Homebrew::Cmd::UpdateReport do
   it_behaves_like "parseable arguments"
+
+  it_behaves_like "reinstall_pkgconf_if_needed"
 
   describe Reporter do
     let(:tap) { CoreTap.instance }
