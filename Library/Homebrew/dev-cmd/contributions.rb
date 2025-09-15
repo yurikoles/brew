@@ -52,6 +52,8 @@ module Homebrew
                description: "Date (ISO 8601 format) to stop searching contributions."
         switch "--csv",
                description: "Print a CSV of contributions across repositories over the time period."
+        switch "--force",
+               description: "Force the installation of missing taps."
         conflicts "--organisation", "--repositories"
         conflicts "--organisation", "--team"
         conflicts "--user", "--team"
@@ -234,7 +236,7 @@ module Homebrew
           repository_path, tap = repository_path_and_tap(repository)
           if repository_path && tap && !repository_path.exist?
             opoo "Repository #{repository} not yet tapped! Tapping it now..."
-            tap.install
+            tap.install(force: args.force?)
           end
 
           repository_full_name = tap&.full_name

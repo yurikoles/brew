@@ -14,6 +14,9 @@ class Homebrew::DevCmd::Contributions::Args < Homebrew::CLI::Args
   sig { returns(T::Boolean) }
   def csv?; end
 
+  sig { returns(T::Boolean) }
+  def force?; end
+
   sig { returns(T.nilable(String)) }
   def from; end
 
