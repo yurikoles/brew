@@ -17,8 +17,9 @@ module Homebrew
         { symbol: :ventura, name: "macos-13", arch: :intel } => 1.0,
       }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
       ARM_RUNNERS = T.let({
-        { symbol: :sonoma, name: "macos-14", arch: :arm }  => 0.0,
-        { symbol: :sequoia, name: "macos-15", arch: :arm } => 1.0,
+        { symbol: :sonoma,  name: "macos-14", arch: :arm } => 0.0,
+        { symbol: :sequoia, name: "macos-15", arch: :arm } => 0.0,
+        { symbol: :tahoe,   name: "macos-26", arch: :arm } => 1.0,
       }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
       RUNNERS = T.let(INTEL_RUNNERS.merge(ARM_RUNNERS).freeze,
                       T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
