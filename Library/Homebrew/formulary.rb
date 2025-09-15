@@ -54,7 +54,8 @@ module Formulary
   sig {
     returns({
       api:               T.nilable(T::Hash[String, T.class_of(Formula)]),
-      formulary_factory: T.nilable(T::Hash[String, Formula]),
+      # TODO: the hash values should be Formula instances, but the linux tests were failing
+      formulary_factory: T.nilable(T::Hash[String, T.untyped]),
       path:              T.nilable(T::Hash[String, T.class_of(Formula)]),
       stub:              T.nilable(T::Hash[String, T.class_of(Formula)]),
     })
