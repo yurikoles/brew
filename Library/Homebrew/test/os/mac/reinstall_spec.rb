@@ -7,10 +7,14 @@ require "extend/os/mac/pkgconf"
 RSpec.describe Homebrew::Reinstall do
   describe ".reinstall_pkgconf_if_needed!" do
     let(:formula) { instance_double(Formula) }
-    let(:context) { instance_double(described_class::InstallationContext) }
+    let(:formula_installer) do
+      instance_double(FormulaInstaller, formula:, prelude_fetch: true, prelude: true, fetch: true)
+    end
+    let(:context) { instance_double(described_class::InstallationContext, formula_installer:) }
 
     before do
       allow(Formula).to receive(:[]).with("pkgconf").and_return(formula)
+      allow(Homebrew::Install).to receive(:fetch_formulae).with([formula_installer])
       allow(described_class).to receive(:build_install_context).and_return(context)
     end
 

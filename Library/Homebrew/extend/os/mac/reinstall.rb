@@ -1,6 +1,7 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "install"
 require "utils/output"
 
 module OS
@@ -27,6 +28,7 @@ module OS
           context = T.unsafe(self).build_install_context(pkgconf, flags: [])
 
           begin
+            Homebrew::Install.fetch_formulae([context.formula_installer])
             T.unsafe(self).reinstall_formula(context)
             ohai "Reinstalled pkgconf due to macOS version mismatch"
           rescue
