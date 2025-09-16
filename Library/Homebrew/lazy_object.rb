@@ -28,7 +28,4 @@ class LazyObject < Delegator
 
     __getobj__.is_a?(klass) || super
   end
-
-  def class = __getobj__.class
-  def to_s = __getobj__.to_s
 end

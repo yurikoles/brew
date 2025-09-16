@@ -38,8 +38,7 @@ class AbstractTab
   # @api internal
   attr_accessor :runtime_dependencies
 
-  # TODO: Update attributes to only accept symbol keys (kwargs style).
-  sig { params(attributes: T.any(T::Hash[String, T.untyped], T::Hash[Symbol, T.untyped])).void }
+  sig { params(attributes: T::Hash[String, T.untyped]).void }
   def initialize(attributes = {})
     @installed_as_dependency = T.let(nil, T.nilable(T::Boolean))
     @installed_on_request = T.let(nil, T.nilable(T::Boolean))
@@ -52,14 +51,7 @@ class AbstractTab
     @built_on = T.let(nil, T.nilable(T::Hash[String, T.untyped]))
     @runtime_dependencies = T.let(nil, T.nilable(T::Array[T.untyped]))
 
-    attributes.each do |key, value|
-      case key.to_sym
-      when :changed_files
-        @changed_files = value&.map { |f| Pathname(f) }
-      else
-        instance_variable_set(:"@#{key}", value)
-      end
-    end
+    attributes.each { |key, value| instance_variable_set(:"@#{key}", value) }
   end
 
   # Instantiates a {Tab} for a new installation of a formula or cask.
@@ -174,18 +166,15 @@ class Tab < AbstractTab
   # @api internal
   attr_accessor :poured_from_bottle
 
-  attr_accessor :built_as_bottle, :stdlib, :aliases
+  attr_accessor :built_as_bottle, :changed_files, :stdlib, :aliases
   attr_writer :used_options, :unused_options, :compiler, :source_modified_time
   attr_reader :tapped_from
 
-  sig { returns(T.nilable(T::Array[Pathname])) }
-  attr_accessor :changed_files
-
-  sig { params(attributes: T.any(T::Hash[String, T.untyped], T::Hash[Symbol, T.untyped])).void }
+  sig { params(attributes: T::Hash[String, T.untyped]).void }
   def initialize(attributes = {})
     @poured_from_bottle = T.let(nil, T.nilable(T::Boolean))
     @built_as_bottle = T.let(nil, T.nilable(T::Boolean))
-    @changed_files = nil
+    @changed_files = T.let(nil, T.nilable(T::Array[Pathname]))
     @stdlib = T.let(nil, T.nilable(String))
     @aliases = T.let(nil, T.nilable(T::Array[String]))
     @used_options = T.let(nil, T.nilable(T::Array[String]))
