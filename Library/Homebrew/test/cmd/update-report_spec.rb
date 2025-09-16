@@ -86,7 +86,7 @@ RSpec.describe Homebrew::Cmd::UpdateReport do
 
       expect(hub.select_formula_or_cask(:A)).to be_empty
       expect(hub.select_formula_or_cask(:D)).to be_empty
-      expect(hub.instance_variable_get(:@hash)[:R]).to eq([["cv", "progress"]])
+      expect(hub.select_formula_or_cask(:R)).to eq([["cv", "progress"]])
     end
 
     context "when updating a Tap other than the core Tap" do
@@ -105,7 +105,7 @@ RSpec.describe Homebrew::Cmd::UpdateReport do
 
         expect(hub.select_formula_or_cask(:A)).to be_empty
         expect(hub.select_formula_or_cask(:D)).to be_empty
-        expect(hub.instance_variable_get(:@hash)[:R]).to be_nil
+        expect(hub.select_formula_or_cask(:R)).to be_empty
       end
 
       specify "with renamed Formula and restructured Tap" do
@@ -114,7 +114,7 @@ RSpec.describe Homebrew::Cmd::UpdateReport do
 
         expect(hub.select_formula_or_cask(:A)).to be_empty
         expect(hub.select_formula_or_cask(:D)).to be_empty
-        expect(hub.instance_variable_get(:@hash)[:R]).to eq([%w[foo/bar/xchat foo/bar/xchat2]])
+        expect(hub.select_formula_or_cask(:R)).to eq([%w[foo/bar/xchat foo/bar/xchat2]])
       end
 
       specify "with simulated 'homebrew/php' restructuring" do
@@ -122,7 +122,7 @@ RSpec.describe Homebrew::Cmd::UpdateReport do
 
         expect(hub.select_formula_or_cask(:A)).to be_empty
         expect(hub.select_formula_or_cask(:D)).to be_empty
-        expect(hub.instance_variable_get(:@hash)[:R]).to be_nil
+        expect(hub.select_formula_or_cask(:R)).to be_empty
       end
 
       specify "with Formula changes" do
@@ -130,7 +130,7 @@ RSpec.describe Homebrew::Cmd::UpdateReport do
 
         expect(hub.select_formula_or_cask(:A)).to eq(%w[foo/bar/lua])
         expect(hub.select_formula_or_cask(:M)).to eq(%w[foo/bar/git])
-        expect(hub.instance_variable_get(:@hash)[:R]).to be_nil
+        expect(hub.select_formula_or_cask(:D)).to be_empty
       end
     end
   end

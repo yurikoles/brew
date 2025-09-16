@@ -430,19 +430,6 @@ require "extend/os/cmd/update-report"
 class Reporter
   include Utils::Output::Mixin
 
-  Report = T.type_alias do
-    {
-      A:  T::Array[String],
-      AC: T::Array[String],
-      D:  T::Array[String],
-      DC: T::Array[String],
-      M:  T::Array[String],
-      MC: T::Array[String],
-      R:  T::Array[[String, String]],
-      RC: T::Array[[String, String]],
-    }
-  end
-
   class ReporterRevisionUnsetError < RuntimeError
     sig { params(var_name: String).void }
     def initialize(var_name)
@@ -472,17 +459,14 @@ class Reporter
       raise ReporterRevisionUnsetError, current_revision_var if @current_revision.empty?
     end
 
-    @report = T.let(nil, T.nilable(Report))
+    @report = T.let(nil, T.nilable(T::Hash[Symbol, T::Array[String]]))
   end
 
-  sig { params(auto_update: T::Boolean).returns(Report) }
+  sig { params(auto_update: T::Boolean).returns(T::Hash[Symbol, T::Array[String]]) }
   def report(auto_update: false)
     return @report if @report
 
-    @report = {
-      A: [], AC: [], D: [], DC: [], M: [], MC: [], R: T.let([], T::Array[[String, String]]),
-      RC: T.let([], T::Array[[String, String]])
-    }
+    @report = Hash.new { |h, k| h[k] = [] }
     return @report unless updated?
 
     diff.each_line do |line|
@@ -810,15 +794,13 @@ class ReporterHub
 
   sig { void }
   def initialize
-    @hash = T.let({}, T::Hash[Symbol, T::Array[T.any(String, [String, String])]])
+    @hash = T.let({}, T::Hash[Symbol, T::Array[String]])
     @reporters = T.let([], T::Array[Reporter])
   end
 
   sig { params(key: Symbol).returns(T::Array[String]) }
   def select_formula_or_cask(key)
-    raise "Unsupported key #{key}" unless [:A, :AC, :D, :DC, :M, :MC].include?(key)
-
-    T.cast(@hash.fetch(key, []), T::Array[String])
+    @hash.fetch(key, [])
   end
 
   sig { params(reporter: Reporter, auto_update: T::Boolean).void }

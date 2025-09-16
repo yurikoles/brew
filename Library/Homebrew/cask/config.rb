@@ -12,7 +12,6 @@ module Cask
   #
   # @api internal
   class Config
-    ConfigHash = T.type_alias { T::Hash[Symbol, T.any(LazyObject, String, Pathname, T::Array[String])] }
     DEFAULT_DIRS = T.let(
       {
         appdir:               "/Applications",
@@ -34,8 +33,7 @@ module Cask
       T::Hash[Symbol, String],
     )
 
-    # runtime recursive evaluation forces the LazyObject to be evaluated
-    T::Sig::WithoutRuntime.sig { returns(T::Hash[Symbol, T.any(LazyObject, String)]) }
+    sig { returns(T::Hash[Symbol, String]) }
     def self.defaults
       {
         languages: LazyObject.new { ::OS::Mac.languages },
@@ -69,25 +67,35 @@ module Cask
 
     sig { params(json: String, ignore_invalid_keys: T::Boolean).returns(T.attached_class) }
     def self.from_json(json, ignore_invalid_keys: false)
-      config = JSON.parse(json, symbolize_names: true)
+      config = JSON.parse(json)
 
       new(
-        default:             config.fetch(:default,  {}),
-        env:                 config.fetch(:env,      {}),
-        explicit:            config.fetch(:explicit, {}),
+        default:             config.fetch("default",  {}),
+        env:                 config.fetch("env",      {}),
+        explicit:            config.fetch("explicit", {}),
         ignore_invalid_keys:,
       )
     end
 
-    sig { params(config: ConfigHash).returns(ConfigHash) }
+    sig {
+      params(
+        config: T::Enumerable[
+          [T.any(String, Symbol), T.any(String, Pathname, T::Array[String])],
+        ],
+      ).returns(
+        T::Hash[Symbol, T.any(String, Pathname, T::Array[String])],
+      )
+    }
     def self.canonicalize(config)
       config.to_h do |k, v|
-        if DEFAULT_DIRS.key?(k)
+        key = k.to_sym
+
+        if DEFAULT_DIRS.key?(key)
           raise TypeError, "Invalid path for default dir #{k}: #{v.inspect}" if v.is_a?(Array)
 
-          [k, Pathname(v.to_s).expand_path]
+          [key, Pathname(v).expand_path]
         else
-          [k, v]
+          [key, v]
         end
       end
     end
@@ -95,14 +103,14 @@ module Cask
     # Get the explicit configuration.
     #
     # @api internal
-    sig { returns(ConfigHash) }
+    sig { returns(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]) }
     attr_accessor :explicit
 
     sig {
       params(
-        default:             T.nilable(ConfigHash),
-        env:                 T.nilable(ConfigHash),
-        explicit:            ConfigHash,
+        default:             T.nilable(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]),
+        env:                 T.nilable(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]),
+        explicit:            T::Hash[Symbol, T.any(String, Pathname, T::Array[String])],
         ignore_invalid_keys: T::Boolean,
       ).void
     }
@@ -110,18 +118,18 @@ module Cask
       if default
         @default = T.let(
           self.class.canonicalize(self.class.defaults.merge(default)),
-          T.nilable(ConfigHash),
+          T.nilable(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]),
         )
       end
       if env
         @env = T.let(
           self.class.canonicalize(env),
-          T.nilable(ConfigHash),
+          T.nilable(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]),
         )
       end
       @explicit = T.let(
         self.class.canonicalize(explicit),
-        ConfigHash,
+        T::Hash[Symbol, T.any(String, Pathname, T::Array[String])],
       )
 
       if ignore_invalid_keys
@@ -134,18 +142,18 @@ module Cask
       @explicit.assert_valid_keys(*self.class.defaults.keys)
     end
 
-    sig { returns(ConfigHash) }
+    sig { returns(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]) }
     def default
       @default ||= self.class.canonicalize(self.class.defaults)
     end
 
-    sig { returns(ConfigHash) }
+    sig { returns(T::Hash[Symbol, T.any(String, Pathname, T::Array[String])]) }
     def env
       @env ||= self.class.canonicalize(
         Homebrew::EnvConfig.cask_opts
           .select { |arg| arg.include?("=") }
           .map { |arg| T.cast(arg.split("=", 2), [String, String]) }
-          .to_h do |(flag, value)|
+          .map do |(flag, value)|
             key = flag.sub(/^--/, "")
             # converts --language flag to :languages config key
             if key == "language"
@@ -153,7 +161,7 @@ module Cask
               value = value.split(",")
             end
 
-            [key.to_sym, value]
+            [key, value]
           end,
       )
     end
