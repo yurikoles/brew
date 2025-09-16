@@ -816,6 +816,7 @@ _brew_contributions() {
       __brewcomp "
       --csv
       --debug
+      --force
       --from
       --help
       --organisation

@@ -2444,6 +2444,10 @@ Summarise contributions to Homebrew repositories.
 
 : Print a CSV of contributions across repositories over the time period.
 
+`--force`
+
+: Force the installation of missing taps.
+
 ### `create` \[*`options`*\] *`URL`*
 
 Generate a formula or, with `--cask`, a cask for the downloadable file at
