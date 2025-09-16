@@ -816,7 +816,7 @@ class ReporterHub
 
   sig { params(key: Symbol).returns(T::Array[String]) }
   def select_formula_or_cask(key)
-    raise "Unsupported key #{key}" unless [:A, :AC, :D, :DC, :M, :MC].include?(key)
+    raise "Unsupported key #{key}" unless [:A, :AC, :D, :DC, :M, :MC, :R, :RC].include?(key)
 
     T.cast(@hash.fetch(key, []), T::Array[String])
   end
