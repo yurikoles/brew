@@ -4417,11 +4417,6 @@ command execution (e.g. `$(cat file)`).
 : If set along with `$HOMEBREW_DEVELOPER`, do not use bottles from older
   versions of macOS. This is useful in development on new macOS versions.
 
-`HOMEBREW_SORBET_RECURSIVE`
-
-: If set along with `$HOMEBREW_SORBET_RUNTIME`, enable recursive typechecking
-  using Sorbet. Auomatically enabled when running tests.
-
 `HOMEBREW_SORBET_RUNTIME`
 
 : If set, enable runtime typechecking using Sorbet. Set by default for
