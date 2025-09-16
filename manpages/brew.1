@@ -2880,6 +2880,9 @@ If set, running Homebrew on Linux will simulate certain macOS code paths\. This 
 \fBHOMEBREW_SKIP_OR_LATER_BOTTLES\fP
 If set along with \fB$HOMEBREW_DEVELOPER\fP, do not use bottles from older versions of macOS\. This is useful in development on new macOS versions\.
 .TP
+\fBHOMEBREW_SORBET_RECURSIVE\fP
+If set along with \fB$HOMEBREW_SORBET_RUNTIME\fP, enable recursive typechecking using Sorbet\. Auomatically enabled when running tests\.
+.TP
 \fBHOMEBREW_SORBET_RUNTIME\fP
 If set, enable runtime typechecking using Sorbet\. Set by default for \fB$HOMEBREW_DEVELOPER\fP or when running some developer commands\.
 .TP
