@@ -124,7 +124,7 @@ module Homebrew
           greater_than_total = T.let(false, T::Boolean)
           contributions = CONTRIBUTION_TYPES.keys.filter_map do |type|
             type_count = grand_totals[username][type]
-            next if type_count.zero?
+            next if type_count.nil? || type_count.zero?
 
             count_prefix = ""
             if (search_types.include?(type) && type_count == MAX_PR_SEARCH) ||
