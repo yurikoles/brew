@@ -108,6 +108,11 @@ module Homebrew
                 puts (" " * downloadable.download_queue_type.size) + " SHA-256 checksum of downloaded file: #{actual}"
                 Homebrew.failed = true if downloadable.is_a?(Resource::Patch)
                 next 2
+              elsif exception.is_a?(CannotInstallFormulaError)
+                if (cached_download = downloadable.cached_download)&.exist?
+                  cached_download.unlink
+                end
+                raise exception
               else
                 message = future.reason.to_s
                 ofail message
@@ -151,7 +156,7 @@ module Homebrew
               end
 
               sleep 0.05
-            rescue Interrupt
+            rescue
               remaining_downloads.each do |_, future|
                 # FIXME: Implement cancellation of running downloads.
               end
