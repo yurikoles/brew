@@ -113,7 +113,6 @@ jobs:
 
       - name: Set up all Homebrew taps
         run: |
-          brew tap homebrew/command-not-found
           brew tap homebrew/portable-ruby
 
           # brew style doesn't like world writable directories
@@ -122,7 +121,6 @@ jobs:
       - name: Run brew style on official taps
         run: |
           brew style homebrew/test-bot \
-                     homebrew/command-not-found \
                      homebrew/portable-ruby \
                      homebrew/cask
 
