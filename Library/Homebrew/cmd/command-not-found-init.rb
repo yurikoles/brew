@@ -6,11 +6,14 @@ require "utils/shell"
 
 module Homebrew
   module Cmd
-    class CommandNotFoundInitCmd < AbstractCommand
+    class CommandNotFoundInit < AbstractCommand
       cmd_args do
         description <<~EOS
           Print instructions for setting up the command-not-found hook for your shell.
           If the output is not to a tty, print the appropriate handler script for your shell.
+
+          For more information, see:
+            https://docs.brew.sh/Command-Not-Found
         EOS
         named_args :none
       end
@@ -33,9 +36,9 @@ module Homebrew
       def init
         case shell
         when :bash, :zsh
-          puts File.read(File.expand_path("#{File.dirname(__FILE__)}/../handler.sh"))
+          puts File.read(File.expand_path("#{File.dirname(__FILE__)}/../command-not-found/handler.sh"))
         when :fish
-          puts File.expand_path "#{File.dirname(__FILE__)}/../handler.fish"
+          puts File.expand_path("#{File.dirname(__FILE__)}/../command-not-found/handler.fish")
         else
           raise "Unsupported shell type #{shell}"
         end
@@ -46,22 +49,22 @@ module Homebrew
         case shell
         when :bash, :zsh
           puts <<~EOS
-            # To enable homebrew-command-not-found
+            # To enable command-not-found
             # Add the following lines to ~/.#{shell}rc
 
-            HB_CNF_HANDLER="$(brew --repository)/Library/Taps/homebrew/homebrew-command-not-found/handler.sh"
-            if [ -f "$HB_CNF_HANDLER" ]; then
-              source "$HB_CNF_HANDLER";
+            HOMEBREW_COMMAND_NOT_FOUND_HANDLER="$(brew --repository)/Library/Homebrew/command-not-found/handler.sh"
+            if [ -f "$HOMEBREW_COMMAND_NOT_FOUND_HANDLER" ]; then
+              source "$HOMEBREW_COMMAND_NOT_FOUND_HANDLER";
             fi
           EOS
         when :fish
           puts <<~EOS
-            # To enable homebrew-command-not-found
+            # To enable command-not-found
             # Add the following line to ~/.config/fish/config.fish
 
-            set HB_CNF_HANDLER (brew --repository)"/Library/Taps/homebrew/homebrew-command-not-found/handler.fish"
-            if test -f $HB_CNF_HANDLER
-              source $HB_CNF_HANDLER
+            set HOMEBREW_COMMAND_NOT_FOUND_HANDLER (brew --repository)/Library/Homebrew/command-not-found/handler.fish
+            if test -f $HOMEBREW_COMMAND_NOT_FOUND_HANDLER
+              source $HOMEBREW_COMMAND_NOT_FOUND_HANDLER
             end
           EOS
         else
