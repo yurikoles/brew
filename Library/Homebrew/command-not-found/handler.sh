@@ -5,7 +5,7 @@
 #
 # Author: Baptiste Fontaine
 # License: MIT
-#
+# The license text can be found in Library/Homebrew/command-not-found/LICENSE
 
 if ! command -v brew >/dev/null; then return; fi
 

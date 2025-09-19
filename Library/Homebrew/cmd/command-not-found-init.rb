@@ -1,6 +1,9 @@
 # typed: strict
 # frozen_string_literal: true
 
+# License: MIT
+# The license text can be found in Library/Homebrew/command-not-found/LICENSE
+
 require "abstract_command"
 require "utils/shell"
 

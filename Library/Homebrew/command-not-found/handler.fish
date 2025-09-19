@@ -1,3 +1,6 @@
+# License: MIT
+# The license text can be found in Library/Homebrew/command-not-found/LICENSE
+
 function fish_command_not_found
     set -l cmd $argv[1]
     set -l txt
