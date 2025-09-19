@@ -29,13 +29,27 @@ module Homebrew
       @pool = T.let(Concurrent::FixedThreadPool.new(concurrency), Concurrent::FixedThreadPool)
     end
 
-    sig { params(downloadable: Downloadable).void }
-    def enqueue(downloadable)
-      downloads[downloadable] ||= Concurrent::Promises.future_on(
-        pool, RetryableDownload.new(downloadable, tries:, pour:), force, quiet
-      ) do |download, force, quiet|
-        download.clear_cache if force
-        download.fetch(quiet:)
+    sig {
+      params(downloadable: Downloadable,
+             callback:     T.nilable(T.proc.void)).void
+    }
+    def enqueue(downloadable, callback: nil)
+      downloads[downloadable] ||= begin
+        download_promise = Concurrent::Promises.future_on(
+          pool, RetryableDownload.new(downloadable, tries:, pour:), force, quiet
+        ) do |download, force, quiet|
+          download.clear_cache if force
+          download.fetch(quiet:)
+        end
+
+        if callback
+          # Chain callback after download completes. The progress tracking will
+          # show the downloadable as pending until both download and callback
+          # complete.
+          download_promise.then { callback.call }
+        else
+          download_promise
+        end
       end
     end
 
