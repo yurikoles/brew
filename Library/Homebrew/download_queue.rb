@@ -30,25 +30,21 @@ module Homebrew
     end
 
     sig {
-      params(downloadable: Downloadable,
-             callback:     T.nilable(T.proc.void)).void
+      params(
+        downloadable:      Downloadable,
+        check_attestation: T::Boolean,
+      ).void
     }
-    def enqueue(downloadable, callback: nil)
-      downloads[downloadable] ||= begin
-        download_promise = Concurrent::Promises.future_on(
-          pool, RetryableDownload.new(downloadable, tries:, pour:), force, quiet
-        ) do |download, force, quiet|
-          download.clear_cache if force
-          download.fetch(quiet:)
-        end
-
-        if callback
-          # Chain callback after download completes. The progress tracking will
-          # show the downloadable as pending until both download and callback
-          # complete.
-          download_promise.then { callback.call }
-        else
-          download_promise
+    def enqueue(downloadable, check_attestation: false)
+      downloads[downloadable] ||= Concurrent::Promises.future_on(
+        pool, RetryableDownload.new(downloadable, tries:, pour:),
+        force, quiet, check_attestation
+      ) do |download, force, quiet, check_attestation|
+        download.clear_cache if force
+        download.fetch(quiet:)
+        if check_attestation
+          bottle = T.cast(downloadable, Bottle)
+          Utils::Attestation.check_attestation(bottle, quiet: true)
         end
       end
     end
