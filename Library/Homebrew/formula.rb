@@ -2558,7 +2558,7 @@ class Formula
   sig { params(hide: T::Array[String]).returns(T::Array[Dependency]) }
   def missing_dependencies(hide: [])
     runtime_dependencies(read_from_tab: true, undeclared: true).select do |f|
-      hide.include?(f.name) || !f.installed?
+      hide.include?(f.name) || f.to_installed_formula.installed_prefixes.none?
     end
   # If we're still getting unavailable formulae at this stage the best we can
   # do is just return no results.

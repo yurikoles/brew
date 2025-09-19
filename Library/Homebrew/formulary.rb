@@ -944,7 +944,7 @@ module Formulary
       keg = Keg.new(keg_directory)
       return unless (keg_formula = HOMEBREW_PREFIX/"opt/#{ref}/.brew/#{keg.name}.rb").file?
 
-      new(keg.name, keg_formula)
+      new(keg.name, keg_formula, tap: keg.tab.tap)
     end
   end
 
