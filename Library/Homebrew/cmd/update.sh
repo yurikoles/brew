@@ -641,9 +641,15 @@ EOS
   safe_cd "${HOMEBREW_REPOSITORY}"
 
   # This means a migration is needed but hasn't completed (yet).
-  if [[ "$(git config homebrew.linuxbrewmigrated 2>/dev/null)" == "false" ]]
+  if [[ "$(git config get --type=bool homebrew.linuxbrewmigrated 2>/dev/null)" == "false" ]]
   then
     export HOMEBREW_MIGRATE_LINUXBREW_FORMULAE=1
+  fi
+
+  # This means the user has run `brew which-formula` before and we should fetch executables.txt
+  if [[ "$(git config get --type=bool homebrew.commandnotfound 2>/dev/null)" == "true" ]]
+  then
+    export HOMEBREW_FETCH_EXECUTABLES_TXT=1
   fi
 
   # if an older system had a newer curl installed, change each repo's remote URL from git to https
@@ -957,6 +963,12 @@ EOS
     then
       echo "HOMEBREW_NO_INSTALL_FROM_API set: skipping API JSON downloads."
     fi
+  fi
+
+  # Update executables.txt if the user has ever run `brew which-formula` before.
+  if [[ -n "${HOMEBREW_FETCH_EXECUTABLES_TXT}" ]]
+  then
+    fetch_api_file "internal/executables.txt" "${update_failed_file}"
   fi
 
   if [[ -f "${update_failed_file}" ]]
