@@ -152,8 +152,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-14
-            name: macos-14-arm64
+          # Intel
+          - runner: macos-15-intel
+            name: macos-15-x86_64
+          # Apple Silicon
+          - runner: macos-15
+            name: macos-15-arm64
           - runner: macos-26
             name: macos-26-arm64
     steps:
