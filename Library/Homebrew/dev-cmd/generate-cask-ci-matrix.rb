@@ -14,7 +14,7 @@ module Homebrew
 
       # Weight for each arch must add up to 1.0.
       INTEL_RUNNERS = T.let({
-        { symbol: :ventura, name: "macos-13", arch: :intel } => 1.0,
+        { symbol: :sequoia, name: "macos-15-intel", arch: :intel } => 1.0,
       }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
       ARM_RUNNERS = T.let({
         { symbol: :sonoma,  name: "macos-14", arch: :arm } => 0.0,

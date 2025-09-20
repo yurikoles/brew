@@ -356,7 +356,7 @@ jobs:
             runs-on: ubuntu-latest
             container: debian:oldstable
           - name: test-bot (macOS x86_64)
-            runs-on: macos-13
+            runs-on: macos-15-intel
           - name: test-bot (macOS arm64)
             runs-on: macos-26
     env:
