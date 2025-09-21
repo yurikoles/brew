@@ -41,7 +41,7 @@ module Homebrew
         when :bash, :zsh
           puts File.read(File.expand_path("#{File.dirname(__FILE__)}/../command-not-found/handler.sh"))
         when :fish
-          puts File.expand_path("#{File.dirname(__FILE__)}/../command-not-found/handler.fish")
+          puts File.read(File.expand_path("#{File.dirname(__FILE__)}/../command-not-found/handler.fish"))
         else
           raise "Unsupported shell type #{shell}"
         end
