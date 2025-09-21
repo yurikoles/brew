@@ -1,3 +1,4 @@
+# See https://docs.brew.sh/Command-Not-Found for current setup instructions
 # License: MIT
 # The license text can be found in Library/Homebrew/command-not-found/LICENSE
 
