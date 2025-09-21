@@ -84,7 +84,7 @@ Having a common order for stanzas makes casks easier to update and parse. Below 
     internet_plugin
     keyboard_layout
     prefpane
-    qlplugin
+    qlplugin # deprecated
     mdimporter
     screen_saver
     service
@@ -150,7 +150,7 @@ Each cask must declare one or more [artifacts](https://rubydoc.brew.sh/Cask/Arti
 | `internet_plugin`                | yes                           | Relative path to an Internet Plugin that should be moved into the `~/Library/Internet Plug-Ins` folder on installation. |
 | `keyboard_layout`                | yes                           | Relative path to a Keyboard Layout that should be moved into the `/Library/Keyboard Layouts` folder on installation. |
 | `prefpane`                       | yes                           | Relative path to a Preference Pane that should be moved into the `~/Library/PreferencePanes` folder on installation. |
-| `qlplugin`                       | yes                           | Relative path to a Quick Look Plugin that should be moved into the `~/Library/QuickLook` folder on installation. |
+| `qlplugin`                       | yes                           | Relative path to a Quick Look Plugin that should be moved into the `~/Library/QuickLook` folder on installation. (Deprecated since macOS removed support for Quick Look Plugins in Sequoia.) |
 | `mdimporter`                     | yes                           | Relative path to a Spotlight Metadata Importer that should be moved into the `~/Library/Spotlight` folder on installation. |
 | `screen_saver`                   | yes                           | Relative path to a Screen Saver that should be moved into the `~/Library/Screen Savers` folder on installation. |
 | `service`                        | yes                           | Relative path to a Service that should be moved into the `~/Library/Services` folder on installation. |
@@ -214,7 +214,7 @@ artifact "sapmachine-jdk-#{version}.jdk", target: "/Library/Java/JavaVirtualMach
 
 #### *target* works on most artifact types
 
-The `target:` key works similarly for most cask artifacts, such as `app`, `binary`, `bash_completion`, `fish_completion`, `zsh_completion`, `colorpicker`, `dictionary`, `font`, `input_method`, `internet_plugin`, `keyboard_layout`, `prefpane`, `qlplugin`, `mdimporter`, `screen_saver`, `service`, `suite`, `audio_unit_plugin`, `vst_plugin`, `vst3_plugin`, and `artifact`.
+The `target:` key works similarly for most cask artifacts, such as `app`, `binary`, `bash_completion`, `fish_completion`, `zsh_completion`, `colorpicker`, `dictionary`, `font`, `input_method`, `internet_plugin`, `keyboard_layout`, `prefpane`, `mdimporter`, `screen_saver`, `service`, `suite`, `audio_unit_plugin`, `vst_plugin`, `vst3_plugin`, and `artifact`.
 
 #### *target* should only be used in select cases
 
