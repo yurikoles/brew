@@ -156,7 +156,9 @@ module Homebrew
               end
 
               sleep 0.05
-            rescue
+            # We want to catch all exceptions to ensure we can cancel any
+            # running downloads and flush the TTY.
+            rescue Exception # rubocop:disable Lint/RescueException
               remaining_downloads.each do |_, future|
                 # FIXME: Implement cancellation of running downloads.
               end
