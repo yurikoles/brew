@@ -24,7 +24,7 @@ module Kernel
       FileUtils.touch "#{home}/.zshrc"
     end
 
-    term = ENV.fetch("HOMEBREW_TERM", nil) || ENV.fetch("TERM", nil)
+    term = ENV.fetch("HOMEBREW_TERM", ENV.fetch("TERM", nil))
     with_env(TERM: term) do
       Process.wait fork { exec Utils::Shell.preferred_path(default: "/bin/bash") }
     end
