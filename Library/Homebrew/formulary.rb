@@ -936,15 +936,9 @@ module Formulary
     def self.try_new(ref, from: nil, warn: false)
       ref = ref.to_s
 
-      keg_directory = HOMEBREW_PREFIX/"opt/#{ref}"
-      return unless keg_directory.directory?
+      return unless (keg_formula = HOMEBREW_PREFIX/"opt/#{ref}/.brew/#{ref}.rb").file?
 
-      # The formula file in `.brew` will use the canonical name, whereas `ref` can be an alias.
-      # Use `Keg#name` to get the canonical name.
-      keg = Keg.new(keg_directory)
-      return unless (keg_formula = HOMEBREW_PREFIX/"opt/#{ref}/.brew/#{keg.name}.rb").file?
-
-      new(keg.name, keg_formula, tap: keg.tab.tap)
+      new(ref, keg_formula)
     end
   end
 
@@ -1060,12 +1054,7 @@ module Formulary
 
     sig { overridable.params(flags: T::Array[String]).void }
     def load_from_api(flags:)
-      json_formula = if Homebrew::EnvConfig.use_internal_api?
-        Homebrew::API::Formula.formula_json(name)
-      else
-        Homebrew::API::Formula.all_formulae[name]
-      end
-
+      json_formula = Homebrew::API::Formula.all_formulae[name]
       raise FormulaUnavailableError, name if json_formula.nil?
 
       Formulary.load_formula_from_json!(name, json_formula, flags:)
@@ -1234,16 +1223,7 @@ module Formulary
       flags:,
     }.compact
 
-    loader = FromKegLoader.try_new(keg.name, warn: false)
-    f = if loader.present?
-      begin
-        loader.get_formula(spec, alias_path:, force_bottle:, flags:, ignore_errors: true)
-      rescue FormulaUnreadableError
-        nil
-      end
-    end
-
-    f ||= if tap.nil?
+    f = if tap.nil?
       factory(formula_name, spec, **options)
     else
       begin
