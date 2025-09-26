@@ -137,7 +137,7 @@ We have users all over the world with different views on sex, violence, etc.
 As a result, we do not see it as our role to enforce any particular culture's views on adult content onto our users.
 That said, we want to ensure our maintainers don't have to interact with adult content unless they choose to.
 
-We will accept casks with adult content but require the `homepage` and root of the `url` domain to be "safe for work" e.g. not display any images of violence or content.
+We will accept casks with adult content but require the `homepage` and root of the `url` domain to be "safe for work" e.g. not display any images of violence or adult content.
 It is acceptable for these pages to have textual descriptions of adult content.
 
 Homebrew reserves the right to add or remove casks based on how it affects the wider Homebrew ecosystem.
