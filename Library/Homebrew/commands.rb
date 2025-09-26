@@ -122,16 +122,6 @@ module Commands
     find_commands HOMEBREW_DEV_CMD_PATH
   end
 
-  def self.official_external_commands_paths(quiet:)
-    require "tap"
-
-    OFFICIAL_CMD_TAPS.flat_map do |tap_name, cmds|
-      tap = Tap.fetch(tap_name)
-      tap.install(quiet:) unless tap.installed?
-      cmds.map { external_ruby_v2_cmd_path(_1) }.compact
-    end
-  end
-
   def self.internal_commands
     find_internal_commands(HOMEBREW_CMD_PATH).map(&:to_s)
   end
