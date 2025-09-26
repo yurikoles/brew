@@ -146,14 +146,14 @@ module Commands
 
   def self.find_internal_commands(path)
     find_commands(path).map(&:basename)
-                       .map { basename_without_extension(_1) }
+                       .map { |basename| basename_without_extension(basename) }
                        .uniq
   end
 
   def self.external_commands
     tap_cmd_directories.flat_map do |path|
       find_commands(path).select(&:executable?)
-                         .map { basename_without_extension(_1) }
+                         .map { |basename| basename_without_extension(basename) }
                          .map { |p| p.to_s.delete_prefix("brew-").strip }
     end.map(&:to_s)
        .sort
