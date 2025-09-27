@@ -149,41 +149,7 @@ module Cask
         @dsl_key = nil
         @english_article = nil
         @english_name = nil
-        @sort_order = [
-          PreflightBlock,
-          # The `uninstall` stanza should be run first, as it may
-          # depend on other artifacts still being installed.
-          Uninstall,
-          Installer,
-          # `pkg` should be run before `binary`, so
-          # targets are created prior to linking.
-          # `pkg` should be run before `app`, since an `app` could
-          # contain a nested installer (e.g. `wireshark`).
-          Pkg,
-          [
-            App,
-            Suite,
-            Artifact,
-            Colorpicker,
-            Prefpane,
-            Qlplugin,
-            Mdimporter,
-            Dictionary,
-            Font,
-            Service,
-            InputMethod,
-            InternetPlugin,
-            KeyboardLayout,
-            AudioUnitPlugin,
-            VstPlugin,
-            Vst3Plugin,
-            ScreenSaver,
-          ],
-          Binary,
-          Manpage,
-          PostflightBlock,
-          Zap,
-        ].each_with_index.flat_map { |classes, i| Array(classes).map { |c| [c, i] } }.to_h
+        @sort_order = nil
       end
 
       def config
