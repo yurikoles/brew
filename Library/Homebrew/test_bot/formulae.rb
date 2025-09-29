@@ -401,8 +401,10 @@ module Homebrew
           return
         end
 
-        if tap&.core_tap? && formula.name.start_with?("portable-")
-          test "brew", "portable-package", formula_name
+        if tap&.core_tap? && formula.name == "portable-ruby"
+          # TODO: resolve glibc@2.13 attestation issues
+          ENV["HOMEBREW_NO_VERIFY_ATTESTATIONS"] = "1"
+          test "brew", "portable-package", "portable-ruby"
           return
         end
 

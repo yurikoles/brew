@@ -148,6 +148,10 @@ module Homebrew
         if args.test_default_formula?
           # Build the default test formulae.
           modified_formulae << "libfaketime" << "xz"
+        elsif @added_formulae.any? { |formula| formula.start_with?("portable-") }
+          @added_formulae = ["portable-ruby"]
+        elsif modified_formulae.any? { |formula| formula.start_with?("portable-") }
+          modified_formulae = ["portable-ruby"]
         end
 
         @testing_formulae += @added_formulae + modified_formulae
