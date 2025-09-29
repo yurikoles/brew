@@ -156,7 +156,10 @@ module Cask
 
       oh1 "Installing Cask #{Formatter.identifier(@cask)}"
       # GitHub Actions globally disables Gatekeeper.
-      opoo_outside_github_actions "macOS's Gatekeeper has been disabled for this Cask" unless quarantine?
+      unless quarantine?
+        opoo_outside_github_actions "--no-quarantine bypasses macOS’s Gatekeeper, reducing system security. " \
+                                    "Do not use this flag unless you understand the risks."
+      end
       stage
 
       @cask.config = @cask.default_config.merge(old_config)
