@@ -499,21 +499,6 @@ module Homebrew
       problem "Formulae in homebrew/core should not have a Linux-only dependency on GCC."
     end
 
-    def audit_postgresql
-      return if formula.name != "postgresql"
-      return unless @core_tap
-
-      major_version = formula.version.major.to_i
-      previous_major_version = major_version - 1
-      previous_formula_name = "postgresql@#{previous_major_version}"
-      begin
-        Formula[previous_formula_name]
-      rescue FormulaUnavailableError
-        problem "Versioned #{previous_formula_name} in homebrew/core must be created for " \
-                "`brew postgresql-upgrade-database` and `pg_upgrade` to work."
-      end
-    end
-
     def audit_glibc
       return unless @core_tap
       return if formula.name != "glibc"
