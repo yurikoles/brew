@@ -520,7 +520,11 @@ module Homebrew
             cd cellar do
               sudo_purge
               # Tar then gzip for reproducible bottles.
-              tar_mtime = tab.source_modified_time.strftime("%Y-%m-%d %H:%M:%S")
+              # GNU tar fails to create a bottle if modification time is unsigned integer
+              # (i.e. before 1970)
+              time_at_epoch = Time.at(1)
+              tab_source_modified_time = [time_at_epoch, tab.source_modified_time].max
+              tar_mtime = tab_source_modified_time.strftime("%Y-%m-%d %H:%M:%S")
               tar, tar_args = setup_tar_and_args!(tar_mtime, default_tar: formula.name == "gnu-tar")
               safe_system tar, "--create", "--numeric-owner",
                           *tar_args,
