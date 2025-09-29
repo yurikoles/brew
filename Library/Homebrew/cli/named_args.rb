@@ -291,11 +291,23 @@ module Homebrew
       }
       def to_kegs_to_casks(only: parent.only_formula_or_cask, ignore_unavailable: false, all_kegs: nil)
         method = all_kegs ? :kegs : :default_kegs
-        @to_kegs_to_casks ||= T.let({}, T.nilable(T::Hash[T.nilable(Symbol), [T::Array[Keg], T::Array[Cask::Cask]]]))
-        @to_kegs_to_casks[method] ||=
-          T.cast(to_formulae_and_casks(only:, ignore_unavailable:, method:)
-          .partition { |o| o.is_a?(Keg) }
-          .map(&:freeze).freeze, [T::Array[Keg], T::Array[Cask::Cask]])
+        key = [method, only, ignore_unavailable]
+
+        @to_kegs_to_casks ||= T.let(
+          {},
+          T.nilable(
+            T::Hash[
+              [T.nilable(Symbol), T.nilable(Symbol), T::Boolean],
+              [T::Array[Keg], T::Array[Cask::Cask]],
+            ],
+          ),
+        )
+        @to_kegs_to_casks[key] ||= T.cast(
+          to_formulae_and_casks(only:, ignore_unavailable:, method:)
+            .partition { |o| o.is_a?(Keg) }
+            .map(&:freeze).freeze,
+          [T::Array[Keg], T::Array[Cask::Cask]],
+        )
       end
 
       sig { returns(T::Array[Tap]) }
