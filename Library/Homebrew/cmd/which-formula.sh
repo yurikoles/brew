@@ -1,8 +1,13 @@
-# shellcheck disable=SC2154,SC2211
+# Documentation defined in Library/Homebrew/cmd/which-formula.rb
+
+# HOMEBREW_CACHE is set by utils/ruby.sh
+# HOMEBREW_LIBRARY is set by bin/brew
+# HOMEBREW_API_DEFAULT_DOMAIN HOMEBREW_CURL_SPEED_LIMIT  HOMEBREW_CURL_SPEED_TIME HOMEBREW_USER_AGENT_CURL are set by brew.sh
+# shellcheck disable=SC2154
 ENDPOINT="internal/executables.txt"
 DATABASE_FILE="${HOMEBREW_CACHE}/api/${ENDPOINT}"
 
-installed_formula?() {
+is_formula_installed() {
   local name="$1"
   if brew list --formula "${name}" &>/dev/null
   then
@@ -26,7 +31,7 @@ is_file_fresh() {
 
   file_mtime=$("${STAT_PRINTF[@]}" %m "${DATABASE_FILE}")
   current_time=$(date +%s)
-  auto_update_secs=${HOMEBREW_API_AUTO_UPDATE_SECS:-86400}
+  auto_update_secs=${HOMEBREW_API_AUTO_UPDATE_SECS:-450}
 
   [[ $((current_time - auto_update_secs)) -lt ${file_mtime} ]]
 }
@@ -48,7 +53,7 @@ download_and_cache_executables_file() {
       max_time=10
       retries=0
     fi
-    curl \
+    ${HOMEBREW_CURL} \
       --compressed \
       --speed-limit "${HOMEBREW_CURL_SPEED_LIMIT}" --speed-time "${HOMEBREW_CURL_SPEED_TIME}" \
       --location --remote-time --output "${DATABASE_FILE}" \
@@ -91,7 +96,7 @@ homebrew-which-formula() {
   if [[ ${#args[@]} -eq 0 ]]
   then
     brew help which-formula
-    return 1
+    exit 1
   fi
 
   for cms in "${args[@]}"
@@ -122,7 +127,7 @@ homebrew-which-formula() {
       local filtered_formulae=()
       for formula in "${formulae[@]}"
       do
-        if ! installed_formula? "${formula}"
+        if ! is_formula_installed "${formula}"
         then
           filtered_formulae+=("${formula}")
         fi
