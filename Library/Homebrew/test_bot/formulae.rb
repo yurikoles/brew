@@ -22,8 +22,8 @@ module Homebrew
         verify_local_bottles
 
         with_env(HOMEBREW_DISABLE_LOAD_FORMULA: "1") do
-          # Portable Ruby bottles are rebuilt every time.
-          next if tap&.core_tap? && @testing_formulae.include?("portable-ruby")
+          # Portable Ruby bottles are handled differently.
+          next if testing_portable_ruby?
 
           # TODO: move to extend/os
           # rubocop:todo Homebrew/MoveToExtendOS
@@ -198,6 +198,9 @@ module Homebrew
       end
 
       def verify_local_bottles
+        # Portable Ruby bottles are handled differently.
+        return if testing_portable_ruby?
+
         # Setting `HOMEBREW_DISABLE_LOAD_FORMULA` probably doesn't do anything here but let's set it just to be safe.
         with_env(HOMEBREW_DISABLE_LOAD_FORMULA: "1") do
           missing_bottles = @bottle_checksums.keys.reject do |bottle_path|
@@ -404,10 +407,11 @@ module Homebrew
           return
         end
 
-        if tap&.core_tap? && formula.name == "portable-ruby"
-          # TODO: resolve glibc@2.13 attestation issues
-          ENV["HOMEBREW_NO_VERIFY_ATTESTATIONS"] = "1"
-          test "brew", "portable-package", "portable-ruby"
+        if testing_portable_ruby?
+          test "brew", "portable-package", "portable-ruby",
+               # TODO: resolve glibc@2.13 attestation issues
+               env:     { "HOMEBREW_NO_VERIFY_ATTESTATIONS" => "1" },
+               verbose: true
           return
         end
 
@@ -634,6 +638,10 @@ report_analytics: true)
              "--include-optional",
              "--include-test",
              formula_name
+      end
+
+      def testing_portable_ruby?
+        tap&.core_tap? && @testing_formulae.include?("portable-ruby")
       end
     end
   end
