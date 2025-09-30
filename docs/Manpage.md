@@ -4547,12 +4547,12 @@ McQuaid, Patrick Linnane and Vanessa Gennarelli.
 Homebrew's Technical Steering Committee is Bo Anderson, Issy Long, Michael Cho,
 Mike McQuaid and Ruoyu Zhong.
 
-Homebrew's maintainers are Bevan Kay, Bo Anderson, Branch Vincent, Caleb Xu,
-Carlo Cabrera, Daeho Ro, Douglas Eichelberger, Dustin Rodrigues, Eric Knibbe, FX
-Coudert, Issy Long, Justin Krehel, Klaus Hipp, Markus Reiter, Michael Cho,
-Michka Popoff, Mike McQuaid, Nanda H Krishna, Patrick Linnane, Rui Chen, Ruoyu
-Zhong, Rylan Polster, Sam Ford, Sean Molenaar, Štefan Baebler, Thierry Moisan
-and William Woodruff.
+Homebrew's maintainers are Anton Melnikov, Bevan Kay, Bo Anderson, Branch
+Vincent, Caleb Xu, Carlo Cabrera, Daeho Ro, Douglas Eichelberger, Dustin
+Rodrigues, Eric Knibbe, FX Coudert, Issy Long, Justin Krehel, Klaus Hipp, Markus
+Reiter, Michael Cho, Michka Popoff, Mike McQuaid, Nanda H Krishna, Patrick
+Linnane, Rui Chen, Ruoyu Zhong, Rylan Polster, Sam Ford, Sean Molenaar, Štefan
+Baebler, Thierry Moisan and William Woodruff.
 
 Former maintainers with significant contributions include Alexander Bayandin,
 Miccal Matthews, Misty De Méo, Shaun Jackman, Vítor Galvão, Claudia Pellegrino,
