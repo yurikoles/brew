@@ -148,9 +148,11 @@ module Homebrew
         if args.test_default_formula?
           # Build the default test formulae.
           modified_formulae << "libfaketime" << "xz"
-        elsif @added_formulae.all? { |formula| formula.start_with?("portable-") }
+        elsif @added_formulae.present? &&
+              @added_formulae.all? { |formula| formula.start_with?("portable-") }
           @added_formulae = ["portable-ruby"]
-        elsif modified_formulae.all? { |formula| formula.start_with?("portable-") }
+        elsif modified_formulae.present? &&
+              modified_formulae.all? { |formula| formula.start_with?("portable-") }
           modified_formulae = ["portable-ruby"]
         elsif modified_formulae.any? { |formula| formula.start_with?("portable-") }
           odie "Portable Ruby (and related formulae) cannot be tested in the same job as other formulae!"
