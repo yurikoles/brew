@@ -22,6 +22,9 @@ module Homebrew
         verify_local_bottles
 
         with_env(HOMEBREW_DISABLE_LOAD_FORMULA: "1") do
+          # Portable Ruby bottles are rebuilt every time.
+          next if tap&.core_tap? && @testing_formulae.include?("portable-ruby")
+
           # TODO: move to extend/os
           # rubocop:todo Homebrew/MoveToExtendOS
           bottle_specifier = if OS.linux?
