@@ -18,7 +18,7 @@ class XcodeRequirement < Requirement
   sig { params(tags: T::Array[T.any(String, Symbol)]).void }
   def initialize(tags = [])
     version = tags.shift if tags.first.to_s.match?(/(\d\.)+\d/)
-    @version = T.let(version.to_s, T.nilable(String))
+    @version = T.let(version&.to_s, T.nilable(String))
     super
   end
 
