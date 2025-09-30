@@ -122,6 +122,7 @@ RSpec.shared_context "integration test" do # rubocop:disable RSpec/ContextWordin
   def brew_sh(*args)
     env = {
       "HOMEBREW_USE_RUBY_FROM_PATH" => ENV.fetch("HOMEBREW_USE_RUBY_FROM_PATH", nil),
+      "HOMEBREW_CACHE"              => HOMEBREW_CACHE.to_s,
     }
     Bundler.with_unbundled_env do
       stdout, stderr, status = Open3.capture3(env, "#{ENV.fetch("HOMEBREW_PREFIX")}/bin/brew", *args)
