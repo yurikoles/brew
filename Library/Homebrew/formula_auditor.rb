@@ -513,6 +513,7 @@ module Homebrew
     RELICENSED_FORMULAE_VERSIONS = {
       "boundary"           => "0.14",
       "consul"             => "1.17",
+      "liquibase"          => "5.0.0",
       "nomad"              => "1.7",
       "packer"             => "1.10",
       "terraform"          => "1.6",
