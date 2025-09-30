@@ -13,15 +13,25 @@ module Homebrew
       MAX_JOBS = 256
 
       # Weight for each arch must add up to 1.0.
-      INTEL_RUNNERS = T.let({
+      X86_MACOS_RUNNERS = T.let({
         { symbol: :sequoia, name: "macos-15-intel", arch: :intel } => 1.0,
       }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
-      ARM_RUNNERS = T.let({
+      X86_LINUX_RUNNERS = T.let({
+        { symbol: :linux, name: "ubuntu-24.04", arch: :intel } => 1.0,
+      }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
+      ARM_MACOS_RUNNERS = T.let({
         { symbol: :sonoma,  name: "macos-14", arch: :arm } => 0.0,
         { symbol: :sequoia, name: "macos-15", arch: :arm } => 0.0,
         { symbol: :tahoe,   name: "macos-26", arch: :arm } => 1.0,
       }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
-      RUNNERS = T.let(INTEL_RUNNERS.merge(ARM_RUNNERS).freeze,
+      ARM_LINUX_RUNNERS = T.let({
+        { symbol: :linux, name: "ubuntu-24.04-arm", arch: :arm } => 1.0,
+      }.freeze, T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
+      MACOS_RUNNERS = T.let(X86_MACOS_RUNNERS.merge(ARM_MACOS_RUNNERS).freeze,
+                            T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
+      LINUX_RUNNERS = T.let(X86_LINUX_RUNNERS.merge(ARM_LINUX_RUNNERS).freeze,
+                            T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
+      RUNNERS = T.let(MACOS_RUNNERS.merge(LINUX_RUNNERS).freeze,
                       T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float])
 
       cmd_args do
@@ -118,7 +128,8 @@ module Homebrew
       sig { params(cask: Cask::Cask).returns(T::Hash[T::Hash[Symbol, T.any(Symbol, String)], Float]) }
       def filter_runners(cask)
         filtered_macos_runners = RUNNERS.select do |runner, _|
-          cask.depends_on.macos.present? &&
+          runner[:symbol] != :linux &&
+            cask.depends_on.macos.present? &&
             cask.depends_on.macos.allows?(MacOSVersion.from_symbol(T.must(runner[:symbol]).to_sym))
         end
 
@@ -127,6 +138,8 @@ module Homebrew
         else
           RUNNERS.dup
         end
+
+        filtered_runners = filtered_runners.merge(LINUX_RUNNERS) if cask.supports_linux?
 
         archs = architectures(cask:)
         filtered_runners.select! do |runner, _|
@@ -147,7 +160,7 @@ module Homebrew
         params(available_runners: T::Hash[T::Hash[Symbol, T.any(Symbol, String)],
                                           Float]).returns(T::Hash[Symbol, T.any(Symbol, String)])
       }
-      def random_runner(available_runners = ARM_RUNNERS)
+      def random_runner(available_runners = ARM_MACOS_RUNNERS)
         T.must(available_runners.max_by { |(_, weight)| rand ** (1.0 / weight) })
          .first
       end
@@ -240,6 +253,11 @@ module Homebrew
           runners, multi_os = runners(cask:)
           runners.product(architectures(cask:)).filter_map do |runner, arch|
             native_runner_arch = arch == runner.fetch(:arch)
+            # we don't need to run simulated archs on Linux
+            next if runner.fetch(:symbol) == :linux && !native_runner_arch
+            # we don't need to run simulated archs on macOS
+            next if runner.fetch(:symbol) == :sequoia && !native_runner_arch
+
             # If it's just a single OS test then we can just use the two real arch runners.
             next if !native_runner_arch && !multi_os
 
