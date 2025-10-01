@@ -262,7 +262,7 @@ module Homebrew
             next if !native_runner_arch && !multi_os
 
             arch_args = native_runner_arch ? [] : ["--arch=#{arch}"]
-            {
+            runner_output = {
               name:         "test #{cask_token} (#{runner.fetch(:name)}, #{arch})",
               tap:          tap.name,
               cask:         {
@@ -274,6 +274,15 @@ module Homebrew
               skip_install: labels.include?("ci-skip-install") || !native_runner_arch || skip_install,
               runner:       runner.fetch(:name),
             }
+
+            if runner.fetch(:symbol) == :linux
+              runner_output[:container] = {
+                image:   "ghcr.io/homebrew/ubuntu24.04:main",
+                options: "--user=linuxbrew",
+              }
+            end
+
+            runner_output
           end
         end
       end
