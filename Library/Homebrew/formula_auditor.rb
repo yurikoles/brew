@@ -510,25 +510,12 @@ module Homebrew
               "which allows them to use our Linux bottles, which were compiled against system glibc on CI."
     end
 
-    RELICENSED_FORMULAE_VERSIONS = {
-      "boundary"           => "0.14",
-      "consul"             => "1.17",
-      "liquibase"          => "5.0.0",
-      "nomad"              => "1.7",
-      "packer"             => "1.10",
-      "terraform"          => "1.6",
-      "vagrant"            => "2.4",
-      "vagrant-completion" => "2.4",
-      "vault"              => "1.15",
-      "waypoint"           => "0.12",
-    }.freeze
-
     def audit_relicensed_formulae
-      return unless RELICENSED_FORMULAE_VERSIONS.key? formula.name
       return unless @core_tap
 
-      relicensed_version = Version.new(RELICENSED_FORMULAE_VERSIONS[formula.name])
-      return if formula.version < relicensed_version
+      relicensed_version = formula.tap&.audit_exception :relicensed_formulae_versions, formula.name
+      return unless relicensed_version
+      return if formula.version < Version.new(relicensed_version)
 
       problem "#{formula.name} was relicensed to a non-open-source license from version #{relicensed_version}. " \
               "It must not be upgraded to version #{relicensed_version} or newer."
