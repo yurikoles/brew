@@ -473,7 +473,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
         if cached_location_valid && (!content_type.is_a?(String) || !content_type.start_with?("text/"))
           if last_modified && last_modified > cached_location.mtime
             ohai "Ignoring #{cached_location}",
-                 "Cached modified time #{cached_location.mtime.iso8601} is before" \
+                 "Cached modified time #{cached_location.mtime.iso8601} is before " \
                  "Last-Modified header: #{last_modified.iso8601}"
             cached_location_valid = false
           end
