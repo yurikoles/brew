@@ -8,6 +8,10 @@ RSpec.describe Homebrew::Cmd::WhichFormula do
 
   describe "which_formula" do
     before do
+      # Override DATABASE_FILE to use test environment's HOMEBREW_CACHE
+      test_db_file = HOMEBREW_CACHE/"api"/described_class::ENDPOINT
+      stub_const("#{described_class}::DATABASE_FILE", test_db_file)
+
       db = described_class::DATABASE_FILE
       db.dirname.mkpath
       db.write(<<~EOS)
@@ -18,9 +22,9 @@ RSpec.describe Homebrew::Cmd::WhichFormula do
     end
 
     it "prints the formula name for a given binary", :integration_test do
-      expect { brew "which-formula", "--skip-update", "foo2" }.to output("foo\n").to_stdout
-      expect { brew "which-formula", "--skip-update", "baz" }.to output("baz\n").to_stdout
-      expect { brew "which-formula", "--skip-update", "bar" }.not_to output.to_stdout
+      expect { brew_sh "which-formula", "--skip-update", "foo2" }.to output("foo\n").to_stdout
+      expect { brew_sh "which-formula", "--skip-update", "baz" }.to output("baz\n").to_stdout
+      expect { brew_sh "which-formula", "--skip-update", "bar" }.not_to output.to_stdout
     end
   end
 end
