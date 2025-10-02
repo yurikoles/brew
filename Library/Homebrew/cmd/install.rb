@@ -4,6 +4,8 @@
 require "abstract_command"
 require "cask/config"
 require "cask/installer"
+require "cask/upgrade"
+
 require "cask_dependent"
 require "missing_formula"
 require "formula_installer"
@@ -246,13 +248,21 @@ module Homebrew
 
           download_queue = Homebrew::DownloadQueue.new_if_concurrency_enabled(pour: true)
           fetch_casks = Homebrew::EnvConfig.no_install_upgrade? ? new_casks : casks
+          outdated_casks = Cask::Upgrade.outdated_casks(fetch_casks, args:, force: true, quiet: true)
+          fetch_casks = outdated_casks.intersection(fetch_casks)
 
-          if download_queue
+          if download_queue && fetch_casks.any?
+            binaries = args.binaries?
+            verbose = args.verbose?
+            force = args.force?
+            require_sha = args.require_sha?
+            quarantine = args.quarantine?
+            skip_cask_deps = args.skip_cask_deps?
+            zap = args.zap?
+
             fetch_cask_installers = fetch_casks.map do |cask|
-              Cask::Installer.new(cask, binaries: args.binaries?, verbose: args.verbose?,
-                                                   force: args.force?, skip_cask_deps: args.skip_cask_deps?,
-                                                   require_sha: args.require_sha?, reinstall: true,
-                                                   quarantine: args.quarantine?, zap: args.zap?, download_queue:)
+              Cask::Installer.new(cask, reinstall: true, binaries:, verbose:, force:, skip_cask_deps:,
+                                  require_sha:, quarantine:, zap:, download_queue:)
             end
 
             # Run prelude checks for all casks before enqueueing downloads
@@ -281,8 +291,6 @@ module Homebrew
           end
 
           if !Homebrew::EnvConfig.no_install_upgrade? && installed_casks.any?
-            require "cask/upgrade"
-
             Cask::Upgrade.upgrade_casks!(
               *installed_casks,
               force:          args.force?,
