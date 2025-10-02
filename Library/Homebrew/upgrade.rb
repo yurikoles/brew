@@ -247,9 +247,7 @@ module Homebrew
         upgradeable.reject! { |f| FormulaInstaller.installed.include?(f) }
 
         # Print the upgradable dependents.
-        if upgradeable.blank?
-          ohai "No outdated dependents to upgrade!" unless dry_run
-        else
+        if upgradeable.present?
           installed_formulae = (dry_run ? formulae : FormulaInstaller.installed.to_a).dup
           formula_plural = Utils.pluralize("formula", installed_formulae.count)
           upgrade_verb = dry_run ? "Would upgrade" : "Upgrading"

@@ -9,6 +9,53 @@ module Cask
   class Upgrade
     extend ::Utils::Output::Mixin
 
+    sig { returns(T::Array[String]) }
+    def self.greedy_casks
+      if (upgrade_greedy_casks = Homebrew::EnvConfig.upgrade_greedy_casks.presence)
+        upgrade_greedy_casks.split
+      else
+        []
+      end
+    end
+
+    sig {
+      params(
+        casks:               T::Array[Cask],
+        args:                Homebrew::CLI::Args,
+        force:               T.nilable(T::Boolean),
+        quiet:               T.nilable(T::Boolean),
+        greedy:              T.nilable(T::Boolean),
+        greedy_latest:       T.nilable(T::Boolean),
+        greedy_auto_updates: T.nilable(T::Boolean),
+      ).returns(T::Array[Cask])
+    }
+    def self.outdated_casks(casks, args:, force:, quiet:,
+                            greedy: false, greedy_latest: false, greedy_auto_updates: false)
+      greedy = true if Homebrew::EnvConfig.upgrade_greedy?
+
+      if casks.empty?
+        Caskroom.casks(config: Config.from_args(args)).select do |cask|
+          cask_greedy = greedy || greedy_casks.include?(cask.token)
+          cask.outdated?(greedy: cask_greedy, greedy_latest:,
+                         greedy_auto_updates:)
+        end
+      else
+        casks.select do |cask|
+          raise CaskNotInstalledError, cask if !cask.installed? && !force
+
+          if cask.outdated?(greedy: true)
+            true
+          elsif cask.version.latest?
+            opoo "Not upgrading #{cask.token}, the downloaded artifact has not changed" unless quiet
+            false
+          else
+            opoo "Not upgrading #{cask.token}, the latest version is already installed" unless quiet
+            false
+          end
+        end
+      end
+    end
+
     sig {
       params(
         casks:               Cask,
@@ -43,35 +90,8 @@ module Cask
     )
       quarantine = true if quarantine.nil?
 
-      greedy = true if Homebrew::EnvConfig.upgrade_greedy?
-
-      greedy_casks = if (upgrade_greedy_casks = Homebrew::EnvConfig.upgrade_greedy_casks.presence)
-        upgrade_greedy_casks.split
-      else
-        []
-      end
-
-      outdated_casks = if casks.empty?
-        Caskroom.casks(config: Config.from_args(args)).select do |cask|
-          cask_greedy = greedy || greedy_casks.include?(cask.token)
-          cask.outdated?(greedy: cask_greedy, greedy_latest:,
-                         greedy_auto_updates:)
-        end
-      else
-        casks.select do |cask|
-          raise CaskNotInstalledError, cask if !cask.installed? && !force
-
-          if cask.outdated?(greedy: true)
-            true
-          elsif cask.version.latest?
-            opoo "Not upgrading #{cask.token}, the downloaded artifact has not changed" unless quiet
-            false
-          else
-            opoo "Not upgrading #{cask.token}, the latest version is already installed" unless quiet
-            false
-          end
-        end
-      end
+      outdated_casks = \
+        self.outdated_casks(casks, args:, greedy:, greedy_latest:, greedy_auto_updates:, force:, quiet:)
 
       manual_installer_casks = outdated_casks.select do |cask|
         cask.artifacts.any? do |artifact|
