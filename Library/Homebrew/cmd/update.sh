@@ -350,6 +350,11 @@ fetch_api_file() {
   local api_cache="${HOMEBREW_CACHE}/api"
   mkdir -p "${api_cache}"
 
+  if [[ "${filename}" == "internal/executables.txt" ]]
+  then
+    mkdir -p "${api_cache}/internal"
+  fi
+
   local cache_path="${api_cache}/${filename}"
   if [[ -f "${cache_path}" ]]
   then
