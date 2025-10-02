@@ -4123,6 +4123,16 @@ command execution (e.g. `$(cat file)`).
   
   *Default:* `15`.
 
+`HOMEBREW_FORBIDDEN_CASK_ARTIFACTS`
+
+: A space-separated list of cask artifact types (e.g. `pkg installer`) that
+  should be forbidden during cask installation. Valid values: `pkg`,
+  `installer`, `binary`, `uninstall`, `zap`, `app`, `suite`, `artifact`,
+  `prefpane`, `qlplugin`, `dictionary`, `font`, `service`, `colorpicker`,
+  `inputmethod`, `internetplugin`, `audiounitplugin`, `vstplugin`, `vst3plugin`,
+  `screensaver`, `keyboardlayout`, `mdimporter`, `preflight`, `postflight`,
+  `manpage`, `bashcompletion`, `fishcompletion`, `zshcompletion`, `stageonly`.
+
 `HOMEBREW_FORBIDDEN_CASKS`
 
 : A space-separated list of casks. Homebrew will refuse to install a cask if it
