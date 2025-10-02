@@ -44,8 +44,9 @@ check-brew-wrapper() {
   fi
 
   # If HOMEBREW_FORCE_BREW_WRAPPER and HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER are set,
-  # verify that the path to our parent process is the same as the value of HOMEBREW_FORCE_BREW_WRAPPER,
-  if [[ -n "${HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER:-}" ]]
+  # verify that the path to our parent process is the same as the value of HOMEBREW_FORCE_BREW_WRAPPER.
+  # We can't check this for `brew vendor-install` as this would cause an infinite loop on macOS.
+  if [[ -n "${HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER:-}" && "$1" != "vendor-install" ]]
   then
     local HOMEBREW_BREW_CALLER HOMEBREW_BREW_CALLER_CHECK_EXIT_CODE
 

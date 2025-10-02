@@ -190,7 +190,7 @@ esac
 # Check `HOMEBREW_FORCE_BREW_WRAPPER` for all non-trivial commands
 # (i.e. not defined above this line e.g. formulae or --cellar).
 source "${HOMEBREW_LIBRARY}/Homebrew/utils/wrapper.sh"
-check-brew-wrapper
+check-brew-wrapper "$1"
 
 # commands that take a single or no arguments and need to write to HOMEBREW_PREFIX.
 # HOMEBREW_LIBRARY set by bin/brew
