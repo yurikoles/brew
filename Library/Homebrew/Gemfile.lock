@@ -79,7 +79,7 @@ GEM
     rspec-support (3.13.6)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.81.0)
+    rubocop (1.81.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -93,7 +93,7 @@ GEM
     rubocop-ast (1.47.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
-    rubocop-md (2.0.2)
+    rubocop-md (2.0.3)
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1)
     rubocop-performance (1.26.0)
@@ -124,15 +124,15 @@ GEM
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
     simpleidn (0.2.3)
-    sorbet (0.6.12578)
-      sorbet-static (= 0.6.12578)
-    sorbet-runtime (0.6.12578)
-    sorbet-static (0.6.12578-aarch64-linux)
-    sorbet-static (0.6.12578-universal-darwin)
-    sorbet-static (0.6.12578-x86_64-linux)
-    sorbet-static-and-runtime (0.6.12578)
-      sorbet (= 0.6.12578)
-      sorbet-runtime (= 0.6.12578)
+    sorbet (0.6.12616)
+      sorbet-static (= 0.6.12616)
+    sorbet-runtime (0.6.12616)
+    sorbet-static (0.6.12616-aarch64-linux)
+    sorbet-static (0.6.12616-universal-darwin)
+    sorbet-static (0.6.12616-x86_64-linux)
+    sorbet-static-and-runtime (0.6.12616)
+      sorbet (= 0.6.12616)
+      sorbet-runtime (= 0.6.12616)
     spoom (1.7.6)
       erubi (>= 1.10.0)
       prism (>= 0.28.0)
@@ -157,7 +157,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    vernier (1.8.0)
+    vernier (1.8.1)
     warning (1.5.0)
     yard (0.9.37)
     yard-sorbet (0.9.0)
@@ -166,7 +166,6 @@ GEM
 
 PLATFORMS
   aarch64-linux
-  arm-linux
   arm64-darwin
   x86_64-darwin
   x86_64-linux
