@@ -120,6 +120,8 @@ begin
       ENV["HOMEBREW_#{env}"] = Object.const_get(:"HOMEBREW_#{env}").to_s
     end
     exec "brew-#{cmd}", *ARGV
+  else
+    raise UsageError, "Unknown command: brew #{cmd}"
   end
 rescue UsageError => e
   require "help"
