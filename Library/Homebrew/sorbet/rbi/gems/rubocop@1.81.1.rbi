@@ -7093,13 +7093,13 @@ class RuboCop::Runner
   def errors; end
 
   # source://rubocop//lib/rubocop/runner.rb#248
-  def file_finished(file, offenses); end
+  def file_finished(file, offenses, *_arg2, **_arg3, &_arg4); end
 
   # source://rubocop//lib/rubocop/runner.rb#177
-  def file_offense_cache(file); end
+  def file_offense_cache(file, *_arg1, **_arg2, &_arg3); end
 
   # source://rubocop//lib/rubocop/runner.rb#487
-  def get_processed_source(*args); end
+  def get_processed_source(*_arg0, **_arg1, &_arg2); end
 
   # source://rubocop//lib/rubocop/runner.rb#67
   def run(paths); end
@@ -7312,7 +7312,7 @@ class RuboCop::TargetFinder
   # @return [Boolean]
   #
   # source://rubocop//lib/rubocop/target_finder.rb#154
-  def ruby_file?(file); end
+  def ruby_file?(file, *_arg1, **_arg2, &_arg3); end
 
   # Finds all Ruby source files under the current or other supplied directory. A Ruby source file
   # is defined as a file with the `.rb` extension or a file with no extension that has a ruby
