@@ -330,32 +330,32 @@ class Vernier::Output::FilenameFilter
 end
 
 # https://profiler.firefox.com/
-# https://github.com/firefox-devtools/profiler/blob/main/src/types/profile.js
+# https://github.com/firefox-devtools/profiler/blob/main/src/types/profile.ts
 #
 # source://vernier//lib/vernier/output/firefox.rb#12
 class Vernier::Output::Firefox
   # @return [Firefox] a new instance of Firefox
   #
-  # source://vernier//lib/vernier/output/firefox.rb#90
+  # source://vernier//lib/vernier/output/firefox.rb#117
   def initialize(profile); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#95
+  # source://vernier//lib/vernier/output/firefox.rb#122
   def output(gzip: T.unsafe(nil)); end
 
   private
 
-  # source://vernier//lib/vernier/output/firefox.rb#167
+  # source://vernier//lib/vernier/output/firefox.rb#194
   def counter_data; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#108
+  # source://vernier//lib/vernier/output/firefox.rb#135
   def data; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#175
+  # source://vernier//lib/vernier/output/firefox.rb#202
   def marker_schema; end
 
   # Returns the value of attribute profile.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#106
+  # source://vernier//lib/vernier/output/firefox.rb#133
   def profile; end
 end
 
@@ -363,123 +363,147 @@ end
 class Vernier::Output::Firefox::Categorizer
   # @return [Categorizer] a new instance of Categorizer
   #
-  # source://vernier//lib/vernier/output/firefox.rb#15
+  # source://vernier//lib/vernier/output/firefox.rb#25
   def initialize; end
 
   # @yield [category]
   #
-  # source://vernier//lib/vernier/output/firefox.rb#45
+  # source://vernier//lib/vernier/output/firefox.rb#69
   def add_category(name:, **kw); end
 
   # Returns the value of attribute categories.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#14
+  # source://vernier//lib/vernier/output/firefox.rb#23
   def categories; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#66
+  # source://vernier//lib/vernier/output/firefox.rb#90
   def categorize(path); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#62
+  # source://vernier//lib/vernier/output/firefox.rb#86
   def gem_path(*names); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#54
+  # source://vernier//lib/vernier/output/firefox.rb#78
   def get_category(name); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#58
+  # source://vernier//lib/vernier/output/firefox.rb#82
   def starts_with(*paths); end
 end
 
-# source://vernier//lib/vernier/output/firefox.rb#70
+# source://vernier//lib/vernier/output/firefox.rb#18
+Vernier::Output::Firefox::Categorizer::AVAILABLE_COLORS = T.let(T.unsafe(nil), Array)
+
+# source://vernier//lib/vernier/output/firefox.rb#94
 class Vernier::Output::Firefox::Categorizer::Category
+  # @raise [ArgumentError]
   # @return [Category] a new instance of Category
   #
-  # source://vernier//lib/vernier/output/firefox.rb#72
+  # source://vernier//lib/vernier/output/firefox.rb#97
   def initialize(idx, name:, color:, matcher: T.unsafe(nil)); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#80
+  # source://vernier//lib/vernier/output/firefox.rb#107
   def add_subcategory(**args); end
 
   # Returns the value of attribute color.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#71
+  # source://vernier//lib/vernier/output/firefox.rb#95
   def color; end
 
   # Returns the value of attribute idx.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#71
+  # source://vernier//lib/vernier/output/firefox.rb#95
   def idx; end
 
   # Returns the value of attribute matcher.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#71
+  # source://vernier//lib/vernier/output/firefox.rb#95
   def matcher; end
 
   # @return [Boolean]
   #
-  # source://vernier//lib/vernier/output/firefox.rb#84
+  # source://vernier//lib/vernier/output/firefox.rb#111
   def matches?(path); end
 
   # Returns the value of attribute name.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#71
+  # source://vernier//lib/vernier/output/firefox.rb#95
   def name; end
 
   # Returns the value of attribute subcategories.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#71
+  # source://vernier//lib/vernier/output/firefox.rb#95
   def subcategories; end
 end
 
-# source://vernier//lib/vernier/output/firefox.rb#242
+# This is in the order of preference
+#
+# source://vernier//lib/vernier/output/firefox.rb#21
+Vernier::Output::Firefox::Categorizer::ORDERED_CATEGORIES = T.let(T.unsafe(nil), Array)
+
+# source://vernier//lib/vernier/output/firefox.rb#14
+Vernier::Output::Firefox::Categorizer::RAILS_COMPONENTS = T.let(T.unsafe(nil), Array)
+
+# source://vernier//lib/vernier/output/firefox.rb#269
 class Vernier::Output::Firefox::Thread
   # @return [Thread] a new instance of Thread
   #
-  # source://vernier//lib/vernier/output/firefox.rb#245
+  # source://vernier//lib/vernier/output/firefox.rb#272
   def initialize(ruby_thread_id, profile, categorizer, name:, tid:, samples:, weights:, markers:, started_at:, timestamps: T.unsafe(nil), sample_categories: T.unsafe(nil), stopped_at: T.unsafe(nil), allocations: T.unsafe(nil), is_main: T.unsafe(nil), is_start: T.unsafe(nil)); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#418
+  # source://vernier//lib/vernier/output/firefox.rb#465
   def allocations_table; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#346
+  # source://vernier//lib/vernier/output/firefox.rb#360
+  def categorize_filename(filename); end
+
+  # source://vernier//lib/vernier/output/firefox.rb#369
+  def cfunc_category_and_subcategory; end
+
+  # source://vernier//lib/vernier/output/firefox.rb#393
   def data; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#339
+  # source://vernier//lib/vernier/output/firefox.rb#386
   def filter_filenames(filenames); end
 
-  # source://vernier//lib/vernier/output/firefox.rb#498
+  # source://vernier//lib/vernier/output/firefox.rb#377
+  def find_category_and_subcategory(filename, categories); end
+
+  # source://vernier//lib/vernier/output/firefox.rb#545
   def frame_table; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#526
+  # source://vernier//lib/vernier/output/firefox.rb#573
   def func_table; end
 
   # Returns the value of attribute is_start.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#243
+  # source://vernier//lib/vernier/output/firefox.rb#270
   def is_start; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#378
+  # source://vernier//lib/vernier/output/firefox.rb#425
   def markers_table; end
 
   # Returns the value of attribute profile.
   #
-  # source://vernier//lib/vernier/output/firefox.rb#243
+  # source://vernier//lib/vernier/output/firefox.rb#270
   def profile; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#437
+  # source://vernier//lib/vernier/output/firefox.rb#373
+  def ruby_category_and_subcategory; end
+
+  # source://vernier//lib/vernier/output/firefox.rb#484
   def samples_table; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#473
+  # source://vernier//lib/vernier/output/firefox.rb#520
   def stack_table; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#551
+  # source://vernier//lib/vernier/output/firefox.rb#598
   def string_table; end
 
   private
 
-  # source://vernier//lib/vernier/output/firefox.rb#573
+  # source://vernier//lib/vernier/output/firefox.rb#620
   def gc_category; end
 
-  # source://vernier//lib/vernier/output/firefox.rb#577
+  # source://vernier//lib/vernier/output/firefox.rb#624
   def thread_category; end
 end
 
@@ -488,34 +512,34 @@ class Vernier::Output::Top
   # @return [Top] a new instance of Top
   #
   # source://vernier//lib/vernier/output/top.rb#6
-  def initialize(profile); end
+  def initialize(profile, row_limit); end
 
-  # source://vernier//lib/vernier/output/top.rb#49
+  # source://vernier//lib/vernier/output/top.rb#51
   def output; end
 end
 
-# source://vernier//lib/vernier/output/top.rb#10
+# source://vernier//lib/vernier/output/top.rb#11
 class Vernier::Output::Top::Table
   # @return [Table] a new instance of Table
   # @yield [_self]
   # @yieldparam _self [Vernier::Output::Top::Table] the object that the method was called on
   #
-  # source://vernier//lib/vernier/output/top.rb#11
-  def initialize(header); end
+  # source://vernier//lib/vernier/output/top.rb#12
+  def initialize(header, row_limit); end
 
-  # source://vernier//lib/vernier/output/top.rb#17
+  # source://vernier//lib/vernier/output/top.rb#19
   def <<(row); end
 
-  # source://vernier//lib/vernier/output/top.rb#44
+  # source://vernier//lib/vernier/output/top.rb#46
   def format_row(row); end
 
-  # source://vernier//lib/vernier/output/top.rb#40
+  # source://vernier//lib/vernier/output/top.rb#42
   def row_separator; end
 
-  # source://vernier//lib/vernier/output/top.rb#21
+  # source://vernier//lib/vernier/output/top.rb#23
   def to_s; end
 
-  # source://vernier//lib/vernier/output/top.rb#33
+  # source://vernier//lib/vernier/output/top.rb#35
   def widths; end
 end
 
