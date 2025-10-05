@@ -8,6 +8,7 @@ module Homebrew
   class FormulaStub < T::Struct
     const :name, String
     const :pkg_version, PkgVersion
+    const :version_scheme, Integer, default: 0
     const :rebuild, Integer, default: 0
     const :sha256, T.nilable(String)
     const :aliases, T::Array[String], default: []
@@ -29,6 +30,7 @@ module Homebrew
       when FormulaStub
         name == other.name &&
           pkg_version == other.pkg_version &&
+          version_scheme == other.version_scheme &&
           rebuild == other.rebuild &&
           sha256 == other.sha256 &&
           aliases == other.aliases &&
