@@ -460,6 +460,7 @@ class Keg
            %r{^lua/}, #  Lua, Lua51, Lua53 all need the same handling.
            %r{^guile/},
            /^postgresql@\d+/,
+           /^pypy/,
            *SHARE_PATHS
         :mkpath
       else
@@ -484,6 +485,7 @@ class Keg
            /^perl5/,
            "php",
            /^postgresql@\d+/,
+           /^pypy/,
            /^python[23]\.\d+/,
            /^R/,
            /^ruby/
