@@ -738,6 +738,15 @@ module Formulary
       return unless path.expand_path.exist?
       return unless ::Utils::Path.loadable_package_path?(path, :formula)
 
+      # If the path is for an installed keg, use FromKegLoader instead
+      begin
+        keg = Keg.for(path)
+        loader = FromKegLoader.try_new(keg.name, from:, warn:)
+        return T.cast(loader, T.attached_class)
+      rescue NotAKegError
+        # Not a keg path, continue
+      end
+
       if (tap = Tap.from_path(path))
         # Only treat symlinks in taps as aliases.
         if path.symlink?
