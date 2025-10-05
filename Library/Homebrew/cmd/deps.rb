@@ -46,6 +46,9 @@ module Homebrew
         switch "--tree",
                description: "Show dependencies as a tree. When given multiple formula arguments, " \
                             "show individual trees for each formula."
+        switch "--prune",
+               depends_on:  "--tree",
+               description: "Prune parts of tree already seen."
         switch "--graph",
                description: "Show dependencies as a directed graph."
         switch "--dot",
@@ -319,7 +322,7 @@ module Homebrew
         check_head_spec(dependents) if args.HEAD?
         dependents.each do |d|
           puts d.full_name
-          recursive_deps_tree(d, dep_stack: [], prefix: "", recursive:)
+          recursive_deps_tree(d, deps_seen: {}, prefix: "", recursive:)
           puts
         end
       end
@@ -333,10 +336,10 @@ module Homebrew
         reqs + deps
       end
 
-      def recursive_deps_tree(formula, dep_stack:, prefix:, recursive:)
+      def recursive_deps_tree(formula, deps_seen:, prefix:, recursive:)
         dependables = dependables(formula)
         max = dependables.length - 1
-        dep_stack.push formula.name
+        deps_seen[formula.name] = true
         dependables.each_with_index do |dep, i|
           tree_lines = if i == max
             "└──"
@@ -347,15 +350,18 @@ module Homebrew
           display_s = "#{tree_lines} #{dep_display_name(dep)}"
 
           # Detect circular dependencies and consider them a failure if present.
-          is_circular = dep_stack.include?(dep.name)
+          is_circular = deps_seen.fetch(dep.name, false)
+          pruned = args.prune? && deps_seen.include?(dep.name)
           if is_circular
             display_s = "#{display_s} (CIRCULAR DEPENDENCY)"
             Homebrew.failed = true
+          elsif pruned
+            display_s = "#{display_s} (PRUNED)"
           end
 
           puts "#{prefix}#{display_s}"
 
-          next if !recursive || is_circular
+          next if !recursive || is_circular || pruned
 
           prefix_addition = if i == max
             "    "
@@ -366,12 +372,12 @@ module Homebrew
           next unless dep.is_a? Dependency
 
           recursive_deps_tree(Formulary.factory(dep.name),
-                              dep_stack:,
+                              deps_seen:,
                               prefix:    prefix + prefix_addition,
                               recursive: true)
         end
 
-        dep_stack.pop
+        deps_seen[formula.name] = false
       end
     end
   end
