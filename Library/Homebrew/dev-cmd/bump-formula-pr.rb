@@ -469,7 +469,9 @@ module Homebrew
         pr_title = if args.bump_synced.nil?
           "#{formula.name} #{new_formula_version}"
         else
-          "#{Array(args.bump_synced).join(" ")} #{new_formula_version}"
+          maximum_characters_in_title = 72
+          max = maximum_characters_in_title - new_formula_version.to_s.length - 1
+          "#{Formatter.truncate(Array(args.bump_synced).join(" "), max:)} #{new_formula_version}"
         end
 
         pr_message = "Created with `brew bump-formula-pr`."
