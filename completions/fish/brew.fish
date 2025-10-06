@@ -676,6 +676,7 @@ __fish_brew_complete_arg 'deps' -l include-test -d 'Include `:test` dependencies
 __fish_brew_complete_arg 'deps' -l installed -d 'List dependencies for formulae that are currently installed. If formula is specified, list only its dependencies that are currently installed'
 __fish_brew_complete_arg 'deps' -l missing -d 'Show only missing dependencies'
 __fish_brew_complete_arg 'deps' -l os -d 'Show dependencies for the given operating system'
+__fish_brew_complete_arg 'deps' -l prune -d 'Prune parts of tree already seen'
 __fish_brew_complete_arg 'deps' -l quiet -d 'Make some output more quiet'
 __fish_brew_complete_arg 'deps' -l skip-recommended -d 'Skip `:recommended` dependencies for formula'
 __fish_brew_complete_arg 'deps' -l topological -d 'Sort dependencies in topological order'
