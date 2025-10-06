@@ -41,10 +41,11 @@ module Homebrew
         end
 
         stub = Homebrew::FormulaStub.new(
-          name:        name,
-          pkg_version: PkgVersion.parse(stub_array[0]),
-          rebuild:     stub_array[1],
-          sha256:      stub_array[2],
+          name:           name,
+          pkg_version:    PkgVersion.parse(stub_array[0]),
+          version_scheme: stub_array[1],
+          rebuild:        stub_array[2],
+          sha256:         stub_array[3],
           aliases:,
           oldnames:,
         )
@@ -123,7 +124,7 @@ module Homebrew
         Homebrew::API.write_names_file!(cask_hashes.keys, "cask", regenerate:)
       end
 
-      sig { returns(T::Hash[String, [String, Integer, T.nilable(String)]]) }
+      sig { returns(T::Hash[String, [String, Integer, Integer, T.nilable(String)]]) }
       def self.formula_arrays
         unless cache.key?("formula_arrays")
           updated = download_and_cache_formula_data!

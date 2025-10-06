@@ -84,6 +84,7 @@ module Homebrew
 
               version = Version.new(formula.dig("versions", "stable"))
               pkg_version = PkgVersion.new(version, formula["revision"])
+              version_scheme = formula.fetch("version_scheme", 0)
               rebuild = formula.dig("bottle", "stable", "rebuild") || 0
 
               bottle_collector = Utils::Bottles::Collector.new
@@ -94,7 +95,7 @@ module Homebrew
 
               sha256 = bottle_collector.specification_for(bottle_tag)&.checksum&.to_s
 
-              [name, [pkg_version.to_s, rebuild, sha256]]
+              [name, [pkg_version.to_s, version_scheme, rebuild, sha256]]
             end
 
             json_contents = {
