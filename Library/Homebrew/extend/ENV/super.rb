@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 require "extend/ENV/shared"
@@ -19,7 +19,14 @@ module Superenv
   include SharedEnvExtension
   include Utils::Output::Mixin
 
-  attr_accessor :keg_only_deps, :deps, :run_time_deps
+  sig { returns(T::Array[Formula]) }
+  attr_accessor :keg_only_deps
+
+  sig { returns(T::Array[Formula]) }
+  attr_accessor :deps
+
+  sig { returns(T::Array[Formula]) }
+  attr_accessor :run_time_deps
 
   sig { params(base: Superenv).void }
   def self.extended(base)
@@ -38,6 +45,15 @@ module Superenv
 
   sig { returns(T.nilable(Pathname)) }
   def self.bin; end
+
+  sig { void }
+  def initialize
+    @keg_only_deps = T.let([], T::Array[Formula])
+    @deps = T.let([], T::Array[Formula])
+    @run_time_deps = T.let([], T::Array[Formula])
+
+    @formula = T.let(nil, T.nilable(Formula))
+  end
 
   sig { void }
   def reset
