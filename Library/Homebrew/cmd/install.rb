@@ -231,6 +231,7 @@ module Homebrew
               dep_names = CaskDependent.new(cask)
                                        .runtime_dependencies
                                        .reject(&:installed?)
+                                       .map(&:to_formula)
                                        .map(&:name)
               next if dep_names.blank?
 
