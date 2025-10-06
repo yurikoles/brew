@@ -855,6 +855,7 @@ _brew_deps() {
     '(--missing --eval-all)--installed[List dependencies for formulae that are currently installed. If formula is specified, list only its dependencies that are currently installed]' \
     '(--installed)--missing[Show only missing dependencies]' \
     '--os[Show dependencies for the given operating system]' \
+    '--prune[Prune parts of tree already seen]' \
     '--quiet[Make some output more quiet]' \
     '--skip-recommended[Skip `:recommended` dependencies for formula]' \
     '--topological[Sort dependencies in topological order]' \

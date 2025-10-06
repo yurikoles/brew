@@ -928,6 +928,7 @@ _brew_deps() {
       --installed
       --missing
       --os
+      --prune
       --quiet
       --skip-recommended
       --topological

@@ -455,6 +455,10 @@ passed, this command displays their actual runtime dependencies (similar to
 : Show dependencies as a tree. When given multiple formula arguments, show
   individual trees for each formula.
 
+`--prune`
+
+: Prune parts of tree already seen.
+
 `--graph`
 
 : Show dependencies as a directed graph.
