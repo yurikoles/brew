@@ -174,8 +174,8 @@ module Homebrew
 
       return unless @core_tap
 
-      cask_tokens = CoreCaskTap.instance.cask_tokens
-      cask_tokens = Homebrew::API.cask_tokens if cask_tokens.empty? && Homebrew::EnvConfig.no_install_from_api?
+      cask_tokens = CoreCaskTap.instance.cask_tokens.presence
+      cask_tokens ||= Homebrew::API.cask_tokens
 
       if cask_tokens.include?(name)
         problem "Formula name conflicts with an existing Homebrew/cask cask's token."
