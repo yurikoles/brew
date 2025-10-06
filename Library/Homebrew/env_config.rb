@@ -218,6 +218,10 @@ module Homebrew
         description: "Output this many lines of output on formula `system` failures.",
         default:     15,
       },
+      HOMEBREW_FORBIDDEN_CASKS:                  {
+        description: "A space-separated list of casks. Homebrew will refuse to install a " \
+                     "cask if it or any of its dependencies is on this list.",
+      },
       HOMEBREW_FORBIDDEN_CASK_ARTIFACTS:         {
         description: "A space-separated list of cask artifact types (e.g. `pkg installer`) that should be " \
                      "forbidden during cask installation. " \
@@ -226,10 +230,6 @@ module Homebrew
                      "`inputmethod`, `internetplugin`, `audiounitplugin`, `vstplugin`, `vst3plugin`, " \
                      "`screensaver`, `keyboardlayout`, `mdimporter`, `preflight`, `postflight`, " \
                      "`manpage`, `bashcompletion`, `fishcompletion`, `zshcompletion`, `stageonly`.",
-      },
-      HOMEBREW_FORBIDDEN_CASKS:                  {
-        description: "A space-separated list of casks. Homebrew will refuse to install a " \
-                     "cask if it or any of its dependencies is on this list.",
       },
       HOMEBREW_FORBIDDEN_FORMULAE:               {
         description: "A space-separated list of formulae. Homebrew will refuse to install a " \
