@@ -53,7 +53,7 @@ download_and_cache_executables_file() {
       max_time=10
       retries=0
     fi
-    mkdir -p "${HOMEBREW_CACHE}/api/internal"
+    mkdir -p "${DATABASE_FILE%/*}"
     ${HOMEBREW_CURL} \
       --compressed \
       --speed-limit "${HOMEBREW_CURL_SPEED_LIMIT}" --speed-time "${HOMEBREW_CURL_SPEED_TIME}" \
