@@ -426,6 +426,13 @@ class Formula
   sig { returns(T.nilable(String)) }
   def full_installed_alias_name = full_name_with_optional_tap(installed_alias_name)
 
+  sig { returns(Pathname) }
+  def tap_path
+    return path unless (t = tap)
+
+    t.new_formula_path(name)
+  end
+
   # The path that was specified to find this formula.
   sig { returns(T.nilable(Pathname)) }
   def specified_path
