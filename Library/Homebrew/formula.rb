@@ -2434,8 +2434,11 @@ class Formula
   # @api internal
   sig { params(block: T.nilable(T.proc.params(arg0: Formula, arg1: Dependency).void)).returns(T::Array[Dependency]) }
   def recursive_dependencies(&block)
-    cache_key = "Formula#recursive_dependencies" unless block
+    cache_key = "Formula#recursive_dependencies"
+    cache_key += "-#{full_name}-#{Time.now.to_f}" if block
     Dependency.expand(self, cache_key:, &block)
+  ensure
+    Dependency.cache.delete(cache_key) if block
   end
 
   # The full set of {Requirements} for this formula's dependency tree.
@@ -3003,7 +3006,8 @@ class Formula
   # Returns a list of {Dependency} objects that are declared in the formula.
   sig { returns(T::Array[Dependency]) }
   def declared_runtime_dependencies
-    cache_key = "Formula#declared_runtime_dependencies" unless build.any_args_or_options?
+    cache_key = "Formula#declared_runtime_dependencies"
+    cache_key += "-#{full_name}-#{Time.now.to_f}" if build.any_args_or_options?
     Dependency.expand(self, cache_key:) do |_, dependency|
       Dependency.prune if dependency.build?
       next if dependency.required?
@@ -3014,6 +3018,8 @@ class Formula
         Dependency.prune
       end
     end
+  ensure
+    Dependency.cache.delete(cache_key) if build.any_args_or_options?
   end
 
   # Returns a list of {Dependency} objects that are not declared in the formula
