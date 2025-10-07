@@ -123,22 +123,23 @@ module Utils
         bottle_json_path = formula.local_bottle_path&.sub(/\.(\d+\.)?tar\.gz$/, ".json")
 
         if (tab_attributes = formula.bottle_tab_attributes.presence)
-          Tab.from_file_content(tab_attributes.to_json, tabfile)
+          tab = Tab.from_file_content(tab_attributes.to_json, tabfile)
+          return tab if tab.built_on["os"] == HOMEBREW_SYSTEM
         elsif !tabfile.exist? && bottle_json_path&.exist?
           _, tag, = Utils::Bottles.extname_tag_rebuild(formula.local_bottle_path.to_s)
           bottle_hash = JSON.parse(File.read(bottle_json_path))
           tab_json = bottle_hash[formula.full_name]["bottle"]["tags"][tag]["tab"].to_json
-          Tab.from_file_content(tab_json, tabfile)
+          return Tab.from_file_content(tab_json, tabfile)
         else
           tab = keg.tab
-
-          tab.runtime_dependencies = begin
-            f_runtime_deps = formula.runtime_dependencies(read_from_tab: false)
-            Tab.runtime_deps_hash(formula, f_runtime_deps)
-          end
-
-          tab
         end
+
+        tab.runtime_dependencies = begin
+          f_runtime_deps = formula.runtime_dependencies(read_from_tab: false)
+          Tab.runtime_deps_hash(formula, f_runtime_deps)
+        end
+
+        tab
       end
 
       private
