@@ -137,7 +137,7 @@ class AbstractTab
       "bottle_rebuild"        => formula.bottle&.rebuild,
       "pkg_version"           => formula.pkg_version.to_s,
       "declared_directly"     => declared_deps.include?(formula.full_name),
-      "compatibility_version" => formula.class.compatibility_version,
+      "compatibility_version" => formula.compatibility_version,
     }.compact
   end
   private_class_method :formula_to_dep_hash
@@ -226,7 +226,7 @@ class Tab < AbstractTab
       "stable"                => formula.stable&.version&.to_s,
       "head"                  => formula.head&.version&.to_s,
       "version_scheme"        => formula.version_scheme,
-      "compatibility_version" => formula.class.compatibility_version,
+      "compatibility_version" => formula.compatibility_version,
     }
 
     tab

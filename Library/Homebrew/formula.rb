@@ -187,6 +187,11 @@ class Formula
   sig { returns(Integer) }
   attr_reader :version_scheme
 
+  # Used to indicate API/ABI compatibility for dependencies.
+  # @see .compatibility_version=
+  sig { returns(T.nilable(Integer)) }
+  attr_reader :compatibility_version
+
   # The current working directory during builds.
   # Will only be non-`nil` inside {#install}.
   sig { returns(T.nilable(Pathname)) }
@@ -2591,7 +2596,7 @@ class Formula
       "urls"                            => urls_hash,
       "revision"                        => revision,
       "version_scheme"                  => version_scheme,
-      "compatibility_version"           => self.class.compatibility_version,
+      "compatibility_version"           => compatibility_version,
       "autobump"                        => autobump?,
       "no_autobump_message"             => no_autobump_message,
       "skip_livecheck"                  => livecheck.skip?,

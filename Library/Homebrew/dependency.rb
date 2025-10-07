@@ -71,13 +71,13 @@ class Dependency
 
     # If both the formula and minimum dependency have a compatibility_version set,
     # and they match, the dependency is satisfied regardless of version/revision.
-    if minimum_compatibility_version.present? && formula.class.compatibility_version.present?
+    if minimum_compatibility_version.present? && formula.compatibility_version.present?
       installed_tab = Tab.for_keg(installed_keg)
       installed_compatibility_version = installed_tab.source&.dig("versions", "compatibility_version")
 
       # If installed version has same compatibility_version as required, it's compatible
       return true if installed_compatibility_version == minimum_compatibility_version &&
-                     formula.class.compatibility_version == minimum_compatibility_version
+                     formula.compatibility_version == minimum_compatibility_version
     end
 
     # Tabs prior to 4.1.18 did not have revision or pkg_version fields.
