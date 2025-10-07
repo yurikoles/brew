@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 module OS
@@ -19,6 +19,11 @@ module OS
         def bin
           shims_path.realpath
         end
+      end
+
+      sig { void }
+      def initialize
+        @formula = T.let(nil, T.nilable(Formula))
       end
 
       sig {
@@ -49,6 +54,7 @@ module OS
         append_to_cccfg "b" if ::Hardware::CPU.arch == :arm64 && ::DevelopmentTools.gcc_version("gcc") >= 9
       end
 
+      sig { returns(T::Array[Pathname]) }
       def homebrew_extra_paths
         paths = super
         paths += %w[binutils make].filter_map do |f|
@@ -60,6 +66,7 @@ module OS
         paths
       end
 
+      sig { returns(T::Array[Pathname]) }
       def homebrew_extra_isystem_paths
         paths = []
         # Add paths for GCC headers when building against versioned glibc because we have to use -nostdinc.
@@ -68,9 +75,10 @@ module OS
           gcc_include_fixed_dir = Utils.safe_popen_read(cc, "--print-file-name=include-fixed").chomp
           paths << gcc_include_dir << gcc_include_fixed_dir
         end
-        paths
+        paths.map { |p| Pathname(p) }
       end
 
+      sig { params(formula: T.nilable(Formula)).returns(PATH) }
       def determine_rpath_paths(formula)
         PATH.new(
           *formula&.lib,
