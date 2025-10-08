@@ -314,8 +314,18 @@ jobs:
           until docker buildx imagetools create "${tag_args[@]}" "${image_args[@]}"; do
             attempts=$((attempts + 1))
             if [[ $attempts -ge 3 ]]; then
-              echo "[$(date -u)] ERROR: Failed after 3 attempts." >&2
-              exit 1
+              echo "[$(date -u)] imagetools create failed after 3 attempts. Falling back to manual push..." >&2
+
+              for image in "${image_args[@]}"; do
+                docker pull "$image"
+                for tag in "${tag_args[@]}"; do
+                  tag_clean="${tag#--tag=}"
+                  docker tag "$image" "$tag_clean"
+                  docker push "$tag_clean"
+                done
+              done
+
+              break
             fi
             delay=$((2 ** attempts))
             if [[ $delay -gt 15 ]]; then delay=15; fi
