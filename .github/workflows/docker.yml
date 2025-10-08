@@ -318,11 +318,11 @@ jobs:
 
               for image in "${image_args[@]}"; do
                 docker pull "$image"
-                for tag in "${tag_args[@]}"; do
-                  tag_clean="${tag#--tag=}"
-                  docker tag "$image" "$tag_clean"
-                  docker push "$tag_clean"
-                done
+              done
+              for tag in "${tag_args[@]}"; do
+                tag_clean="${tag#--tag=}"
+                docker manifest create "$tag_clean" "${image_args[@]}"
+                docker manifest push "$tag_clean"
               done
 
               break
