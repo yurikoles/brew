@@ -317,14 +317,22 @@ jobs:
               echo "[$(date -u)] imagetools create failed after 3 attempts. Falling back to manual push..." >&2
 
               for image in "${image_args[@]}"; do
-                docker pull "$image"
+                if ! docker pull "$image"; then
+                  echo "[$(date -u)] docker pull failed for $image" >&2
+                  exit 1
+                fi
               done
               for tag in "${tag_args[@]}"; do
                 tag_clean="${tag#--tag=}"
-                docker manifest create "$tag_clean" "${image_args[@]}"
-                docker manifest push "$tag_clean"
+                if ! docker manifest create "$tag_clean" "${image_args[@]}"; then
+                  echo "[$(date -u)] docker manifest create failed for $tag_clean" >&2
+                  exit 1
+                fi
+                if ! docker manifest push "$tag_clean"; then
+                  echo "[$(date -u)] docker manifest push failed for $tag_clean" >&2
+                  exit 1
+                fi
               done
-
               break
             fi
             delay=$((2 ** attempts))
