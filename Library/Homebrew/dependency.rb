@@ -276,8 +276,11 @@ class UsesFromMacOSDependency < Dependency
     [name, tags, bounds].hash
   end
 
-  sig { params(minimum_version: T.nilable(Version), minimum_revision: T.nilable(Integer)).returns(T::Boolean) }
-  def installed?(minimum_version: nil, minimum_revision: nil)
+  sig {
+    params(minimum_version: T.nilable(Version), minimum_revision: T.nilable(Integer),
+           minimum_compatibility_version: T.nilable(Integer)).returns(T::Boolean)
+  }
+  def installed?(minimum_version: nil, minimum_revision: nil, minimum_compatibility_version: nil)
     use_macos_install? || super
   end
 
