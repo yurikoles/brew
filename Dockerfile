@@ -18,7 +18,7 @@ RUN touch /var/mail/ubuntu && chown ubuntu /var/mail/ubuntu && userdel -r ubuntu
 # /etc/lsb-release is checked inside the container and sets DISTRIB_RELEASE.
 # We need `[` instead of `[[` because the shell is `/bin/sh`.
 # shellcheck disable=SC1091,SC2154,SC2292
-RUN apt-get update \
+RUN bash -c 'for i in {1..5}; do apt-get update && break || sleep 5; done' \
   && apt-get install -y --no-install-recommends software-properties-common gnupg-agent \
   && if [ "$(uname -m)" != aarch64 ]; then add-apt-repository -y ppa:git-core/ppa; fi \
   && apt-get update \
