@@ -323,7 +323,7 @@ module Cask
     LIVECHECK_REFERENCE_URL = "https://docs.brew.sh/Cask-Cookbook#stanza-livecheck"
     private_constant :LIVECHECK_REFERENCE_URL
 
-    sig { params(livecheck_result: T.any(NilClass, T::Boolean, Symbol)).void }
+    sig { params(livecheck_result: T.nilable(T.any(T::Boolean, Symbol))).void }
     def audit_hosting_with_livecheck(livecheck_result: audit_livecheck_version)
       return if cask.deprecated? || cask.disabled?
       return if cask.version&.latest?
@@ -734,7 +734,7 @@ module Cask
       end
     end
 
-    sig { returns(T.any(NilClass, T::Boolean, Symbol)) }
+    sig { returns(T.nilable(T.any(T::Boolean, Symbol))) }
     def audit_livecheck_version
       return unless online?
       return unless cask.version

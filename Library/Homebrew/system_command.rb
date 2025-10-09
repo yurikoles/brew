@@ -27,7 +27,7 @@ class SystemCommand
         args:         T::Array[T.any(String, Integer, Float, Pathname, URI::Generic)],
         sudo:         T::Boolean,
         sudo_as_root: T::Boolean,
-        env:          T::Hash[String, T.any(NilClass, String, T::Boolean)],
+        env:          T::Hash[String, T.nilable(T.any(String, T::Boolean))],
         input:        T.any(String, T::Array[String]),
         must_succeed: T::Boolean,
         print_stdout: T.any(T::Boolean, Symbol),
@@ -56,7 +56,7 @@ class SystemCommand
         args:         T::Array[T.any(String, Integer, Float, Pathname, URI::Generic)],
         sudo:         T::Boolean,
         sudo_as_root: T::Boolean,
-        env:          T::Hash[String, T.any(NilClass, String, T::Boolean)],
+        env:          T::Hash[String, T.nilable(T.any(String, T::Boolean))],
         input:        T.any(String, T::Array[String]),
         print_stdout: T.any(T::Boolean, Symbol),
         print_stderr: T.any(T::Boolean, Symbol),
@@ -84,7 +84,7 @@ class SystemCommand
       args:         T::Array[T.any(String, Integer, Float, Pathname, URI::Generic)],
       sudo:         T::Boolean,
       sudo_as_root: T::Boolean,
-      env:          T::Hash[String, T.any(NilClass, String, T::Boolean)],
+      env:          T::Hash[String, T.nilable(T.any(String, T::Boolean))],
       input:        T.any(String, T::Array[String]),
       must_succeed: T::Boolean,
       print_stdout: T.any(T::Boolean, Symbol),
@@ -92,7 +92,7 @@ class SystemCommand
       debug:        T.nilable(T::Boolean),
       verbose:      T.nilable(T::Boolean),
       secrets:      T.any(String, T::Array[String]),
-      chdir:        T.any(NilClass, String, Pathname),
+      chdir:        T.nilable(T.any(String, Pathname)),
       reset_uid:    T::Boolean,
       timeout:      T.nilable(T.any(Integer, Float)),
     ).returns(SystemCommand::Result)
@@ -110,7 +110,7 @@ class SystemCommand
       args:         T::Array[T.any(String, Integer, Float, Pathname, URI::Generic)],
       sudo:         T::Boolean,
       sudo_as_root: T::Boolean,
-      env:          T::Hash[String, T.any(NilClass, String, T::Boolean)],
+      env:          T::Hash[String, T.nilable(T.any(String, T::Boolean))],
       input:        T.any(String, T::Array[String]),
       must_succeed: T::Boolean,
       print_stdout: T.any(T::Boolean, Symbol),
@@ -118,7 +118,7 @@ class SystemCommand
       debug:        T.nilable(T::Boolean),
       verbose:      T.nilable(T::Boolean),
       secrets:      T.any(String, T::Array[String]),
-      chdir:        T.any(NilClass, String, Pathname),
+      chdir:        T.nilable(T.any(String, Pathname)),
       reset_uid:    T::Boolean,
       timeout:      T.nilable(T.any(Integer, Float)),
     ).returns(SystemCommand::Result)
@@ -169,7 +169,7 @@ class SystemCommand
       args:         T::Array[T.any(String, Integer, Float, Pathname, URI::Generic)],
       sudo:         T::Boolean,
       sudo_as_root: T::Boolean,
-      env:          T::Hash[String, T.any(NilClass, String, T::Boolean)],
+      env:          T::Hash[String, T.nilable(T.any(String, T::Boolean))],
       input:        T.any(String, T::Array[String]),
       must_succeed: T::Boolean,
       print_stdout: T.any(T::Boolean, Symbol),
@@ -177,7 +177,7 @@ class SystemCommand
       debug:        T.nilable(T::Boolean),
       verbose:      T.nilable(T::Boolean),
       secrets:      T.any(String, T::Array[String]),
-      chdir:        T.any(NilClass, String, Pathname),
+      chdir:        T.nilable(T.any(String, Pathname)),
       reset_uid:    T::Boolean,
       timeout:      T.nilable(T.any(Integer, Float)),
     ).void
@@ -234,10 +234,10 @@ class SystemCommand
   sig { returns(T::Array[String]) }
   attr_reader :input
 
-  sig { returns(T.any(NilClass, String, Pathname)) }
+  sig { returns(T.nilable(T.any(String, Pathname))) }
   attr_reader :chdir
 
-  sig { returns(T::Hash[String, T.any(NilClass, String, T::Boolean)]) }
+  sig { returns(T::Hash[String, T.nilable(T.any(String, T::Boolean))]) }
   attr_reader :env
 
   sig { returns(T::Boolean) }

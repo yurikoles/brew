@@ -1118,7 +1118,7 @@ module Formulary
     params(
       ref:           T.any(Pathname, String),
       spec:          Symbol,
-      alias_path:    T.any(NilClass, Pathname, String),
+      alias_path:    T.nilable(T.any(Pathname, String)),
       from:          T.nilable(Symbol),
       warn:          T::Boolean,
       force_bottle:  T::Boolean,
@@ -1161,7 +1161,7 @@ module Formulary
       rack:         Pathname,
       # Automatically resolves the formula's spec if not specified.
       spec:         T.nilable(Symbol),
-      alias_path:   T.any(NilClass, Pathname, String),
+      alias_path:   T.nilable(T.any(Pathname, String)),
       force_bottle: T::Boolean,
       flags:        T::Array[String],
     ).returns(Formula)
@@ -1197,7 +1197,7 @@ module Formulary
       keg:          Keg,
       # Automatically resolves the formula's spec if not specified.
       spec:         T.nilable(Symbol),
-      alias_path:   T.any(NilClass, Pathname, String),
+      alias_path:   T.nilable(T.any(Pathname, String)),
       force_bottle: T::Boolean,
       flags:        T::Array[String],
     ).returns(Formula)

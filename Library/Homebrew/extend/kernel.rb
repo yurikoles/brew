@@ -52,9 +52,9 @@ module Kernel
   # Kernel.system but with exceptions.
   sig {
     params(
-      cmd:     T.any(NilClass, Pathname, String, [String, String], T::Hash[String, T.nilable(String)]),
-      argv0:   T.any(NilClass, Pathname, String, [String, String]),
-      args:    T.any(NilClass, Pathname, String),
+      cmd:     T.nilable(T.any(Pathname, String, [String, String], T::Hash[String, T.nilable(String)])),
+      argv0:   T.nilable(T.any(Pathname, String, [String, String])),
+      args:    T.nilable(T.any(Pathname, String)),
       options: T.untyped,
     ).void
   }
@@ -72,8 +72,8 @@ module Kernel
   # @api internal
   sig {
     params(
-      cmd:   T.any(NilClass, Pathname, String, [String, String], T::Hash[String, T.nilable(String)]),
-      argv0: T.any(NilClass, String, [String, String]),
+      cmd:   T.nilable(T.any(Pathname, String, [String, String], T::Hash[String, T.nilable(String)])),
+      argv0: T.nilable(T.any(String, [String, String])),
       args:  T.any(Pathname, String),
     ).returns(T::Boolean)
   }
@@ -287,7 +287,7 @@ module Kernel
   sig {
     type_parameters(:U)
       .params(
-        hash:   T::Hash[Object, T.any(NilClass, PATH, Pathname, String)],
+        hash:   T::Hash[Object, T.nilable(T.any(PATH, Pathname, String))],
         _block: T.proc.returns(T.type_parameter(:U)),
       ).returns(T.type_parameter(:U))
   }

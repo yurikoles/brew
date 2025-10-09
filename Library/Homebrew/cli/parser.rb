@@ -17,7 +17,7 @@ module Homebrew
     class Parser
       include Utils::Output::Mixin
 
-      ArgType = T.type_alias { T.any(NilClass, Symbol, T::Array[String], T::Array[Symbol]) }
+      ArgType = T.type_alias { T.nilable(T.any(Symbol, T::Array[String], T::Array[Symbol])) }
       HIDDEN_DESC_PLACEHOLDER = "@@HIDDEN@@"
       SYMBOL_TO_USAGE_MAPPING = T.let({
         text_or_regex: "<text>|`/`<regex>`/`",
@@ -265,7 +265,7 @@ module Homebrew
       end
 
       sig {
-        params(names: String, description: T.nilable(String), replacement: T.any(Symbol, String, NilClass),
+        params(names: String, description: T.nilable(String), replacement: T.nilable(T.any(Symbol, String)),
                depends_on: T.nilable(String), hidden: T::Boolean).void
       }
       def flag(*names, description: nil, replacement: nil, depends_on: nil, hidden: false)
@@ -745,7 +745,7 @@ module Homebrew
         argv.include?("--casks") || argv.include?("--cask")
       end
 
-      sig { params(env: T.any(NilClass, String, Symbol)).returns(T.untyped) }
+      sig { params(env: T.nilable(T.any(String, Symbol))).returns(T.untyped) }
       def value_for_env(env)
         return if env.blank?
 
