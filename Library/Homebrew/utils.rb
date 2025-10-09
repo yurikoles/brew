@@ -28,8 +28,8 @@ module Homebrew
   # rubocop:disable Naming/PredicateMethod
   sig {
     params(
-      cmd:     T.any(NilClass, Pathname, String, [String, String], T::Hash[String, T.nilable(String)]),
-      argv0:   T.any(NilClass, Pathname, String, [String, String]),
+      cmd:     T.nilable(T.any(Pathname, String, [String, String], T::Hash[String, T.nilable(String)])),
+      argv0:   T.nilable(T.any(Pathname, String, [String, String])),
       args:    T.any(Pathname, String),
       options: T.untyped,
       _block:  T.nilable(T.proc.void),
@@ -60,7 +60,7 @@ module Homebrew
   sig {
     params(
       cmd:     T.any(Pathname, String, [String, String], T::Hash[String, T.nilable(String)]),
-      argv0:   T.any(NilClass, Pathname, String, [String, String]),
+      argv0:   T.nilable(T.any(Pathname, String, [String, String])),
       args:    T.any(Pathname, String),
       options: T.untyped,
     ).returns(T::Boolean)

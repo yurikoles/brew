@@ -47,12 +47,12 @@ class AbstractDownloadStrategy
   sig { returns(String) }
   attr_reader :name
 
-  sig { returns(T.any(NilClass, String, Version)) }
+  sig { returns(T.nilable(T.any(String, Version))) }
   attr_reader :version
 
   private :meta, :name, :version
 
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     @cached_location = T.let(nil, T.nilable(Pathname))
     @ref_type = T.let(nil, T.nilable(Symbol))
@@ -68,7 +68,7 @@ class AbstractDownloadStrategy
   # Download and cache the resource at {#cached_location}.
   #
   # @api public
-  sig { overridable.params(timeout: T.any(Float, Integer, NilClass)).void }
+  sig { overridable.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil); end
 
   # Location of the cached download.
@@ -201,7 +201,7 @@ class VCSDownloadStrategy < AbstractDownloadStrategy
 
   REF_TYPES = [:tag, :branch, :revisions, :revision].freeze
 
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     super
     extracted_ref = extract_ref(meta)
@@ -214,7 +214,7 @@ class VCSDownloadStrategy < AbstractDownloadStrategy
   # Download and cache the repository at {#cached_location}.
   #
   # @api public
-  sig { override.params(timeout: T.any(Float, Integer, NilClass)).void }
+  sig { override.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil)
     end_time = Time.now + timeout if timeout
 
@@ -419,7 +419,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   sig { returns(T::Array[String]) }
   attr_reader :mirrors
 
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     @try_partial = T.let(true, T::Boolean)
     @mirrors = T.let(meta.fetch(:mirrors, []), T::Array[String])
@@ -436,7 +436,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   # Download and cache the file at {#cached_location}.
   #
   # @api public
-  sig { override.params(timeout: T.any(Float, Integer, NilClass)).void }
+  sig { override.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil)
     end_time = Time.now + timeout if timeout
 
@@ -518,7 +518,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
     rm_rf(temporary_path)
   end
 
-  sig { params(timeout: T.any(Float, Integer, NilClass)).returns([T.nilable(Time), Integer]) }
+  sig { params(timeout: T.nilable(T.any(Float, Integer))).returns([T.nilable(Time), Integer]) }
   def resolved_time_file_size(timeout: nil)
     _, _, time, file_size, = resolve_url_basename_time_file_size(url, timeout:)
     [time, T.must(file_size)]
@@ -526,13 +526,13 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
 
   private
 
-  sig { params(timeout: T.any(Float, Integer, NilClass)).returns([String, String]) }
+  sig { params(timeout: T.nilable(T.any(Float, Integer))).returns([String, String]) }
   def resolved_url_and_basename(timeout: nil)
     resolved_url, basename, = resolve_url_basename_time_file_size(url, timeout: nil)
     [resolved_url, basename]
   end
 
-  sig { overridable.params(url: String, timeout: T.any(Float, Integer, NilClass)).returns(URLMetadata) }
+  sig { overridable.params(url: String, timeout: T.nilable(T.any(Float, Integer))).returns(URLMetadata) }
   def resolve_url_basename_time_file_size(url, timeout: nil)
     @resolved_info_cache ||= T.let({}, T.nilable(T::Hash[String, URLMetadata]))
     return @resolved_info_cache.fetch(url) if @resolved_info_cache.include?(url)
@@ -603,7 +603,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   end
 
   sig {
-    overridable.params(url: String, resolved_url: String, timeout: T.any(Float, Integer, NilClass))
+    overridable.params(url: String, resolved_url: String, timeout: T.nilable(T.any(Float, Integer)))
                .returns(T.nilable(SystemCommand::Result))
   }
   def _fetch(url:, resolved_url:, timeout:)
@@ -619,7 +619,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   end
 
   sig {
-    params(resolved_url: String, to: T.any(Pathname, String), timeout: T.any(Float, Integer, NilClass))
+    params(resolved_url: String, to: T.any(Pathname, String), timeout: T.nilable(T.any(Float, Integer)))
       .returns(T.nilable(SystemCommand::Result))
   }
   def _curl_download(resolved_url, to, timeout)
@@ -670,7 +670,7 @@ class HomebrewCurlDownloadStrategy < CurlDownloadStrategy
   private
 
   sig {
-    params(resolved_url: String, to: T.any(Pathname, String), timeout: T.any(Float, Integer, NilClass))
+    params(resolved_url: String, to: T.any(Pathname, String), timeout: T.nilable(T.any(Float, Integer)))
       .returns(T.nilable(SystemCommand::Result))
   }
   def _curl_download(resolved_url, to, timeout)
@@ -695,7 +695,7 @@ class CurlGitHubPackagesDownloadStrategy < CurlDownloadStrategy
   sig { params(resolved_basename: String).returns(T.nilable(String)) }
   attr_writer :resolved_basename
 
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     meta[:headers] ||= []
     # GitHub Packages authorization header.
@@ -711,7 +711,7 @@ class CurlGitHubPackagesDownloadStrategy < CurlDownloadStrategy
 
   private
 
-  sig { override.params(url: String, timeout: T.any(Float, Integer, NilClass)).returns(URLMetadata) }
+  sig { override.params(url: String, timeout: T.nilable(T.any(Float, Integer))).returns(URLMetadata) }
   def resolve_url_basename_time_file_size(url, timeout: nil)
     return super if @resolved_basename.blank?
 
@@ -742,7 +742,7 @@ class CurlApacheMirrorDownloadStrategy < CurlDownloadStrategy
     T.must(@combined_mirrors = T.let([*@mirrors, *backup_mirrors], T.nilable(T::Array[String])))
   end
 
-  sig { override.params(url: String, timeout: T.any(Float, Integer, NilClass)).returns(URLMetadata) }
+  sig { override.params(url: String, timeout: T.nilable(T.any(Float, Integer))).returns(URLMetadata) }
   def resolve_url_basename_time_file_size(url, timeout: nil)
     if url == self.url
       preferred = if apache_mirrors["in_attic"]
@@ -775,7 +775,7 @@ class CurlPostDownloadStrategy < CurlDownloadStrategy
   private
 
   sig {
-    override.params(url: String, resolved_url: String, timeout: T.any(Float, Integer, NilClass))
+    override.params(url: String, resolved_url: String, timeout: T.nilable(T.any(Float, Integer)))
             .returns(T.nilable(SystemCommand::Result))
   }
   def _fetch(url:, resolved_url:, timeout:)
@@ -825,7 +825,7 @@ end
 #
 # @api public
 class SubversionDownloadStrategy < VCSDownloadStrategy
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     super
     @url = @url.sub("svn+http://", "")
@@ -834,7 +834,7 @@ class SubversionDownloadStrategy < VCSDownloadStrategy
   # Download and cache the repository at {#cached_location}.
   #
   # @api public
-  sig { override.params(timeout: T.any(Float, Integer, NilClass)).void }
+  sig { override.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil)
     if @url.chomp("/") != repo_url || !silent_command("svn", args: ["switch", @url, cached_location]).success?
       clear_cache
@@ -944,7 +944,7 @@ end
 #
 # @api public
 class GitDownloadStrategy < VCSDownloadStrategy
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     # Needs to be before the call to `super`, as the VCSDownloadStrategy's
     # constructor calls `cache_tag` and sets the cache path.
@@ -1286,7 +1286,7 @@ end
 #
 # @api public
 class CVSDownloadStrategy < VCSDownloadStrategy
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     super
     @url = T.let(@url.sub(%r{^cvs://}, ""), String)
@@ -1379,7 +1379,7 @@ end
 #
 # @api public
 class MercurialDownloadStrategy < VCSDownloadStrategy
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     super
     @url = T.let(@url.sub(%r{^hg://}, ""), String)
@@ -1467,7 +1467,7 @@ end
 #
 # @api public
 class BazaarDownloadStrategy < VCSDownloadStrategy
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     super
     @url = T.let(@url.sub(%r{^bzr://}, ""), String)
@@ -1533,7 +1533,7 @@ end
 #
 # @api public
 class FossilDownloadStrategy < VCSDownloadStrategy
-  sig { params(url: String, name: String, version: T.any(NilClass, String, Version), meta: T.untyped).void }
+  sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     super
     @url = T.let(@url.sub(%r{^fossil://}, ""), String)
@@ -1588,7 +1588,7 @@ end
 # Helper class for detecting a download strategy from a URL.
 class DownloadStrategyDetector
   sig {
-    params(url: String, using: T.any(NilClass, Symbol, T::Class[AbstractDownloadStrategy]))
+    params(url: String, using: T.nilable(T.any(Symbol, T::Class[AbstractDownloadStrategy])))
       .returns(T::Class[AbstractDownloadStrategy])
   }
   def self.detect(url, using = nil)

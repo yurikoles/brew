@@ -435,7 +435,7 @@ class Tap
   sig {
     overridable.params(
       quiet:         T::Boolean,
-      clone_target:  T.any(NilClass, Pathname, String),
+      clone_target:  T.nilable(T.any(Pathname, String)),
       custom_remote: T::Boolean,
       verify:        T::Boolean,
       force:         T::Boolean,
@@ -591,7 +591,7 @@ class Tap
     end
   end
 
-  sig { params(requested_remote: T.any(NilClass, Pathname, String), quiet: T::Boolean).void }
+  sig { params(requested_remote: T.nilable(T.any(Pathname, String)), quiet: T::Boolean).void }
   def fix_remote_configuration(requested_remote: nil, quiet: false)
     if requested_remote.present?
       path.cd do
@@ -1190,7 +1190,7 @@ class Tap
   end
 
   sig {
-    overridable.params(list: Symbol, formula_or_cask: String, value: T.any(NilClass, String, Version))
+    overridable.params(list: Symbol, formula_or_cask: String, value: T.nilable(T.any(String, Version)))
                .returns(T.any(T::Boolean, String))
   }
   def audit_exception(list, formula_or_cask, value = nil)
@@ -1322,7 +1322,7 @@ class CoreTap < AbstractCoreTap
 
   # CoreTap never allows shallow clones (on request from GitHub).
   sig {
-    override.params(quiet: T::Boolean, clone_target: T.any(NilClass, Pathname, String),
+    override.params(quiet: T::Boolean, clone_target: T.nilable(T.any(Pathname, String)),
                     custom_remote: T::Boolean, verify: T::Boolean, force: T::Boolean).void
   }
   def install(quiet: false, clone_target: nil,

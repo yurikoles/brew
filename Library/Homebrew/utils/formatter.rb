@@ -99,7 +99,7 @@ module Formatter
           .gsub(/(.{1,#{width}})( +|$)(?!-)\n?/, "\\1\n")
   end
 
-  sig { params(string: T.any(NilClass, String, URI::Generic)).returns(String) }
+  sig { params(string: T.nilable(T.any(String, URI::Generic))).returns(String) }
   def self.url(string)
     "#{Tty.underline}#{string}#{Tty.no_underline}"
   end

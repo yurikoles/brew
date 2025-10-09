@@ -232,7 +232,7 @@ module Homebrew
       sig {
         params(
           cask:              Cask::Cask,
-          new_hash:          T.any(NilClass, String, Symbol),
+          new_hash:          T.nilable(T.any(String, Symbol)),
           new_version:       BumpVersionParser,
           replacement_pairs: T::Array[[T.any(Regexp, String), T.any(Pathname, String)]],
         ).returns(T::Array[[T.any(Regexp, String), T.any(Pathname, String)]])

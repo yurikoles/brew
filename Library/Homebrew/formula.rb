@@ -3520,14 +3520,14 @@ class Formula
     # @see https://spdx.github.io/spdx-spec/latest/annexes/spdx-license-expressions/ SPDX license expression guide
     # @api public
     sig {
-      params(args: T.any(NilClass, String, Symbol, T::Hash[T.any(String, Symbol), T.anything]))
-        .returns(T.any(NilClass, String, Symbol, T::Hash[T.any(String, Symbol), T.anything]))
+      params(args: T.nilable(T.any(String, Symbol, T::Hash[T.any(String, Symbol), T.anything])))
+        .returns(T.nilable(T.any(String, Symbol, T::Hash[T.any(String, Symbol), T.anything])))
     }
     def license(args = nil)
       if args.nil?
         @licenses
       else
-        @licenses = T.let(args, T.any(NilClass, String, Symbol, T::Hash[T.any(String, Symbol), T.anything]))
+        @licenses = T.let(args, T.nilable(T.any(String, Symbol, T::Hash[T.any(String, Symbol), T.anything])))
       end
     end
 
@@ -4094,7 +4094,7 @@ class Formula
     # @see https://docs.brew.sh/Formula-Cookbook#patches Patches
     # @api public
     sig {
-      params(strip: T.any(String, Symbol), src: T.any(NilClass, String, Symbol), block: T.nilable(T.proc.void)).void
+      params(strip: T.any(String, Symbol), src: T.nilable(T.any(String, Symbol)), block: T.nilable(T.proc.void)).void
     }
     def patch(strip = :p1, src = nil, &block)
       specs.each { |spec| spec.patch(strip, src, &block) }
@@ -4474,7 +4474,7 @@ class Formula
     sig {
       params(
         date:                String,
-        because:             T.any(NilClass, String, Symbol),
+        because:             T.nilable(T.any(String, Symbol)),
         replacement:         T.nilable(String),
         replacement_formula: T.nilable(String),
         replacement_cask:    T.nilable(String),
@@ -4495,7 +4495,7 @@ class Formula
       @deprecation_date = T.let(Date.parse(date), T.nilable(Date))
       return if T.must(@deprecation_date) > Date.today
 
-      @deprecation_reason = T.let(because, T.any(NilClass, String, Symbol))
+      @deprecation_reason = T.let(because, T.nilable(T.any(String, Symbol)))
       @deprecation_replacement_formula = T.let(replacement_formula.presence || replacement, T.nilable(String))
       @deprecation_replacement_cask = T.let(replacement_cask.presence || replacement, T.nilable(String))
       T.must(@deprecated = T.let(true, T.nilable(T::Boolean)))
@@ -4521,7 +4521,7 @@ class Formula
     #
     # @return [nil] if no reason was provided or the formula is not deprecated.
     # @see .deprecate!
-    sig { returns(T.any(NilClass, String, Symbol)) }
+    sig { returns(T.nilable(T.any(String, Symbol))) }
     attr_reader :deprecation_reason
 
     # The replacement formula for a deprecated {Formula}.
@@ -4566,7 +4566,7 @@ class Formula
     sig {
       params(
         date:                String,
-        because:             T.any(NilClass, String, Symbol),
+        because:             T.nilable(T.any(String, Symbol)),
         replacement:         T.nilable(String),
         replacement_formula: T.nilable(String),
         replacement_cask:    T.nilable(String),
@@ -4587,7 +4587,7 @@ class Formula
       @disable_date = T.let(Date.parse(date), T.nilable(Date))
 
       if T.must(@disable_date) > Date.today
-        @deprecation_reason = T.let(because, T.any(NilClass, String, Symbol))
+        @deprecation_reason = T.let(because, T.nilable(T.any(String, Symbol)))
         @deprecation_replacement_formula = T.let(replacement_formula.presence || replacement, T.nilable(String))
         @deprecation_replacement_cask = T.let(replacement_cask.presence || replacement, T.nilable(String))
         @deprecated = T.let(true, T.nilable(T::Boolean))
@@ -4620,7 +4620,7 @@ class Formula
     # Returns `nil` if no reason was provided or the formula is not disabled.
     #
     # @see .disable!
-    sig { returns(T.any(NilClass, String, Symbol)) }
+    sig { returns(T.nilable(T.any(String, Symbol))) }
     attr_reader :disable_reason
 
     # The replacement formula for a disabled {Formula}.

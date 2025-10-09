@@ -10,7 +10,7 @@ module Homebrew
     include Downloadable
     include Utils::Output::Mixin
 
-    sig { override.returns(T.any(NilClass, String, URL)) }
+    sig { override.returns(T.nilable(T.any(String, URL))) }
     def url = downloadable.url
 
     sig { override.returns(T.nilable(Checksum)) }

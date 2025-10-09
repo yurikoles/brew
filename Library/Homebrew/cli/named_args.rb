@@ -569,7 +569,7 @@ module Homebrew
       sig {
         params(
           ref: String, loaded_type: String,
-          package: T.any(T::Array[T.any(Formula, Keg)], Cask::Cask, Formula, Keg, NilClass)
+          package: T.nilable(T.any(T::Array[T.any(Formula, Keg)], Cask::Cask, Formula, Keg))
         ).returns(String)
       }
       def package_conflicts_message(ref, loaded_type, package)
