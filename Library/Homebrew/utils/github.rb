@@ -686,6 +686,9 @@ module GitHub
   end
 
   def self.create_bump_pr(info, args:)
+    # --write-only without --commit means don't take any git actions at all.
+    return if args.write_only? && !args.commit?
+
     tap = info[:tap]
     remote = info[:remote] || "origin"
     remote_branch = info[:remote_branch] || tap.git_repository.origin_branch_name
