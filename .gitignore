@@ -201,3 +201,10 @@
 !/.sublime
 /.sublime/homebrew.sublime-workspace
 !/.vscode
+
+# Unignore AI configuration
+!/.cursor
+!/.claude
+
+# Ignore local AI configuration
+/.claude/settings.local.json
