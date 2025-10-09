@@ -9,6 +9,15 @@ require "os/mac/xcode"
 module Homebrew
   module DevCmd
     class Unbottled < AbstractCommand
+      PORTABLE_FORMULAE = T.let(%w[
+        portable-libffi
+        portable-libxcrypt
+        portable-libyaml
+        portable-openssl
+        portable-ruby
+        portable-zlib
+      ].freeze, T::Array[String])
+
       cmd_args do
         description <<~EOS
           Show the unbottled dependents of formulae.
@@ -156,6 +165,10 @@ module Homebrew
         # Remove deprecated and disabled formulae as we do not care if they are unbottled
         formulae = Array(formulae).reject { |f| f.deprecated? || f.disabled? } if formulae.present?
         all_formulae = Array(all_formulae).reject { |f| f.deprecated? || f.disabled? } if all_formulae.present?
+
+        # Remove portable formulae as they are are handled differently
+        formulae = formulae.reject { |f| PORTABLE_FORMULAE.include?(f.name) } if formulae.present?
+        all_formulae = all_formulae.reject { |f| PORTABLE_FORMULAE.include?(f.name) } if all_formulae.present?
 
         [T.let(formulae, T::Array[Formula]), T.let(all_formulae, T::Array[Formula]),
          T.let(formula_installs, T.nilable(T::Hash[Symbol, Integer]))]
