@@ -52,6 +52,7 @@ module OS
           # Workaround patchelf.rb bug causing segfaults and preventing bottling on ARM64/AArch64
           # https://github.com/Homebrew/homebrew-core/issues/163826
           self["CGO_ENABLED"] = "0"
+        end
 
         # Pointer authentication and BTI are hardening techniques most distros
         # use by default on their packages. arm64 Linux we're packaging
