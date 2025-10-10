@@ -496,7 +496,7 @@ __fish_brew_complete_arg 'bump-unversioned-casks' -a '(__fish_brew_suggest_casks
 __fish_brew_complete_arg 'bump-unversioned-casks' -a '(__fish_brew_suggest_taps_installed)'
 
 
-__fish_brew_complete_cmd 'bundle' 'Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Whalebrew and Visual Studio Code (and forks/variants)'
+__fish_brew_complete_cmd 'bundle' 'Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Whalebrew, Visual Studio Code (and forks/variants) and Go packages'
 __fish_brew_complete_sub_cmd 'bundle' 'install'
 __fish_brew_complete_sub_cmd 'bundle' 'dump'
 __fish_brew_complete_sub_cmd 'bundle' 'cleanup'
@@ -516,6 +516,7 @@ __fish_brew_complete_arg 'bundle' -l file -d 'Read from or write to the `Brewfil
 __fish_brew_complete_arg 'bundle' -l force -d '`install` runs with `--force`/`--overwrite`. `dump` overwrites an existing `Brewfile`. `cleanup` actually performs its cleanup operations'
 __fish_brew_complete_arg 'bundle' -l formula -d '`list`, `dump` or `cleanup` Homebrew formula dependencies'
 __fish_brew_complete_arg 'bundle' -l global -d 'Read from or write to the `Brewfile` from `$HOMEBREW_BUNDLE_FILE_GLOBAL` (if set), `${XDG_CONFIG_HOME}/homebrew/Brewfile` (if `$XDG_CONFIG_HOME` is set), `~/.homebrew/Brewfile` or `~/.Brewfile` otherwise'
+__fish_brew_complete_arg 'bundle' -l go -d '`list` or `dump` Go packages'
 __fish_brew_complete_arg 'bundle' -l help -d 'Show this message'
 __fish_brew_complete_arg 'bundle' -l install -d 'Run `install` before continuing to other operations, e.g. `exec`'
 __fish_brew_complete_arg 'bundle' -l mas -d '`list` or `dump` Mac App Store dependencies'
