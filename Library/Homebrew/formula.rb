@@ -187,6 +187,11 @@ class Formula
   sig { returns(Integer) }
   attr_reader :version_scheme
 
+  # Used to indicate API/ABI compatibility for dependencies.
+  # @see .compatibility_version=
+  sig { returns(T.nilable(Integer)) }
+  attr_reader :compatibility_version
+
   # The current working directory during builds.
   # Will only be non-`nil` inside {#install}.
   sig { returns(T.nilable(Pathname)) }
@@ -246,6 +251,7 @@ class Formula
     @alias_name = T.let((File.basename(alias_path) if alias_path), T.nilable(String))
     @revision = T.let(self.class.revision || 0, Integer)
     @version_scheme = T.let(self.class.version_scheme || 0, Integer)
+    @compatibility_version = T.let(self.class.compatibility_version, T.nilable(Integer))
     @head = T.let(nil, T.nilable(SoftwareSpec))
     @stable = T.let(nil, T.nilable(SoftwareSpec))
 
@@ -2599,6 +2605,7 @@ class Formula
       "urls"                            => urls_hash,
       "revision"                        => revision,
       "version_scheme"                  => version_scheme,
+      "compatibility_version"           => compatibility_version,
       "autobump"                        => autobump?,
       "no_autobump_message"             => no_autobump_message,
       "skip_livecheck"                  => livecheck.skip?,
@@ -3706,6 +3713,24 @@ class Formula
     sig { params(val: Integer).returns(T.nilable(Integer)) }
     def version_scheme(val = T.unsafe(nil))
       val.nil? ? @version_scheme : @version_scheme = T.let(val, T.nilable(Integer))
+    end
+
+    # Used to indicate API/ABI compatibility for dependencies. If a formula has
+    # a `compatibility_version` of `1`, then it need not be upgraded when
+    # installing or upgrading dependencies as long as dependencies are known to
+    # work with versions of the formula that have `compatibility_version 1`.
+    # `nil` if unset.
+    #
+    # ### Example
+    #
+    # ```ruby
+    # compatibility_version 1
+    # ```
+    #
+    # @api public
+    sig { params(val: Integer).returns(T.nilable(Integer)) }
+    def compatibility_version(val = T.unsafe(nil))
+      val.nil? ? @compatibility_version : @compatibility_version = T.let(val, T.nilable(Integer))
     end
 
     sig { returns(T::Array[Symbol]) }
