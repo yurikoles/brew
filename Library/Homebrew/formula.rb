@@ -1593,7 +1593,10 @@ class Formula
   delegate disable_replacement_cask: :"self.class"
 
   sig { returns(T::Boolean) }
-  def skip_cxxstdlib_check? = false
+  def skip_cxxstdlib_check?
+    # odeprecated "`Formula#skip_cxxstdlib_check?`"
+    false
+  end
 
   sig { returns(T::Boolean) }
   def require_universal_deps? = false
@@ -4203,6 +4206,7 @@ class Formula
     # @api public
     sig { params(check_type: Symbol).void }
     def cxxstdlib_check(check_type)
+      # odeprecated "`cxxstdlib_check :skip`"
       define_method(:skip_cxxstdlib_check?) { true } if check_type == :skip
     end
 
