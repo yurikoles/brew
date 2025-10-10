@@ -22,7 +22,6 @@ A *formula* is a package definition written in Ruby. It can be created with `bre
 | **opt prefix**       | a symlink to the active version of a **keg**                              | `/opt/homebrew/opt/foo` |
 | **Cellar**           | directory containing one or more named **racks**                          | `/opt/homebrew/Cellar` |
 | **Caskroom**         | directory containing one or more named **casks**                          | `/opt/homebrew/Caskroom` |
-| **external command** | `brew` subcommand defined outside of the Homebrew/brew GitHub repository  | [`brew test-bot`](https://github.com/Homebrew/homebrew-test-bot) |
 | **tap**              | directory (and usually Git repository) of **formulae**, **casks** and/or **external commands**       | `/opt/homebrew/Library/Taps/homebrew/homebrew-core` |
 | **bottle**           | pre-built **keg** poured into a **rack** of the **Cellar** instead of building from upstream sources | `qt--6.5.1.ventura.bottle.tar.gz` |
 | **tab**              | information about a **keg**, e.g. whether it was poured from a **bottle** or built from source       | `/opt/homebrew/Cellar/foo/0.1/INSTALL_RECEIPT.json` |
