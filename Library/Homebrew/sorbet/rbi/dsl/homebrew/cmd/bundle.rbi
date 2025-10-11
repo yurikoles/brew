@@ -48,10 +48,10 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def formulae?; end
 
   sig { returns(T::Boolean) }
-  def go?; end
+  def global?; end
 
   sig { returns(T::Boolean) }
-  def global?; end
+  def go?; end
 
   sig { returns(T::Boolean) }
   def install?; end
