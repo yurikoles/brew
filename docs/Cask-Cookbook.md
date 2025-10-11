@@ -1072,7 +1072,7 @@ Other providers may use URLs that change periodically, or even on each visit (ex
 
 ### Stanza: `version`
 
-`version`, while related to the app’s own versioning, doesn’t have to follow it exactly. It is common to change it slightly so it can be [interpolated](https://en.wikipedia.org/wiki/String_interpolation#Ruby_/_Crystal) in other stanzas, usually in `url` to create a cask that only needs `version` and `sha256` changes when updated. This can be taken further, when needed, with [Ruby `String` methods](https://ruby-doc.org/core/String.html).
+`version`, while related to the app’s own versioning, doesn’t have to follow it exactly. It is common to change it slightly so it can be [interpolated](https://en.wikipedia.org/wiki/String_interpolation#Ruby/Crystal) in other stanzas, usually in `url` to create a cask that only needs `version` and `sha256` changes when updated. This can be taken further, when needed, with [Ruby `String` methods](https://ruby-doc.org/core/String.html).
 
 For example, instead of:
 
