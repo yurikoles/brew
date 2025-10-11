@@ -137,7 +137,7 @@ and are now no longer needed.
 ### `bundle` \[*`subcommand`*\]
 
 Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store,
-Whalebrew and Visual Studio Code (and forks/variants).
+Whalebrew, Visual Studio Code (and forks/variants) and Go packages.
 
 `brew bundle` \[`install`\]
 
@@ -300,6 +300,10 @@ flags which will help with finding keg-only dependencies like `openssl`,
 `--vscode`
 
 : `list`, `dump` or `cleanup` VSCode (and forks/variants) extensions.
+
+`--go`
+
+: `list` or `dump` Go packages.
 
 `--no-vscode`
 

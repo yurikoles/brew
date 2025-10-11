@@ -661,6 +661,7 @@ _brew_bundle() {
       --force
       --formula
       --global
+      --go
       --help
       --install
       --mas
