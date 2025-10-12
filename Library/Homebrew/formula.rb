@@ -42,6 +42,7 @@ require "on_system"
 require "api"
 require "api_hashable"
 require "utils/output"
+require "pypi_packages"
 
 # A formula provides instructions and metadata for Homebrew to install a piece
 # of software. Every Homebrew formula is a {Formula}.
@@ -219,6 +220,9 @@ class Formula
   sig { returns(T.any(BuildOptions, Tab)) }
   attr_reader :build
 
+  sig { returns(PypiPackages) }
+  attr_reader :pypi_packages_info
+
   # Whether this formula should be considered outdated
   # if the target of the alias it was installed with has since changed.
   # Defaults to true.
@@ -266,6 +270,8 @@ class Formula
     else
       Tap.from_path(path)
     end
+
+    @pypi_packages_info = T.let(PypiPackages.from_json_file(@tap, @name), PypiPackages)
 
     @full_name = T.let(T.must(full_name_with_optional_tap(name)), String)
     @full_alias_name = T.let(full_name_with_optional_tap(@alias_name), T.nilable(String))
@@ -583,6 +589,47 @@ class Formula
   # @!method api_source
   # @see .api_source
   delegate api_source: :"self.class"
+
+  # Information about PyPI packages for this formula.
+  # @!method pypi_packages
+  # @see .pypi_packages
+  delegate pypi_packages: :"self.class"
+
+  # TODO: add docs
+  # @api public
+  sig {
+    params(
+      package_name:        T.nilable(String),
+      extra_packages:      T.nilable(T.any(String, T::Array[String])),
+      exclude_packages:    T.nilable(T.any(String, T::Array[String])),
+      dependencies:        T.nilable(T.any(String, T::Array[String])),
+      needs_manual_update: T::Boolean,
+    ).void
+  }
+  def pypi_packages(
+    package_name: nil,
+    extra_packages: nil,
+    exclude_packages: nil,
+    dependencies: nil,
+    needs_manual_update: false
+  )
+    if needs_manual_update
+      @pypi_packages_info = PypiPackages.new needs_manual_update: true
+      return
+    end
+
+    if [package_name, extra_packages, exclude_packages, dependencies].all?(&:nil?)
+      raise ArgumentError, "must provide at least one argument"
+    end
+
+    # Sadly `v1, v2, v3 = [v1, v2, v3].map { |x| Array(x) }` does not work
+    # for typechecker
+    extra_packages = Array(extra_packages)
+    exclude_packages = Array(exclude_packages)
+    dependencies = Array(dependencies)
+
+    @pypi_packages_info = PypiPackages.new(package_name:, extra_packages:, exclude_packages:, dependencies:)
+  end
 
   sig { returns(Formula) }
   def fully_loaded_formula
