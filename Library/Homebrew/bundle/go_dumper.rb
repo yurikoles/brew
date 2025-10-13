@@ -14,6 +14,8 @@ module Homebrew
         @packages ||= T.let(nil, T.nilable(T::Array[String]))
         @packages ||= if Bundle.go_installed?
           go = Bundle.which_go
+          ENV["GOBIN"] = ENV.fetch("HOMEBREW_GOBIN", nil)
+          ENV["GOPATH"] = ENV.fetch("HOMEBREW_GOPATH", nil)
           gobin = `#{go} env GOBIN`.chomp
           gopath = `#{go} env GOPATH`.chomp
           bin_dir = gobin.empty? ? "#{gopath}/bin" : gobin
