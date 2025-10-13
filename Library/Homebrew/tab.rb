@@ -43,6 +43,8 @@ class AbstractTab
   def initialize(attributes = {})
     @installed_as_dependency = T.let(false, T::Boolean)
     @installed_on_request = T.let(false, T::Boolean)
+    @installed_as_dependency_present = T.let(false, T::Boolean)
+    @installed_on_request_present = T.let(false, T::Boolean)
     @homebrew_version = T.let(nil, T.nilable(String))
     @tabfile = T.let(nil, T.nilable(Pathname))
     @loaded_from_api = T.let(nil, T.nilable(T::Boolean))
@@ -54,6 +56,12 @@ class AbstractTab
 
     attributes.each do |key, value|
       case key.to_sym
+      when :installed_as_dependency
+        @installed_as_dependency = value
+        @installed_as_dependency_present = true
+      when :installed_on_request
+        @installed_on_request = value
+        @installed_on_request_present = true
       when :changed_files
         @changed_files = value&.map { |f| Pathname(f) }
       else
@@ -547,5 +555,13 @@ class Tab < AbstractTab
       s << used_options.to_a.join(" ")
     end
     s.join(" ")
+  end
+
+  def installed_on_request_present?
+    @installed_on_request_present
+  end
+
+  def installed_as_dependency_present?
+    @installed_as_dependency_present
   end
 end
