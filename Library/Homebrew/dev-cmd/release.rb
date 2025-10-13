@@ -15,12 +15,18 @@ module Homebrew
           The command will fail if the previous major or minor release was made less than
           one month ago.
 
+          Without `--force`, this command will just output the release notes without creating
+          the release or triggering the workflow.
+
           *Note:* Requires write access to the Homebrew/brew repository.
         EOS
         switch "--major",
                description: "Create a major release."
         switch "--minor",
                description: "Create a minor release."
+        switch "--force",
+               description: "Actually create the release and trigger the workflow. Without this, just show " \
+                            "what would be done."
 
         conflicts "--major", "--minor"
 
@@ -77,8 +83,7 @@ module Homebrew
           puts blog_post_notes
         end
 
-        ohai "Creating draft release for version #{new_version}"
-
+        ohai "Generating release notes for #{new_version}"
         release_notes = if args.major? || args.minor?
           "Release notes for this release can be found on the [Homebrew blog](https://brew.sh/blog/#{new_version}).\n"
         else
@@ -87,14 +92,86 @@ module Homebrew
         release_notes += GitHub.generate_release_notes("Homebrew", "brew", new_version,
                                                        previous_tag: latest_version)["body"]
 
-        begin
-          release = GitHub.create_or_update_release "Homebrew", "brew", new_version, body: release_notes, draft: true
-        rescue *GitHub::API::ERRORS => e
-          odie "Unable to create release: #{e.message}!"
+        puts release_notes
+        puts
+
+        unless args.force?
+          opoo "Use `brew release --force` to trigger the release workflow and create the draft release."
+          return
         end
 
-        puts release["html_url"]
-        exec_browser release["html_url"]
+        # Get the current commit SHA
+        current_sha = Utils.safe_popen_read("git", "-C", HOMEBREW_REPOSITORY, "rev-parse", "HEAD").strip
+        release_workflow = "release.yml"
+
+        ohai "Triggering release workflow for #{new_version}"
+        begin
+          GitHub.workflow_dispatch_event("Homebrew", "brew", release_workflow, "main", tag: new_version)
+        # Cannot use `e` as Sorbet needs it used below instead.
+        # rubocop:disable Naming/RescuedExceptionsVariableName
+        rescue *GitHub::API::ERRORS => error
+          odie "Unable to trigger workflow: #{error.message}!"
+        end
+        # rubocop:enable Naming/RescuedExceptionsVariableName
+
+        ohai "Waiting for release workflow to complete..."
+        opoo "This may take several minutes. You can monitor progress at:"
+        puts "https://github.com/Homebrew/brew/actions/workflows/#{release_workflow}"
+
+        # Poll for workflow completion
+        max_attempts = 60 # 30 minutes (30 seconds * 60)
+        attempt = 0
+        workflow_completed = T.let(false, T::Boolean)
+        workflow_run_url = T.let(nil, T.nilable(String))
+
+        while attempt < max_attempts
+          sleep 30
+          attempt += 1
+
+          # Check workflow runs for the commit SHA
+          begin
+            runs_url = "#{GitHub::API_URL}/repos/Homebrew/brew/actions/workflows/#{release_workflow}/runs"
+            response = GitHub::API.open_rest("#{runs_url}?event=workflow_dispatch&per_page=5")
+
+            if response["workflow_runs"]&.any?
+              # Find the most recent workflow_dispatch run for our commit
+              run = response["workflow_runs"].find { |r| r["head_sha"] == current_sha }
+
+              if run
+                workflow_run_url = run["html_url"]
+                status = run["status"]
+                conclusion = run["conclusion"]
+
+                if status == "completed"
+                  if conclusion == "success"
+                    ohai "Workflow completed successfully!"
+                    workflow_completed = true
+                  else
+                    opoo "Workflow completed with status: #{conclusion}"
+                    opoo "Check the workflow run at: #{workflow_run_url}"
+                  end
+                  break
+                elsif (attempt % 4).zero?
+                  print "."
+                end
+              end
+            end
+          rescue *GitHub::API::ERRORS => e
+            opoo "Error checking workflow status: #{e.message}" if attempt == 1
+          end
+        end
+
+        unless workflow_completed
+          opoo "Workflow did not complete in time or failed."
+          opoo "Please check the workflow status before publishing the release."
+          puts workflow_run_url if workflow_run_url
+        end
+
+        # Open the release page
+        ohai "Release created at:"
+        release_url = "https://github.com/Homebrew/brew/releases/tag/#{new_version}"
+        puts release_url
+        exec_browser release_url
       end
     end
   end
