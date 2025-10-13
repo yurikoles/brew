@@ -3080,7 +3080,7 @@ Run Homebrew with a Ruby profiler. For example, `brew prof readall`.
 
 : Use `vernier` instead of `ruby-prof` (the default).
 
-### `release` \[`--major`\] \[`--minor`\]
+### `release` \[*`options`*\]
 
 Create a new draft Homebrew/brew release with the appropriate version number and
 release notes.
@@ -3089,6 +3089,9 @@ By default, `brew release` will bump the patch version number. Pass `--major` or
 `--minor` to bump the major or minor version numbers, respectively. The command
 will fail if the previous major or minor release was made less than one month
 ago.
+
+Without `--force`, this command will just output the release notes without
+creating the release or triggering the workflow.
 
 *Note:* Requires write access to the Homebrew/brew repository.
 
@@ -3099,6 +3102,11 @@ ago.
 `--minor`
 
 : Create a minor release.
+
+`--force`
+
+: Actually create the release and trigger the workflow. Without this, just show
+  what would be done.
 
 ### `rubocop`
 
