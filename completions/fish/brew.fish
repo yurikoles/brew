@@ -1489,6 +1489,7 @@ __fish_brew_complete_arg 'reinstall; and not __fish_seen_argument -l formula -l 
 
 __fish_brew_complete_cmd 'release' 'Create a new draft Homebrew/brew release with the appropriate version number and release notes'
 __fish_brew_complete_arg 'release' -l debug -d 'Display any debugging information'
+__fish_brew_complete_arg 'release' -l force -d 'Actually create the release and trigger the workflow. Without this, just show what would be done'
 __fish_brew_complete_arg 'release' -l help -d 'Show this message'
 __fish_brew_complete_arg 'release' -l major -d 'Create a major release'
 __fish_brew_complete_arg 'release' -l minor -d 'Create a minor release'

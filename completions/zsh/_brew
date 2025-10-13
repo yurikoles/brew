@@ -1837,6 +1837,7 @@ _brew_reinstall() {
 _brew_release() {
   _arguments \
     '--debug[Display any debugging information]' \
+    '--force[Actually create the release and trigger the workflow. Without this, just show what would be done]' \
     '--help[Show this message]' \
     '(--minor)--major[Create a major release]' \
     '(--major)--minor[Create a minor release]' \
