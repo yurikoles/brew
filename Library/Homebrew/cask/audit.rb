@@ -857,31 +857,38 @@ module Cask
         artifacts.each do |artifact|
           artifact_path = artifact.is_a?(Artifact::Pkg) ? artifact.path : artifact.source
           path = tmpdir/artifact_path.relative_path_from(cask.staged_path)
-          plist_path = "#{path}/Contents/Info.plist"
-          next unless File.exist?(plist_path)
 
-          plist = system_command!("plutil", args: ["-convert", "xml1", "-o", "-", plist_path]).plist
-          min_os = plist["LSMinimumSystemVersion"].presence
-          break if min_os
+          info_plist_paths = Dir.glob("#{path}/**/Contents/Info.plist")
 
-          next unless (main_binary = get_plist_main_binary(path))
-          next if !File.exist?(main_binary) || File.open(main_binary, "rb") { |f| f.read(2) == "#!" }
+          info_plist_paths.each do |plist_path|
+            next unless File.exist?(plist_path)
 
-          macho = MachO.open(main_binary)
-          min_os = case macho
-          when MachO::MachOFile
-            [
-              macho[:LC_VERSION_MIN_MACOSX].first&.version_string,
-              macho[:LC_BUILD_VERSION].first&.minos_string,
-            ]
-          when MachO::FatFile
-            macho.machos.map do |slice|
+            plist = system_command!("plutil", args: ["-convert", "xml1", "-o", "-", plist_path]).plist
+            min_os = plist["LSMinimumSystemVersion"].presence
+            break if min_os
+
+            # Get the app bundle path from the plist path
+            app_bundle_path = Pathname(plist_path).dirname.dirname
+            next unless (main_binary = get_plist_main_binary(app_bundle_path))
+            next if !File.exist?(main_binary) || File.open(main_binary, "rb") { |f| f.read(2) == "#!" }
+
+            macho = MachO.open(main_binary)
+            min_os = case macho
+            when MachO::MachOFile
               [
-                slice[:LC_VERSION_MIN_MACOSX].first&.version_string,
-                slice[:LC_BUILD_VERSION].first&.minos_string,
+                macho[:LC_VERSION_MIN_MACOSX].first&.version_string,
+                macho[:LC_BUILD_VERSION].first&.minos_string,
               ]
-            end.flatten
-          end.compact.min
+            when MachO::FatFile
+              macho.machos.map do |slice|
+                [
+                  slice[:LC_VERSION_MIN_MACOSX].first&.version_string,
+                  slice[:LC_BUILD_VERSION].first&.minos_string,
+                ]
+              end.flatten
+            end.compact.max
+            break if min_os
+          end
           break if min_os
         end
       end
