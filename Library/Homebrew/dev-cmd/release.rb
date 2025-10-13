@@ -102,10 +102,11 @@ module Homebrew
 
         # Get the current commit SHA
         current_sha = Utils.safe_popen_read("git", "-C", HOMEBREW_REPOSITORY, "rev-parse", "HEAD").strip
+        release_workflow = "release.yml"
 
-        ohai "Triggering pkg-installer workflow for #{new_version}"
+        ohai "Triggering release workflow for #{new_version}"
         begin
-          GitHub.workflow_dispatch_event("Homebrew", "brew", "pkg-installer.yml", "main", tag: new_version)
+          GitHub.workflow_dispatch_event("Homebrew", "brew", release_workflow, "main", tag: new_version)
         # Cannot use `e` as Sorbet needs it used below instead.
         # rubocop:disable Naming/RescuedExceptionsVariableName
         rescue *GitHub::API::ERRORS => error
@@ -113,9 +114,9 @@ module Homebrew
         end
         # rubocop:enable Naming/RescuedExceptionsVariableName
 
-        ohai "Waiting for pkg-installer workflow to complete..."
+        ohai "Waiting for release workflow to complete..."
         opoo "This may take several minutes. You can monitor progress at:"
-        puts "https://github.com/Homebrew/brew/actions/workflows/pkg-installer.yml"
+        puts "https://github.com/Homebrew/brew/actions/workflows/#{release_workflow}"
 
         # Poll for workflow completion
         max_attempts = 60 # 30 minutes (30 seconds * 60)
@@ -129,7 +130,7 @@ module Homebrew
 
           # Check workflow runs for the commit SHA
           begin
-            runs_url = "#{GitHub::API_URL}/repos/Homebrew/brew/actions/workflows/pkg-installer.yml/runs"
+            runs_url = "#{GitHub::API_URL}/repos/Homebrew/brew/actions/workflows/#{release_workflow}/runs"
             response = GitHub::API.open_rest("#{runs_url}?event=workflow_dispatch&per_page=5")
 
             if response["workflow_runs"]&.any?

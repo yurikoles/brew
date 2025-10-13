@@ -1,4 +1,4 @@
-name: Installer Package
+name: Release
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
     tags-ignore:
       - "**"
     paths:
-      - .github/workflows/pkg-installer.yml
+      - .github/workflows/release.yml
       - package/**/*
   workflow_dispatch:
     inputs:
