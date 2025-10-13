@@ -37,7 +37,14 @@ module Homebrew
             # Extract the package path (second field after splitting by tab)
             # The line format is: "\tpath\tgithub.com/user/repo"
             parts = path_line.split("\t")
-            parts[2]&.strip if parts.length >= 3
+            path = parts[2]&.strip if parts.length >= 3
+
+            # `command-line-arguments` is a dummy package name for binaries built
+            # from a list of source files instead of a specific package name.
+            # https://github.com/golang/go/issues/36043
+            next if path == "command-line-arguments"
+
+            path
           end.compact.uniq
         else
           []
