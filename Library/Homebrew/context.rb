@@ -68,8 +68,8 @@ module Context
   def verbose?
     Context.current.verbose?
   end
-  sig { params(options: T::Hash[Symbol, T.untyped], block: T.proc.void).void }
-  def with_context(**options, &block)
+  sig { params(options: T::Hash[Symbol, T.untyped], _block: T.proc.void).void }
+  def with_context(**options, &_block)
     old_context = Context.current
 
     debug_option = options.key?(:debug) ? options[:debug] : old_context.debug?
