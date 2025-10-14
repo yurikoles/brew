@@ -2,7 +2,16 @@
 
 require "rake"
 
+RUBYDOC_DIR = "#{__dir__}/rubydoc".freeze
+
 task default: :build
+
+desc "Generate documentation with YARD"
+task :yard do
+  cd "#{__dir__}/../Library/Homebrew" do
+    sh "bundle", "exec", "yard", "doc", "--output", RUBYDOC_DIR
+  end
+end
 
 desc "Build the site."
 task :build do
