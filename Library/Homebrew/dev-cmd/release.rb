@@ -116,13 +116,14 @@ module Homebrew
         # rubocop:enable Naming/RescuedExceptionsVariableName
 
         # Poll for workflow completion
+        initial_sleep_time = 15
         sleep_time = 5
         max_attempts = 60 # 5 minutes (5 seconds * 60 attempts)
         attempt = 0
         run_conclusion = T.let(nil, T.nilable(String))
 
         while attempt < max_attempts
-          sleep sleep_time
+          sleep attempt.zero? ? initial_sleep_time : sleep_time
           attempt += 1
 
           # Check workflow runs for the commit SHA
@@ -161,8 +162,8 @@ module Homebrew
 
         puts
         ohai "Release created at:"
-        release_url = "https://github.com/Homebrew/brew/releases/tag/#{new_version}"
-        puts release_url
+        release_url = "https://github.com/Homebrew/brew/releases"
+        puts "  #{Formatter.url(release_url)}"
         exec_browser release_url
       end
     end
