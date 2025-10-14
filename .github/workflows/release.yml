@@ -208,7 +208,7 @@ jobs:
           TAG: ${{ inputs.tag }}
         run: |
           homebrew_version=$(brew --version)
-          if [ -n "${TAG}" ] && [ "${homebrew_version}" != "${TAG}" ]; then
+          if [ -n "${TAG}" ] && [ "${homebrew_version}" != "Homebrew ${TAG}" ]; then
             echo "Homebrew version ${homebrew_version} does not match tag ${TAG}"
             exit 1
           fi
@@ -285,29 +285,3 @@ jobs:
           VERSION="${INSTALLER_PATH#Homebrew-}"
           VERSION="${VERSION%.pkg}"
           gh release upload --repo Homebrew/brew "${VERSION}" "${INSTALLER_PATH}"
-
-  issue:
-    needs: [build, test, upload]
-    if: always() && github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    env:
-      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-    permissions:
-      # To create or update issues
-      issues: write
-    steps:
-      - name: Open, update, or close pkg installer issue
-        uses: Homebrew/actions/create-or-update-issue@main
-        with:
-          title: Failed to publish pkg installer
-          body: >
-            The pkg installer workflow [failed](${{ env.RUN_URL }}) for release
-            ${{ github.ref_name }}. No pkg installer was uploaded to the GitHub
-            release.
-          labels: bug,release blocker
-          update-existing: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
-          close-existing: ${{ needs.upload.result == 'success' }}
-          close-from-author: github-actions[bot]
-          close-comment: >
-            The pkg installer workflow [succeeded](${{ env.RUN_URL }}) for
-            release ${{ github.ref_name }}. Closing this issue.
