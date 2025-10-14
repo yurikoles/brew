@@ -101,10 +101,11 @@ module Homebrew
         end
 
         # Get the current commit SHA
-        current_sha = Utils.safe_popen_read("git", "-C", HOMEBREW_REPOSITORY, "rev-parse", "HEAD").strip
+        current_sha = Utils.safe_popen_read("git", "-C", HOMEBREW_REPOSITORY, "rev-parse", "origin/main").strip
         release_workflow = "release.yml"
 
-        ohai "Triggering release workflow for #{new_version}"
+        dispatch_time = Time.now
+        ohai "Triggering release workflow for #{new_version}..."
         begin
           GitHub.workflow_dispatch_event("Homebrew", "brew", release_workflow, "main", tag: new_version)
         # Cannot use `e` as Sorbet needs it used below instead.
@@ -114,60 +115,51 @@ module Homebrew
         end
         # rubocop:enable Naming/RescuedExceptionsVariableName
 
-        ohai "Waiting for release workflow to complete..."
-        opoo "This may take several minutes. You can monitor progress at:"
-        puts "https://github.com/Homebrew/brew/actions/workflows/#{release_workflow}"
-
         # Poll for workflow completion
-        max_attempts = 60 # 30 minutes (30 seconds * 60)
+        sleep_time = 5
+        max_attempts = 60 # 5 minutes (5 seconds * 60 attempts)
         attempt = 0
-        workflow_completed = T.let(false, T::Boolean)
-        workflow_run_url = T.let(nil, T.nilable(String))
+        run_conclusion = T.let(nil, T.nilable(String))
 
         while attempt < max_attempts
-          sleep 30
+          sleep sleep_time
           attempt += 1
 
           # Check workflow runs for the commit SHA
           begin
             runs_url = "#{GitHub::API_URL}/repos/Homebrew/brew/actions/workflows/#{release_workflow}/runs"
             response = GitHub::API.open_rest("#{runs_url}?event=workflow_dispatch&per_page=5")
+            run = response["workflow_runs"]&.find do |r|
+              r["head_sha"] == current_sha && Time.parse(r["created_at"]) >= dispatch_time
+            end
 
-            if response["workflow_runs"]&.any?
-              # Find the most recent workflow_dispatch run for our commit
-              run = response["workflow_runs"].find { |r| r["head_sha"] == current_sha }
-
-              if run
-                workflow_run_url = run["html_url"]
-                status = run["status"]
-                conclusion = run["conclusion"]
-
-                if status == "completed"
-                  if conclusion == "success"
-                    ohai "Workflow completed successfully!"
-                    workflow_completed = true
-                  else
-                    opoo "Workflow completed with status: #{conclusion}"
-                    opoo "Check the workflow run at: #{workflow_run_url}"
-                  end
-                  break
-                elsif (attempt % 4).zero?
-                  print "."
-                end
+            if run
+              if run["status"] == "completed"
+                run_conclusion = run["conclusion"]
+                puts if attempt > 1
+                break
               end
+
+              if attempt == 1
+                puts "This will take a few minutes. You can monitor progress at:"
+                puts "  #{Formatter.url(run["html_url"])}"
+                print "Waiting for workflow to complete..."
+              else
+                print "."
+              end
+            else
+              puts
+              odie "Unable to find workflow for commit: #{current_sha}!"
             end
           rescue *GitHub::API::ERRORS => e
-            opoo "Error checking workflow status: #{e.message}" if attempt == 1
+            puts
+            odie "Unable to check workflow status: #{e.message}!"
           end
         end
 
-        unless workflow_completed
-          opoo "Workflow did not complete in time or failed."
-          opoo "Please check the workflow status before publishing the release."
-          puts workflow_run_url if workflow_run_url
-        end
+        odie "Workflow completed with status: #{run_conclusion}!" if run_conclusion != "success"
 
-        # Open the release page
+        puts
         ohai "Release created at:"
         release_url = "https://github.com/Homebrew/brew/releases/tag/#{new_version}"
         puts release_url
