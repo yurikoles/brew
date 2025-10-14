@@ -622,6 +622,9 @@ report_analytics: true)
 
         install_ca_certificates_if_needed
 
+        # Can't resolve attestations properly on old macOS versions.
+        ENV["HOMEBREW_NO_VERIFY_ATTESTATIONS"] = "1"
+
         # On Linux, install glibc and linux-headers from bottles and don't install their build dependencies.
         bottled_dep_allowlist = /\A(?:glibc|linux-headers)@/
         deps = Dependency.expand(Formula[formula_name],
@@ -637,8 +640,7 @@ report_analytics: true)
 
         # Install bottled dependencies.
         if bottled_deps.present?
-          # TODO: resolve glibc@2.13 attestation issues
-          test "brew", "install", *bottled_deps, env: { "HOMEBREW_NO_VERIFY_ATTESTATIONS" => "1" }
+          test "brew", "install", *bottled_deps
         end
 
         # Build bottles for all other dependencies.
