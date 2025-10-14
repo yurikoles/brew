@@ -68,25 +68,14 @@ module Context
   def verbose?
     Context.current.verbose?
   end
-  sig { params(options: T::Hash[Symbol, T.untyped], _block: T.proc.void).void }
-  def with_context(**options, &_block)
+
+  sig {
+    params(debug: T.nilable(T::Boolean), quiet: T.nilable(T::Boolean), verbose: T.nilable(T::Boolean),
+           _block: T.proc.void).returns(T.untyped)
+  }
+  def with_context(debug: debug?, quiet: quiet?, verbose: verbose?, &_block)
     old_context = Context.current
-
-    debug_option = options.key?(:debug) ? options[:debug] : old_context.debug?
-    quiet_option = options.key?(:quiet) ? options[:quiet] : old_context.quiet?
-    verbose_option = options.key?(:verbose) ? options[:verbose] : old_context.verbose?
-
-    debug = T.cast(debug_option, T.nilable(T::Boolean))
-    quiet = T.cast(quiet_option, T.nilable(T::Boolean))
-    verbose = T.cast(verbose_option, T.nilable(T::Boolean))
-
-    new_context = ContextStruct.new(
-      debug:,
-      quiet:,
-      verbose:,
-    )
-
-    Thread.current[:context] = new_context
+    Thread.current[:context] = ContextStruct.new(debug:, quiet:, verbose:)
 
     begin
       yield
