@@ -639,9 +639,7 @@ report_analytics: true)
         bottled_deps, deps = deps.partition { |dep| bottled_dep_allowlist.match?(dep) }
 
         # Install bottled dependencies.
-        if bottled_deps.present?
-          test "brew", "install", *bottled_deps
-        end
+        test "brew", "install", *bottled_deps if bottled_deps.present?
 
         # Build bottles for all other dependencies.
         test "brew", "install", "--build-bottle", *deps
