@@ -47,11 +47,11 @@ module Homebrew
         @tested_formulae_count = 0
 
         sorted_formulae.each do |f|
+          verify_local_bottles
           if testing_portable_ruby?
             portable_formula!(f)
           else
             formula!(f, args:)
-            verify_local_bottles
           end
           puts
           next if @testing_formulae_count < 3
@@ -197,6 +197,9 @@ module Homebrew
       end
 
       def verify_local_bottles
+        # Portable Ruby bottles are handled differently.
+        return if testing_portable_ruby?
+
         # Setting `HOMEBREW_DISABLE_LOAD_FORMULA` probably doesn't do anything here but let's set it just to be safe.
         with_env(HOMEBREW_DISABLE_LOAD_FORMULA: "1") do
           missing_bottles = @bottle_checksums.keys.reject do |bottle_path|
