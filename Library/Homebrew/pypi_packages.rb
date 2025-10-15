@@ -20,7 +20,7 @@ class PypiPackages
   def self.from_json_file(tap, formula_name)
     list_entry = tap&.pypi_formula_mappings&.fetch(formula_name, nil)
 
-    return new(defined_pypi_mapping: false) unless list_entry.present?
+    return new(defined_pypi_mapping: false) if list_entry.nil?
 
     case T.cast(list_entry, T.any(FalseClass, String, T::Hash[String, T.any(String, T::Array[String])]))
     when false
@@ -60,7 +60,7 @@ class PypiPackages
     @exclude_packages = T.let(exclude_packages, T::Array[String])
     @dependencies = T.let(dependencies, T::Array[String])
     @needs_manual_update = T.let(needs_manual_update, T::Boolean)
-    @defined_pypi_mapping = defined_pypi_mapping
+    @defined_pypi_mapping = T.let(defined_pypi_mapping, T::Boolean)
   end
 
   sig { returns(T::Boolean) }

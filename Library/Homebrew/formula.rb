@@ -220,6 +220,8 @@ class Formula
   sig { returns(T.any(BuildOptions, Tab)) }
   attr_reader :build
 
+  # Information about PyPI mappings for this {Formula} is stored
+  # as {PypiPackages} object.
   sig { returns(PypiPackages) }
   attr_reader :pypi_packages_info
 
@@ -595,7 +597,24 @@ class Formula
   # @see .pypi_packages
   delegate pypi_packages: :"self.class"
 
-  # TODO: add docs
+  # Adds information about PyPI formula mapping as {PypiPackages} object.
+  # It provides a way to specify package name in PyPI repository,
+  # define extra packages, or remove them (e.g. if formula installs them as a dependency).
+  #
+  # Examples of usage:
+  # ```rb
+  # # It will use information about the PyPI package `foo` to update resources
+  # pypi_packages package_name: "foo"
+  #
+  # Add "extra" packages and remove unneeded ones
+  # depends_on "numpy"
+  #
+  # pypi_packages extra_packages: "setuptools", exclude_packages: "numpy"
+  #
+  # # Special case: empty `package_name` allows to skip resource updates for non-extra packages
+  # pypi_packages package_name: "", extra_packages: "setuptools"
+  # ```
+  #
   # @api public
   sig {
     params(
