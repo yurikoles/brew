@@ -43,7 +43,7 @@ task test: :build do
     ],
     ignore_urls:         [
       "/",
-      %r{https://formulae.brew.sh},
+      %r{/rubydoc/},
       %r{https://github.com/},
       %r{https://homebrew.1password.com/},
       "https://legacy.python.org/dev/peps/pep-0453/#recommendations-for-downstream-distributors",

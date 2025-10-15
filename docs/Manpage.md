@@ -2477,7 +2477,7 @@ Generate a formula or, with `--cask`, a cask for the downloadable file at
 *`URL`* and open it in the editor. Homebrew will attempt to automatically derive
 the formula name and version, but if it fails, you'll have to make your own
 template. The `wget` formula serves as a simple example. For the complete API,
-see: <https://rubydoc.brew.sh/Formula>
+see: <https://docs.brew.sh/rubydoc/Formula>
 
 `--autotools`
 
@@ -4559,7 +4559,7 @@ And for an authenticated HTTP proxy:
 
 Homebrew Documentation: <https://docs.brew.sh>
 
-Homebrew API: <https://rubydoc.brew.sh>
+Homebrew API: <https://docs.brew.sh/rubydoc/>
 
 `git`(1), `git-log`(1)
 
