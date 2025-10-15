@@ -84,19 +84,21 @@ jobs:
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Rebuild the site with YARD
+        if: github.repository == 'Homebrew/brew'
         working-directory: docs
         run: bundle exec rake yard build
         env:
           JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload pages artifact
+        if: github.repository == 'Homebrew/brew'
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: docs/_site/
 
   deploy:
     needs: docs
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.repository == 'Homebrew/brew' && github.ref_name == 'main' }}
     permissions:
       pages: write
       id-token: write
@@ -115,7 +117,7 @@ jobs:
   deploy-issue:
     name: Open/close deploy issue
     needs: [docs, deploy]
-    if: ${{ always() && github.ref_name == 'main' }}
+    if: ${{ github.repository == 'Homebrew/brew' && always() && github.ref_name == 'main' }}
     env:
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     runs-on: ubuntu-latest
