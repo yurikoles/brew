@@ -273,7 +273,8 @@ class Formula
       Tap.from_path(path)
     end
 
-    @pypi_packages_info = T.let(PypiPackages.from_json_file(@tap, @name), PypiPackages)
+    @pypi_packages_info = T.let(self.class.pypi_packages_info || PypiPackages.from_json_file(@tap, @name),
+                                PypiPackages)
 
     @full_name = T.let(T.must(full_name_with_optional_tap(name)), String)
     @full_alias_name = T.let(full_name_with_optional_tap(@alias_name), T.nilable(String))
@@ -591,64 +592,6 @@ class Formula
   # @!method api_source
   # @see .api_source
   delegate api_source: :"self.class"
-
-  # Information about PyPI packages for this formula.
-  # @!method pypi_packages
-  # @see .pypi_packages
-  delegate pypi_packages: :"self.class"
-
-  # Adds information about PyPI formula mapping as {PypiPackages} object.
-  # It provides a way to specify package name in PyPI repository,
-  # define extra packages, or remove them (e.g. if formula installs them as a dependency).
-  #
-  # Examples of usage:
-  # ```rb
-  # # It will use information about the PyPI package `foo` to update resources
-  # pypi_packages package_name: "foo"
-  #
-  # Add "extra" packages and remove unneeded ones
-  # depends_on "numpy"
-  #
-  # pypi_packages extra_packages: "setuptools", exclude_packages: "numpy"
-  #
-  # # Special case: empty `package_name` allows to skip resource updates for non-extra packages
-  # pypi_packages package_name: "", extra_packages: "setuptools"
-  # ```
-  #
-  # @api public
-  sig {
-    params(
-      package_name:        T.nilable(String),
-      extra_packages:      T.nilable(T.any(String, T::Array[String])),
-      exclude_packages:    T.nilable(T.any(String, T::Array[String])),
-      dependencies:        T.nilable(T.any(String, T::Array[String])),
-      needs_manual_update: T::Boolean,
-    ).void
-  }
-  def pypi_packages(
-    package_name: nil,
-    extra_packages: nil,
-    exclude_packages: nil,
-    dependencies: nil,
-    needs_manual_update: false
-  )
-    if needs_manual_update
-      @pypi_packages_info = PypiPackages.new needs_manual_update: true
-      return
-    end
-
-    if [package_name, extra_packages, exclude_packages, dependencies].all?(&:nil?)
-      raise ArgumentError, "must provide at least one argument"
-    end
-
-    # Sadly `v1, v2, v3 = [v1, v2, v3].map { |x| Array(x) }` does not work
-    # for typechecker
-    extra_packages = Array(extra_packages)
-    exclude_packages = Array(exclude_packages)
-    dependencies = Array(dependencies)
-
-    @pypi_packages_info = PypiPackages.new(package_name:, extra_packages:, exclude_packages:, dependencies:)
-  end
 
   sig { returns(Formula) }
   def fully_loaded_formula
@@ -3492,6 +3435,7 @@ class Formula
           [phase, DEFAULT_NETWORK_ACCESS_ALLOWED]
         end, T.nilable(T::Hash[Symbol, T::Boolean]))
         @preserve_rpath = T.let(false, T.nilable(T::Boolean))
+        @pypi_packages_info = T.let(nil, T.nilable(PypiPackages))
       end
     end
 
@@ -3529,6 +3473,9 @@ class Formula
     # The reason for why this software is not linked (by default) to {::HOMEBREW_PREFIX}.
     sig { returns(T.nilable(KegOnlyReason)) }
     attr_reader :keg_only_reason
+
+    sig { returns(T.nilable(PypiPackages)) }
+    attr_reader :pypi_packages_info
 
     # A one-line description of the software. Used by users to get an overview
     # of the software and Homebrew maintainers.
@@ -3983,6 +3930,57 @@ class Formula
       else
         @head
       end
+    end
+
+    # Adds information about PyPI formula mapping as {PypiPackages} object.
+    # It provides a way to specify package name in PyPI repository,
+    # define extra packages, or remove them (e.g. if formula installs them as a dependency).
+    #
+    # Examples of usage:
+    # ```rb
+    # # It will use information about the PyPI package `foo` to update resources
+    # pypi_packages package_name: "foo"
+    #
+    # Add "extra" packages and remove unneeded ones
+    # depends_on "numpy"
+    #
+    # pypi_packages extra_packages: "setuptools", exclude_packages: "numpy"
+    #
+    # # Special case: empty `package_name` allows to skip resource updates for non-extra packages
+    # pypi_packages package_name: "", extra_packages: "setuptools"
+    # ```
+    sig {
+      params(
+        package_name:        T.nilable(String),
+        extra_packages:      T.nilable(T.any(String, T::Array[String])),
+        exclude_packages:    T.nilable(T.any(String, T::Array[String])),
+        dependencies:        T.nilable(T.any(String, T::Array[String])),
+        needs_manual_update: T::Boolean,
+      ).void
+    }
+    def pypi_packages(
+      package_name: nil,
+      extra_packages: nil,
+      exclude_packages: nil,
+      dependencies: nil,
+      needs_manual_update: false
+    )
+      if needs_manual_update
+        @pypi_packages_info = PypiPackages.new needs_manual_update: true
+        return
+      end
+
+      if [package_name, extra_packages, exclude_packages, dependencies].all?(&:nil?)
+        raise ArgumentError, "must provide at least one argument"
+      end
+
+      # Sadly `v1, v2, v3 = [v1, v2, v3].map { |x| Array(x) }` does not work
+      # for typechecker
+      extra_packages = Array(extra_packages)
+      exclude_packages = Array(exclude_packages)
+      dependencies = Array(dependencies)
+
+      @pypi_packages_info = PypiPackages.new(package_name:, extra_packages:, exclude_packages:, dependencies:)
     end
 
     # Additional downloads can be defined as {resource}s and accessed in the
