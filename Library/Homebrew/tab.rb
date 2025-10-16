@@ -557,11 +557,9 @@ class Tab < AbstractTab
     s.join(" ")
   end
 
-  def installed_on_request_present?
-    @installed_on_request_present
-  end
+  sig { returns(T::Boolean) }
+  def installed_on_request_present? = @installed_on_request_present
 
-  def installed_as_dependency_present?
-    @installed_as_dependency_present
-  end
+  sig { returns(T::Boolean) }
+  def installed_as_dependency_present? = @installed_as_dependency_present
 end
