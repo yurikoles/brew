@@ -1001,6 +1001,12 @@ then
   export HOMEBREW_SORBET_RUNTIME="1"
 fi
 
+if [[ -n "${HOMEBREW_DEVELOPER}" && -z "${HOMEBREW_DOWNLOAD_CONCURRENCY}" ]]
+then
+  # Enable concurrent downloads for Homebrew developers who haven't explicitly set a value.
+  export HOMEBREW_DOWNLOAD_CONCURRENCY="auto"
+fi
+
 # Provide a (temporary, undocumented) way to disable Sorbet globally if needed
 # to avoid reverting the above.
 if [[ -n "${HOMEBREW_NO_SORBET_RUNTIME}" ]]
