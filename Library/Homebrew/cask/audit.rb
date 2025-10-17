@@ -860,6 +860,12 @@ module Cask
 
           info_plist_paths = Dir.glob("#{path}/**/Contents/Info.plist")
 
+          # Ensure the main `Info.plist` file is checked first, as this can
+          # sometimes use the min_os version from a framework instead
+          if info_plist_paths.delete("#{path}/Contents/Info.plist")
+            info_plist_paths.insert(0, "#{path}/Contents/Info.plist")
+          end
+
           info_plist_paths.each do |plist_path|
             next unless File.exist?(plist_path)
 
