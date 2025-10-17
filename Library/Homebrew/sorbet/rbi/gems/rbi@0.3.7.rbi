@@ -975,6 +975,9 @@ class RBI::Parser::SigBuilder < ::RBI::Parser::Visitor
   sig { params(content: ::String, file: ::String).void }
   def initialize(content, file:); end
 
+  sig { params(node: ::Prism::CallNode, value: ::String).returns(T::Boolean) }
+  def allow_incompatible_override?(node, value); end
+
   sig { returns(::RBI::Sig) }
   def current; end
 
@@ -1425,6 +1428,9 @@ class RBI::RBS::TypeTranslator
 
     sig { params(type_name: ::String).returns(::String) }
     def translate_t_generic_type(type_name); end
+
+    sig { params(type: ::RBS::Types::Alias).returns(::RBI::Type) }
+    def translate_type_alias(type); end
   end
 end
 
@@ -2109,6 +2115,7 @@ class RBI::Sig < ::RBI::NodeWithComments
       is_overridable: T::Boolean,
       is_final: T::Boolean,
       allow_incompatible_override: T::Boolean,
+      allow_incompatible_override_visibility: T::Boolean,
       without_runtime: T::Boolean,
       type_params: T::Array[::String],
       checked: T.nilable(::Symbol),
@@ -2117,7 +2124,7 @@ class RBI::Sig < ::RBI::NodeWithComments
       block: T.nilable(T.proc.params(node: ::RBI::Sig).void)
     ).void
   end
-  def initialize(params: T.unsafe(nil), return_type: T.unsafe(nil), is_abstract: T.unsafe(nil), is_override: T.unsafe(nil), is_overridable: T.unsafe(nil), is_final: T.unsafe(nil), allow_incompatible_override: T.unsafe(nil), without_runtime: T.unsafe(nil), type_params: T.unsafe(nil), checked: T.unsafe(nil), loc: T.unsafe(nil), comments: T.unsafe(nil), &block); end
+  def initialize(params: T.unsafe(nil), return_type: T.unsafe(nil), is_abstract: T.unsafe(nil), is_override: T.unsafe(nil), is_overridable: T.unsafe(nil), is_final: T.unsafe(nil), allow_incompatible_override: T.unsafe(nil), allow_incompatible_override_visibility: T.unsafe(nil), without_runtime: T.unsafe(nil), type_params: T.unsafe(nil), checked: T.unsafe(nil), loc: T.unsafe(nil), comments: T.unsafe(nil), &block); end
 
   sig { params(param: ::RBI::SigParam).void }
   def <<(param); end
@@ -2128,8 +2135,15 @@ class RBI::Sig < ::RBI::NodeWithComments
   sig { params(name: ::String, type: T.any(::RBI::Type, ::String)).void }
   def add_param(name, type); end
 
+  sig { returns(T::Boolean) }
   def allow_incompatible_override; end
+
   def allow_incompatible_override=(_arg0); end
+
+  sig { returns(T::Boolean) }
+  def allow_incompatible_override_visibility; end
+
+  def allow_incompatible_override_visibility=(_arg0); end
 
   sig { returns(T.nilable(::Symbol)) }
   def checked; end
@@ -2140,11 +2154,20 @@ class RBI::Sig < ::RBI::NodeWithComments
   def is_abstract; end
 
   def is_abstract=(_arg0); end
+
+  sig { returns(T::Boolean) }
   def is_final; end
+
   def is_final=(_arg0); end
+
+  sig { returns(T::Boolean) }
   def is_overridable; end
+
   def is_overridable=(_arg0); end
+
+  sig { returns(T::Boolean) }
   def is_override; end
+
   def is_override=(_arg0); end
 
   sig { returns(T::Array[::RBI::SigParam]) }
@@ -2158,7 +2181,9 @@ class RBI::Sig < ::RBI::NodeWithComments
   sig { returns(T::Array[::String]) }
   def type_params; end
 
+  sig { returns(T::Boolean) }
   def without_runtime; end
+
   def without_runtime=(_arg0); end
 end
 
@@ -2616,6 +2641,9 @@ class RBI::Type
     sig { params(types: T.any(::RBI::Type, T::Array[::RBI::Type])).returns(::RBI::Type::Tuple) }
     def tuple(*types); end
 
+    sig { params(name: ::String, aliased_type: ::RBI::Type).returns(::RBI::Type::TypeAlias) }
+    def type_alias(name, aliased_type); end
+
     sig { params(name: ::Symbol).returns(::RBI::Type::TypeParameter) }
     def type_parameter(name); end
 
@@ -2642,6 +2670,9 @@ class RBI::Type
     sig { params(node: T.any(::Prism::ConstantPathNode, ::Prism::ConstantReadNode)).returns(::RBI::Type) }
     def parse_constant(node); end
 
+    sig { params(node: T.any(::Prism::ConstantPathWriteNode, ::Prism::ConstantWriteNode)).returns(::RBI::Type) }
+    def parse_constant_assignment(node); end
+
     sig { params(node: ::Prism::CallNode).returns(::RBI::Type) }
     def parse_proc(node); end
 
@@ -2665,6 +2696,9 @@ class RBI::Type
 
     sig { params(node: ::Prism::CallNode).returns(T::Boolean) }
     def t_proc?(node); end
+
+    sig { params(node: T.nilable(::Prism::Node)).returns(T::Boolean) }
+    def t_type_alias?(node); end
 
     sig { params(name: ::String).returns(T::Boolean) }
     def valid_identifier?(name); end
@@ -2965,6 +2999,29 @@ class RBI::Type::Tuple < ::RBI::Type
   def types; end
 end
 
+class RBI::Type::TypeAlias < ::RBI::Type
+  sig { params(name: ::String, aliased_type: ::RBI::Type).void }
+  def initialize(name, aliased_type); end
+
+  sig { override.params(other: ::BasicObject).returns(T::Boolean) }
+  def ==(other); end
+
+  sig { returns(::RBI::Type) }
+  def aliased_type; end
+
+  sig { returns(::String) }
+  def name; end
+
+  sig { override.returns(::RBI::Type) }
+  def normalize; end
+
+  sig { override.returns(::RBI::Type) }
+  def simplify; end
+
+  sig { override.returns(::String) }
+  def to_rbi; end
+end
+
 class RBI::Type::TypeParameter < ::RBI::Type
   sig { params(name: ::Symbol).void }
   def initialize(name); end
@@ -3049,6 +3106,9 @@ class RBI::Type::Visitor
 
   sig { params(type: ::RBI::Type::Tuple).void }
   def visit_tuple(type); end
+
+  sig { params(type: ::RBI::Type::TypeAlias).void }
+  def visit_type_alias(type); end
 
   sig { params(type: ::RBI::Type::TypeParameter).void }
   def visit_type_parameter(type); end
