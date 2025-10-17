@@ -3893,6 +3893,10 @@ class Prism::ConstantWriteNode < ::Prism::Node
   end
 end
 
+class Prism::CurrentVersionError < ::ArgumentError
+  def initialize(version); end
+end
+
 module Prism::DSL
   extend ::Prism::DSL
 
