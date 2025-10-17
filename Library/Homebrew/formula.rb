@@ -1721,14 +1721,15 @@ class Formula
     Formula.cache[:outdated_kegs][cache_key] ||= begin
       all_kegs = []
       current_version = T.let(false, T::Boolean)
+      latest = latest_formula
 
       installed_kegs.each do |keg|
         all_kegs << keg
         version = keg.version
         next if version.head?
 
-        next if version_scheme > keg.version_scheme && pkg_version != version
-        next if version_scheme == keg.version_scheme && pkg_version > version
+        next if latest.version_scheme > keg.version_scheme && latest.pkg_version != version
+        next if latest.version_scheme == keg.version_scheme && latest.pkg_version > version
 
         # don't consider this keg current if there's a newer formula available
         next if follow_installed_alias? && new_formula_available?
@@ -1786,7 +1787,7 @@ class Formula
   # Otherwise, return self.
   sig { returns(Formula) }
   def latest_formula
-    installed_alias_target_changed? ? T.must(current_installed_alias_target) : self
+    installed_alias_target_changed? ? T.must(current_installed_alias_target) : Formulary.factory(name)
   end
 
   sig { returns(T::Array[Formula]) }
