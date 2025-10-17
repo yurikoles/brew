@@ -66,7 +66,7 @@ Thanks for all your work so far!
 
 If they accept, follow a few steps to get them set up:
 
-- Invite them to the [**@Homebrew/maintainers** team]([https://github.com/orgs/Homebrew/teams/maintainers](https://github.com/Homebrew/private/blob/main/user-management/.tfvars#L23)) (or any relevant subteams) by making a pull request to linked file. This gives them write access to relevant repositories (but doesn't make them owners). They will need to enable [GitHub's Two Factor Authentication](https://help.github.com/articles/about-two-factor-authentication/).
+- Invite them to the [**@Homebrew/maintainers** team](https://github.com/Homebrew/private/blob/main/user-management/.tfvars#L23) (or any relevant subteams) by making a pull request to linked file. This gives them write access to relevant repositories (but doesn't make them owners). They will need to enable [GitHub's Two Factor Authentication](https://help.github.com/articles/about-two-factor-authentication/).
 - Invite them as a full member to the [`machomebrew` private Slack](https://machomebrew.slack.com/admin/invites) (and ensure they've read the [communication guidelines](Maintainer-Guidelines.md#communication)) and ask them to use their real name there (rather than a pseudonym they may use on e.g. GitHub).
 - Ask them to disable SMS as a 2FA device or fallback on their GitHub account in favour of using one of the other authentication methods.
 - Ask them to (regularly) review remove any unneeded [GitHub personal access tokens](https://github.com/settings/tokens).
