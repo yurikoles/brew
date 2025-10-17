@@ -953,7 +953,7 @@ module Formulary
       # The formula file in `.brew` will use the canonical name, whereas `ref` can be an alias.
       # Use `Keg#name` to get the canonical name.
       keg = Keg.new(keg_directory)
-      return unless (keg_formula = HOMEBREW_PREFIX/"opt/#{ref}/.brew/#{keg.name}.rb").file?
+      return unless (keg_formula = keg_directory/".brew/#{keg.name}.rb").file?
 
       new(keg.name, keg_formula, tap: keg.tab.tap)
     end
