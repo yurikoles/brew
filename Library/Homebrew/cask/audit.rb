@@ -796,7 +796,8 @@ module Cask
       return if OnSystem.arch_condition_met?(:arm) &&
                 cask.on_system_blocks_exist? &&
                 cask_min_os.present? &&
-                cask_min_os < MacOSVersion.new("11")
+                app_min_os < MacOSVersion.new("11") &&
+                app_min_os < cask_min_os
 
       min_os_definition = if cask_min_os > HOMEBREW_MACOS_OLDEST_ALLOWED
         definition = if T.must(on_system_block_min_os.to_s <=> depends_on_min_os.to_s).positive?
