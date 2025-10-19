@@ -132,7 +132,7 @@ class Foo < Formula
   depends_on arch: :x86_64
   depends_on "jpeg"
   depends_on macos: :high_sierra
-  depends_on "pkg-config"
+  depends_on "pkgconf"
   depends_on "readline" => :recommended
   depends_on "gtk+" => :optional
 
@@ -363,7 +363,7 @@ In case there are specific issues with the Homebrew packaging (compared to how t
 
 ### A quick word on naming
 
-Name the formula like the project markets the product. So it’s `pkg-config`, not `pkgconfig`; `sdl_mixer`, not `sdl-mixer` or `sdlmixer`.
+Name the formula like the project markets the product. So it’s `pkgconf`, not `pkgconfig`; `sdl_mixer`, not `sdl-mixer` or `sdlmixer`.
 
 The only exception is stuff like “Apache Ant”. Apache sticks “Apache” in front of everything, but we use the formula name `ant`. We only include the prefix in cases like `gnuplot` (because it’s part of the name) and `gnu-go` (because everyone calls it “GNU Go”—nobody just calls it “Go”). The word “Go” is too common and there are too many implementations of it.
 
@@ -861,7 +861,7 @@ class Foo < Formula
   head do
     url "https://hg.sr.ht/~user/foo", using: :hg, branch: "develop"
 
-    depends_on "pkg-config" => :build
+    depends_on "pkgconf" => :build
 
     resource "package" do
       url "https://github.com/other/package.git", branch: "main"
