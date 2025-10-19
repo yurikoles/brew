@@ -155,7 +155,7 @@ module Homebrew
           This is a #{tier_title} configuration:
             #{Formatter.url("https://docs.brew.sh/Support-Tiers##{tier_slug}")}
           #{Formatter.bold("#{tier_issues} issues to Homebrew/* repositories!")}
-          Read the above document instead before opening any issues or PRs.
+          Read the above document before opening any issues or PRs.
         EOS
       end
 
