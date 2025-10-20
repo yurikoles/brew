@@ -1759,7 +1759,7 @@ class Formula
 
   sig { returns(T.nilable(Formula)) }
   def current_installed_alias_target
-    Formulary.factory(T.must(installed_alias_name)) if installed_alias_path
+    Formulary.factory(T.must(full_installed_alias_name)) if installed_alias_path
   end
 
   # Has the target of the alias used to install this formula changed?
@@ -1787,7 +1787,7 @@ class Formula
   # Otherwise, return self.
   sig { returns(Formula) }
   def latest_formula
-    installed_alias_target_changed? ? T.must(current_installed_alias_target) : Formulary.factory(name)
+    installed_alias_target_changed? ? T.must(current_installed_alias_target) : Formulary.factory(full_name)
   end
 
   sig { returns(T::Array[Formula]) }
