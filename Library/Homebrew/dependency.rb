@@ -8,7 +8,6 @@ require "dependable"
 # @api internal
 class Dependency
   include Dependable
-  extend Cachable
 
   sig { returns(String) }
   attr_reader :name
@@ -145,14 +144,17 @@ class Dependency
     # optionals and recommends based on what the dependent has asked for
     #
     # @api internal
-    def expand(dependent, deps = dependent.deps, cache_key: nil, &block)
+    def expand(dependent, deps = dependent.deps, cache_key: nil, cache_timestamp: nil, &block)
       # Keep track dependencies to avoid infinite cyclic dependency recursion.
       @expand_stack ||= []
       @expand_stack.push dependent.name
 
       if cache_key.present?
-        cache[cache_key] ||= {}
-        return cache[cache_key][cache_id dependent].dup if cache[cache_key][cache_id dependent]
+        cache_key = "#{cache_key}-#{cache_timestamp}" if cache_timestamp
+
+        if (entry = cache(cache_key, cache_timestamp:)[cache_id dependent])
+          return entry.dup
+        end
       end
 
       expanded_deps = []
@@ -182,7 +184,7 @@ class Dependency
       end
 
       expanded_deps = merge_repeats(expanded_deps)
-      cache[cache_key][cache_id dependent] = expanded_deps.dup if cache_key.present?
+      cache(cache_key, cache_timestamp:)[cache_id dependent] = expanded_deps.dup if cache_key.present?
       expanded_deps
     ensure
       @expand_stack.pop
@@ -229,6 +231,33 @@ class Dependency
         kwargs[:bounds] = dep.bounds if dep.uses_from_macos?
         dep.class.new(name, tags, **kwargs)
       end
+    end
+
+    def cache(key, cache_timestamp: nil)
+      @cache ||= { timestamped: {}, not_timestamped: {} }
+
+      if cache_timestamp
+        @cache[:timestamped][cache_timestamp] ||= {}
+        @cache[:timestamped][cache_timestamp][key] ||= {}
+      else
+        @cache[:not_timestamped][key] ||= {}
+      end
+    end
+
+    def clear_cache
+      return unless @cache
+
+      # No need to clear the timestamped cache as it's timestamped, and doing so causes problems in `expand`.
+      # See https://github.com/Homebrew/brew/pull/20896#issuecomment-3419257460
+      @cache[:not_timestamped].clear
+    end
+
+    def delete_timestamped_cache_entry(key, cache_timestamp)
+      return unless @cache
+      return unless (timestamp_entry = @cache[:timestamped][cache_timestamp])
+
+      timestamp_entry.delete(key)
+      @cache[:timestamped].delete(cache_timestamp) if timestamp_entry.empty?
     end
 
     private

@@ -2452,10 +2452,13 @@ class Formula
   sig { params(block: T.nilable(T.proc.params(arg0: Formula, arg1: Dependency).void)).returns(T::Array[Dependency]) }
   def recursive_dependencies(&block)
     cache_key = "Formula#recursive_dependencies"
-    cache_key += "-#{full_name}-#{Time.now.to_f}" if block
-    Dependency.expand(self, cache_key:, &block)
+    if block
+      cache_key += "-#{full_name}"
+      cache_timestamp = Time.now
+    end
+    Dependency.expand(self, cache_key:, cache_timestamp:, &block)
   ensure
-    Dependency.cache.delete(cache_key) if block
+    Dependency.delete_timestamped_cache_entry(cache_key, cache_timestamp) if block
   end
 
   # The full set of {Requirements} for this formula's dependency tree.
@@ -3046,8 +3049,11 @@ class Formula
   sig { returns(T::Array[Dependency]) }
   def declared_runtime_dependencies
     cache_key = "Formula#declared_runtime_dependencies"
-    cache_key += "-#{full_name}-#{Time.now.to_f}" if build.any_args_or_options?
-    Dependency.expand(self, cache_key:) do |_, dependency|
+    if build.any_args_or_options?
+      cache_key += "-#{full_name}"
+      cache_timestamp = Time.now
+    end
+    Dependency.expand(self, cache_key:, cache_timestamp:) do |_, dependency|
       Dependency.prune if dependency.build?
       next if dependency.required?
 
@@ -3058,7 +3064,7 @@ class Formula
       end
     end
   ensure
-    Dependency.cache.delete(cache_key) if build.any_args_or_options?
+    Dependency.delete_timestamped_cache_entry(cache_key, cache_timestamp) if build.any_args_or_options?
   end
 
   # Returns a list of {Dependency} objects that are not declared in the formula
