@@ -559,7 +559,7 @@ module Formulary
       end
     else
       rack = to_rack(name)
-      alias_path = factory(name, force_bottle:, flags:, prefer_stub:).alias_path
+      alias_path = factory(name, force_bottle:, flags:, prefer_stub: true).alias_path
       f = from_rack(rack, *spec, alias_path:, force_bottle:, flags:)
     end
 
