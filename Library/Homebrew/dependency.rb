@@ -344,6 +344,10 @@ class UsesFromMacOSDependency < Dependency
         # bottle_os_version is a string like "14" for Sonoma, "15" for Sequoia
         # Convert it to a MacOS version symbol for comparison
         MacOSVersion.new(bottle_os_version.delete_prefix("macOS "))
+      elsif Homebrew::SimulateSystem.current_os == :macos
+        # Assume the oldest macOS version when simulating a generic macOS version
+        # Version::NULL is always treated as less than any other version.
+        Version::NULL
       else
         MacOSVersion.from_symbol(Homebrew::SimulateSystem.current_os)
       end
