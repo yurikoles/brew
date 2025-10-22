@@ -456,12 +456,12 @@ class FormulaInstaller
             #{cyclic_dependencies.join("\n  ")}
         EOS
       end
+    end
 
-      # Merge into one list
-      recursive_deps = recursive_dep_map.flat_map { |dep, rdeps| [dep] + rdeps }
-      Dependency.merge_repeats(recursive_deps)
+    recursive_deps = if pour_bottle?
+      formula.runtime_dependencies
     else
-      recursive_deps = formula.recursive_dependencies
+      formula.recursive_dependencies
     end
 
     invalid_arch_dependencies = []
@@ -474,8 +474,6 @@ class FormulaInstaller
 
       next unless dep.to_formula.pinned?
       next if dep.satisfied?(inherited_options_for(dep))
-      next if dep.build? && pour_bottle?
-      next if dep.test?
 
       pinned_unsatisfied_deps << dep
     end
