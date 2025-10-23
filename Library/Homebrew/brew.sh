@@ -999,12 +999,13 @@ if [[ -n "${HOMEBREW_DEVELOPER}" || -n "${HOMEBREW_DEV_CMD_RUN}" ]]
 then
   # Always run with Sorbet for Homebrew developers or when a Homebrew developer command has been run.
   export HOMEBREW_SORBET_RUNTIME="1"
-fi
 
-if [[ -n "${HOMEBREW_DEVELOPER}" && -z "${HOMEBREW_DOWNLOAD_CONCURRENCY}" ]]
-then
-  # Enable concurrent downloads for Homebrew developers who haven't explicitly set a value.
-  export HOMEBREW_DOWNLOAD_CONCURRENCY="auto"
+  # Enable concurrent downloads for Homebrew developers or when a Homebrew developer command has been
+  # run who haven't explicitly set a value.
+  if [[ -z "${HOMEBREW_DOWNLOAD_CONCURRENCY}" ]]
+  then
+    export HOMEBREW_DOWNLOAD_CONCURRENCY="auto"
+  fi
 fi
 
 # Provide a (temporary, undocumented) way to disable Sorbet globally if needed
