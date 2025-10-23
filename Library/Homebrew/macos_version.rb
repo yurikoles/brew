@@ -28,6 +28,7 @@ class MacOSVersion < Version
     monterey:    "12",
     big_sur:     "11",
     catalina:    "10.15",
+    # odisabled remove support for Mojave and below 4.7.0
     mojave:      "10.14",
     high_sierra: "10.13",
     sierra:      "10.12",
@@ -35,7 +36,7 @@ class MacOSVersion < Version
   }.freeze, T::Hash[Symbol, String])
 
   # TODO: can be replaced with a call to `#pretty_name` once we remove support
-  # for El Capitan.
+  # for El Capitan (odisabled in 4.7.0)
   VERSIONS_TO_ANALYTICS_PRETTY_NAMES = T.let({
     "26"    => "macOS Tahoe (26)",
     "15"    => "macOS Sequoia (15)",
