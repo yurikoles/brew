@@ -640,11 +640,6 @@ binaries for *`cask`*s. For files, also print SHA-256 checksums.
 : Download a bottle if it exists for the current or newest version of macOS,
   even if it would not be used during installation.
 
-`--[no-]quarantine`
-
-: Disable/enable quarantining of downloads (default: enabled). Enabled by
-  default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set.
-
 `--formula`
 
 : Treat all named arguments as formulae.
@@ -913,11 +908,6 @@ upgrade *`formula`* if it is already installed but outdated.
 
 : Require all casks to have a checksum. Enabled by default if
   `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set.
-
-`--[no-]quarantine`
-
-: Disable/enable quarantining of downloads (default: enabled). Enabled by
-  default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set.
 
 `--adopt`
 
@@ -1330,11 +1320,6 @@ for the reinstalled formulae or, every 30 days, for all formulae.
 
 : Require all casks to have a checksum. Enabled by default if
   `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set.
-
-`--[no-]quarantine`
-
-: Disable/enable quarantining of downloads (default: enabled). Enabled by
-  default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set.
 
 `--adopt`
 
@@ -1798,11 +1783,6 @@ for the upgraded formulae or, every 30 days, for all formulae.
 
 : Require all casks to have a checksum. Enabled by default if
   `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set.
-
-`--[no-]quarantine`
-
-: Disable/enable quarantining of downloads (default: enabled). Enabled by
-  default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set.
 
 ### `uses` \[*`options`*\] *`formula`* \[...\]
 
@@ -4004,9 +3984,9 @@ command execution (e.g. `$(cat file)`).
 `HOMEBREW_CASK_OPTS`
 
 : Append these options to all `cask` commands. All `--*dir` options,
-  `--language`, `--require-sha`, `--no-quarantine` and `--no-binaries` are
-  supported. For example, you might add something like the following to your
-  `~/.profile`, `~/.bash_profile`, or `~/.zshenv`:
+  `--language`, `--require-sha` and `--no-binaries` are supported. For example,
+  you might add something like the following to your `~/.profile`,
+  `~/.bash_profile`, or `~/.zshenv`:
   
   `export HOMEBREW_CASK_OPTS="--appdir=${HOME}/Applications
   --fontdir=/Library/Fonts"`

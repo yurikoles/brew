@@ -402,9 +402,6 @@ Download source packages (for eventual bottling) rather than a bottle\.
 \fB\-\-force\-bottle\fP
 Download a bottle if it exists for the current or newest version of macOS, even if it would not be used during installation\.
 .TP
-\fB\-\-[no\-]quarantine\fP
-Disable/enable quarantining of downloads (default: enabled)\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_QUARANTINE\fP is set\.
-.TP
 \fB\-\-formula\fP
 Treat all named arguments as formulae\.
 .TP
@@ -568,9 +565,6 @@ Disable/enable linking of helper executables (default: enabled)\. Enabled by def
 .TP
 \fB\-\-require\-sha\fP
 Require all casks to have a checksum\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_REQUIRE_SHA\fP is set\.
-.TP
-\fB\-\-[no\-]quarantine\fP
-Disable/enable quarantining of downloads (default: enabled)\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_QUARANTINE\fP is set\.
 .TP
 \fB\-\-adopt\fP
 Adopt existing artifacts in the destination that are identical to those being installed\. Cannot be combined with \fB\-\-force\fP\&\.
@@ -825,9 +819,6 @@ Disable/enable linking of helper executables (default: enabled)\. Enabled by def
 .TP
 \fB\-\-require\-sha\fP
 Require all casks to have a checksum\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_REQUIRE_SHA\fP is set\.
-.TP
-\fB\-\-[no\-]quarantine\fP
-Disable/enable quarantining of downloads (default: enabled)\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_QUARANTINE\fP is set\.
 .TP
 \fB\-\-adopt\fP
 Adopt existing artifacts in the destination that are identical to those being installed\. Cannot be combined with \fB\-\-force\fP\&\.
@@ -1113,9 +1104,6 @@ Disable/enable linking of helper executables (default: enabled)\. Enabled by def
 .TP
 \fB\-\-require\-sha\fP
 Require all casks to have a checksum\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_REQUIRE_SHA\fP is set\.
-.TP
-\fB\-\-[no\-]quarantine\fP
-Disable/enable quarantining of downloads (default: enabled)\. Enabled by default if \fB$HOMEBREW_CASK_OPTS_QUARANTINE\fP is set\.
 .SS "\fBuses\fP \fR[\fIoptions\fP] \fIformula\fP \fR[\.\.\.]"
 Show formulae and casks that specify \fIformula\fP as a dependency; that is, show dependents of \fIformula\fP\&\. When given multiple formula arguments, show the intersection of formulae that use \fIformula\fP\&\. By default, \fBuses\fP shows all formulae and casks that specify \fIformula\fP as a required or recommended dependency for their stable builds\.
 .P
@@ -2579,7 +2567,7 @@ Use this directory as the download cache\.
 .RE
 .TP
 \fBHOMEBREW_CASK_OPTS\fP
-Append these options to all \fBcask\fP commands\. All \fB\-\-*dir\fP options, \fB\-\-language\fP, \fB\-\-require\-sha\fP, \fB\-\-no\-quarantine\fP and \fB\-\-no\-binaries\fP are supported\. For example, you might add something like the following to your \fB~/\.profile\fP, \fB~/\.bash_profile\fP, or \fB~/\.zshenv\fP:
+Append these options to all \fBcask\fP commands\. All \fB\-\-*dir\fP options, \fB\-\-language\fP, \fB\-\-require\-sha\fP and \fB\-\-no\-binaries\fP are supported\. For example, you might add something like the following to your \fB~/\.profile\fP, \fB~/\.bash_profile\fP, or \fB~/\.zshenv\fP:
 .RS
 .P
 \fBexport HOMEBREW_CASK_OPTS="\-\-appdir=${HOME}/Applications \-\-fontdir=/Library/Fonts"\fP
