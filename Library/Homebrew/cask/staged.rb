@@ -18,8 +18,8 @@ module Cask
       full_paths = remove_nonexistent(paths)
       return if full_paths.empty?
 
-      @command.run!("/bin/chmod", args: ["-R", "--", permissions_str, *full_paths],
-                                  sudo: false)
+      @command.run!("chmod", args: ["-R", "--", permissions_str, *full_paths],
+                             sudo: false)
     end
 
     sig { params(paths: Paths, user: T.any(String, User), group: String).void }
@@ -28,8 +28,8 @@ module Cask
       return if full_paths.empty?
 
       ohai "Changing ownership of paths required by #{@cask} with `sudo` (which may request your password)..."
-      @command.run!("/usr/sbin/chown", args: ["-R", "--", "#{user}:#{group}", *full_paths],
-                                       sudo: true)
+      @command.run!("chown", args: ["-R", "--", "#{user}:#{group}", *full_paths],
+                             sudo: true)
     end
 
     private

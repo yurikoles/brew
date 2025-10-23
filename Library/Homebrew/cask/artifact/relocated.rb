@@ -93,7 +93,7 @@ module Cask
         altnames = "(#{altnames})"
 
         # Some packages are shipped as u=rx (e.g. Bitcoin Core)
-        command.run!("/bin/chmod",
+        command.run!("chmod",
                      args: ["--", "u+rw", file, file.realpath],
                      sudo: !file.writable? || !file.realpath.writable?)
 
