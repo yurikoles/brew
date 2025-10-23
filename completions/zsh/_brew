@@ -1028,9 +1028,7 @@ _brew_fetch() {
     '--force[Remove a previously cached version and re-fetch]' \
     '(--build-from-source --build-bottle --bottle-tag --cask)--force-bottle[Download a bottle if it exists for the current or newest version of macOS, even if it would not be used during installation]' \
     '--help[Show this message]' \
-    '--no-quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '(--bottle-tag)--os[Download for the given operating system. (Pass `all` to download for all operating systems.)]' \
-    '--quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '--quiet[Make some output more quiet]' \
     '--retry[Retry if downloading fails or re-download if the checksum of a previously cached version no longer matches. Tries at most 5 times with exponential backoff]' \
     '--verbose[Do a verbose VCS checkout, if the URL represents a VCS. This is useful for seeing if an existing VCS cache has been updated]' \
@@ -1246,12 +1244,10 @@ _brew_instal() {
     '(--formula)--language[Comma-separated list of language codes to prefer for cask installation. The first matching language is used, otherwise it reverts to the cask'\''s default language. The default value is the language of your system]' \
     '(--formula)--mdimporterdir[Target location for Spotlight Plugins (default: `~/Library/Spotlight`)]' \
     '--no-binaries[Disable/enable linking of helper executables (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_BINARIES` is set]' \
-    '--no-quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '(--cask --ignore-dependencies)--only-dependencies[Install the dependencies with specified options but do not install the formula itself]' \
     '(--cask)--overwrite[Delete files that already exist in the prefix while linking]' \
     '(--formula)--prefpanedir[Target location for Preference Panes (default: `~/Library/PreferencePanes`)]' \
     '(--formula)--qlplugindir[Target location for Quick Look Plugins (default: `~/Library/QuickLook`)]' \
-    '(--formula)--quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '--quiet[Make some output more quiet]' \
     '(--formula)--require-sha[Require all casks to have a checksum. Enabled by default if `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set]' \
     '(--formula)--screen-saverdir[Target location for Screen Savers (default: `~/Library/Screen Savers`)]' \
@@ -1307,12 +1303,10 @@ _brew_install() {
     '(--formula)--language[Comma-separated list of language codes to prefer for cask installation. The first matching language is used, otherwise it reverts to the cask'\''s default language. The default value is the language of your system]' \
     '(--formula)--mdimporterdir[Target location for Spotlight Plugins (default: `~/Library/Spotlight`)]' \
     '--no-binaries[Disable/enable linking of helper executables (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_BINARIES` is set]' \
-    '--no-quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '(--cask --ignore-dependencies)--only-dependencies[Install the dependencies with specified options but do not install the formula itself]' \
     '(--cask)--overwrite[Delete files that already exist in the prefix while linking]' \
     '(--formula)--prefpanedir[Target location for Preference Panes (default: `~/Library/PreferencePanes`)]' \
     '(--formula)--qlplugindir[Target location for Quick Look Plugins (default: `~/Library/QuickLook`)]' \
-    '(--formula)--quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '--quiet[Make some output more quiet]' \
     '(--formula)--require-sha[Require all casks to have a checksum. Enabled by default if `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set]' \
     '(--formula)--screen-saverdir[Target location for Screen Savers (default: `~/Library/Screen Savers`)]' \
@@ -1799,10 +1793,8 @@ _brew_reinstall() {
     '(--formula)--language[Comma-separated list of language codes to prefer for cask installation. The first matching language is used, otherwise it reverts to the cask'\''s default language. The default value is the language of your system]' \
     '(--formula)--mdimporterdir[Target location for Spotlight Plugins (default: `~/Library/Spotlight`)]' \
     '--no-binaries[Disable/enable linking of helper executables (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_BINARIES` is set]' \
-    '--no-quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '(--formula)--prefpanedir[Target location for Preference Panes (default: `~/Library/PreferencePanes`)]' \
     '(--formula)--qlplugindir[Target location for Quick Look Plugins (default: `~/Library/QuickLook`)]' \
-    '(--formula)--quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '--quiet[Make some output more quiet]' \
     '(--formula)--require-sha[Require all casks to have a checksum. Enabled by default if `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set]' \
     '(--formula)--screen-saverdir[Target location for Screen Savers (default: `~/Library/Screen Savers`)]' \
@@ -2454,11 +2446,9 @@ _brew_upgrade() {
     '(--formula)--language[Comma-separated list of language codes to prefer for cask installation. The first matching language is used, otherwise it reverts to the cask'\''s default language. The default value is the language of your system]' \
     '(--formula)--mdimporterdir[Target location for Spotlight Plugins (default: `~/Library/Spotlight`)]' \
     '--no-binaries[Disable/enable linking of helper executables (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_BINARIES` is set]' \
-    '--no-quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '(--cask)--overwrite[Delete files that already exist in the prefix while linking]' \
     '(--formula)--prefpanedir[Target location for Preference Panes (default: `~/Library/PreferencePanes`)]' \
     '(--formula)--qlplugindir[Target location for Quick Look Plugins (default: `~/Library/QuickLook`)]' \
-    '(--formula)--quarantine[Disable/enable quarantining of downloads (default: enabled). Enabled by default if `$HOMEBREW_CASK_OPTS_QUARANTINE` is set]' \
     '--quiet[Make some output more quiet]' \
     '(--formula)--require-sha[Require all casks to have a checksum. Enabled by default if `$HOMEBREW_CASK_OPTS_REQUIRE_SHA` is set]' \
     '(--formula)--screen-saverdir[Target location for Screen Savers (default: `~/Library/Screen Savers`)]' \
