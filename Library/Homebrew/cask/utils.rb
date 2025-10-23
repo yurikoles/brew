@@ -19,7 +19,7 @@ module Cask
       if dir.writable?
         path.mkpath
       else
-        command.run!("/bin/mkdir", args: ["-p", "--", path], sudo: true, print_stderr: false)
+        command.run!("mkdir", args: ["-p", "--", path], sudo: true, print_stderr: false)
       end
     end
 
@@ -28,7 +28,7 @@ module Cask
         if p.parent.writable?
           FileUtils.rmdir p
         else
-          command.run!("/bin/rmdir", args: ["--", p], sudo: true, print_stderr: false)
+          command.run!("rmdir", args: ["--", p], sudo: true, print_stderr: false)
         end
       end
     end
@@ -77,10 +77,10 @@ module Cask
           command.run("/usr/bin/chflags",
                       print_stderr:,
                       args:         command_args + ["--", "000", path])
-          command.run("/bin/chmod",
+          command.run("chmod",
                       print_stderr:,
                       args:         command_args + ["--", "u+rwx", path])
-          command.run("/bin/chmod",
+          command.run("chmod",
                       print_stderr:,
                       args:         command_args + ["-N", path])
           tried_permissions = true
@@ -92,7 +92,7 @@ module Cask
           # TODO: Further examine files to see if ownership is the problem
           #       before using `sudo` and `chown`.
           ohai "Using sudo to gain ownership of path '#{path}'"
-          command.run("/usr/sbin/chown",
+          command.run("chown",
                       args: command_args + ["--", User.current, path],
                       sudo: true)
           tried_ownership = true
