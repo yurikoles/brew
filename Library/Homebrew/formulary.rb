@@ -1371,13 +1371,20 @@ module Formulary
       new_name = tap.core_tap? ? name : "#{tap}/#{name}"
       type = :rename
     elsif (new_tap_name = tap.tap_migrations[name].presence)
-      new_tap, new_name = Tap.with_formula_name(new_tap_name) || [Tap.fetch(new_tap_name), name]
+      new_tap, new_name = Tap.with_formula_name(new_tap_name)
+      unless new_tap
+        if new_tap_name.include?("/")
+          new_tap = Tap.fetch(new_tap_name)
+          new_name = name
+        else
+          new_tap = tap
+          new_name = new_tap_name
+        end
+      end
       new_tap.ensure_installed!
       new_tapped_name = "#{new_tap}/#{new_name}"
 
-      if tapped_name == new_tapped_name
-        opoo "Tap migration for #{tapped_name} points to itself, stopping recursion."
-      else
+      if tapped_name != new_tapped_name
         old_name = tap.core_tap? ? name : tapped_name
         return unless (name_tap_type = tap_formula_name_type(new_tapped_name, warn: false))
 
