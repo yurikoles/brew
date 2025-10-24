@@ -102,8 +102,6 @@ class RBI::TypedParam < ::T::Struct
 end
 
 module T::Generic
-  include ::Kernel
-
   def [](*types); end
   def has_attached_class!(variance = T.unsafe(nil), &bounds_proc); end
   def type_member(variance = T.unsafe(nil), &bounds_proc); end
@@ -241,6 +239,7 @@ end
 module Tapioca
   class << self
     def silence_warnings(&blk); end
+    def with_disabled_exits(&block); end
   end
 end
 
@@ -448,10 +447,11 @@ class Tapioca::Commands::AbstractGem < ::Tapioca::Commands::Command
       dsl_dir: ::String,
       rbi_formatter: ::Tapioca::RBIFormatter,
       halt_upon_load_error: T::Boolean,
-      lsp_addon: T.nilable(T::Boolean)
+      lsp_addon: T.nilable(T::Boolean),
+      verbose: T.nilable(T::Boolean)
     ).void
   end
-  def initialize(gem_names:, exclude:, include_dependencies:, prerequire:, postrequire:, typed_overrides:, outpath:, file_header:, include_doc:, include_loc:, include_exported_rbis:, number_of_workers: T.unsafe(nil), auto_strictness: T.unsafe(nil), dsl_dir: T.unsafe(nil), rbi_formatter: T.unsafe(nil), halt_upon_load_error: T.unsafe(nil), lsp_addon: T.unsafe(nil)); end
+  def initialize(gem_names:, exclude:, include_dependencies:, prerequire:, postrequire:, typed_overrides:, outpath:, file_header:, include_doc:, include_loc:, include_exported_rbis:, number_of_workers: T.unsafe(nil), auto_strictness: T.unsafe(nil), dsl_dir: T.unsafe(nil), rbi_formatter: T.unsafe(nil), halt_upon_load_error: T.unsafe(nil), lsp_addon: T.unsafe(nil), verbose: T.unsafe(nil)); end
 
   private
 
@@ -1619,7 +1619,7 @@ class Tapioca::GemInfo < ::T::Struct
   const :version, ::Gem::Version
 
   class << self
-    sig { params(spec: ::Bundler::LazySpecification).returns(::Tapioca::GemInfo) }
+    sig { params(spec: T.any(::Bundler::StubSpecification, ::Gem::Specification)).returns(::Tapioca::GemInfo) }
     def from_spec(spec); end
   end
 end
@@ -1899,6 +1899,8 @@ class Tapioca::Loaders::Loader
   sig { returns(T::Boolean) }
   def zeitwerk_mode?; end
 end
+
+Tapioca::NOOP_METHOD = T.let(T.unsafe(nil), Proc)
 
 module Tapioca::RBIFilesHelper
   requires_ancestor { Tapioca::SorbetHelper }
@@ -2193,11 +2195,8 @@ module Tapioca::Runtime::Trackers::Autoload
   class << self
     def eager_load_all!; end
     def register(constant_name); end
-    def with_disabled_exits(&block); end
   end
 end
-
-Tapioca::Runtime::Trackers::Autoload::NOOP_METHOD = T.let(T.unsafe(nil), Proc)
 
 module Tapioca::Runtime::Trackers::ConstantDefinition
   extend ::Tapioca::Runtime::Trackers::Tracker

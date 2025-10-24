@@ -2476,7 +2476,7 @@ module RSpec::Core::World::Null
     def non_example_failure; end
     def non_example_failure=(_); end
     def registered_example_group_files; end
-    def traverse_example_group_trees_until; end
+    def traverse_example_group_trees_until(&_block); end
   end
 end
 
