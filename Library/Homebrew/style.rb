@@ -121,11 +121,7 @@ module Homebrew
       args = %w[
         --force-exclusion
       ]
-      args << if fix
-        "--autocorrect-all"
-      else
-        "--parallel"
-      end
+      args << "--autocorrect-all" if fix
 
       args += ["--extra-details"] if verbose
 
@@ -163,13 +159,20 @@ module Homebrew
         base_dir = HOMEBREW_LIBRARY if files.any? { |f| f.to_s.start_with? HOMEBREW_LIBRARY }
       end
 
-      args += files
-
       HOMEBREW_CACHE.mkpath
-      cache_dir = HOMEBREW_CACHE.realpath
-      cache_env = { "XDG_CACHE_HOME" => "#{cache_dir}/style" }
+      cache_env = if (cache_dir = HOMEBREW_CACHE.realpath/"style") && cache_dir.writable?
+        args << "--parallel" unless fix
 
-      FileUtils.rm_rf cache_env["XDG_CACHE_HOME"] if reset_cache
+        FileUtils.rm_rf cache_dir if reset_cache
+
+        { "XDG_CACHE_HOME" => cache_dir.to_s }
+      else
+        args << "--cache" << "false"
+
+        {}
+      end
+
+      args += files
 
       ruby_args = HOMEBREW_RUBY_EXEC_ARGS.dup
       case output_type
