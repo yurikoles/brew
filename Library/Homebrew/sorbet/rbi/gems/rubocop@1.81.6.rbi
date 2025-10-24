@@ -3032,7 +3032,11 @@ RuboCop::Cop::Style::ObjectThen::MSG = T.let(T.unsafe(nil), String)
 
 RuboCop::Cop::Style::ObjectThen::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
-RuboCop::Cop::Style::OneLineConditional::MSG = T.let(T.unsafe(nil), String)
+RuboCop::Cop::Style::OneLineConditional::MSG_MULTILINE = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::OneLineConditional::MSG_SUFFIX = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::OneLineConditional::MSG_TERNARY = T.let(T.unsafe(nil), String)
 
 RuboCop::Cop::Style::OpenStructUse::MSG = T.let(T.unsafe(nil), String)
 
@@ -3858,9 +3862,9 @@ RuboCop::Formatter::PacmanFormatter::FALLBACK_TERMINAL_WIDTH = T.let(T.unsafe(ni
 
 RuboCop::Formatter::PacmanFormatter::GHOST = T.let(T.unsafe(nil), String)
 
-RuboCop::Formatter::PacmanFormatter::PACDOT = T.let(T.unsafe(nil), Rainbow::Presenter)
+RuboCop::Formatter::PacmanFormatter::PACDOT = T.let(T.unsafe(nil), Rainbow::NullPresenter)
 
-RuboCop::Formatter::PacmanFormatter::PACMAN = T.let(T.unsafe(nil), Rainbow::Presenter)
+RuboCop::Formatter::PacmanFormatter::PACMAN = T.let(T.unsafe(nil), Rainbow::NullPresenter)
 
 RuboCop::Formatter::ProgressFormatter::DOT = T.let(T.unsafe(nil), String)
 
