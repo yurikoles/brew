@@ -438,8 +438,10 @@ class Formula
   sig { returns(Pathname) }
   def tap_path
     return path unless (t = tap)
+    return Formulary.core_path(name) if t.core_tap?
+    return path unless t.installed?
 
-    t.new_formula_path(name)
+    t.formula_files_by_name[name] || path
   end
 
   # The path that was specified to find this formula.
