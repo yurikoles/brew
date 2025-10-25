@@ -843,6 +843,17 @@ class Formula
     end
   end
 
+  sig { params(fetch_head: T::Boolean).returns(PkgVersion) }
+  def latest_head_pkg_version(fetch_head: false)
+    return pkg_version unless (latest_version = latest_head_version)
+    return latest_version unless head_version_outdated?(latest_version, fetch_head:)
+
+    downloader = T.must(head).downloader
+    with_context quiet: true do
+      PkgVersion.new(Version.new("HEAD-#{downloader.last_commit}"), revision)
+    end
+  end
+
   # The latest prefix for this formula. Checks for {#head} and then {#stable}'s {#prefix}.
   sig { returns(Pathname) }
   def latest_installed_prefix
