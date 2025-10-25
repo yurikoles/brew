@@ -7,7 +7,6 @@ module RuboCop
   module Cop
     module FormulaAudit
       # This cop audits `patch`es in formulae.
-      # TODO: Many of these could be auto-corrected.
       class Patches < FormulaCop
         extend AutoCorrector
 
@@ -56,7 +55,10 @@ module RuboCop
           end
 
           if regex_match_group(patch_url_node, %r{https://github.com/[^/]*/[^/]*/commit/[a-fA-F0-9]*\.diff})
-            problem "GitHub patches should end with .patch, not .diff: #{patch_url}"
+            problem "GitHub patches should end with .patch, not .diff: #{patch_url}" do |corrector|
+              correct = patch_url_node.source.gsub(".diff", ".patch")
+              corrector.replace(patch_url_node.source_range, correct)
+            end
           end
 
           bitbucket_regex = %r{bitbucket\.org/([^/]+)/([^/]+)/commits/([a-f0-9]+)/raw}i
@@ -71,12 +73,18 @@ module RuboCop
           # Only .diff passes `--full-index` to `git diff` and there is no documented way
           # to get .patch to behave the same for GitLab.
           if regex_match_group(patch_url_node, %r{.*gitlab.*/commit/[a-fA-F0-9]*\.patch})
-            problem "GitLab patches should end with .diff, not .patch: #{patch_url}"
+            problem "GitLab patches should end with .diff, not .patch: #{patch_url}" do |corrector|
+              correct = patch_url_node.source.gsub(".patch", ".diff")
+              corrector.replace(patch_url_node.source_range, correct)
+            end
           end
 
           gh_patch_param_pattern = %r{https?://github\.com/.+/.+/(?:commit|pull)/[a-fA-F0-9]*.(?:patch|diff)}
           if regex_match_group(patch_url_node, gh_patch_param_pattern) && !patch_url.match?(/\?full_index=\w+$/)
-            problem "GitHub patches should use the full_index parameter: #{patch_url}?full_index=1"
+            problem "GitHub patches should use the full_index parameter: #{patch_url}?full_index=1" do |corrector|
+              correct = patch_url_node.source.sub(/"$/, '?full_index=1"')
+              corrector.replace(patch_url_node.source_range, correct)
+            end
           end
 
           gh_patch_patterns = Regexp.union([%r{/raw\.github\.com/},
