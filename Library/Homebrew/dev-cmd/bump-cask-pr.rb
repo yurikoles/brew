@@ -340,7 +340,6 @@ module Homebrew
         if args.no_audit?
           ohai "Skipping `brew audit`"
         else
-          odebug "Running `brew audit --cask --online #{cask.full_name} --except=#{audit_exceptions.join(",")}`"
           system HOMEBREW_BREW_FILE, "audit", "--cask", "--online", cask.full_name,
                  "--except=#{audit_exceptions.join(",")}"
           failed_audit = !$CHILD_STATUS.success?
