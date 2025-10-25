@@ -1239,21 +1239,21 @@ class GitHubGitDownloadStrategy < GitDownloadStrategy
     @repo = T.let(match_data[:repo], T.nilable(String))
   end
 
+  sig { override.returns(String) }
+  def last_commit
+    @last_commit ||= GitHub.last_commit(@user, @repo, @ref, version) || super
+  end
+
   sig { override.params(commit: T.nilable(String)).returns(T::Boolean) }
   def commit_outdated?(commit)
-    @last_commit ||= GitHub.last_commit(@user, @repo, @ref, version)
-    if @last_commit
-      return true unless commit
-      return true unless @last_commit.start_with?(commit)
+    return true unless commit
+    return true unless last_commit.start_with?(commit)
 
-      if GitHub.multiple_short_commits_exist?(@user, @repo, commit)
-        true
-      else
-        T.must(@version).update_commit(commit)
-        false
-      end
+    if GitHub.multiple_short_commits_exist?(@user, @repo, commit)
+      true
     else
-      super
+      T.must(@version).update_commit(commit)
+      false
     end
   end
 
