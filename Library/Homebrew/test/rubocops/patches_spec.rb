@@ -366,5 +366,51 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
         end
       RUBY
     end
+
+    it "corrects GitHub URLs with 'diff' in the path" do
+      expect_offense(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          patch do
+            url "https://github.com/diff-tool/diff-utils/commit/abc123.diff"
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ FormulaAudit/Patches: GitHub patches should end with .patch, not .diff: https://github.com/diff-tool/diff-utils/commit/abc123.diff
+            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          patch do
+            url "https://github.com/diff-tool/diff-utils/commit/abc123.patch?full_index=1"
+            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+          end
+        end
+      RUBY
+    end
+
+    it "corrects GitLab URLs with 'patch' in the path" do
+      expect_offense(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          patch do
+            url "https://gitlab.com/patch-tool/patch-utils/-/commit/abc123.patch"
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ FormulaAudit/Patches: GitLab patches should end with .diff, not .patch: https://gitlab.com/patch-tool/patch-utils/-/commit/abc123.patch
+            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          patch do
+            url "https://gitlab.com/patch-tool/patch-utils/-/commit/abc123.diff"
+            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+          end
+        end
+      RUBY
+    end
   end
 end

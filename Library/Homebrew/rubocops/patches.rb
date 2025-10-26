@@ -56,7 +56,8 @@ module RuboCop
 
           if regex_match_group(patch_url_node, %r{https://github.com/[^/]*/[^/]*/commit/[a-fA-F0-9]*\.diff})
             problem "GitHub patches should end with .patch, not .diff: #{patch_url}" do |corrector|
-              correct = patch_url_node.source.gsub(".diff", ".patch")
+              # Replace .diff with .patch, keeping either the closing quote or query parameter start
+              correct = patch_url_node.source.sub(/\.diff(["?])/, '.patch\1')
               corrector.replace(patch_url_node.source_range, correct)
             end
           end
@@ -74,7 +75,8 @@ module RuboCop
           # to get .patch to behave the same for GitLab.
           if regex_match_group(patch_url_node, %r{.*gitlab.*/commit/[a-fA-F0-9]*\.patch})
             problem "GitLab patches should end with .diff, not .patch: #{patch_url}" do |corrector|
-              correct = patch_url_node.source.gsub(".patch", ".diff")
+              # Replace .patch with .diff, keeping either the closing quote or query parameter start
+              correct = patch_url_node.source.sub(/\.patch(["?])/, '.diff\1')
               corrector.replace(patch_url_node.source_range, correct)
             end
           end
