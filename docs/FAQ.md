@@ -124,6 +124,18 @@ Did you `chown root /Applications/TextMate.app`? Probably not. So is it that imp
 
 If you need to run Homebrew in a multi-user environment, consider creating a separate user account specifically for use of Homebrew.
 
+## What is the default ownership and permissions used by Homebrew?
+
+First, see previous question regarding sudo.
+
+Ownership on macOS, all subdirectories and files use a forced default of `admin` user group (instead of lower default user group `staff`) and the current user that executed the installation.
+
+Ownership on Linux, all subdirectories and files default to the current user and the user group that executed the installation.
+
+Permissions for all subdirectories and files use `0755 (u=rwx,g=rx,o=rx)` on both macOS and Linux, permitting only the current user to replace binaries (avoidance of malicious changes) while allowing all users to execute binaries. Note: Although, Homebrew is single-user design and it is not advised to execute using a separate user account specifically for use of Homebrew.
+
+When any binary is executed by any macOS user, it will inherit the permissions of the `admin` user group and be able to read all files on the device; Homebrew on macOS is not restricted to only files created by the user under $HOME directory path (e.g. $HOME/Applications or $HOME/Downloads). This permits binaries installed by Homebrew to access and amend macOS itself (e.g. /Applications, /Library, /System).
+
 ## Why isn’t a particular command documented?
 
 If it’s not in [`man brew`](Manpage.md), it’s probably an [external command](External-Commands.md) with documentation available using `--help`.
