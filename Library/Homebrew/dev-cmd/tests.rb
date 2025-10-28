@@ -230,6 +230,9 @@ module Homebrew
           ENV.delete(env)
         end
 
+        # Tests go boom right now with internal API enabled.
+        ENV.delete("HOMEBREW_USE_INTERNAL_API")
+
         # Fetch JSON API files if needed.
         require "api"
         Homebrew::API.fetch_api_files!
