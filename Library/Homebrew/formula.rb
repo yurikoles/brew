@@ -1743,7 +1743,7 @@ class Formula
     Formula.cache[:outdated_kegs][cache_key] ||= begin
       all_kegs = []
       current_version = T.let(false, T::Boolean)
-      latest = if core_formula? && Homebrew::EnvConfig.use_internal_api?
+      latest = if core_formula? && Homebrew::EnvConfig.use_internal_api? && Homebrew::API.formula_names.include?(full_name)
         Homebrew::API::Internal.formula_stub(full_name)
       else
         latest_formula
