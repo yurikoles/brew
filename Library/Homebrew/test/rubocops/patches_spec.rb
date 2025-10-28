@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
           url "https://brew.sh/foo-1.0.tgz"
           patch do
             url "https://api.bitbucket.org/2.0/repositories/multicoreware/x265_git/diff/b354c009a60bcd6d7fc04014e200a1ee9c45c167"
-            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+            sha256 ""
           end
         end
       RUBY
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
           url "https://brew.sh/foo-1.0.tgz"
           patch do
             url "https://github.com/michaeldv/pit/commit/f64978d.patch?full_index=1"
-            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+            sha256 ""
           end
         end
       RUBY
@@ -338,7 +338,7 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
           url "https://brew.sh/foo-1.0.tgz"
           patch do
             url "https://gitlab.com/inkscape/lib2geom/-/commit/0b8b4c26b4a.diff"
-            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+            sha256 ""
           end
         end
       RUBY
@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
           url "https://brew.sh/foo-1.0.tgz"
           patch do
             url "https://github.com/foo/bar/commit/abc123.patch?full_index=1"
-            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+            sha256 ""
           end
         end
       RUBY
@@ -384,7 +384,7 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
           url "https://brew.sh/foo-1.0.tgz"
           patch do
             url "https://github.com/diff-tool/diff-utils/commit/abc123.patch?full_index=1"
-            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+            sha256 ""
           end
         end
       RUBY
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
           url "https://brew.sh/foo-1.0.tgz"
           patch do
             url "https://gitlab.com/patch-tool/patch-utils/-/commit/abc123.diff"
-            sha256 "63376b8fdd6613a91976106d9376069274191860cd58f039b29ff16de1925621"
+            sha256 ""
           end
         end
       RUBY
