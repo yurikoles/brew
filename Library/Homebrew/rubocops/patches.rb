@@ -22,7 +22,7 @@ module RuboCop
             url_node = find_every_method_call_by_name(patch_block, :url).first
             url_string = parameters(url_node).first
             sha256_node = find_every_method_call_by_name(patch_block, :sha256).first
-            sha256_string = parameters(sha256_node).first
+            sha256_string = sha256_node ? parameters(sha256_node).first : nil
             patch_problems(url_string, sha256_string)
           end
 
@@ -87,7 +87,7 @@ module RuboCop
           end
 
           gh_patch_param_pattern = %r{https?://github\.com/.+/.+/(?:commit|pull)/[a-fA-F0-9]*.(?:patch|diff)}
-          if regex_match_group(patch_url_node, gh_patch_param_pattern) && !patch_url.match?(/\?full_index=\w+/)
+          if regex_match_group(patch_url_node, gh_patch_param_pattern) && !patch_url.match?(/\?full_index=\w+$/)
             problem "GitHub patches should use the full_index parameter: #{patch_url}?full_index=1" do |corrector|
               correct = patch_url_node.source.sub(/"$/, '?full_index=1"')
               corrector.replace(patch_url_node.source_range, correct)

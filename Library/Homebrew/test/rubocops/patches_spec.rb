@@ -412,5 +412,32 @@ RSpec.describe RuboCop::Cop::FormulaAudit::Patches do
         end
       RUBY
     end
+
+    it "corrects GitHub URLs without sha256 field (e.g. with on_linux block)" do
+      expect_offense(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          patch :p2 do
+            on_linux do
+              url "https://github.com/foo/bar/commit/abc123.diff"
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ FormulaAudit/Patches: GitHub patches should end with .patch, not .diff: https://github.com/foo/bar/commit/abc123.diff
+              directory "gl"
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo < Formula
+          url "https://brew.sh/foo-1.0.tgz"
+          patch :p2 do
+            on_linux do
+              url "https://github.com/foo/bar/commit/abc123.patch?full_index=1"
+              directory "gl"
+            end
+          end
+        end
+      RUBY
+    end
   end
 end
