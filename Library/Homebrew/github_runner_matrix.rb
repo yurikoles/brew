@@ -184,11 +184,7 @@ class GitHubRunnerMatrix
 
     if !@all_supported || ENV.key?("HOMEBREW_LINUX_RUNNER")
       @runners << create_runner(:linux, :x86_64)
-
-      if !@dependent_matrix &&
-         @testing_formulae.any? { |tf| tf.formula.bottle_specification.tag?(Utils::Bottles.tag(:arm64_linux)) }
-        @runners << create_runner(:linux, :arm64)
-      end
+      @runners << create_runner(:linux, :arm64) unless @dependent_matrix
     end
 
     long_timeout       = ENV.fetch("HOMEBREW_MACOS_LONG_TIMEOUT", "false") == "true"
