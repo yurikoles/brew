@@ -201,7 +201,7 @@ module Kernel
     return executable if executable.exist?
 
     require "formula"
-    Formula[formula_name].ensure_installed!(reason:, latest:).opt_bin/name
+    Formulary.factory_stub(formula_name).ensure_installed!(reason:, latest:).opt_bin/name
   end
 
   sig { params(size_in_bytes: T.any(Integer, Float)).returns(String) }
