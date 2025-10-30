@@ -22,7 +22,7 @@ module RuboCop
             url_node = find_every_method_call_by_name(patch_block, :url).first
             url_string = parameters(url_node).first
             sha256_node = find_every_method_call_by_name(patch_block, :sha256).first
-            sha256_string = sha256_node ? parameters(sha256_node).first : nil
+            sha256_string = parameters(sha256_node).first if sha256_node
             patch_problems(url_string, sha256_string)
           end
 
