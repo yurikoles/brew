@@ -531,6 +531,10 @@ module Homebrew
         description: "A space-separated list of casks. Homebrew will act as " \
                      "if `--greedy` was passed when upgrading any cask on this list.",
       },
+      HOMEBREW_USE_INTERNAL_API:                 {
+        description: "If set, test the new beta internal API for fetching formula and cask data.",
+        boolean:     true,
+      },
       HOMEBREW_VERBOSE:                          {
         description: "If set, always assume `--verbose` when running commands.",
         boolean:     true,
@@ -715,11 +719,6 @@ module Homebrew
       end
 
       [concurrency, 1].max
-    end
-
-    sig { returns(T::Boolean) }
-    def use_internal_api?
-      ENV["HOMEBREW_USE_INTERNAL_API"].present?
     end
   end
 end
