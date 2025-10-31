@@ -53,6 +53,8 @@ module Homebrew
     def fetch
       return if downloads.empty?
 
+      context_before_fetch = Context.current
+
       if concurrency == 1
         downloads.each do |downloadable, promise|
           promise.wait!
@@ -176,6 +178,9 @@ module Homebrew
           stdout_print_and_flush_if_tty Tty.show_cursor
         end
       end
+
+      # Restore the pre-parallel fetch context to avoid e.g. quiet state bleeding out from threads.
+      Context.current = context_before_fetch
 
       downloads.clear
     end
