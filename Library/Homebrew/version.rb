@@ -746,7 +746,7 @@ class Version
   def inspect
     return "#<Version::NULL>" if null?
 
-    super
+    "#<Version #{self}>"
   end
 
   sig { returns(T.self_type) }
