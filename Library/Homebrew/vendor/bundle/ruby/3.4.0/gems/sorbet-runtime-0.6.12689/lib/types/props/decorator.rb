@@ -264,9 +264,9 @@ class T::Props::Decorator
     nil
   end
 
-  SAFE_NAME = T.let(/\A[A-Za-z_][A-Za-z0-9_-]*\z/.freeze, Regexp, checked: false)
+  SAFE_NAME = T.let(/\A[A-Za-z_][A-Za-z0-9_-]*\z/, Regexp, checked: false)
   # Should be exactly the same as `SAFE_NAME`, but with a leading `@`.
-  SAFE_ACCESSOR_KEY_NAME = T.let(/\A@[A-Za-z_][A-Za-z0-9_-]*\z/.freeze, Regexp, checked: false)
+  SAFE_ACCESSOR_KEY_NAME = T.let(/\A@[A-Za-z_][A-Za-z0-9_-]*\z/, Regexp, checked: false)
 
   # Used to validate both prop names and serialized forms
   sig { params(name: T.any(Symbol, String)).void.checked(:never) }
@@ -327,9 +327,9 @@ class T::Props::Decorator
   sig(:final) { params(name: Symbol).returns(T::Boolean).checked(:never) }
   private def method_defined_on_ancestor?(name)
     (@class.method_defined?(name) || @class.private_method_defined?(name)) &&
-    # Unfortunately, older versions of ruby don't allow the second parameter on
-    # `private_method_defined?`.
-    (!@class.method_defined?(name, false) && !@class.private_method_defined?(name, false))
+      # Unfortunately, older versions of ruby don't allow the second parameter on
+      # `private_method_defined?`.
+      !@class.method_defined?(name, false) && !@class.private_method_defined?(name, false)
   end
 
   sig(:final) { params(name: Symbol, rules: Rules).void.checked(:never) }
