@@ -152,6 +152,10 @@ module Homebrew
           raise HomebrewCurlDownloadStrategyError, url if
             strategy <= HomebrewCurlDownloadStrategy && !Formula["curl"].any_version_installed?
 
+          # Skip ftp.gnu.org audit
+          # See issue: https://github.com/Homebrew/brew/issues/20456
+          next if url.match?(%r{^https?://ftp\.gnu\.org/.+})
+
           # Skip https audit for curl dependencies
           if !curl_dep && (http_content_problem = curl_check_http_content(
             url,
