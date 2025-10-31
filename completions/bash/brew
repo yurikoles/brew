@@ -425,6 +425,7 @@ _brew_audit() {
       --arch
       --audit-debug
       --cask
+      --changed
       --debug
       --display-filename
       --eval-all
@@ -1623,6 +1624,22 @@ _brew_leaves() {
       --help
       --installed-as-dependency
       --installed-on-request
+      --quiet
+      --verbose
+      "
+      return
+      ;;
+    *) ;;
+  esac
+}
+
+_brew_lgtm() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "${cur}" in
+    -*)
+      __brewcomp "
+      --debug
+      --help
       --quiet
       --verbose
       "
@@ -3339,6 +3356,7 @@ _brew() {
     irb) _brew_irb ;;
     lc) _brew_lc ;;
     leaves) _brew_leaves ;;
+    lgtm) _brew_lgtm ;;
     link) _brew_link ;;
     linkage) _brew_linkage ;;
     list) _brew_list ;;

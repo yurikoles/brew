@@ -1248,6 +1248,9 @@ Run various additional style checks to determine if a new formula or cask is eli
 \fB\-\-[no\-]signing\fP
 Audit for app signatures, which are required by macOS on ARM\.
 .TP
+\fB\-\-changed\fP
+Check files that were changed from the \fBmain\fP branch\.
+.TP
 \fB\-\-tap\fP
 Check formulae and casks within the given tap, specified as \fIuser\fP\fB/\fP\fIrepo\fP\&\.
 .TP
@@ -1750,6 +1753,8 @@ Show several examples\.
 .TP
 \fB\-\-pry\fP
 Use Pry instead of IRB\. Enabled by default if \fB$HOMEBREW_PRY\fP is set\.
+.SS "\fBlgtm\fP"
+Run \fBbrew typecheck\fP, \fBbrew style \-\-changed\fP and \fBbrew tests \-\-changed\fP in one go\.
 .SS "\fBlinkage\fP \fR[\fIoptions\fP] \fR[\fIinstalled_formula\fP \.\.\.]"
 Check the library links from the given \fIformula\fP kegs\. If no \fIformula\fP are provided, check all kegs\. Raises an error if run on uninstalled formulae\.
 .TP

@@ -344,6 +344,7 @@ __fish_brew_complete_cmd 'audit' 'Check formula or cask for Homebrew coding styl
 __fish_brew_complete_arg 'audit' -l arch -d 'Audit the given CPU architecture. (Pass `all` to audit all architectures.)'
 __fish_brew_complete_arg 'audit' -l audit-debug -d 'Enable debugging and profiling of audit methods'
 __fish_brew_complete_arg 'audit' -l cask -d 'Treat all named arguments as casks'
+__fish_brew_complete_arg 'audit' -l changed -d 'Check files that were changed from the `main` branch'
 __fish_brew_complete_arg 'audit' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg 'audit' -l display-filename -d 'Prefix every line of output with the file or formula name being audited, to make output easy to grep'
 __fish_brew_complete_arg 'audit' -l eval-all -d 'Evaluate all available formulae and casks, whether installed or not, to audit them. Enabled by default if `$HOMEBREW_EVAL_ALL` is set'
@@ -1113,6 +1114,13 @@ __fish_brew_complete_arg 'leaves' -l installed-as-dependency -d 'Only list leave
 __fish_brew_complete_arg 'leaves' -l installed-on-request -d 'Only list leaves that were manually installed'
 __fish_brew_complete_arg 'leaves' -l quiet -d 'Make some output more quiet'
 __fish_brew_complete_arg 'leaves' -l verbose -d 'Make some output more verbose'
+
+
+__fish_brew_complete_cmd 'lgtm' 'Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one go'
+__fish_brew_complete_arg 'lgtm' -l debug -d 'Display any debugging information'
+__fish_brew_complete_arg 'lgtm' -l help -d 'Show this message'
+__fish_brew_complete_arg 'lgtm' -l quiet -d 'Make some output more quiet'
+__fish_brew_complete_arg 'lgtm' -l verbose -d 'Make some output more verbose'
 
 
 __fish_brew_complete_cmd 'link' 'Symlink all of formula\'s installed files into Homebrew\'s prefix'
