@@ -62,6 +62,7 @@ install-bundler-gems
 irb
 lc
 leaves
+lgtm
 link
 linkage
 list

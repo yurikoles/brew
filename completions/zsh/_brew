@@ -187,6 +187,7 @@ __brew_internal_commands() {
     'install-bundler-gems:Install Homebrew'\''s Bundler gems'
     'irb:Enter the interactive Homebrew Ruby shell'
     'leaves:List installed formulae that are not dependencies of another installed formula or cask'
+    'lgtm:Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one go'
     'link:Symlink all of formula'\''s installed files into Homebrew'\''s prefix'
     'linkage:Check the library links from the given formula kegs'
     'list:List all installed formulae and casks'
@@ -473,15 +474,16 @@ _brew_audit() {
   _arguments \
     '--arch[Audit the given CPU architecture. (Pass `all` to audit all architectures.)]' \
     '--audit-debug[Enable debugging and profiling of audit methods]' \
+    '(--installed --eval-all --tap)--changed[Check files that were changed from the `main` branch]' \
     '--debug[Display any debugging information]' \
     '--display-filename[Prefix every line of output with the file or formula name being audited, to make output easy to grep]' \
-    '(--installed)--eval-all[Evaluate all available formulae and casks, whether installed or not, to audit them. Enabled by default if `$HOMEBREW_EVAL_ALL` is set]' \
+    '(--installed --changed --tap)--eval-all[Evaluate all available formulae and casks, whether installed or not, to audit them. Enabled by default if `$HOMEBREW_EVAL_ALL` is set]' \
     '(--only)--except[Specify a comma-separated method list to skip running the methods named `audit_`method]' \
     '(--only-cops --strict --only-cops --only)--except-cops[Specify a comma-separated cops list to skip checking for violations of the listed RuboCop cops]' \
     '--fix[Fix style violations automatically using RuboCop'\''s auto-correct feature]' \
     '--git[Run additional, slower style checks that navigate the Git repository]' \
     '--help[Show this message]' \
-    '(--eval-all)--installed[Only check formulae and casks that are currently installed]' \
+    '(--eval-all --changed --tap)--installed[Only check formulae and casks that are currently installed]' \
     '--new[Run various additional style checks to determine if a new formula or cask is eligible for Homebrew. This should be used when creating new formulae or casks and implies `--strict` and `--online`]' \
     '--no-signing[Audit for app signatures, which are required by macOS on ARM]' \
     '--online[Run additional, slower style checks that require a network connection]' \
@@ -492,7 +494,7 @@ _brew_audit() {
     '--signing[Audit for app signatures, which are required by macOS on ARM]' \
     '--skip-style[Skip running non-RuboCop style checks. Useful if you plan on running `brew style` separately. Enabled by default unless a formula is specified by name]' \
     '(--only-cops --except-cops)--strict[Run additional, stricter style checks]' \
-    '--tap[Check formulae and casks within the given tap, specified as user`/`repo]' \
+    '(--installed --eval-all --changed)--tap[Check formulae and casks within the given tap, specified as user`/`repo]' \
     '--verbose[Make some output more verbose]' \
     - formula \
     '(--cask)--formula[Treat all named arguments as formulae]' \
@@ -1379,6 +1381,15 @@ _brew_leaves() {
     '--help[Show this message]' \
     '(--installed-on-request)--installed-as-dependency[Only list leaves that were installed as dependencies]' \
     '(--installed-as-dependency)--installed-on-request[Only list leaves that were manually installed]' \
+    '--quiet[Make some output more quiet]' \
+    '--verbose[Make some output more verbose]'
+}
+
+# brew lgtm
+_brew_lgtm() {
+  _arguments \
+    '--debug[Display any debugging information]' \
+    '--help[Show this message]' \
     '--quiet[Make some output more quiet]' \
     '--verbose[Make some output more verbose]'
 }

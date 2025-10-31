@@ -2006,6 +2006,10 @@ checks. Will exit with a non-zero status if any errors are found.
 
 : Audit for app signatures, which are required by macOS on ARM.
 
+`--changed`
+
+: Check files that were changed from the `main` branch.
+
 `--tap`
 
 : Check formulae and casks within the given tap, specified as
@@ -2764,6 +2768,11 @@ Enter the interactive Homebrew Ruby shell.
 `--pry`
 
 : Use Pry instead of IRB. Enabled by default if `$HOMEBREW_PRY` is set.
+
+### `lgtm`
+
+Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one
+go.
 
 ### `linkage` \[*`options`*\] \[*`installed_formula`* ...\]
 
