@@ -173,15 +173,6 @@ module Homebrew
       end
 
       return unless @core_tap
-
-      cask_tokens = CoreCaskTap.instance.cask_tokens.presence
-      cask_tokens ||= Homebrew::API.cask_tokens
-
-      if cask_tokens.include?(name)
-        problem "Formula name conflicts with an existing Homebrew/cask cask's token."
-        return
-      end
-
       return unless @strict
 
       problem "'#{name}' is not allowed in homebrew/core." if MissingFormula.disallowed_reason(name)
@@ -195,6 +186,9 @@ module Homebrew
         problem "'#{name}' is reserved as the old name of #{oldname} in homebrew/core."
         return
       end
+
+      cask_tokens = CoreCaskTap.instance.cask_tokens.presence
+      cask_tokens ||= Homebrew::API.cask_tokens
 
       if cask_tokens.include?(name)
         problem "Formula name conflicts with an existing Homebrew/cask cask's token."
