@@ -216,9 +216,9 @@ module Homebrew
         verbose = args.verbose?
 
         puts "Querying pull requests for #{person} in #{organisation}..." if args.verbose?
-        organisation_merged_prs = \
+        organisation_merged_prs =
           GitHub.search_merged_pull_requests_in_user_or_organisation(organisation, person, from:, to:)
-        organisation_approved_reviews = \
+        organisation_approved_reviews =
           GitHub.search_approved_pull_requests_in_user_or_organisation(organisation, person, from:, to:)
 
         require "utils/git"
