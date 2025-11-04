@@ -206,10 +206,6 @@ jobs:
 
       - name: Set environment variables
         run: |
-          if [[ "${ARCH}" == "arm64" ]]; then
-            echo "HOMEBREW_ARM64_TESTING=1" >> "$GITHUB_ENV"
-          fi
-
           # odeprecated: remove 20.04 in Homebrew >=4.7
           if [[ "${VERSION}" == "20.04" ]]; then
             echo "HOMEBREW_GLIBC_TESTING=1" >> "$GITHUB_ENV"
@@ -219,7 +215,7 @@ jobs:
           ARCH: ${{ matrix.arch }}
 
       - name: Run brew test-bot --only-setup
-        run: docker run --env HOMEBREW_ARM64_TESTING --env HOMEBREW_GLIBC_TESTING --rm brew brew test-bot --only-setup
+        run: docker run --env HOMEBREW_GLIBC_TESTING --rm brew brew test-bot --only-setup
 
       - name: Log in to GitHub Packages (BrewTestBot)
         if: fromJSON(steps.attributes.outputs.push)

@@ -40,7 +40,7 @@ For Tier 1 support, Homebrew on Linux must be all of:
 - have a Linux kernel >= 3.2
 - if running Ubuntu, using an Ubuntu version in "standard support": <https://ubuntu.com/about/release-cycle>
 - installed in the default prefix (i.e. `/home/linuxbrew/.linuxbrew`)
-- running on a supported architecture (i.e. Intel x86_64)
+- running on a supported architecture (i.e. Intel x86_64 or ARM64/AArch64)
 - not building official packages from source
 - you have `sudo` access on your system
 
@@ -61,7 +61,7 @@ Tier 2 configurations include:
 - Linux versions with a system `glibc` version < 2.35 (but >= 2.13), requiring the Homebrew `glibc` formula to be installed automatically
 - using official packages that need to be built from source due to installing Homebrew outside the default prefix
   (i.e. `/opt/homebrew` on Apple Silicon, `/usr/local` on Apple Intel x86_64, `/home/linuxbrew/.linuxbrew` for Linux)
-- running on a not-yet-supported architecture (i.e. Linux ARM64/AARCH64)
+- running on a not-yet-supported architecture
 - devices using OpenCore Legacy Patcher with a Westmere or newer Intel CPU
 
 ## Tier 3
