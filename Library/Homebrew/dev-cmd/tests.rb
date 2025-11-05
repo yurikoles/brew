@@ -60,13 +60,17 @@ module Homebrew
 
           only = args.only
           files = if only
-            test_name, line = only.split(":", 2)
+            only.split(",").flat_map do |test|
+              test_name, line = test.split(":", 2)
+              tests = if line.present?
+                parallel = false
+                ["test/#{test_name}_spec.rb:#{line}"]
+              else
+                Dir.glob("test/{#{test_name},#{test_name}/**/*}_spec.rb")
+              end
+              raise UsageError, "Invalid `--only` argument: #{test}" if tests.blank?
 
-            if line.nil?
-              Dir.glob("test/{#{test_name},#{test_name}/**/*}_spec.rb")
-            else
-              parallel = false
-              ["test/#{test_name}_spec.rb:#{line}"]
+              tests
             end
           elsif args.changed?
             changed_test_files

@@ -38,12 +38,7 @@ module OS
     # @api internal
     sig { returns(MacOSVersion) }
     def self.full_version
-      @full_version ||= T.let(nil, T.nilable(MacOSVersion))
-      @full_version ||= if (fake_macos = ENV.fetch("HOMEBREW_FAKE_MACOS", nil)) # for Portable Ruby building
-        MacOSVersion.new(fake_macos)
-      else
-        MacOSVersion.new(VERSION)
-      end
+      @full_version ||= T.let(MacOSVersion.new(VERSION), T.nilable(MacOSVersion))
     end
 
     sig { params(version: String).void }

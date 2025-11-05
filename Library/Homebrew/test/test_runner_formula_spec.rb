@@ -376,13 +376,13 @@ RSpec.describe TestRunnerFormula do
           end
         end
 
-        context "when given `{ platform: :macos, arch: :x86_64, macos_version: :mojave }`" do
+        context "when given `{ platform: :macos, arch: :x86_64, macos_version: :sonoma }`" do
           it "returns only the dependents for the requested platform and architecture" do
             allow(Formula).to receive(:all).and_wrap_original { testball_and_dependents }
 
             expect(
               described_class.new(testball, eval_all: true).dependents(
-                platform: :macos, arch: :x86_64, macos_version: :mojave,
+                platform: :macos, arch: :x86_64, macos_version: :sonoma,
               ).map(&:name).sort,
             ).to eq(["testball_user", "testball_user-intel", "testball_user-macos"].sort)
           end

@@ -342,6 +342,7 @@ class Keg
     # been fixed upstream for some time, but a sufficiently new enough
     # file with that fix is only available in macOS Sierra.
     # https://bugs.gw.com/view.php?id=292
+    # TODO: remove custom logic as we're now not supporting pre-Sierra.
     with_custom_locale("C") do
       files = Set.new path.find.reject { |pn|
         next true if pn.symlink?

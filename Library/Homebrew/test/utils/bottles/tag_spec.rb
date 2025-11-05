@@ -63,10 +63,8 @@ RSpec.describe Utils::Bottles::Tag do
       expect(tag.valid_combination?).to be true
     end
 
-    it "returns false for ARM on macOS Catalina or older" do
+    it "returns false for ARM on macOS Catalina" do
       tag = described_class.new(system: :catalina, arch: :arm64)
-      expect(tag.valid_combination?).to be false
-      tag = described_class.new(system: :mojave, arch: :arm)
       expect(tag.valid_combination?).to be false
     end
 
