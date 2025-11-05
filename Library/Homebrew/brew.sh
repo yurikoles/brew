@@ -79,7 +79,7 @@ realpath() {
 
 # Support systems where HOMEBREW_PREFIX is the default,
 # but a parent directory is a symlink.
-# Example: Fedora Silverblue symlinks /home -> var/home
+# Example: Fedora Silverblue symlinks /home -> /var/home
 if [[ "${HOMEBREW_PREFIX}" != "${HOMEBREW_DEFAULT_PREFIX}" && "$(realpath "${HOMEBREW_DEFAULT_PREFIX}")" == "${HOMEBREW_PREFIX}" ]]
 then
   HOMEBREW_PREFIX="${HOMEBREW_DEFAULT_PREFIX}"
