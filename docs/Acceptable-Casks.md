@@ -114,7 +114,7 @@ Common reasons to reject a cask entirely:
 * App installer is a `pkg` that requires [`allow_untrusted: true`](Cask-Cookbook.md#pkg-allow_untrusted).
 * App is a trial version, and the only way to acquire the full version is through the Mac App Store.
   * Similarly (and trickier to spot), the app has moved to the Mac App Store but still provides old versions via direct download. We reject these in all official repositories so users don’t get stuck using an old version, wrongly thinking they’re using the most up-to-date one (which, amongst other things, might be a security risk).
-* App is unmaintained, i.e. requires patching, has known and unpatched outstanding security vulnerabilites or [explicitly discontinued](https://github.com/Homebrew/homebrew-cask/pull/22699).
+* App is unmaintained, i.e. requires patching, has known and unpatched outstanding security vulnerabilities or [explicitly discontinued](https://github.com/Homebrew/homebrew-cask/pull/22699).
 * App has no information on its homepage (example: a GitHub repository without a README).
 * Cask has no public presence so `brew install` would be the only way to install the software, meaning users can’t easily verify its authenticity.
   * Or if the Cask has a download URL that is both behind a login/registration form and from a host that differs from the homepage.
