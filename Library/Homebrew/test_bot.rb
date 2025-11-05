@@ -60,7 +60,6 @@ module Homebrew
         raise UsageError, "cannot use --cleanup from HOMEBREW_PREFIX as it will delete all output."
       end
 
-      ENV["HOMEBREW_DOWNLOAD_CONCURRENCY"] = "auto" if args.concurrent_downloads?
       ENV["HOMEBREW_DEVELOPER"] = "1"
       ENV["HOMEBREW_NO_AUTO_UPDATE"] = "1"
       ENV["HOMEBREW_NO_EMOJI"] = "1"
