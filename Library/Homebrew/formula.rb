@@ -1780,7 +1780,7 @@ class Formula
 
   sig { returns(T::Boolean) }
   def new_formula_available?
-    installed_alias_target_changed? && !latest_formula.latest_version_installed?
+    installed_alias_target_changed? && !latest_formula(prefer_stub: true).latest_version_installed?
   end
 
   sig { returns(T.nilable(Formula)) }
@@ -1810,10 +1810,18 @@ class Formula
   end
 
   # If the alias has changed value, return the new formula.
-  # Otherwise, return self.
-  sig { returns(Formula) }
-  def latest_formula
-    installed_alias_target_changed? ? T.must(current_installed_alias_target) : Formulary.factory(full_name)
+  # Otherwise, return the latest version of the current formula.
+  # Optionally, return only a formula stub to avoid fetching a new formula file.
+  sig { params(prefer_stub: T::Boolean).returns(Formula) }
+  def latest_formula(prefer_stub: false)
+    return T.must(current_installed_alias_target) if installed_alias_target_changed?
+    return self if !core_formula? || !Homebrew::EnvConfig.use_internal_api?
+
+    if prefer_stub
+      Formulary.factory_stub(full_name, active_spec_sym, force_bottle:, flags: self.class.build_flags)
+    else
+      Formulary.factory(full_name, active_spec_sym, force_bottle:, flags: self.class.build_flags)
+    end
   end
 
   sig { returns(T::Array[Formula]) }
