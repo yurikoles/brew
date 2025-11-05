@@ -371,8 +371,10 @@ module Homebrew
                              .gsub(/^macOS ?/, "")
                              .gsub(/ \(.+\)$/, "")
 
-        if (macos_pretty_name = ::MacOSVersion.analytics_pretty_name(dimension))
-          return macos_pretty_name
+        begin
+          return ::MacOSVersion.new(dimension).pretty_name
+        rescue MacOSVersion::Error
+          nil
         end
 
         case dimension

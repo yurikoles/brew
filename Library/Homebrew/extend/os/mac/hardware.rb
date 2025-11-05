@@ -19,7 +19,7 @@ module OS
           #   https://github.com/Homebrew/homebrew-core/issues/67713
           elsif version >= :ventura
             :westmere
-          elsif version >= :mojave
+          elsif version >= :catalina
             :nehalem
           else
             super

@@ -131,7 +131,7 @@ class Foo < Formula
   depends_on xcode: ["9.3", :build]
   depends_on arch: :x86_64
   depends_on "jpeg"
-  depends_on macos: :high_sierra
+  depends_on macos: :sonoma
   depends_on "pkgconf"
   depends_on "readline" => :recommended
   depends_on "gtk+" => :optional
@@ -696,10 +696,10 @@ on_linux do
 end
 ```
 
-Components can also be declared for specific macOS versions or version ranges. For example, to declare a dependency only on High Sierra, nest the `depends_on` call inside an `on_high_sierra` block. Add an `:or_older` or `:or_newer` parameter to the `on_high_sierra` method to add the dependency to all macOS versions that meet the condition. For example, to add `gettext` as a build dependency on Mojave and all later macOS versions, use:
+Components can also be declared for specific macOS versions or version ranges. For example, to declare a dependency only on Sequoia, nest the `depends_on` call inside an `on_sequoia` block. Add an `:or_older` or `:or_newer` parameter to the `on_sequoia` method to add the dependency to all macOS versions that meet the condition. For example, to add `gettext` as a build dependency on Sequoia and all later macOS versions, use:
 
 ```ruby
-on_mojave :or_newer do
+on_sequoia :or_newer do
   depends_on "gettext" => :build
 end
 ```
@@ -707,7 +707,7 @@ end
 Sometimes, a dependency is needed on certain macOS versions *and* on Linux. In these cases, a special `on_system` method can be used:
 
 ```ruby
-on_system :linux, macos: :sierra_or_older do
+on_system :linux, macos: :sonoma_or_older do
   depends_on "gettext" => :build
 end
 ```
@@ -728,7 +728,7 @@ Inside `def install` and `test do`, don't use these `on_*` methods. Instead, use
 
 * `OS.mac?` and `OS.linux?` return `true` or `false` based on the OS
 * `Hardware::CPU.arm?` and `Hardware::CPU.intel?` return `true` or `false` based on the arch
-* `MacOS.version` returns the current macOS version. Use `==`, `<=` or `>=` to compare to symbols corresponding to macOS versions (e.g. `if MacOS.version >= :mojave`)
+* `MacOS.version` returns the current macOS version. Use `==`, `<=` or `>=` to compare to symbols corresponding to macOS versions (e.g. `if MacOS.version >= :tahoe`)
 
 See the [`icoutils`](https://github.com/Homebrew/homebrew-core/blob/442f9cc511ce6dfe75b96b2c83749d90dde914d2/Formula/i/icoutils.rb#L36) formula for an example.
 

@@ -8,7 +8,7 @@ RSpec.describe Homebrew::Diagnostic::Checks do
   specify "#check_for_unsupported_macos" do
     ENV.delete("HOMEBREW_DEVELOPER")
 
-    macos_version = MacOSVersion.new("10.14")
+    macos_version = MacOSVersion.new("30")
     allow(OS::Mac).to receive_messages(version: macos_version, full_version: macos_version)
     allow(OS::Mac.version).to receive_messages(outdated_release?: false, prerelease?: true)
 
@@ -17,12 +17,12 @@ RSpec.describe Homebrew::Diagnostic::Checks do
   end
 
   specify "#check_if_xcode_needs_clt_installed" do
-    macos_version = MacOSVersion.new("10.11")
+    macos_version = MacOSVersion.new("11")
     allow(OS::Mac).to receive_messages(version: macos_version, full_version: macos_version)
     allow(OS::Mac::Xcode).to receive_messages(installed?: true, version: "8.0", without_clt?: true)
 
     expect(checks.check_if_xcode_needs_clt_installed)
-      .to match("Xcode alone is not sufficient on El Capitan")
+      .to match("Xcode alone is not sufficient on Big Sur")
   end
 
   describe "#check_if_supported_sdk_available" do
