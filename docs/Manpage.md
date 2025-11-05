@@ -3248,10 +3248,6 @@ and Linux workers.
 
 : Clean all state from the Homebrew directory. Use with care!
 
-`--concurrent-downloads`
-
-: Invoke `brew` with `HOMEBREW_DOWNLOAD_CONCURRENCY=auto`.
-
 `--skip-setup`
 
 : Don't check if the local system is set up correctly.
@@ -4089,12 +4085,12 @@ command execution (e.g. `$(cat file)`).
 
 `HOMEBREW_DOWNLOAD_CONCURRENCY`
 
-: If set, Homebrew will download in parallel using this many concurrent
-  connections. Setting to `auto` will use twice the number of available CPU
-  cores (what our benchmarks showed to produce the best performance). If set to
-  `1` (the default), Homebrew will download in serial.
+: Homebrew will download in parallel using this many concurrent connections. The
+  default, `auto`, will use twice the number of available CPU cores (what our
+  benchmarks showed to produce the best performance). If set to `1`, Homebrew
+  will download in serial.
   
-  *Default:* `1`.
+  *Default:* `auto`.
 
 `HOMEBREW_EDITOR`
 

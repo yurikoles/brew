@@ -2105,7 +2105,6 @@ _brew_test_bot() {
     '--build-dependents-from-source[Build dependents from source rather than testing bottles]' \
     '--build-from-source[Build from source rather than building bottles]' \
     '--cleanup[Clean all state from the Homebrew directory. Use with care!]' \
-    '--concurrent-downloads[Invoke `brew` with `HOMEBREW_DOWNLOAD_CONCURRENCY=auto`]' \
     '--debug[Display any debugging information]' \
     '(--only-formulae-detect)--deleted-formulae[Use these deleted formulae rather than running the formulae detection steps]' \
     '--dry-run[Print what would be done rather than doing it]' \

@@ -1707,7 +1707,6 @@ __fish_brew_complete_arg 'test-bot' -l added-formulae -d 'Use these added formul
 __fish_brew_complete_arg 'test-bot' -l build-dependents-from-source -d 'Build dependents from source rather than testing bottles'
 __fish_brew_complete_arg 'test-bot' -l build-from-source -d 'Build from source rather than building bottles'
 __fish_brew_complete_arg 'test-bot' -l cleanup -d 'Clean all state from the Homebrew directory. Use with care!'
-__fish_brew_complete_arg 'test-bot' -l concurrent-downloads -d 'Invoke `brew` with `HOMEBREW_DOWNLOAD_CONCURRENCY=auto`'
 __fish_brew_complete_arg 'test-bot' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg 'test-bot' -l deleted-formulae -d 'Use these deleted formulae rather than running the formulae detection steps'
 __fish_brew_complete_arg 'test-bot' -l dry-run -d 'Print what would be done rather than doing it'

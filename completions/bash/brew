@@ -2620,7 +2620,6 @@ _brew_test_bot() {
       --build-dependents-from-source
       --build-from-source
       --cleanup
-      --concurrent-downloads
       --debug
       --deleted-formulae
       --dry-run
