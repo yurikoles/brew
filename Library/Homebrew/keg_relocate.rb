@@ -113,6 +113,10 @@ class Keg
         old: "/usr/local/var/log/#{name}",
         new: "#{PREFIX_PLACEHOLDER}/var/log/#{name}",
       },
+      var_lib_name: {
+        old: "/usr/local/var/lib/#{name}",
+        new: "#{PREFIX_PLACEHOLDER}/var/lib/#{name}",
+      },
       var_run_name: {
         old: "/usr/local/var/run/#{name}",
         new: "#{PREFIX_PLACEHOLDER}/var/run/#{name}",
