@@ -356,7 +356,7 @@ class AbstractFileDownloadStrategy < AbstractDownloadStrategy
     size = total_size
     return if size.nil? || !size.positive?
 
-    (fetched_size.to_f / size).clamp(0, 1)
+    (fetched_size.to_f / size).clamp(0.0, 1.0)
   end
 
   sig { returns(Pathname) }

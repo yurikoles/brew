@@ -77,7 +77,7 @@ module Homebrew
             status = case future.state
             when :fulfilled
               if tty
-                progress_str = "100%"
+                progress = 1.0
                 "#{Tty.green}✔︎#{Tty.reset}"
               else
                 "✔︎"
@@ -99,8 +99,13 @@ module Homebrew
 
             message = "#{downloadable.download_queue_type} #{downloadable.download_queue_name}"
             if tty
-              progress_str ||= (progress = downloadable.progress) ? "#{(progress * 100).round}%" : ""
-              stdout_print_and_flush "#{status} #{progress_str.rjust(4)} #{message}#{"\n" unless last}"
+              if (progress ||= downloadable.progress) && (tty_width = Tty.width).positive?
+                progress_str = "[#{(progress * 100).round(1).to_s.rjust(5)}%]"
+                # 3 extra characters for status symbol, space before message and space after message
+                message_length = tty_width - progress_str.length - 3
+                message = "#{message[0, message_length].to_s.ljust(message_length)} #{progress_str}"
+              end
+              stdout_print_and_flush "#{status} #{message}#{"\n" unless last}"
             elsif status
               $stderr.puts "#{status} #{message}"
             end

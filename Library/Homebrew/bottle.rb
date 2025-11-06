@@ -102,7 +102,7 @@ class Bottle
     total_size = bottle_size
     return super if total_size.nil? || !total_size.positive?
 
-    (downloader.fetched_size.to_f / total_size).clamp(0, 1)
+    (downloader.fetched_size.to_f / total_size).clamp(0.0, 1.0)
   end
 
   sig { override.void }
