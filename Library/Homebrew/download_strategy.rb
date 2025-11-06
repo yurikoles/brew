@@ -444,6 +444,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   def initialize(url, name, version, **meta)
     @try_partial = T.let(true, T::Boolean)
     @mirrors = T.let(meta.fetch(:mirrors, []), T::Array[String])
+    @file_size = T.let(nil, T.nilable(Integer))
 
     # Merge `:header` with `:headers`.
     if (header = meta.delete(:header))
@@ -479,7 +480,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
 
         cached_location_valid = cached_location.exist?
 
-        resolved_url, _, last_modified, file_size, content_type, is_redirection = begin
+        resolved_url, _, last_modified, @file_size, content_type, is_redirection = begin
           resolve_url_basename_time_file_size(url, timeout: Utils::Timer.remaining!(end_time))
         rescue ErrorDuringExecution
           raise unless cached_location_valid
@@ -498,10 +499,10 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
                  "Last-Modified header: #{last_modified.iso8601}"
             cached_location_valid = false
           end
-          if file_size&.nonzero? && file_size != cached_location.size
+          if @file_size&.nonzero? && @file_size != cached_location.size
             ohai "Ignoring #{cached_location}",
                  "Cached size #{cached_location.size} differs from " \
-                 "Content-Length header: #{file_size}"
+                 "Content-Length header: #{@file_size}"
             cached_location_valid = false
           end
         end
@@ -535,13 +536,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
 
   sig { override.returns(T.nilable(Integer)) }
   def total_size
-    return @total_size if @total_size
-    return if @attempted_get_file_size
-
-    @attempted_get_file_size = T.let(true, T.nilable(TrueClass))
-    @total_size = T.let(nil, T.nilable(Integer))
-    _, _, _, @total_size, = resolve_url_basename_time_file_size(url, timeout: 2)
-    @total_size
+    @file_size
   end
 
   sig { override.void }
