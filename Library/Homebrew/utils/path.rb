@@ -24,10 +24,6 @@ module Utils
       else
         "#{Cask::Caskroom.path}/"
       end
-      unless Homebrew::EnvConfig.no_install_from_api?
-        require "api"
-        allowed_paths << "#{Homebrew::API::HOMEBREW_CACHE_API_SOURCE}/"
-      end
 
       return true if !path_realpath.end_with?(".rb") && !path_string.end_with?(".rb")
       return true if allowed_paths.any? { |path| path_realpath.start_with?(path) }
