@@ -106,7 +106,7 @@ module Homebrew::EnvConfig
     sig { returns(T.nilable(::String)) }
     def docker_registry_token; end
 
-    sig { returns(Integer) }
+    sig { returns(String) }
     def download_concurrency; end
 
     sig { returns(T.nilable(::String)) }
@@ -243,6 +243,9 @@ module Homebrew::EnvConfig
 
     sig { returns(T::Boolean) }
     def no_env_hints?; end
+
+    sig { returns(T::Boolean) }
+    def no_force_brew_wrapper?; end
 
     sig { returns(T::Boolean) }
     def no_github_api?; end
