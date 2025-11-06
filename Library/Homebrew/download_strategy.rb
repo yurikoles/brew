@@ -71,8 +71,13 @@ class AbstractDownloadStrategy
   sig { overridable.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil); end
 
-  sig { overridable.returns(T.nilable(Float)) }
-  def progress; end
+  # Total bytes downloaded if available.
+  sig { overridable.returns(T.nilable(Integer)) }
+  def fetched_size; end
+
+  # Total download size if available.
+  sig { overridable.returns(T.nilable(Integer)) }
+  def total_size; end
 
   # Location of the cached download.
   #
@@ -341,22 +346,9 @@ class AbstractFileDownloadStrategy < AbstractDownloadStrategy
     T.must(@cached_location)
   end
 
-  # Total bytes downloaded.
-  sig { returns(Integer) }
+  sig { override.returns(T.nilable(Integer)) }
   def fetched_size
-    File.size?(temporary_path) || File.size?(cached_location) || 0
-  end
-
-  # Total download size if available.
-  sig { overridable.returns(T.nilable(Integer)) }
-  def total_size; end
-
-  sig { override.returns(T.nilable(Float)) }
-  def progress
-    size = total_size
-    return if size.nil? || !size.positive?
-
-    (fetched_size.to_f / size).clamp(0.0, 1.0)
+    File.size?(temporary_path) || File.size?(cached_location)
   end
 
   sig { returns(Pathname) }

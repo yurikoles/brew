@@ -97,12 +97,9 @@ class Bottle
     retry
   end
 
-  sig { override.returns(T.nilable(Float)) }
-  def progress
-    total_size = bottle_size
-    return super if total_size.nil? || !total_size.positive?
-
-    (downloader.fetched_size.to_f / total_size).clamp(0.0, 1.0)
+  sig { override.returns(T.nilable(Integer)) }
+  def total_size
+    bottle_size || super
   end
 
   sig { override.void }

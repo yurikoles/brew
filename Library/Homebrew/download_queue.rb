@@ -77,7 +77,6 @@ module Homebrew
             status = case future.state
             when :fulfilled
               if tty
-                progress = 1.0
                 "#{Tty.green}✔︎#{Tty.reset}"
               else
                 "✔︎"
@@ -99,9 +98,20 @@ module Homebrew
 
             message = "#{downloadable.download_queue_type} #{downloadable.download_queue_name}"
             if tty
-              if (progress ||= downloadable.progress) && (tty_width = Tty.width).positive?
-                progress_str = "[#{(progress * 100).round(1).to_s.rjust(5)}%]"
-                # 3 extra characters for status symbol, space before message and space after message
+              if (tty_width = Tty.width).positive? && (fetched_size = downloadable.fetched_size)
+                size, unit = disk_usage_readable_size_unit(fetched_size)
+                fetched_size_str = format("%<size>5.1f %<unit>2s", size:, unit:)
+
+                total_size_str = if future.fulfilled?
+                  fetched_size_str
+                elsif (total_size = downloadable.total_size)
+                  size, unit = disk_usage_readable_size_unit(total_size)
+                  format("%<size>5.1f %<unit>2s", size:, unit:)
+                else
+                  "-" * 8
+                end
+
+                progress_str = "#{fetched_size_str}/#{total_size_str}"
                 message_length = tty_width - progress_str.length - 3
                 message = "#{message[0, message_length].to_s.ljust(message_length)} #{progress_str}"
               end
