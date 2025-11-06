@@ -666,6 +666,7 @@ _brew_bundle() {
       --help
       --install
       --mas
+      --no-go
       --no-restart
       --no-upgrade
       --no-vscode
