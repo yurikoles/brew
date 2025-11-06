@@ -112,6 +112,9 @@ module Homebrew
         switch "--no-vscode",
                description: "`dump` without VSCode (and forks/variants) extensions.",
                env:         :bundle_dump_no_vscode
+        switch "--no-go",
+               description: "`dump` without Go packages.",
+               env:         :bundle_dump_no_go
         switch "--describe",
                description: "`dump` adds a description comment above each line, unless the " \
                             "dependency does not have a description.",
@@ -126,6 +129,8 @@ module Homebrew
 
         conflicts "--all", "--no-vscode"
         conflicts "--vscode", "--no-vscode"
+        conflicts "--all", "--no-go"
+        conflicts "--go", "--no-go"
         conflicts "--install", "--upgrade"
         conflicts "--file", "--global"
 
@@ -206,6 +211,14 @@ module Homebrew
             no_type_args
           end
 
+          go = if args.no_go?
+            false
+          elsif args.go?
+            true
+          else
+            no_type_args
+          end
+
           require "bundle/commands/dump"
           Homebrew::Bundle::Commands::Dump.run(
             global:, file:, force:,
@@ -216,7 +229,7 @@ module Homebrew
             casks:      args.casks? || no_type_args,
             mas:        args.mas? || no_type_args,
             vscode:,
-            go:         args.go? || no_type_args
+            go:
           )
         when "edit"
           require "bundle/brewfile"

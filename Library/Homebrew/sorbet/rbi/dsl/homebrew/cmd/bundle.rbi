@@ -60,6 +60,9 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def mas?; end
 
   sig { returns(T::Boolean) }
+  def no_go?; end
+
+  sig { returns(T::Boolean) }
   def no_restart?; end
 
   sig { returns(T::Boolean) }
