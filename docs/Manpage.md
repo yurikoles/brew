@@ -305,6 +305,11 @@ flags which will help with finding keg-only dependencies like `openssl`,
 : `dump` without VSCode (and forks/variants) extensions. Enabled by default if
   `$HOMEBREW_BUNDLE_DUMP_NO_VSCODE` is set.
 
+`--no-go`
+
+: `dump` without Go packages. Enabled by default if
+  `$HOMEBREW_BUNDLE_DUMP_NO_GO` is set.
+
 `--describe`
 
 : `dump` adds a description comment above each line, unless the dependency does

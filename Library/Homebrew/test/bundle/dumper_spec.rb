@@ -24,6 +24,7 @@ RSpec.describe Homebrew::Bundle::Dumper do
     Homebrew::Bundle::CaskDumper.reset!
     Homebrew::Bundle::MacAppStoreDumper.reset!
     Homebrew::Bundle::VscodeExtensionDumper.reset!
+    Homebrew::Bundle::GoDumper.reset!
     Homebrew::Bundle::BrewServices.reset!
 
     chrome     = instance_double(Cask::Cask,
