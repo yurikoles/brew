@@ -71,6 +71,10 @@ module Downloadable
     downloader.clear_cache
   end
 
+  # Progress of download represented as a number between 0 and 1 if available.
+  sig { overridable.returns(T.nilable(Float)) }
+  def progress = downloader.progress
+
   sig { overridable.returns(T.nilable(Version)) }
   def version
     return @version if @version && !@version.null?

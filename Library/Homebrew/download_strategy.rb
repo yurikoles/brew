@@ -71,6 +71,9 @@ class AbstractDownloadStrategy
   sig { overridable.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil); end
 
+  sig { overridable.returns(T.nilable(Float)) }
+  def progress; end
+
   # Location of the cached download.
   #
   # @api public
@@ -338,6 +341,24 @@ class AbstractFileDownloadStrategy < AbstractDownloadStrategy
     T.must(@cached_location)
   end
 
+  # Total bytes downloaded.
+  sig { returns(Integer) }
+  def fetched_size
+    File.size?(temporary_path) || File.size?(cached_location) || 0
+  end
+
+  # Total download size if available.
+  sig { overridable.returns(T.nilable(Integer)) }
+  def total_size; end
+
+  sig { override.returns(T.nilable(Float)) }
+  def progress
+    size = total_size
+    return if size.nil? || !size.positive?
+
+    (fetched_size.to_f / size).clamp(0, 1)
+  end
+
   sig { returns(Pathname) }
   def basename
     cached_location.basename.sub(/^[\da-f]{64}--/, "")
@@ -510,6 +531,17 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
     ensure
       download_lock.unlock(unlink: true)
     end
+  end
+
+  sig { override.returns(T.nilable(Integer)) }
+  def total_size
+    return @total_size if @total_size
+    return if @attempted_get_file_size
+
+    @attempted_get_file_size = T.let(true, T.nilable(TrueClass))
+    @total_size = T.let(nil, T.nilable(Integer))
+    _, _, _, @total_size, = resolve_url_basename_time_file_size(url, timeout: 2)
+    @total_size
   end
 
   sig { override.void }

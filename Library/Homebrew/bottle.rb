@@ -97,6 +97,14 @@ class Bottle
     retry
   end
 
+  sig { override.returns(T.nilable(Float)) }
+  def progress
+    total_size = bottle_size
+    return super if total_size.nil? || !total_size.positive?
+
+    (downloader.fetched_size.to_f / total_size).clamp(0, 1)
+  end
+
   sig { override.void }
   def clear_cache
     @resource.clear_cache
