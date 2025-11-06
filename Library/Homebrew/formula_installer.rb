@@ -1313,6 +1313,7 @@ on_request: installed_on_request?, options:)
     # Use the formula from the keg when any of the following is true:
     # * We're installing from the JSON API
     # * We're installing a local bottle file
+    # * We're building from source
     # * The formula doesn't exist in the tap (or the tap isn't installed)
     # * The formula in the tap has a different `pkg_version``.
     #
@@ -1323,6 +1324,7 @@ on_request: installed_on_request?, options:)
     keg_formula_path = formula.opt_prefix/".brew/#{formula.name}.rb"
     return keg_formula_path if formula.loaded_from_api?
     return keg_formula_path if formula.local_bottle_path.present?
+    return keg_formula_path if build_from_source?
 
     tap_formula_path = T.must(formula.specified_path)
     return keg_formula_path unless tap_formula_path.exist?
