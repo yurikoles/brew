@@ -93,10 +93,10 @@ module Homebrew
 
             if verbose?
               outdated_kegs = f.outdated_kegs(fetch_head: args.fetch_HEAD?)
+              latest_formula = f.latest_formula(prefer_stub: true)
 
-              current_version = if f.alias_changed? && !f.latest_formula.latest_version_installed?
-                latest = f.latest_formula
-                "#{latest.name} (#{latest.pkg_version})"
+              current_version = if f.alias_changed? && !latest_formula.latest_version_installed?
+                "#{latest_formula.name} (#{latest_formula.pkg_version})"
               elsif f.head?
                 latest_head_version = f.latest_head_pkg_version(fetch_head: args.fetch_HEAD?)
                 if outdated_kegs.any? { |k| k.version.to_s == latest_head_version.to_s }
@@ -106,7 +106,7 @@ module Homebrew
                   latest_head_version.to_s
                 end
               else
-                f.latest_formula.pkg_version.to_s
+                latest_formula.pkg_version.to_s
               end
 
               outdated_versions = outdated_kegs.group_by { |keg| Formulary.from_keg(keg).full_name }
