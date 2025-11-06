@@ -100,7 +100,7 @@ module Homebrew
             if tty
               stdout_print_and_flush "#{status} #{message}#{"\n" unless last}"
             elsif status
-              puts "#{status} #{message}"
+              $stderr.puts "#{status} #{message}"
             end
 
             if future.rejected?
