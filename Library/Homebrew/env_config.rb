@@ -574,6 +574,7 @@ module Homebrew
       :HOMEBREW_MAKE_JOBS,
       :HOMEBREW_CASK_OPTS,
       :HOMEBREW_FORBID_PACKAGES_FROM_PATHS,
+      :HOMEBREW_DOWNLOAD_CONCURRENCY,
     ]).freeze, T::Set[Symbol])
 
     FALSY_VALUES = T.let(%w[false no off nil 0].freeze, T::Array[String])
