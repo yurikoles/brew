@@ -424,8 +424,8 @@ module Cask
             end.compact
             begin
               depends_on(**dep_hash)
-            rescue MacOSVersion::Error
-              # ignore invalid macOS version dependencies
+            rescue MacOSVersion::Error => e
+              odebug "Ignored invalid macOS version dependency in cask '#{token}': #{dep_hash.inspect} (#{e.message})"
               nil
             end
           end
