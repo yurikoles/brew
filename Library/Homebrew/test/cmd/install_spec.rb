@@ -13,7 +13,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     expect { brew "install", "testball1" }
       .to output(%r{#{HOMEBREW_CELLAR}/testball1/0\.1}o).to_stdout
-      .and not_to_output.to_stderr
+      .and output(/✔︎.*/m).to_stderr
       .and be_a_success
     expect(HOMEBREW_CELLAR/"testball1/0.1/foo/test").not_to be_a_file
   end
@@ -23,7 +23,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     expect { brew "install", "testball1", "--with-foo" }
       .to output(%r{#{HOMEBREW_CELLAR}/testball1/0\.1}o).to_stdout
-      .and not_to_output.to_stderr
+      .and output(/✔︎.*/m).to_stderr
       .and be_a_success
     expect(HOMEBREW_CELLAR/"testball1/0.1/foo/test").to be_a_file
   end
@@ -37,7 +37,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     expect { brew "install", "testball1" }
       .to output(%r{#{HOMEBREW_CELLAR}/testball1/1\.0}o).to_stdout
-      .and not_to_output.to_stderr
+      .and output(/✔︎.*/m).to_stderr
       .and be_a_success
     expect(HOMEBREW_CELLAR/"testball1/1.0/foo/test").not_to be_a_file
   end
@@ -80,7 +80,7 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
 
     expect { brew "install", "testball1", "--debug-symbols", "--build-from-source" }
       .to output(%r{#{HOMEBREW_CELLAR}/testball1/0\.1}o).to_stdout
-      .and not_to_output.to_stderr
+      .and output(/✔︎.*/m).to_stderr
       .and be_a_success
     expect(HOMEBREW_CELLAR/"testball1/0.1/bin/test").to be_a_file
     expect(HOMEBREW_CELLAR/"testball1/0.1/bin/test.dSYM/Contents/Resources/DWARF/test").to be_a_file if OS.mac?
@@ -90,10 +90,10 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
   it "installs with asking for user prompts without installed dependent checks", :integration_test do
     setup_test_formula "testball1"
 
-    expect do
-      brew "install", "--ask", "testball1"
-    end.to output(/.*Formula\s*\(1\):\s*testball1.*/).to_stdout.and not_to_output.to_stderr
-
+    expect { brew "install", "--ask", "testball1" }
+      .to output(/.*Formula\s*\(1\):\s*testball1.*/).to_stdout
+      .and output(/✔︎.*/m).to_stderr
+      .and be_a_success
     expect(HOMEBREW_CELLAR/"testball1/0.1/bin/test").to be_a_file
   end
 

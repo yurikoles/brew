@@ -15,7 +15,7 @@ RSpec.describe Homebrew::Cmd::Reinstall do
 
     expect { brew "reinstall", "testball" }
       .to output(/Reinstalling testball/).to_stdout
-      .and not_to_output.to_stderr
+      .and output(/✔︎.*/m).to_stderr
       .and be_a_success
 
     expect(foo_dir).to exist
@@ -29,8 +29,8 @@ RSpec.describe Homebrew::Cmd::Reinstall do
 
     expect { brew "reinstall", "--ask", "testball" }
       .to output(/.*Formula\s*\(1\):\s*testball.*/).to_stdout
-                                                   .and not_to_output.to_stderr
-                                                                     .and be_a_success
+      .and output(/✔︎.*/m).to_stderr
+      .and be_a_success
 
     expect(foo_dir).to exist
   end
