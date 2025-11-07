@@ -79,7 +79,7 @@ realpath() {
 
 # Support systems where HOMEBREW_PREFIX is the default,
 # but a parent directory is a symlink.
-# Example: Fedora Silverblue symlinks /home -> var/home
+# Example: Fedora Silverblue symlinks /home -> /var/home
 if [[ "${HOMEBREW_PREFIX}" != "${HOMEBREW_DEFAULT_PREFIX}" && "$(realpath "${HOMEBREW_DEFAULT_PREFIX}")" == "${HOMEBREW_PREFIX}" ]]
 then
   HOMEBREW_PREFIX="${HOMEBREW_DEFAULT_PREFIX}"
@@ -102,6 +102,14 @@ then
   HOMEBREW_CELLAR="${HOMEBREW_REPOSITORY}/Cellar"
 else
   HOMEBREW_CELLAR="${HOMEBREW_PREFIX}/Cellar"
+fi
+
+# Support systems where HOMEBREW_CELLAR's parent directory is a symlink.
+# Example: Fedora Silverblue symlinks /home -> /var/home
+HOMEBREW_CELLAR_DEFAULT_PREFIX="${HOMEBREW_DEFAULT_PREFIX}/Cellar"
+if [[ "${HOMEBREW_CELLAR}" != "${HOMEBREW_CELLAR_DEFAULT_PREFIX}" && "$(realpath "${HOMEBREW_CELLAR_DEFAULT_PREFIX}")" == "${HOMEBREW_CELLAR}" ]]
+then
+  HOMEBREW_CELLAR="${HOMEBREW_CELLAR_DEFAULT_PREFIX}"
 fi
 
 HOMEBREW_CASKROOM="${HOMEBREW_PREFIX}/Caskroom"
