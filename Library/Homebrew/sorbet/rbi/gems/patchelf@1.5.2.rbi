@@ -12,6 +12,7 @@ module PatchELF::Helper
 
   def aligndown(val, align = T.unsafe(nil)); end
   def alignup(val, align = T.unsafe(nil)); end
+  def close_file_proc(file); end
   def color_enabled?; end
   def colorize(str, type); end
   def page_size(e_machine = T.unsafe(nil)); end
@@ -19,6 +20,7 @@ module PatchELF::Helper
   class << self
     def aligndown(val, align = T.unsafe(nil)); end
     def alignup(val, align = T.unsafe(nil)); end
+    def close_file_proc(file); end
     def color_enabled?; end
     def colorize(str, type); end
     def page_size(e_machine = T.unsafe(nil)); end
@@ -26,6 +28,7 @@ module PatchELF::Helper
 end
 
 PatchELF::Helper::COLOR_CODE = T.let(T.unsafe(nil), Hash)
+PatchELF::IGNORE = T.let(T.unsafe(nil), Integer)
 
 module PatchELF::Logger
   private
@@ -58,13 +61,13 @@ class PatchELF::MM
   private
 
   def abnormal_elf(msg); end
-  def extend_backward(seg, size = T.unsafe(nil)); end
-  def extend_forward(seg, size = T.unsafe(nil)); end
-  def fgap_method; end
+  def extend_backward?(seg, size = T.unsafe(nil)); end
+  def extend_forward?(seg, size = T.unsafe(nil)); end
+  def fgap_method?; end
   def find_gap(check_sz: T.unsafe(nil)); end
   def invoke_callbacks(seg, start); end
   def load_segments; end
-  def mgap_method; end
+  def mgap_method?; end
   def new_load_method; end
   def shift_attributes; end
   def writable?(seg); end
@@ -131,5 +134,4 @@ class PatchELF::Saver
   def strtab_string; end
 end
 
-PatchELF::Saver::IGNORE = T.let(T.unsafe(nil), Integer)
 PatchELF::VERSION = T.let(T.unsafe(nil), String)

@@ -5,10 +5,15 @@ require 'elftools/elf_file'
 require 'elftools/structs'
 require 'elftools/util'
 require 'fileutils'
+require 'objspace'
 
+require 'patchelf/helper'
 require 'patchelf/mm'
 
 module PatchELF
+  # To mark a not-using tag
+  IGNORE = ELFTools::Constants::DT_LOOS
+
   # Internal use only.
   #
   # For {Patcher} to do patching things and save to file.
@@ -27,10 +32,14 @@ module PatchELF
       @set = set
       # [{Integer => String}]
       @inline_patch = {}
-      @elf = ELFTools::ELFFile.new(File.open(in_file))
+      f = File.open(in_file)
+      @elf = ELFTools::ELFFile.new(f)
       @mm = PatchELF::MM.new(@elf)
       @strtab_extend_requests = []
       @append_dyn = []
+
+      # Ensure file is closed when the {Saver} object is garbage collected.
+      ObjectSpace.define_finalizer(self, Helper.close_file_proc(f))
     end
 
     # @return [void]
@@ -116,8 +125,6 @@ module PatchELF
       end
     end
 
-    # To mark a not-using tag
-    IGNORE = ELFTools::Constants::DT_LOOS
     def patch_needed
       original_needs = dynamic.tags_by_type(:needed)
       @set[:needed].uniq!

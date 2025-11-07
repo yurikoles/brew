@@ -221,10 +221,7 @@ end
 
 module T::Types::Simple::NamePatch
   def name; end
-  def qualified_name_of(constant); end
 end
-
-T::Types::Simple::NamePatch::NAME_METHOD = T.let(T.unsafe(nil), UnboundMethod)
 
 module T::Utils::Private
   class << self
@@ -236,13 +233,7 @@ module T::Utils::Private::PrivateCoercePatch
   def coerce_and_check_module_types(val, check_val, check_module_type); end
 end
 
-module Tapioca
-  class << self
-    def silence_warnings(&blk); end
-    def with_disabled_exits(&block); end
-  end
-end
-
+module Tapioca; end
 Tapioca::BINARY_FILE = T.let(T.unsafe(nil), String)
 module Tapioca::BundlerExt; end
 
@@ -1900,8 +1891,6 @@ class Tapioca::Loaders::Loader
   def zeitwerk_mode?; end
 end
 
-Tapioca::NOOP_METHOD = T.let(T.unsafe(nil), Proc)
-
 module Tapioca::RBIFilesHelper
   requires_ancestor { Tapioca::SorbetHelper }
   requires_ancestor { Thor::Shell }
@@ -2060,7 +2049,12 @@ class Tapioca::RepoIndex
   end
 end
 
-module Tapioca::Runtime; end
+module Tapioca::Runtime
+  class << self
+    def silence_warnings(&blk); end
+    def with_disabled_exits(&block); end
+  end
+end
 
 module Tapioca::Runtime::AttachedClassOf
   def attached_class_of(singleton_class); end
@@ -2107,6 +2101,8 @@ class Tapioca::Runtime::GenericTypeRegistry::GenericType < ::T::Types::Simple
 
   def valid?(obj); end
 end
+
+Tapioca::Runtime::NOOP_METHOD = T.let(T.unsafe(nil), Proc)
 
 module Tapioca::Runtime::Reflection
   include ::Tapioca::Runtime::AttachedClassOf
