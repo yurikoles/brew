@@ -85,6 +85,7 @@ require_relative 'types/boolean'
 
 # Depends on types/utils
 require_relative 'types/types/typed_array'
+require_relative 'types/types/typed_module'
 require_relative 'types/types/typed_class'
 
 # Props dependencies
@@ -114,6 +115,5 @@ require_relative 'types/props/private/parser'
 require_relative 'types/props/generated_code_validation'
 
 require_relative 'types/struct'
-require_relative 'types/non_forcing_constants'
 
 require_relative 'types/compatibility_patches'

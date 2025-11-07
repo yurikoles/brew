@@ -5,6 +5,7 @@ require 'elftools/elf_file'
 require 'elftools/structs'
 require 'elftools/util'
 require 'fileutils'
+require 'objspace'
 
 require 'patchelf/helper'
 
@@ -64,6 +65,9 @@ module PatchELF
       # also be sure to update the stream offset passed to Segments::Segment.
       @elf = ELFTools::ELFFile.new(f)
       @buffer = StringIO.new(f.tap(&:rewind).read) # StringIO makes easier to work with Bindata
+
+      # Ensure file is closed when the {AltSaver} object is garbage collected.
+      ObjectSpace.define_finalizer(self, Helper.close_file_proc(f))
 
       @ehdr = @elf.header
       @endian = @elf.endian
@@ -575,7 +579,7 @@ module PatchELF
 
       cur_off = ehdr.num_bytes + (@segments.count * seg_num_bytes)
       Logger.debug "clearing first #{start_offset - cur_off} bytes"
-      with_buf_at(cur_off) { |buf| buf.fill("\x00", (start_offset - cur_off)) }
+      with_buf_at(cur_off) { |buf| buf.fill("\x00", start_offset - cur_off) }
 
       cur_off = write_replaced_sections cur_off, first_page, 0
       raise PatchError, "cur_off(#{cur_off}) != needed_space" if cur_off != needed_space
