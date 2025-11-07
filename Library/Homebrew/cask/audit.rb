@@ -550,12 +550,19 @@ module Cask
           next true if cask.deprecated? && cask.deprecation_reason == :fails_gatekeeper_check
           next true if is_in_skiplist
 
-          add_error <<~EOS, location: url.location
+          signing_failure_message = <<~EOS
             Signature verification failed:
             #{result.merged_output}
-            macOS on ARM requires software to be signed.
-            Please contact the upstream developer to let them know they should sign and notarize their software.
           EOS
+
+          if cask.tap.official?
+            signing_failure_message += <<~EOS
+              Homebrew/cask requires all casks to be signed and notarized by Apple.
+              Please contact the upstream developer and ask them to sign and notarize their software.
+            EOS
+          end
+
+          add_error signing_failure_message
 
           true
         end
