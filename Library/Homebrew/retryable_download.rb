@@ -60,6 +60,8 @@ module Homebrew
     def fetch(verify_download_integrity: true, timeout: nil, quiet: false)
       @try += 1
 
+      downloadable.downloading!
+
       already_downloaded = downloadable.downloaded?
 
       download = if downloadable.is_a?(Resource) && (resource = T.cast(downloadable, Resource))
@@ -67,6 +69,8 @@ module Homebrew
       else
         downloadable.fetch(verify_download_integrity: false, timeout:, quiet:)
       end
+
+      downloadable.downloaded!
 
       return download unless download.file?
 
@@ -79,6 +83,8 @@ module Homebrew
       downloadable.verify_download_integrity(download) if verify_download_integrity && !json_download
 
       if pour && downloadable.is_a?(Bottle)
+        downloadable.extracting!
+
         HOMEBREW_CELLAR.mkpath
 
         bottle_filename = T.cast(downloadable, Bottle).filename
@@ -86,6 +92,8 @@ module Homebrew
 
         UnpackStrategy.detect(download, prioritize_extension: true)
                       .extract_nestedly(to: HOMEBREW_CELLAR)
+
+        downloadable.downloaded!
       elsif json_download
         FileUtils.touch(download, mtime: Time.now)
       end

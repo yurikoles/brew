@@ -204,8 +204,8 @@ module Kernel
     Formulary.factory_stub(formula_name).ensure_installed!(reason:, latest:).opt_bin/name
   end
 
-  sig { params(size_in_bytes: T.any(Integer, Float)).returns(String) }
-  def disk_usage_readable(size_in_bytes)
+  sig { params(size_in_bytes: T.any(Integer, Float)).returns([T.any(Integer, Float), String]) }
+  def disk_usage_readable_size_unit(size_in_bytes)
     if size_in_bytes.abs >= 1_073_741_824
       size = size_in_bytes.to_f / 1_073_741_824
       unit = "GB"
@@ -219,7 +219,12 @@ module Kernel
       size = size_in_bytes
       unit = "B"
     end
+    [size, unit]
+  end
 
+  sig { params(size_in_bytes: T.any(Integer, Float)).returns(String) }
+  def disk_usage_readable(size_in_bytes)
+    size, unit = disk_usage_readable_size_unit(size_in_bytes)
     # avoid trailing zero after decimal point
     if ((size * 10).to_i % 10).zero?
       "#{size.to_i}#{unit}"

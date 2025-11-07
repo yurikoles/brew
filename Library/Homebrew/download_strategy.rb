@@ -71,6 +71,14 @@ class AbstractDownloadStrategy
   sig { overridable.params(timeout: T.nilable(T.any(Float, Integer))).void }
   def fetch(timeout: nil); end
 
+  # Total bytes downloaded if available.
+  sig { overridable.returns(T.nilable(Integer)) }
+  def fetched_size; end
+
+  # Total download size if available.
+  sig { overridable.returns(T.nilable(Integer)) }
+  def total_size; end
+
   # Location of the cached download.
   #
   # @api public
@@ -338,6 +346,11 @@ class AbstractFileDownloadStrategy < AbstractDownloadStrategy
     T.must(@cached_location)
   end
 
+  sig { override.returns(T.nilable(Integer)) }
+  def fetched_size
+    File.size?(temporary_path) || File.size?(cached_location)
+  end
+
   sig { returns(Pathname) }
   def basename
     cached_location.basename.sub(/^[\da-f]{64}--/, "")
@@ -423,6 +436,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
   def initialize(url, name, version, **meta)
     @try_partial = T.let(true, T::Boolean)
     @mirrors = T.let(meta.fetch(:mirrors, []), T::Array[String])
+    @file_size = T.let(nil, T.nilable(Integer))
 
     # Merge `:header` with `:headers`.
     if (header = meta.delete(:header))
@@ -458,7 +472,7 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
 
         cached_location_valid = cached_location.exist?
 
-        resolved_url, _, last_modified, file_size, content_type, is_redirection = begin
+        resolved_url, _, last_modified, @file_size, content_type, is_redirection = begin
           resolve_url_basename_time_file_size(url, timeout: Utils::Timer.remaining!(end_time))
         rescue ErrorDuringExecution
           raise unless cached_location_valid
@@ -477,10 +491,10 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
                  "Last-Modified header: #{last_modified.iso8601}"
             cached_location_valid = false
           end
-          if file_size&.nonzero? && file_size != cached_location.size
+          if @file_size&.nonzero? && @file_size != cached_location.size
             ohai "Ignoring #{cached_location}",
                  "Cached size #{cached_location.size} differs from " \
-                 "Content-Length header: #{file_size}"
+                 "Content-Length header: #{@file_size}"
             cached_location_valid = false
           end
         end
@@ -510,6 +524,11 @@ class CurlDownloadStrategy < AbstractFileDownloadStrategy
     ensure
       download_lock.unlock(unlink: true)
     end
+  end
+
+  sig { override.returns(T.nilable(Integer)) }
+  def total_size
+    @file_size
   end
 
   sig { override.void }
