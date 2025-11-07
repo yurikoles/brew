@@ -374,7 +374,7 @@ module Homebrew
         begin
           macos_version = ::MacOSVersion.new(dimension)
           if macos_version.pretty_name.presence && macos_version.to_sym != :dunno
-            return "macOS #{macos_version.pretty_name}"
+            return "macOS #{macos_version.pretty_name} (#{macos_version.strip_patch})"
           end
         rescue MacOSVersion::Error
           nil
@@ -394,9 +394,9 @@ module Homebrew
           "Red Hat Enterprise Linux CoreOS #{Regexp.last_match(1)}"
         when /([A-Za-z ]+)\s+(\d+)\.\d{8}[.\d]*/ then "#{Regexp.last_match(1)} #{Regexp.last_match(2)}"
         # odisabled: add new entries when removing support, remove entries when no longer in the data
-        when /^10\.14[.\d]*/ then "macOS Mojave"
-        when /^10\.13[.\d]*/ then "macOS High Sierra"
-        when /^10\.12[.\d]*/ then "macOS Sierra"
+        when /^10\.14[.\d]*/ then "macOS Mojave (10.14)"
+        when /^10\.13[.\d]*/ then "macOS High Sierra (10.13)"
+        when /^10\.12[.\d]*/ then "macOS Sierra (10.12)"
         when /^10\.(\d+)/ then "macOS 10.#{Regexp.last_match(1)}"
         else dimension
         end
