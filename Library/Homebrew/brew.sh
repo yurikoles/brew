@@ -603,7 +603,7 @@ then
   HOMEBREW_PRODUCT="Homebrew"
   HOMEBREW_SYSTEM="Macintosh"
   [[ "${HOMEBREW_PROCESSOR}" == "x86_64" ]] && HOMEBREW_PROCESSOR="Intel"
-  # Don't change this from Mac OS X to match what macOS itself does in Safari on 10.12
+  # Don't change this from Mac OS X to match what macOS itself does in Safari
   HOMEBREW_OS_USER_AGENT_VERSION="Mac OS X ${HOMEBREW_MACOS_VERSION}"
 
   if [[ "$(sysctl -n hw.optional.arm64 2>/dev/null)" == "1" ]]

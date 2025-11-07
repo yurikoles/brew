@@ -24,10 +24,6 @@ module OS
         when "12" then "14.2"
         when "11" then "13.2.1"
         when "10.15" then "12.4"
-        when "10.14" then "11.3.1"
-        when "10.13" then "10.1"
-        when "10.12" then "9.2"
-        when "10.11" then "8.2.1"
         else
           raise "macOS '#{macos}' is invalid" unless macos.prerelease?
 
@@ -51,10 +47,6 @@ module OS
         when "12" then "13.1"
         when "11" then "12.2"
         when "10.15" then "11.0"
-        when "10.14" then "10.2"
-        when "10.13" then "9.0"
-        when "10.12" then "8.0"
-        when "10.11" then "7.3"
         else
           "#{macos}.0"
         end
@@ -305,13 +297,7 @@ module OS
 
       sig { returns(String) }
       def self.installation_instructions
-        if MacOS.version == "10.14"
-          # This is not available from `xcode-select`
-          <<~EOS
-            Install the Command Line Tools for Xcode 11.3.1 from:
-              #{Formatter.url(MacOS::Xcode::APPLE_DEVELOPER_DOWNLOAD_URL)}
-          EOS
-        elsif OS::Mac.version.prerelease?
+        if OS::Mac.version.prerelease?
           <<~EOS
             Install the Command Line Tools for Xcode #{minimum_version.split(".").first} from:
               #{Formatter.url(MacOS::Xcode::APPLE_DEVELOPER_DOWNLOAD_URL)}
@@ -343,10 +329,8 @@ module OS
 
         software_update_location = if MacOS.version >= "13"
           "System Settings"
-        elsif MacOS.version >= "10.14"
-          "System Preferences"
         else
-          "the App Store"
+          "System Preferences"
         end
 
         <<~EOS
@@ -375,11 +359,7 @@ module OS
         when "13" then "1500.1.0.2.5"
         when "12"    then "1400.0.29.202"
         when "11"    then "1300.0.29.30"
-        when "10.15" then "1200.0.32.29"
-        when "10.14" then "1100.0.33.17"
-        when "10.13" then "1000.10.44.2"
-        when "10.12" then "900.0.39.2"
-        else              "800.0.42.1"
+        else              "1200.0.32.29"
         end
       end
 
@@ -396,10 +376,6 @@ module OS
         when "12" then "13.0.0"
         when "11" then "12.5.0"
         when "10.15" then "11.0.0"
-        when "10.14" then "10.0.0"
-        when "10.13" then "9.0.0"
-        when "10.12" then "8.0.0"
-        when "10.11" then "7.3.0"
         else
           "#{macos}.0.0"
         end
