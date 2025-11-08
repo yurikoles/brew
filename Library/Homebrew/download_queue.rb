@@ -259,19 +259,20 @@ module Homebrew
       tty_width = Tty.width
       return message unless tty_width.positive?
 
+      available_width = tty_width - 2
       fetched_size = downloadable.fetched_size
-      return message if fetched_size.blank?
+      return message[0, available_width].to_s if fetched_size.blank?
 
       size_length = 5
       unit_length = 2
       size_formatting_string = "%<size>#{size_length}.1f%<unit>#{unit_length}s"
-      size, unit = disk_usage_readable_size_unit(fetched_size)
+      size, unit = disk_usage_readable_size_unit(fetched_size, per_thousand: true)
       formatted_fetched_size = format(size_formatting_string, size:, unit:)
 
       formatted_total_size = if future.fulfilled?
         formatted_fetched_size
       elsif (total_size = downloadable.total_size)
-        size, unit = disk_usage_readable_size_unit(total_size)
+        size, unit = disk_usage_readable_size_unit(total_size, per_thousand: true)
         format(size_formatting_string, size:, unit:)
       else
         # fill in the missing spaces for the size if we don't have it yet.
@@ -280,11 +281,11 @@ module Homebrew
 
       max_phase_length = 11
       phase = format("%-<phase>#{max_phase_length}s", phase: downloadable.phase.to_s.capitalize)
-      progress = "#{formatted_fetched_size}/#{formatted_total_size}"
-      additional_padding_length = max_phase_length + size_length + unit_length - 1
-      message_length = tty_width - progress.length - additional_padding_length
+      progress = " [#{phase} #{formatted_fetched_size}/#{formatted_total_size}]"
+      message_length = available_width - progress.length
+      return message[0, available_width].to_s unless message_length.positive?
 
-      "#{message[0, message_length].to_s.ljust(message_length)} [#{phase} #{progress}]"
+      "#{message[0, message_length].to_s.ljust(message_length)}#{progress}"
     end
 
     class Spinner
