@@ -57,7 +57,6 @@ Press Ctrl-D or Ctrl-C to terminate it.
   "context_servers": {
    "Homebrew": {
 			"source": "custom",
-			"enabled": true,
 			"command": "brew",
 			"args": ["mcp-server"],
 			"env": {}
