@@ -206,13 +206,13 @@ module Kernel
 
   sig { params(size_in_bytes: T.any(Integer, Float)).returns([T.any(Integer, Float), String]) }
   def disk_usage_readable_size_unit(size_in_bytes)
-    if size_in_bytes.abs >= 1_073_741_824
+    if size_in_bytes.abs >= 1_048_576_000
       size = size_in_bytes.to_f / 1_073_741_824
       unit = "GB"
-    elsif size_in_bytes.abs >= 1_048_576
+    elsif size_in_bytes.abs >= 1_024_000
       size = size_in_bytes.to_f / 1_048_576
       unit = "MB"
-    elsif size_in_bytes.abs >= 1_024
+    elsif size_in_bytes.abs >= 1_000
       size = size_in_bytes.to_f / 1_024
       unit = "KB"
     else
