@@ -263,16 +263,17 @@ module Homebrew
       fetched_size = downloadable.fetched_size
       return message[0, available_width].to_s if fetched_size.blank?
 
+      precision = 1
       size_length = 5
       unit_length = 2
-      size_formatting_string = "%<size>#{size_length}.1f%<unit>#{unit_length}s"
-      size, unit = disk_usage_readable_size_unit(fetched_size, per_thousand: true)
+      size_formatting_string = "%<size>#{size_length}.#{precision}f%<unit>#{unit_length}s"
+      size, unit = disk_usage_readable_size_unit(fetched_size, precision:)
       formatted_fetched_size = format(size_formatting_string, size:, unit:)
 
       formatted_total_size = if future.fulfilled?
         formatted_fetched_size
       elsif (total_size = downloadable.total_size)
-        size, unit = disk_usage_readable_size_unit(total_size, per_thousand: true)
+        size, unit = disk_usage_readable_size_unit(total_size, precision:)
         format(size_formatting_string, size:, unit:)
       else
         # fill in the missing spaces for the size if we don't have it yet.
