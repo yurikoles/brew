@@ -118,13 +118,6 @@ module OS
         sdk_settings = sdk_path/"SDKSettings.json"
         sdk_settings_string = sdk_settings.read if sdk_settings.exist?
 
-        # Pre-10.14 SDKs
-        sdk_settings = sdk_path/"SDKSettings.plist"
-        if sdk_settings_string.blank? && sdk_settings.exist?
-          result = system_command("plutil", args: ["-convert", "json", "-o", "-", sdk_settings])
-          sdk_settings_string = result.stdout if result.success?
-        end
-
         return if sdk_settings_string.blank?
 
         sdk_settings_json = JSON.parse(sdk_settings_string)
