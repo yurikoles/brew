@@ -55,12 +55,12 @@ Press Ctrl-D or Ctrl-C to terminate it.
 ```json
 {
   "context_servers": {
-   "Homebrew": {
-			"source": "custom",
-			"command": "brew",
-			"args": ["mcp-server"],
-			"env": {}
-		}
+  "Homebrew": {
+    "source": "custom",
+    "command": "brew",
+    "args": ["mcp-server"],
+    "env": {}
+  }
   }
 }
 ```
