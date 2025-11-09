@@ -834,8 +834,16 @@ module GitHub
 
     return unless result.status.success?
 
-    commit = result.stdout[/^ETag: "(\h+)"/, 1]
-    return if commit.blank?
+    commit = result.stdout[/^ETag: "(\h+)"/i, 1]
+    return if commit.blank? || commit.length < 7
+
+    # Just guess 7 characters for `git rev-parse --short=7`, which is the same
+    # as what GitHub uses for GraphQL abbreviatedOid. If this fails, then just
+    # return nil as we currently don't have a way to determine the reason for
+    # a failure. This means we can't distinguish a GitHub API rate limit from
+    # an actual non-unique short commit where latter needs 8 or more characters.
+    commit = commit[0, 7]
+    return if multiple_short_commits_exist?(user, repo, commit)
 
     version.update_commit(commit)
     commit
@@ -848,13 +856,18 @@ module GitHub
     result = Utils::Curl.curl_output(
       "--silent", "--head", "--location",
       "--header", "Accept: application/vnd.github.sha",
+      "--output", File::NULL,
+      # This is a Curl format token, not a Ruby one.
+      # rubocop:disable Style/FormatStringToken
+      "--write-out", "%{http_code}",
+      # rubocop:enable Style/FormatStringToken
       url_to("repos", user, repo, "commits", commit).to_s
     )
 
     return true unless result.status.success?
     return true if (output = result.stdout).blank?
 
-    output[/^Status: (200)/, 1] != "200"
+    output != "200"
   end
 
   sig {
