@@ -840,8 +840,8 @@ module GitHub
     # Just guess 7 characters for `git rev-parse --short=7`, which is the same
     # as what GitHub uses for GraphQL abbreviatedOid. If this fails, then just
     # return nil as we currently don't have a way to determine the reason for
-    # a failure. This means we can't distinguish a GitHub API rate limit from
-    # an actual non-unique short commit where latter needs 8 or more characters.
+    # the failure. This means we can't distinguish a GitHub API rate limit from
+    # an actual non-unique short commit where the latter needs 8 or more characters.
     commit = commit[0, 7]
     return if multiple_short_commits_exist?(user, repo, commit)
 

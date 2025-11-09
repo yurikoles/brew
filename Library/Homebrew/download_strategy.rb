@@ -1260,7 +1260,7 @@ class GitHubGitDownloadStrategy < GitDownloadStrategy
 
   sig { override.returns(String) }
   def last_commit
-    @last_commit ||= GitHub.last_commit(@user, @repo, @ref, version)
+    @last_commit = GitHub.last_commit(@user, @repo, @ref, version) unless defined?(@last_commit)
     return @last_commit unless @last_commit.nil?
 
     # Avoid caching the empty string when repository is not fetched
@@ -1272,7 +1272,7 @@ class GitHubGitDownloadStrategy < GitDownloadStrategy
   sig { override.params(commit: T.nilable(String)).returns(T::Boolean) }
   def commit_outdated?(commit)
     return true unless commit
-    return super if last_commit.empty?
+    return super if last_commit.blank?
     return true unless last_commit.start_with?(commit)
 
     if GitHub.multiple_short_commits_exist?(@user, @repo, commit)
