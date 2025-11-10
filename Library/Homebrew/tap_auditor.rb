@@ -4,7 +4,7 @@
 module Homebrew
   # Auditor for checking common violations in {Tap}s.
   class TapAuditor
-    attr_reader :name, :path, :formula_names, :formula_aliases, :formula_renames, :cask_tokens,
+    attr_reader :name, :path, :formula_names, :formula_aliases, :formula_renames, :cask_tokens, :cask_renames,
                 :tap_audit_exceptions, :tap_style_exceptions, :tap_pypi_formula_mappings, :problems
 
     sig { params(tap: Tap, strict: T.nilable(T::Boolean)).void }
@@ -27,6 +27,7 @@ module Homebrew
           formula_alias.split("/").last
         end
         @formula_renames = tap.formula_renames
+        @cask_renames = tap.cask_renames
         @formula_names = tap.formula_names.map do |formula_name|
           formula_name.split("/").last
         end
@@ -55,7 +56,8 @@ module Homebrew
       check_formula_list_directory "audit_exceptions", @tap_audit_exceptions
       check_formula_list_directory "style_exceptions", @tap_style_exceptions
       check_formula_list "pypi_formula_mappings", @tap_pypi_formula_mappings
-      check_formula_list "formula_renames", @formula_renames.values
+      check_renames "formula_renames", @formula_renames, @formula_names, @formula_aliases
+      check_renames "cask_renames", @cask_renames, @cask_tokens
       check_formula_list ".github/autobump.txt", @tap_autobump unless @tap_official
     end
 
@@ -106,6 +108,60 @@ module Homebrew
       lists.each do |list_name, list|
         check_formula_list "#{directory_name}/#{list_name}", list
       end
+    end
+
+    sig {
+      params(list_file: String, renames_hash: T::Hash[String, String], valid_tokens: T::Array[String],
+             valid_aliases: T::Array[String]).void
+    }
+    def check_renames(list_file, renames_hash, valid_tokens, valid_aliases = [])
+      list_file += ".json" if File.extname(list_file).empty?
+
+      # Check for .rb extensions in keys or values
+      invalid_format = renames_hash.select do |old_name, new_name|
+        old_name.end_with?(".rb") || new_name.end_with?(".rb")
+      end
+      if invalid_format.any?
+        problem <<~EOS
+          #{list_file} contains entries with '.rb' file extensions.
+          Rename entries should use cask/formula tokens only, without file extensions.
+          Invalid entries: #{invalid_format.map { |k, v| "\"#{k}\": \"#{v}\"" }.join(", ")}
+        EOS
+      end
+
+      # Check that all new names (values) exist in the tap
+      invalid_targets = renames_hash.values.select do |new_name|
+        valid_tokens.exclude?(new_name) && valid_aliases.exclude?(new_name)
+      end
+      if invalid_targets.any?
+        problem <<~EOS
+          #{list_file} contains renames to casks or formulae that do not exist in the #{@name} tap.
+          Invalid targets: #{invalid_targets.join(", ")}
+        EOS
+      end
+
+      # Check for chained renames (A -> B and B -> C)
+      chained = renames_hash.select { |_old_name, new_name| renames_hash.key?(new_name) }
+      if chained.any?
+        suggestions = chained.map do |old_name, intermediate|
+          final = renames_hash[intermediate]
+          "  \"#{old_name}\": \"#{final}\" (instead of \"#{old_name}\" -> \"#{intermediate}\" -> \"#{final}\")"
+        end
+        problem <<~EOS
+          #{list_file} contains chained renames that should be collapsed.
+          Chained renames don't work automatically; update these entries:
+          #{suggestions.join("\n")}
+        EOS
+      end
+
+      # Warn if old names conflict with existing casks/formulae
+      conflicts = renames_hash.keys.select { |old_name| valid_tokens.include?(old_name) }
+      return if conflicts.none?
+
+      problem <<~EOS
+        #{list_file} contains old names that conflict with existing casks or formulae in the #{@name} tap.
+        This may cause confusion. Conflicting names: #{conflicts.join(", ")}
+      EOS
     end
   end
 end
