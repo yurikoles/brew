@@ -205,12 +205,6 @@ module OS
 
             xcode_version = xcodebuild_output[/Xcode (\d+(\.\d+)*)/, 1]
             return xcode_version if xcode_version
-
-            # Xcode 2.x's xcodebuild has a different version string
-            case xcodebuild_output[/DevToolsCore-(\d+\.\d)/, 1]
-            when "798.0" then return "2.5"
-            when "515.0" then return "2.0"
-            end
           end
         end
 
@@ -226,17 +220,6 @@ module OS
         # simultaneously so workarounds need to apply to both based on their
         # comparable version.
         case version
-        when "6.0.0"  then "6.2"
-        when "6.1.0"  then "6.4"
-        when "7.0.0"  then "7.1"
-        when "7.0.2"  then "7.2.1"
-        when "7.3.0"  then "7.3.1"
-        when "8.0.0"  then "8.2.1"
-        when "8.1.0"  then "8.3.3"
-        when "9.0.0"  then "9.2"
-        when "9.1.0"  then "9.4.1"
-        when "10.0.0" then "10.1"
-        when "10.0.1" then "10.3"
         when "11.0.0" then "11.3.1"
         when "11.0.3" then "11.7"
         when "12.0.0" then "12.4"
@@ -259,6 +242,8 @@ module OS
 
     # Helper module for querying macOS Command Line Tools information.
     module CLT
+      extend Utils::Output::Mixin
+
       # The original Mavericks CLT package ID
       EXECUTABLE_PKG_ID = "com.apple.pkg.CLTools_Executables"
       MAVERICKS_NEW_PKG_ID = "com.apple.pkg.CLTools_Base" # obsolete
@@ -272,12 +257,8 @@ module OS
 
       sig { returns(T::Boolean) }
       def self.separate_header_package?
-        version >= "10" && MacOS.version >= "10.14"
-      end
-
-      sig { returns(T::Boolean) }
-      def self.provides_sdk?
-        version >= "8"
+        odeprecated "MacOS::CLT.separate_header_package?"
+        true
       end
 
       sig { returns(CLTSDKLocator) }

@@ -103,13 +103,6 @@ module OS
 
     sig { returns(T::Boolean) }
     def self.sdk_root_needed?
-      if MacOS::CLT.installed?
-        # If there's no CLT SDK, return false
-        return false unless MacOS::CLT.provides_sdk?
-        # If the CLT is installed and headers are provided by the system, return false
-        return false unless MacOS::CLT.separate_header_package?
-      end
-
       true
     end
 
@@ -125,7 +118,7 @@ module OS
 
     sig { returns(T.any(CLTSDKLocator, XcodeSDKLocator)) }
     def self.sdk_locator
-      if CLT.installed? && CLT.provides_sdk?
+      if CLT.installed?
         CLT.sdk_locator
       else
         Xcode.sdk_locator
