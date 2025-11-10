@@ -24,7 +24,7 @@ RSpec.describe OS::Mac do
       described_class.sdk_path_if_needed
     end
 
-    it "calls sdk_path on CLT-only systems with a CLT SDK if the system does not provide headers" do
+    it "calls sdk_path on CLT-only systems" do
       allow(OS::Mac::Xcode).to receive(:installed?).and_return(false)
       allow(OS::Mac::CLT).to receive_messages(installed?: true)
       expect(described_class).to receive(:sdk_path)
