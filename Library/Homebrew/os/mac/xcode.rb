@@ -269,11 +269,6 @@ module OS
         version >= "10"
       end
 
-      sig { returns(T::Boolean) }
-      def self.provides_sdk?
-        version >= "8"
-      end
-
       sig { returns(CLTSDKLocator) }
       def self.sdk_locator
         @sdk_locator ||= T.let(CLTSDKLocator.new, T.nilable(OS::Mac::CLTSDKLocator))
