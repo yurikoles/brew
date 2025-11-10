@@ -1515,7 +1515,7 @@ on_request: installed_on_request?, options:)
 
       # Download queue has already extracted the bottle to a temporary directory.
       bottle_tmp_keg = if download_queue
-        formula_prefix_relative_to_cellar = formula.prefix.to_s.delete_prefix("#{HOMEBREW_CELLAR}/")
+        formula_prefix_relative_to_cellar = formula.prefix.relative_path_from(HOMEBREW_CELLAR)
         HOMEBREW_TEMP_CELLAR/formula_prefix_relative_to_cellar
       end
 
