@@ -2,7 +2,9 @@
 last_review_date: "1970-01-01"
 ---
 
-# Renaming a Formula
+# Renaming a Formula or Cask
+
+## Renaming a Formula
 
 Sometimes software and formulae need to be renamed. To rename a formula you need to:
 
@@ -17,3 +19,29 @@ A `formula_renames.json` example for a formula rename:
   "ack": "newack"
 }
 ```
+
+## Renaming a Cask
+
+To rename a cask, follow a similar process:
+
+1. Rename the cask file to the new cask token. The new token must meet all the usual rules of cask naming.
+2. Create a pull request on the corresponding tap deleting the old cask file, adding the new cask file, and adding it to `cask_renames.json` with a commit message like `new-token: renamed from old-token`.
+
+A `cask_renames.json` example:
+
+```json
+{
+  "old-token": "new-token"
+}
+```
+
+## Important Rules
+
+When editing `formula_renames.json` or `cask_renames.json`, follow these rules:
+
+1. **Do not include `.rb` file extensions** - Use only the formula/cask token name
+2. **Ensure the target exists** - The new name must be an existing formula/cask in the tap
+3. **Avoid chained renames** - Don't create chains like `A → B` and `B → C`. Collapse chains to `A → C` directly as chained renames don't work automatically
+4. **Check for conflicts** - The old name should not conflict with an existing formula/cask
+
+These rules are validated by `brew audit` for tap maintainers.
