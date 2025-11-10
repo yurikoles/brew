@@ -124,7 +124,7 @@ module Homebrew
       if invalid_format.any?
         problem <<~EOS
           #{list_file} contains entries with '.rb' file extensions.
-          Rename entries should use cask/formula tokens only, without file extensions.
+          Rename entries should use formula/cask names only, without '.rb' extensions.
           Invalid entries: #{invalid_format.map { |k, v| "\"#{k}\": \"#{v}\"" }.join(", ")}
         EOS
       end
@@ -135,7 +135,7 @@ module Homebrew
       end
       if invalid_targets.any?
         problem <<~EOS
-          #{list_file} contains renames to casks or formulae that do not exist in the #{@name} tap.
+          #{list_file} contains renames to formulae or casks that do not exist in the #{@name} tap.
           Invalid targets: #{invalid_targets.join(", ")}
         EOS
       end
@@ -158,7 +158,7 @@ module Homebrew
         end
         problem <<~EOS
           #{list_file} contains chained renames that should be collapsed.
-          Chained renames don't work automatically; update these entries:
+          Chained renames don't work automatically; each old name should point directly to the final target:
           #{suggestions.join("\n")}
         EOS
       end
@@ -169,7 +169,7 @@ module Homebrew
 
       problem <<~EOS
         #{list_file} contains old names that conflict with existing casks or formulae in the #{@name} tap.
-        This may cause confusion. Conflicting names: #{conflicts.join(", ")}
+        Renames only work after the old cask/formula is deleted. Conflicting names: #{conflicts.join(", ")}
       EOS
     end
   end
