@@ -56,6 +56,9 @@ HOMEBREW_PINNED_KEGS = (HOMEBREW_PREFIX/"var/homebrew/pinned").freeze
 # Where we store lock files
 HOMEBREW_LOCKS = (HOMEBREW_PREFIX/"var/homebrew/locks").freeze
 
+# Where we store temporary cellar files that must be in the prefix
+HOMEBREW_TEMP_CELLAR = (HOMEBREW_PREFIX/"var/homebrew/tmp/.cellar").freeze
+
 # Where we store Casks
 HOMEBREW_CASKROOM = Pathname(ENV.fetch("HOMEBREW_CASKROOM")).freeze
 
