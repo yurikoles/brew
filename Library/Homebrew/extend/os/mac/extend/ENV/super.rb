@@ -136,10 +136,7 @@ module OS
         self["HOMEBREW_PREFER_CLT_PROXIES"] = "1"
 
         # Deterministic timestamping.
-        # This can work on older Xcode versions, but they contain some bugs.
-        # Notably, Xcode 10.2 fixes issues where ZERO_AR_DATE affected file mtimes.
-        # Xcode 11.0 contains fixes for lldb reading things built with ZERO_AR_DATE.
-        self["ZERO_AR_DATE"] = "1" if MacOS::Xcode.version >= "11.0" || MacOS::CLT.version >= "11.0"
+        self["ZERO_AR_DATE"] = "1"
 
         # Pass `-no_fixup_chains` whenever the linker is invoked with `-undefined dynamic_lookup`.
         # See: https://github.com/python/cpython/issues/97524
@@ -147,7 +144,7 @@ module OS
         no_fixup_chains
 
         # Strip build prefixes from linker where supported, for deterministic builds.
-        append_to_cccfg "o" if ::DevelopmentTools.ld64_version >= 512
+        append_to_cccfg "o"
 
         # Pass `-ld_classic` whenever the linker is invoked with `-dead_strip_dylibs`
         # on `ld` versions that don't properly handle that option.
