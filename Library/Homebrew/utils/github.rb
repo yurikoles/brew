@@ -835,14 +835,17 @@ module GitHub
     return unless result.status.success?
 
     commit = result.stdout[/^ETag: "(\h+)"/i, 1]
-    return if commit.blank? || commit.length < 7
+    return if commit.blank?
+
+    github_graphql_abbreviated_oid_length = 7
+    return if commit.length < github_graphql_abbreviated_oid_length
 
     # Just guess 7 characters for `git rev-parse --short=7`, which is the same
     # as what GitHub uses for GraphQL abbreviatedOid. If this fails, then just
     # return nil as we currently don't have a way to determine the reason for
     # the failure. This means we can't distinguish a GitHub API rate limit from
     # an actual non-unique short commit where the latter needs 8 or more characters.
-    commit = commit[0, 7]
+    commit = commit[0, github_graphql_abbreviated_oid_length]
     return if multiple_short_commits_exist?(user, repo, commit)
 
     version.update_commit(commit)
