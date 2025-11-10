@@ -171,6 +171,7 @@ class GitHubRunnerMatrix
       x86_64_macos_version = MacOSVersion.new("10.15")
       @runners << create_runner(:macos, :x86_64, x86_64_spec, x86_64_macos_version)
 
+      # odisabled: remove support for Big Sur September (or later) 2027
       arm64_spec = MacOSRunnerSpec.new(
         name:    "macOS 11-arm64-cross",
         runner:  "11-arm64-cross-#{github_run_id}",

@@ -4103,9 +4103,11 @@ class Formula
     # If a dependency is only needed in certain cases:
     #
     # ```ruby
-    # depends_on "sqlite" if MacOS.version >= :catalina
     # depends_on xcode: :build # If the formula really needs full Xcode to compile.
     # depends_on macos: :sequoia # Needs at least macOS Sequoia (15) to run.
+    # on_tahoe :or_newer do
+    #   depends_on "sqlite"
+    # end
     # ```
     #
     # It is possible to only depend on something if
@@ -4373,8 +4375,8 @@ class Formula
     # encountered on 7.2:
     #
     # ```ruby
-    # fails_with :gcc => '7' do
-    #   version '7.1'
+    # fails_with gcc: "7" do
+    #   version "7.1"
     # end
     # ```
     #

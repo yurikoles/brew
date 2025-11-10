@@ -58,5 +58,11 @@ fi
 path="/Applications/Xcode.app/Contents/Developer/usr/bin/${SHIM_FILE}"
 safe_exec "${path}" "$@"
 
+if [[ -z "${popup_stub}" ]]
+then
+  path="/usr/bin/${SHIM_FILE}"
+  safe_exec "${path}" "$@"
+fi
+
 echo "You must: brew install ${SHIM_FILE}" >&2
 exit 1

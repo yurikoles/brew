@@ -631,7 +631,7 @@ then
   if [[ "${HOMEBREW_MACOS_VERSION_NUMERIC}" -lt "${HOMEBREW_MACOS_OLDEST_ALLOWED_NUMERIC}" ]]
   then
     printf "ERROR: Your version of macOS (%s) is too old to run Homebrew!\\n" "${HOMEBREW_MACOS_VERSION}" >&2
-    if [[ "${HOMEBREW_MACOS_VERSION_NUMERIC}" -lt "101500" ]]
+    if [[ "${HOMEBREW_MACOS_VERSION_NUMERIC}" -lt "100700" ]]
     then
       printf "         For 10.4 - 10.6 support see: https://github.com/mistydemeo/tigerbrew\\n" >&2
     fi

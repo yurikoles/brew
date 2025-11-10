@@ -38,7 +38,15 @@ module OS
     # @api internal
     sig { returns(MacOSVersion) }
     def self.full_version
-      @full_version ||= T.let(MacOSVersion.new(VERSION), T.nilable(MacOSVersion))
+      @full_version ||= T.let(nil, T.nilable(MacOSVersion))
+      # HOMEBREW_FAKE_MACOS is set system-wide in the macOS 11-arm64-cross image
+      # for building a macOS 11 Portable Ruby on macOS 12
+      # odisabled: remove support for Big Sur September (or later) 2027
+      @full_version ||= if (fake_macos = ENV.fetch("HOMEBREW_FAKE_MACOS", nil))
+        MacOSVersion.new(fake_macos)
+      else
+        MacOSVersion.new(VERSION)
+      end
     end
 
     sig { params(version: String).void }
@@ -95,13 +103,6 @@ module OS
 
     sig { returns(T::Boolean) }
     def self.sdk_root_needed?
-      if MacOS::CLT.installed?
-        # If there's no CLT SDK, return false
-        return false unless MacOS::CLT.provides_sdk?
-        # If the CLT is installed and headers are provided by the system, return false
-        return false unless MacOS::CLT.separate_header_package?
-      end
-
       true
     end
 
@@ -117,7 +118,7 @@ module OS
 
     sig { returns(T.any(CLTSDKLocator, XcodeSDKLocator)) }
     def self.sdk_locator
-      if CLT.installed? && CLT.provides_sdk?
+      if CLT.installed?
         CLT.sdk_locator
       else
         Xcode.sdk_locator
