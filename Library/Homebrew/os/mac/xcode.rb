@@ -205,12 +205,6 @@ module OS
 
             xcode_version = xcodebuild_output[/Xcode (\d+(\.\d+)*)/, 1]
             return xcode_version if xcode_version
-
-            # Xcode 2.x's xcodebuild has a different version string
-            case xcodebuild_output[/DevToolsCore-(\d+\.\d)/, 1]
-            when "798.0" then return "2.5"
-            when "515.0" then return "2.0"
-            end
           end
         end
 
@@ -272,7 +266,7 @@ module OS
 
       sig { returns(T::Boolean) }
       def self.separate_header_package?
-        version >= "10" && MacOS.version >= "10.14"
+        version >= "10"
       end
 
       sig { returns(T::Boolean) }
