@@ -39,7 +39,10 @@ module OS
     sig { returns(MacOSVersion) }
     def self.full_version
       @full_version ||= T.let(nil, T.nilable(MacOSVersion))
-      @full_version ||= if (fake_macos = ENV.fetch("HOMEBREW_FAKE_MACOS", nil)) # for Portable Ruby building
+      # HOMEBREW_FAKE_MACOS is set system-wide in the macOS 11-arm64-cross image
+      # for building a macOS 11 Portable Ruby on macOS 12
+      # odisabled: remove support for Big Sur September (or later) 2027
+      @full_version ||= if (fake_macos = ENV.fetch("HOMEBREW_FAKE_MACOS", nil))
         MacOSVersion.new(fake_macos)
       else
         MacOSVersion.new(VERSION)
