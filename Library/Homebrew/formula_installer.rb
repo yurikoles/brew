@@ -593,7 +593,7 @@ on_request: installed_on_request?, options:)
         pour
       # Catch any other types of exceptions as they leave us with nothing installed.
       rescue Exception # rubocop:disable Lint/RescueException
-        Keg.new(formula.prefix).ignore_interrupts_and_uninstall!
+        Keg.new(formula.prefix).ignore_interrupts_and_uninstall! if formula.prefix.exist?
         raise
       else
         @poured_bottle = true
@@ -1509,10 +1509,22 @@ on_request: installed_on_request?, options:)
   sig { void }
   def pour
     HOMEBREW_CELLAR.cd do
-      # download queue has already done the actual staging but we'll lie about
-      # pouring now for nicer output
       ohai "Pouring #{downloadable.downloader.basename}"
-      downloadable.downloader.stage if download_queue.nil? || !formula.prefix.exist?
+
+      formula.rack.mkpath
+
+      # Download queue has already extracted the bottle to a temporary directory.
+      bottle_tmp_keg = if download_queue
+        formula_prefix_relative_to_cellar = formula.prefix.to_s.delete_prefix("#{HOMEBREW_CELLAR}/")
+        HOMEBREW_TEMP_CELLAR/formula_prefix_relative_to_cellar
+      end
+
+      if bottle_tmp_keg&.exist?
+        FileUtils.mv(bottle_tmp_keg, formula.prefix)
+        bottle_tmp_keg.parent.rmdir_if_possible
+      else
+        downloadable.downloader.stage
+      end
     end
 
     Tab.clear_cache
