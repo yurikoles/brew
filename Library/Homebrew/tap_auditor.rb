@@ -144,8 +144,17 @@ module Homebrew
       chained = renames_hash.select { |_old_name, new_name| renames_hash.key?(new_name) }
       if chained.any?
         suggestions = chained.map do |old_name, intermediate|
-          final = renames_hash[intermediate]
-          "  \"#{old_name}\": \"#{final}\" (instead of \"#{old_name}\" -> \"#{intermediate}\" -> \"#{final}\")"
+          # Follow the chain to the end, with cycle detection
+          final = intermediate
+          seen = Set.new([old_name, intermediate])
+          while renames_hash.key?(final)
+            next_name = renames_hash[final]
+            break if next_name.nil? || seen.include?(next_name) # Prevent infinite loops on circular renames
+
+            final = next_name
+            seen << final
+          end
+          "  \"#{old_name}\": \"#{final}\" (instead of chained rename)"
         end
         problem <<~EOS
           #{list_file} contains chained renames that should be collapsed.

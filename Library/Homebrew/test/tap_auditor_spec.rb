@@ -87,6 +87,42 @@ RSpec.describe Homebrew::TapAuditor do
         expect(problem_message[:message]).to include("finalcask")
       end
 
+      it "detects multi-level chained renames and suggests final target" do
+        cask_path2 = tap_path/"Casks"/"intermediatecask.rb"
+        cask_path2.write <<~RUBY
+          cask "intermediatecask" do
+            version "1.0"
+            url "https://brew.sh/intermediatecask-1.0.dmg"
+            name "Intermediate Cask"
+            homepage "https://brew.sh"
+          end
+        RUBY
+
+        cask_path3 = tap_path/"Casks"/"finalcask.rb"
+        cask_path3.write <<~RUBY
+          cask "finalcask" do
+            version "1.0"
+            url "https://brew.sh/finalcask-1.0.dmg"
+            name "Final Cask"
+            homepage "https://brew.sh"
+          end
+        RUBY
+
+        cask_renames_path.write JSON.pretty_generate({
+          "oldcask"          => "newcask",
+          "newcask"          => "intermediatecask",
+          "intermediatecask" => "finalcask",
+        })
+
+        auditor.audit
+        expect(auditor.problems).not_to be_empty
+        problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
+        expect(problem_message).not_to be_nil
+        expect(problem_message[:message]).to include("oldcask")
+        expect(problem_message[:message]).to include("finalcask")
+        expect(problem_message[:message]).not_to include("intermediatecask")
+      end
+
       it "detects old name conflicts with existing cask" do
         cask_renames_path.write JSON.pretty_generate({
           "newcask" => "anothercask",
