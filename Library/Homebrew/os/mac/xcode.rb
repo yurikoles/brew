@@ -253,6 +253,8 @@ module OS
 
     # Helper module for querying macOS Command Line Tools information.
     module CLT
+      extend Utils::Output::Mixin
+
       # The original Mavericks CLT package ID
       EXECUTABLE_PKG_ID = "com.apple.pkg.CLTools_Executables"
       MAVERICKS_NEW_PKG_ID = "com.apple.pkg.CLTools_Base" # obsolete
@@ -266,7 +268,8 @@ module OS
 
       sig { returns(T::Boolean) }
       def self.separate_header_package?
-        version >= "10"
+        odeprecated "`MacOS::CLT.separate_header_package?`"
+        true
       end
 
       sig { returns(CLTSDKLocator) }

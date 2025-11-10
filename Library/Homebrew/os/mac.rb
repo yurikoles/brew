@@ -100,11 +100,6 @@ module OS
 
     sig { returns(T::Boolean) }
     def self.sdk_root_needed?
-      if MacOS::CLT.installed?
-        # If the CLT is installed and headers are provided by the system, return false
-        return false unless MacOS::CLT.separate_header_package?
-      end
-
       true
     end
 
