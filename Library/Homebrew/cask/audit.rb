@@ -557,7 +557,7 @@ module Cask
 
           if cask.tap.official?
             signing_failure_message += <<~EOS
-              Homebrew/cask requires all casks to be signed and notarized by Apple.
+              The homebrew/cask tap requires all casks to be signed and notarized by Apple.
               Please contact the upstream developer and ask them to sign and notarize their software.
             EOS
           end
