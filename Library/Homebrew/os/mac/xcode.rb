@@ -220,17 +220,6 @@ module OS
         # simultaneously so workarounds need to apply to both based on their
         # comparable version.
         case version
-        when "6.0.0"  then "6.2"
-        when "6.1.0"  then "6.4"
-        when "7.0.0"  then "7.1"
-        when "7.0.2"  then "7.2.1"
-        when "7.3.0"  then "7.3.1"
-        when "8.0.0"  then "8.2.1"
-        when "8.1.0"  then "8.3.3"
-        when "9.0.0"  then "9.2"
-        when "9.1.0"  then "9.4.1"
-        when "10.0.0" then "10.1"
-        when "10.0.1" then "10.3"
         when "11.0.0" then "11.3.1"
         when "11.0.3" then "11.7"
         when "12.0.0" then "12.4"
