@@ -1260,7 +1260,7 @@ class GitHubGitDownloadStrategy < GitDownloadStrategy
 
   sig { override.returns(String) }
   def last_commit
-    @last_commit = GitHub.last_commit(@user, @repo, @ref, version) unless defined?(@last_commit)
+    @last_commit ||= GitHub.last_commit(@user, @repo, @ref, version)
     return @last_commit unless @last_commit.nil?
 
     # Avoid caching the empty string when repository is not fetched
