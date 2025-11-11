@@ -108,7 +108,7 @@ module OS
       # This is a no-op with macOS SDK 10.15.4 and later.
       def libxml2
         sdk = self["SDKROOT"] || MacOS.sdk_path_if_needed
-        # Use the includes form the sdk
+        # Use the includes from the sdk
         append "CPPFLAGS", "-I#{sdk}/usr/include/libxml2" unless Pathname("#{sdk}/usr/include/libxml").directory?
       end
 
