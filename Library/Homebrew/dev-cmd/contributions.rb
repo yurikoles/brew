@@ -282,12 +282,16 @@ module Homebrew
 
       sig { returns(T::Hash[Integer, T::Array[String]]) }
       def quarter_dates
+        # These aren't standard quarterly dates. We've chosen our own so that we
+        # can use recent maintainer activity stats as part of checking
+        # eligibility for expensed attendance at the AGM in February each year.
         current_year = Date.today.year
+        last_year = current_year - 1
         {
-          1 => [Date.new(current_year, 1, 1).iso8601, Date.new(current_year, 3, 31).iso8601],
-          2 => [Date.new(current_year, 4, 1).iso8601, Date.new(current_year, 6, 30).iso8601],
-          3 => [Date.new(current_year, 7, 1).iso8601, Date.new(current_year, 9, 30).iso8601],
-          4 => [Date.new(current_year, 10, 1).iso8601, Date.new(current_year, 12, 31).iso8601],
+          1 => [Date.new(last_year, 9, 1).iso8601, Date.new(last_year, 12, 1).iso8601],
+          2 => [Date.new(last_year, 12, 1).iso8601, Date.new(current_year, 3, 1).iso8601],
+          3 => [Date.new(current_year, 3, 1).iso8601, Date.new(current_year, 6, 1).iso8601],
+          4 => [Date.new(current_year, 6, 1).iso8601, Date.new(current_year, 9, 1).iso8601],
         }
       end
     end
