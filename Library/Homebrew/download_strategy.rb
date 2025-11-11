@@ -963,6 +963,8 @@ end
 #
 # @api public
 class GitDownloadStrategy < VCSDownloadStrategy
+  MINIMUM_COMMIT_HASH_LENGTH = 7
+
   sig { params(url: String, name: String, version: T.nilable(T.any(String, Version)), meta: T.untyped).void }
   def initialize(url, name, version, **meta)
     # Needs to be before the call to `super`, as the VCSDownloadStrategy's
@@ -988,12 +990,14 @@ class GitDownloadStrategy < VCSDownloadStrategy
     Time.parse(silent_command("git", args: ["--git-dir", git_dir, "show", "-s", "--format=%cD"]).stdout)
   end
 
-  # Return last commit's unique identifier for the repository.
+  # Return last commit's unique identifier for the repository if fetched locally.
   #
   # @api public
   sig { override.returns(String) }
   def last_commit
-    silent_command("git", args: ["--git-dir", git_dir, "rev-parse", "--short=7", "HEAD"]).stdout.chomp
+    args = ["--git-dir", git_dir, "rev-parse", "--short=#{MINIMUM_COMMIT_HASH_LENGTH}", "HEAD"]
+    @last_commit ||= silent_command("git", args:).stdout.chomp.presence
+    @last_commit || ""
   end
 
   private
@@ -1260,13 +1264,8 @@ class GitHubGitDownloadStrategy < GitDownloadStrategy
 
   sig { override.returns(String) }
   def last_commit
-    @last_commit ||= GitHub.last_commit(@user, @repo, @ref, version)
-    return @last_commit unless @last_commit.nil?
-
-    # Avoid caching the empty string when repository is not fetched
-    commit = super
-    @last_commit = commit.presence
-    commit
+    @last_commit ||= GitHub.last_commit(@user, @repo, @ref, version, length: MINIMUM_COMMIT_HASH_LENGTH)
+    @last_commit || super
   end
 
   sig { override.params(commit: T.nilable(String)).returns(T::Boolean) }
