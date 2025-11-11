@@ -28,9 +28,9 @@ To qualify as Tier 1, a macOS configuration must meet all of the following:
 - On official Apple hardware (not a Hackintosh or virtual machine)
 - Running the latest patch release of a macOS version supported by Apple for that hardware and included in Homebrew’s CI coverage (typically the latest stable or prerelease version and the two preceding versions)
 - Installed in the default prefix:
-  - `/opt/homebrew` on Apple silicon
+  - `/opt/homebrew` on Apple Silicon
   - `/usr/local` on Intel x86_64
-- Using a supported architecture (Apple silicon or Intel x86_64)
+- Using a supported architecture (Apple Silicon or Intel x86_64)
 - Not building official packages from source (i.e. using bottles)
 - Installed on the Mac’s internal storage (not external or removable drives)
 - Running with `sudo` access available
@@ -41,8 +41,8 @@ To qualify as Tier 1, a macOS configuration must meet all of the following:
 To qualify as Tier 1, a Linux configuration must meet all of the following:
 
 - Running on:
-  - Ubuntu within its [standard support window](https://ubuntu.com/about/release-cycle), or
-  - A Homebrew-provided Docker image
+  - Ubuntu within its [standard support window](https://ubuntu.com/about/release-cycle) or
+  - a Homebrew-provided Docker image
 - Using a system `glibc` version ≥ 2.35
 - Using a Linux kernel version ≥ 3.2
 - Installed in the default prefix: `/home/linuxbrew/.linuxbrew`
@@ -79,7 +79,7 @@ The following conditions typically apply:
 
 - Homebrew may work, but with a poor and unstable experience
 - Migration to a Tier 1 or 2 configuration, or to a non-Homebrew tool, is strongly recommended
-- Pull requests must meet a very high bar: they must resolve an issue (not merely work around it) and must not introduce high ongoing maintenance cost (e.g. no custom patches)
+- Pull requests must meet a very high bar: they must resolve an issue (not merely work around it) and must not introduce high ongoing maintenance cost (e.g. no custom patches that haven't been already merged upstream)
 - Homebrew maintainers do not commit to fixing bugs affecting these systems
 - Functionality may regress intentionally if it benefits supported configurations
 - Loud configuration warnings will be printed at runtime
@@ -106,7 +106,7 @@ An unsupported configuration is one in which:
 Unsupported configurations include:
 
 - FreeBSD
-- Mac OS X 10.6 and earlier
+- macOS Mojave 10.14 and earlier
 - Beowulf clusters
 - Nokia 3210s
 - CPUs built inside of Minecraft
@@ -128,7 +128,7 @@ The following timeline outlines expected Tier classifications based on Apple’s
 
 - As of November 2025:
 
-  Apple silicon:
+  Apple Silicon:
   - Tier 1: macOS Tahoe 26, Sequoia 15, Sonoma 14
   - Tier 3: macOS Big Sur 11 through Ventura 13
 
@@ -139,7 +139,7 @@ The following timeline outlines expected Tier classifications based on Apple’s
 
 - Expected in or after September 2026:
 
-  Apple silicon:
+  Apple Silicon:
   - Tier 1: macOS 27, Tahoe 26, Sequoia 15
   - Tier 3: macOS Big Sur 11 through Sonoma 14
 
@@ -149,7 +149,7 @@ The following timeline outlines expected Tier classifications based on Apple’s
 
 - Expected in or after September 2027:
 
-  Apple silicon:
+  Apple Silicon:
   - Tier 1: macOS 28, 27, Tahoe 26
   - Tier 3: macOS Monterey 12 through Sequoia 15
   - Unsupported: macOS Big Sur 11
