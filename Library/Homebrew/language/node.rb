@@ -67,7 +67,7 @@ module Language
 
       # npm install args for global style module format installed into libexec
       args = %W[
-        -ddd
+        --loglevel=silly
         --global
         --build-from-source
         --#{npm_cache_config}
@@ -85,7 +85,7 @@ module Language
       setup_npm_environment
       # npm install args for local style module format
       %W[
-        -ddd
+        --loglevel=silly
         --build-from-source
         --#{npm_cache_config}
       ]

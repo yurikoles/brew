@@ -68,6 +68,6 @@ RSpec.describe Language::Node do
 
   specify "#local_npm_install_args" do
     resp = described_class.local_npm_install_args
-    expect(resp).to include("-ddd", "--build-from-source", "--cache=#{HOMEBREW_CACHE}/npm_cache")
+    expect(resp).to include("--loglevel=silly", "--build-from-source", "--cache=#{HOMEBREW_CACHE}/npm_cache")
   end
 end
