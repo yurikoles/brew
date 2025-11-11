@@ -67,7 +67,7 @@ Tier 2 configurations include:
 
 - macOS prerelease versions before they are promoted to Tier 1
 - Linux systems with `glibc` versions between 2.13 and 2.34 (Homebrew’s own `glibc` formula will be installed automatically)
-- Homebrew installed outside the default prefix, requiring source builds for official packages (e.g. non-standard installs of `/opt/homebrew`, `/usr/local`, or `/home/linuxbrew/.linuxbrew`)
+- Homebrew installed outside the default prefix, requiring source builds for official packages (i.e. installing outside `/opt/homebrew`, `/usr/local`, or `/home/linuxbrew/.linuxbrew`)
 - Architectures not yet officially supported by Homebrew
 - Macs using OpenCore Legacy Patcher with a Westmere or newer Intel CPU
 
@@ -79,7 +79,7 @@ The following conditions typically apply:
 
 - Homebrew may work, but with a poor and unstable experience
 - Migration to a Tier 1 or 2 configuration, or to a non-Homebrew tool, is strongly recommended
-- Pull requests must meet a very high bar: they must resolve an issue (not merely work around it) and must not introduce high ongoing maintenance cost (e.g. no custom patches that haven't been already merged upstream)
+- Pull requests must meet a very high bar: they must resolve an issue (not merely work around it) and must not introduce high ongoing maintenance cost (e.g. patches must already be merged upstream)
 - Homebrew maintainers do not commit to fixing bugs affecting these systems
 - Functionality may regress intentionally if it benefits supported configurations
 - Loud configuration warnings will be printed at runtime
