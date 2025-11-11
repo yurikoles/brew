@@ -455,7 +455,6 @@ module OS
         sig { returns(T.nilable(String)) }
         def check_if_supported_sdk_available
           return unless ::DevelopmentTools.installed?
-          return unless MacOS.sdk_root_needed?
           return if MacOS.sdk
 
           locator = MacOS.sdk_locator

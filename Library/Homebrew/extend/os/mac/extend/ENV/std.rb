@@ -86,7 +86,6 @@ module OS
         else
           MacOS.sdk(version)
         end
-        return if !MacOS.sdk_root_needed? && sdk&.source != :xcode
 
         Homebrew::Diagnostic.checks(:fatal_setup_build_environment_checks)
         sdk = T.must(sdk).path
@@ -109,12 +108,8 @@ module OS
       # This is a no-op with macOS SDK 10.15.4 and later.
       def libxml2
         sdk = self["SDKROOT"] || MacOS.sdk_path_if_needed
-        if !sdk
-          append "CPPFLAGS", "-I/usr/include/libxml2"
-        elsif !Pathname("#{sdk}/usr/include/libxml").directory?
-          # Use the includes form the sdk
-          append "CPPFLAGS", "-I#{sdk}/usr/include/libxml2"
-        end
+        # Use the includes form the sdk
+        append "CPPFLAGS", "-I#{sdk}/usr/include/libxml2" unless Pathname("#{sdk}/usr/include/libxml").directory?
       end
 
       def no_weak_imports
