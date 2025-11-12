@@ -35,30 +35,23 @@ RSpec.describe Homebrew::Diagnostic::Checks do
       allow(OS::Mac::Xcode).to receive(:below_minimum_version?).and_return(false)
     end
 
-    it "doesn't trigger when SDK root is not needed" do
-      allow(OS::Mac).to receive_messages(sdk_root_needed?: false, sdk: nil)
-
-      expect(checks.check_if_supported_sdk_available).to be_nil
-    end
-
     it "doesn't trigger when a valid SDK is present" do
-      allow(OS::Mac).to receive_messages(sdk_root_needed?: true,
-                                         sdk:              OS::Mac::SDK.new(
-                                           macos_version, "/some/path/MacOSX.sdk", :clt
-                                         ))
+      allow(OS::Mac).to receive_messages(sdk: OS::Mac::SDK.new(
+        macos_version, "/some/path/MacOSX.sdk", :clt
+      ))
 
       expect(checks.check_if_supported_sdk_available).to be_nil
     end
 
     it "triggers when a valid SDK is not present on CLT systems" do
-      allow(OS::Mac).to receive_messages(sdk_root_needed?: true, sdk: nil, sdk_locator: OS::Mac::CLT.sdk_locator)
+      allow(OS::Mac).to receive_messages(sdk: nil, sdk_locator: OS::Mac::CLT.sdk_locator)
 
       expect(checks.check_if_supported_sdk_available)
         .to include("Your Command Line Tools (CLT) does not support macOS #{macos_version}")
     end
 
     it "triggers when a valid SDK is not present on Xcode systems" do
-      allow(OS::Mac).to receive_messages(sdk_root_needed?: true, sdk: nil, sdk_locator: OS::Mac::Xcode.sdk_locator)
+      allow(OS::Mac).to receive_messages(sdk: nil, sdk_locator: OS::Mac::Xcode.sdk_locator)
 
       expect(checks.check_if_supported_sdk_available)
         .to include("Your Xcode does not support macOS #{macos_version}")
