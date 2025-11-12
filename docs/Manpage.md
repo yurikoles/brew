@@ -3455,7 +3455,8 @@ Run Homebrew's unit and integration tests.
 
 `--profile`
 
-: Run the test suite serially to find the *`n`* slowest tests.
+: Output the *`n`* slowest tests. When run without `--no-parallel` this will
+  output the slowest tests for each parallel test process.
 
 `--seed`
 

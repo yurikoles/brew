@@ -220,16 +220,16 @@ jobs:
       matrix:
         include:
           - name: tests (online)
-            test-flags: --online --coverage
+            test-flags: --online --coverage --profile 3
             runs-on: ubuntu-latest
           - name: tests (generic OS)
-            test-flags: --generic --coverage
+            test-flags: --generic --coverage --profile 3
             runs-on: ubuntu-latest
           - name: tests (Linux)
-            test-flags: --coverage
+            test-flags: --coverage --profile 3
             runs-on: ubuntu-24.04
           - name: tests (macOS)
-            test-flags: --coverage
+            test-flags: --coverage --profile 3
             runs-on: macos-26
     steps:
       - name: Set up Homebrew
@@ -282,15 +282,7 @@ jobs:
 
       - name: Run brew tests
         if: github.event_name == 'pull_request' || matrix.name != 'tests (online)'
-        run: |
-          # Retry multiple times to detect and submit flakiness to CodeCov (because rspec-retry is disabled).
-          if [[ -n "${CODECOV_TOKEN-}" ]]
-          then
-            brew tests ${{ matrix.test-flags }} ||
-            brew tests ${{ matrix.test-flags }}
-          else
-            brew tests ${{ matrix.test-flags }}
-          fi
+        run: brew tests ${{ matrix.test-flags }}
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # These cannot be queried at the macOS level on GitHub Actions.
