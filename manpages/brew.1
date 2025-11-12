@@ -2133,7 +2133,7 @@ Don\[u2019]t audit the stable version\.
 Don\[u2019]t audit the revision\.
 .TP
 \fB\-\-only\-cleanup\-before\fP
-Only run the pre\-cleanup step\. Needs \fB\-\-cleanup\fP\&\.
+Only run the pre\-cleanup step\. Needs \fB\-\-cleanup\fP, except in GitHub Actions\.
 .TP
 \fB\-\-only\-setup\fP
 Only run the local system setup check step\.
@@ -2157,7 +2157,7 @@ Only run the formulae dependents steps\.
 Only run the bottles fetch steps\. This optional post\-upload test checks that all the bottles were uploaded correctly\. It is not run unless requested and only needs to be run on a single machine\. The bottle commit to be tested must be on the tested branch\.
 .TP
 \fB\-\-only\-cleanup\-after\fP
-Only run the post\-cleanup step\. Needs \fB\-\-cleanup\fP\&\.
+Only run the post\-cleanup step\. Needs \fB\-\-cleanup\fP, except in GitHub Actions\.
 .TP
 \fB\-\-testing\-formulae\fP
 Use these testing formulae rather than running the formulae detection steps\.

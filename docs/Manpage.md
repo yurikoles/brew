@@ -3357,7 +3357,7 @@ and Linux workers.
 
 `--only-cleanup-before`
 
-: Only run the pre-cleanup step. Needs `--cleanup`.
+: Only run the pre-cleanup step. Needs `--cleanup`, except in GitHub Actions.
 
 `--only-setup`
 
@@ -3392,7 +3392,7 @@ and Linux workers.
 
 `--only-cleanup-after`
 
-: Only run the post-cleanup step. Needs `--cleanup`.
+: Only run the post-cleanup step. Needs `--cleanup`, except in GitHub Actions.
 
 `--testing-formulae`
 
