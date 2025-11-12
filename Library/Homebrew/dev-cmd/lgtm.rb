@@ -32,16 +32,16 @@ module Homebrew
         safe_system HOMEBREW_BREW_FILE, "style", "--changed", "--fix"
         puts
 
-        audit_args = ["--changed"]
-        audit_args << "--online" if args.online?
+        audit_or_tests_args = ["--changed"]
+        audit_or_tests_args << "--online" if args.online?
 
         if tap
-          audit_args << "--skip-style"
-          ohai "brew audit #{audit_args.join(" ")}"
-          safe_system HOMEBREW_BREW_FILE, "audit", *audit_args
+          audit_or_tests_args << "--skip-style"
+          ohai "brew audit #{audit_or_tests_args.join(" ")}"
+          safe_system HOMEBREW_BREW_FILE, "audit", *audit_or_tests_args
         else
-          ohai "brew tests #{audit_args.join(" ")}"
-          safe_system HOMEBREW_BREW_FILE, "tests", *audit_args
+          ohai "brew tests #{audit_or_tests_args.join(" ")}"
+          safe_system HOMEBREW_BREW_FILE, "tests", *audit_or_tests_args
         end
       end
     end
