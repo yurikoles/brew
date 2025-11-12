@@ -1390,6 +1390,7 @@ _brew_lgtm() {
   _arguments \
     '--debug[Display any debugging information]' \
     '--help[Show this message]' \
+    '--online[Run additional, slower checks that require a network connection]' \
     '--quiet[Make some output more quiet]' \
     '--verbose[Make some output more verbose]'
 }

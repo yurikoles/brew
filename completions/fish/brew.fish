@@ -1119,6 +1119,7 @@ __fish_brew_complete_arg 'leaves' -l verbose -d 'Make some output more verbose'
 __fish_brew_complete_cmd 'lgtm' 'Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one go'
 __fish_brew_complete_arg 'lgtm' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg 'lgtm' -l help -d 'Show this message'
+__fish_brew_complete_arg 'lgtm' -l online -d 'Run additional, slower checks that require a network connection'
 __fish_brew_complete_arg 'lgtm' -l quiet -d 'Make some output more quiet'
 __fish_brew_complete_arg 'lgtm' -l verbose -d 'Make some output more verbose'
 
