@@ -1753,8 +1753,11 @@ Show several examples\.
 .TP
 \fB\-\-pry\fP
 Use Pry instead of IRB\. Enabled by default if \fB$HOMEBREW_PRY\fP is set\.
-.SS "\fBlgtm\fP"
+.SS "\fBlgtm\fP \fR[\fB\-\-online\fP]"
 Run \fBbrew typecheck\fP, \fBbrew style \-\-changed\fP and \fBbrew tests \-\-changed\fP in one go\.
+.TP
+\fB\-\-online\fP
+Run additional, slower checks that require a network connection\.
 .SS "\fBlinkage\fP \fR[\fIoptions\fP] \fR[\fIinstalled_formula\fP \.\.\.]"
 Check the library links from the given \fIformula\fP kegs\. If no \fIformula\fP are provided, check all kegs\. Raises an error if run on uninstalled formulae\.
 .TP

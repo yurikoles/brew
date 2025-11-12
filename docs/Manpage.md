@@ -2769,10 +2769,14 @@ Enter the interactive Homebrew Ruby shell.
 
 : Use Pry instead of IRB. Enabled by default if `$HOMEBREW_PRY` is set.
 
-### `lgtm`
+### `lgtm` \[`--online`\]
 
 Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one
 go.
+
+`--online`
+
+: Run additional, slower checks that require a network connection.
 
 ### `linkage` \[*`options`*\] \[*`installed_formula`* ...\]
 

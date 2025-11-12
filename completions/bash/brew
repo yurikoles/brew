@@ -1640,6 +1640,7 @@ _brew_lgtm() {
       __brewcomp "
       --debug
       --help
+      --online
       --quiet
       --verbose
       "
