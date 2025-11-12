@@ -77,7 +77,7 @@ module Homebrew
         switch "--skip-revision-audit",
                description: "Don't audit the revision."
         switch "--only-cleanup-before",
-               description: "Only run the pre-cleanup step. Needs `--cleanup`."
+               description: "Only run the pre-cleanup step. Needs `--cleanup`, except in GitHub Actions."
         switch "--only-setup",
                description: "Only run the local system setup check step."
         switch "--only-tap-syntax",
@@ -97,7 +97,7 @@ module Homebrew
                             "to be run on a single machine. The bottle commit to be tested must be on the tested " \
                             "branch."
         switch "--only-cleanup-after",
-               description: "Only run the post-cleanup step. Needs `--cleanup`."
+               description: "Only run the post-cleanup step. Needs `--cleanup`, except in GitHub Actions."
         comma_array "--testing-formulae=",
                     description: "Use these testing formulae rather than running the formulae detection steps."
         comma_array "--added-formulae=",
