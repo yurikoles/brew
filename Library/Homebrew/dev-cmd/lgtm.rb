@@ -12,6 +12,8 @@ module Homebrew
         description <<~EOS
           Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one go.
         EOS
+        switch "--online",
+               description: "Run additional, slower checks that require a network connection."
         named_args :none
       end
 
@@ -30,12 +32,16 @@ module Homebrew
         safe_system HOMEBREW_BREW_FILE, "style", "--changed", "--fix"
         puts
 
+        audit_args = ["--changed"]
+        audit_args << "--online" if args.online?
+
         if tap
-          ohai "brew audit --changed --skip-style"
-          safe_system HOMEBREW_BREW_FILE, "audit", "--changed", "--skip-style"
+          audit_args << "--skip-style"
+          ohai "brew audit #{audit_args.join(" ")}"
+          safe_system HOMEBREW_BREW_FILE, "audit", *audit_args
         else
-          ohai "brew tests --changed"
-          safe_system HOMEBREW_BREW_FILE, "tests", "--changed"
+          ohai "brew tests #{audit_args.join(" ")}"
+          safe_system HOMEBREW_BREW_FILE, "tests", *audit_args
         end
       end
     end
