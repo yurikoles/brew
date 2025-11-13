@@ -665,7 +665,7 @@ module Homebrew
         end
 
         check_throttle(formula, version)
-        check_pull_requests(formula, tap_remote_repo, version:)
+        check_pull_requests(formula, tap_remote_repo, version:) unless args.write_only?
       end
 
       sig { params(formula: Formula, new_version: String).void }
