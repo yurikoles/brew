@@ -104,12 +104,16 @@ module Homebrew
                 dependencies += uses_from_macos.filter_map do |dep, bounds|
                   next if bounds.blank?
 
-                  since = bounds.fetch(:since)
+                  since = bounds[:since]
+                  next if since.blank?
+
                   since_macos_version = MacOSVersion.from_symbol(since)
-                  next if since_macos_version > macos_version
+                  next if since_macos_version <= macos_version
 
                   dep
                 end
+              else
+                dependencies += formula["uses_from_macos"]
               end
 
               [name, [pkg_version.to_s, version_scheme, rebuild, sha256, dependencies.to_a]]
