@@ -184,8 +184,9 @@ class GitHubRunnerMatrix
     end
 
     if !@all_supported || ENV.key?("HOMEBREW_LINUX_RUNNER")
+      self_hosted_deps = @dependent_matrix && ENV["HOMEBREW_LINUX_RUNNER"] == SELF_HOSTED_LINUX_RUNNER
       @runners << create_runner(:linux, :x86_64)
-      @runners << create_runner(:linux, :arm64) unless @dependent_matrix
+      @runners << create_runner(:linux, :arm64) unless self_hosted_deps
     end
 
     long_timeout       = ENV.fetch("HOMEBREW_MACOS_LONG_TIMEOUT", "false") == "true"
