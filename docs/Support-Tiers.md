@@ -101,7 +101,7 @@ Tier 3 configurations include:
 An unsupported configuration is one in which:
 
 - Homebrew will not run without third-party patches or modifications
-- Migration to another tool is required (e.g. Tigerbrew, MacPorts, or a native Linux package manager)
+- Migration to another tool is required (e.g. [MacPorts](https://www.macports.org), [Tigerbrew](https://github.com/mistydemeo/tigerbrew), or a native Linux package manager)
 
 Unsupported configurations include:
 
