@@ -102,7 +102,7 @@ module Homebrew
             autobump_list.filter_map do |name|
               qualified_name = "#{tap.name}/#{name}"
               next Cask::CaskLoader.load(qualified_name) if args.cask?
-              next if synced_formulae&.intersect?([name, qualified_name])
+              next if synced_formulae&.include?(name)
 
               Formulary.factory(qualified_name)
             end
