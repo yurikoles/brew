@@ -94,7 +94,7 @@ module Homebrew
             what = args.cask? ? "casks" : "formulae"
             raise UsageError, "No autobumped #{what} found." if autobump_list.blank?
 
-            # Only run bump on a single formula in a synced group
+            # Only run bump on the first formula in each synced group
             if args.bump_synced? && args.formula?
               synced_formulae = Set.new(tap.synced_versions_formulae.flat_map { _1.drop(1) })
             end
