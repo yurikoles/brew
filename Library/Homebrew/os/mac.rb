@@ -132,6 +132,9 @@ module OS
       sdk_locator.sdk_if_applicable(version)
     end
 
+    # Returns the path to the SDK needed based on the formula's requirements.
+    #
+    # @api public
     sig {
       params(
         formula:                         Formula,
@@ -154,6 +157,8 @@ module OS
     end
 
     # Returns the path to an SDK or nil, following the rules set by {sdk}.
+    #
+    # @api public
     sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
     def self.sdk_path(version = nil)
       s = sdk(version)
@@ -164,6 +169,8 @@ module OS
     # Expected results:
     # 1. On Xcode-only systems, return the Xcode SDK.
     # 2. On CLT-only systems, return the CLT SDK.
+    #
+    # @api public
     sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
     def self.sdk_path_if_needed(version = nil)
       sdk_path(version)
