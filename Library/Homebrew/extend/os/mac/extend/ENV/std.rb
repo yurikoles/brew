@@ -57,7 +57,7 @@ module OS
         delete("CPATH")
         remove "LDFLAGS", "-L#{HOMEBREW_PREFIX}/lib"
 
-        sdk = self["SDKROOT"] || MacOS.sdk_path_if_needed(version)
+        sdk = self["SDKROOT"] || MacOS.sdk_path(version)
         return unless sdk
 
         delete("SDKROOT")
@@ -107,7 +107,7 @@ module OS
       # Some configure scripts won't find libxml2 without help.
       # This is a no-op with macOS SDK 10.15.4 and later.
       def libxml2
-        sdk = self["SDKROOT"] || MacOS.sdk_path_if_needed
+        sdk = self["SDKROOT"] || MacOS.sdk_path
         # Use the includes from the sdk
         append "CPPFLAGS", "-I#{sdk}/usr/include/libxml2" unless Pathname("#{sdk}/usr/include/libxml").directory?
       end

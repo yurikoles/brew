@@ -82,6 +82,7 @@ Style/Documentation:
     - livecheck/strategy/xorg.rb
     - livecheck/strategy/yaml.rb
     - os.rb
+    - os/mac.rb
     - resource.rb
     - startup/config.rb
     - utils/inreplace.rb
