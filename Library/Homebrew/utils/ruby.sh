@@ -4,6 +4,7 @@
 # shellcheck disable=SC2154
 export HOMEBREW_REQUIRED_RUBY_VERSION="3.4"
 HOMEBREW_PORTABLE_RUBY_VERSION="$(cat "${HOMEBREW_LIBRARY}/Homebrew/vendor/portable-ruby-version")"
+export HOMEBREW_BUNDLER_VERSION="2.6.9"
 
 # Disable Ruby options we don't need.
 export HOMEBREW_RUBY_DISABLE_OPTIONS="--disable=gems,rubyopt"
@@ -150,8 +151,29 @@ If there's no Homebrew Portable Ruby available for your processor:
       brew vendor-install ruby || odie "${install_fail}"
       HOMEBREW_RUBY_PATH="${vendor_ruby_path}"
       TERMINFO_DIRS="${vendor_ruby_terminfo}"
+
+      if [[ -n "${HOMEBREW_DEVELOPER}" && -x "${vendor_ruby_path}" ]]
+      then
+        if [[ ! -f "${vendor_ruby_root}/bin/bundle" ]]
+        then
+          odie "Homebrew Portable Ruby is installed but bundle is not!"
+        elif [[ ! -d "${vendor_ruby_root}/lib/ruby/gems/${HOMEBREW_REQUIRED_RUBY_VERSION}.0/gems/bundler-${HOMEBREW_BUNDLER_VERSION}" ]]
+        then
+          odie "Homebrew Portable Ruby is installed but bundler ${HOMEBREW_BUNDLER_VERSION} is not!"
+        elif ! grep -q "  ${HOMEBREW_BUNDLER_VERSION}" "${HOMEBREW_LIBRARY}/Homebrew/Gemfile.lock"
+        then
+          odie "Homebrew Portable Ruby is installed but bundler ${HOMEBREW_BUNDLER_VERSION} is not in the Gemfile.lock!"
+        fi
+      fi
     fi
   fi
+
+  homebrew_ruby_bin="$(dirname "${HOMEBREW_RUBY_PATH}")"
+  if [[ ! -f "${homebrew_ruby_bin}/bundle" ]]
+  then
+    "${homebrew_ruby_bin}/gem" install bundler -v "${HOMEBREW_BUNDLER_VERSION}"
+  fi
+  PATH="${homebrew_ruby_bin}:${PATH}"
 
   export HOMEBREW_RUBY_PATH HOMEBREW_BOOTSNAP_GEM_PATH
   [[ -n "${HOMEBREW_LINUX}" && -n "${TERMINFO_DIRS}" ]] && export TERMINFO_DIRS
