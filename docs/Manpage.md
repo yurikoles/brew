@@ -3456,6 +3456,18 @@ Run Homebrew's unit and integration tests.
 
 : Run tests serially.
 
+`--stackprof`
+
+: Use `stackprof` to profile tests.
+
+`--vernier`
+
+: Use `vernier` to profile tests.
+
+`--ruby-prof`
+
+: Use `ruby-prof` to profile tests.
+
 `--only`
 
 : Run only `<test_script>_spec.rb`. Appending `:<line_number>` will start at a
