@@ -1104,7 +1104,9 @@ Another example would be configuration files that should not be overwritten on p
 
 There are two ways to add `launchd` plists and `systemd` services to a formula, so that `brew services` can pick them up:
 
-1. If the package already provides a service file the formula can reference it by name:
+#### Package-provided service file
+
+If the package already provides a service file, it can be installed into the `prefix` directory and referenced by name:
 
 ```ruby
 service do
@@ -1113,9 +1115,11 @@ service do
 end
 ```
 
-   To find the file we append `.plist` to the `launchd` service name and `.service` to the `systemd` service name internally.
+To find the file we append `.plist` to the `launchd` service name and `.service` to the `systemd` service name internally.
 
-2. If the formula does not provide a service file you can generate one using the following stanza:
+#### Formula-defined service file
+
+If the formula does not provide a service file you can generate one using the following stanza:
 
 ```ruby
 # 1. An individual command

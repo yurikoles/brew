@@ -215,12 +215,12 @@ module Homebrew
         return if global_switch
 
         if disable
-          # this odeprecated should turn into odisabled in 4.8.0
+          # this odeprecated should turn into odisabled in 5.1.0
           odeprecated "disable:", "odisabled:"
           odisabled = disable
         end
         if !odeprecated && !odisabled && replacement
-          # this odeprecated should turn into odisabled in 4.8.0
+          # this odeprecated should turn into odisabled in 5.1.0
           odeprecated "replacement: without :odeprecated or :odisabled",
                       "replacement: with :odeprecated or :odisabled"
           odeprecated = true

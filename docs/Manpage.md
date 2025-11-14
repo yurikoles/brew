@@ -2769,10 +2769,14 @@ Enter the interactive Homebrew Ruby shell.
 
 : Use Pry instead of IRB. Enabled by default if `$HOMEBREW_PRY` is set.
 
-### `lgtm`
+### `lgtm` \[`--online`\]
 
 Run `brew typecheck`, `brew style --changed` and `brew tests --changed` in one
 go.
+
+`--online`
+
+: Run additional, slower checks that require a network connection.
 
 ### `linkage` \[*`options`*\] \[*`installed_formula`* ...\]
 
@@ -3357,7 +3361,7 @@ and Linux workers.
 
 `--only-cleanup-before`
 
-: Only run the pre-cleanup step. Needs `--cleanup`.
+: Only run the pre-cleanup step. Needs `--cleanup`, except in GitHub Actions.
 
 `--only-setup`
 
@@ -3392,7 +3396,7 @@ and Linux workers.
 
 `--only-cleanup-after`
 
-: Only run the post-cleanup step. Needs `--cleanup`.
+: Only run the post-cleanup step. Needs `--cleanup`, except in GitHub Actions.
 
 `--testing-formulae`
 
@@ -3455,7 +3459,8 @@ Run Homebrew's unit and integration tests.
 
 `--profile`
 
-: Run the test suite serially to find the *`n`* slowest tests.
+: Output the *`n`* slowest tests. When run without `--no-parallel` this will
+  output the slowest tests for each parallel test process.
 
 `--seed`
 

@@ -10,6 +10,8 @@ require "os/mac/keg"
 module OS
   # Helper module for querying system information on macOS.
   module Mac
+    extend Utils::Output::Mixin
+
     raise "Loaded OS::Mac on generic OS!" if ENV["HOMEBREW_TEST_GENERIC_OS"]
 
     # This check is the only acceptable or necessary one in this file.
@@ -103,7 +105,17 @@ module OS
 
     sig { returns(T::Boolean) }
     def self.sdk_root_needed?
+      odeprecated "OS::Mac.sdk_root_needed?"
       true
+    end
+
+    sig { returns(T.any(CLTSDKLocator, XcodeSDKLocator)) }
+    def self.sdk_locator
+      if CLT.installed?
+        CLT.sdk_locator
+      else
+        Xcode.sdk_locator
+      end
     end
 
     # If a specific SDK is requested:
@@ -115,21 +127,14 @@ module OS
     #
     # If no specific SDK is requested, the SDK matching the OS version is returned,
     # if available. Otherwise, the latest SDK is returned.
-
-    sig { returns(T.any(CLTSDKLocator, XcodeSDKLocator)) }
-    def self.sdk_locator
-      if CLT.installed?
-        CLT.sdk_locator
-      else
-        Xcode.sdk_locator
-      end
-    end
-
     sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(SDK)) }
     def self.sdk(version = nil)
       sdk_locator.sdk_if_applicable(version)
     end
 
+    # Returns the path to the SDK needed based on the formula's requirements.
+    #
+    # @api public
     sig {
       params(
         formula:                         Formula,
@@ -152,24 +157,22 @@ module OS
     end
 
     # Returns the path to an SDK or nil, following the rules set by {sdk}.
+    #
+    # @api public
     sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
     def self.sdk_path(version = nil)
       s = sdk(version)
       s&.path
     end
 
+    # Prefer CLT SDK when both Xcode and the CLT are installed.
+    # Expected results:
+    # 1. On Xcode-only systems, return the Xcode SDK.
+    # 2. On CLT-only systems, return the CLT SDK.
+    #
+    # @api public
     sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
     def self.sdk_path_if_needed(version = nil)
-      # Prefer CLT SDK when both Xcode and the CLT are installed.
-      # Expected results:
-      # 1. On Xcode-only systems, return the Xcode SDK.
-      # 2. On Xcode-and-CLT systems where headers are provided by the system, return nil.
-      # 3. On CLT-only systems with no CLT SDK, return nil.
-      # 4. On CLT-only systems with a CLT SDK, where headers are provided by the system, return nil.
-      # 5. On CLT-only systems with a CLT SDK, where headers are not provided by the system, return the CLT SDK.
-
-      return unless sdk_root_needed?
-
       sdk_path(version)
     end
 

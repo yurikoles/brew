@@ -204,20 +204,20 @@ module Kernel
     Formulary.factory_stub(formula_name).ensure_installed!(reason:, latest:).opt_bin/name
   end
 
-  sig { params(size_in_bytes: T.any(Integer, Float)).returns([T.any(Integer, Float), String]) }
-  def disk_usage_readable_size_unit(size_in_bytes)
-    if size_in_bytes.abs >= 1_073_741_824
-      size = size_in_bytes.to_f / 1_073_741_824
-      unit = "GB"
-    elsif size_in_bytes.abs >= 1_048_576
-      size = size_in_bytes.to_f / 1_048_576
-      unit = "MB"
-    elsif size_in_bytes.abs >= 1_024
-      size = size_in_bytes.to_f / 1_024
-      unit = "KB"
-    else
-      size = size_in_bytes
-      unit = "B"
+  sig {
+    params(
+      size_in_bytes: T.any(Integer, Float),
+      precision:     T.nilable(Integer),
+    ).returns([T.any(Integer, Float), String])
+  }
+  def disk_usage_readable_size_unit(size_in_bytes, precision: nil)
+    size = size_in_bytes
+    unit = "B"
+    %w[KB MB GB].each do |next_unit|
+      break if (precision ? size.abs.round(precision) : size.abs) < 1000
+
+      size /= 1000.0
+      unit = next_unit
     end
     [size, unit]
   end

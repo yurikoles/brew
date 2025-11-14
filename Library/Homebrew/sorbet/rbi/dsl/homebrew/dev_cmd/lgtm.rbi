@@ -10,4 +10,7 @@ class Homebrew::DevCmd::Lgtm
   def args; end
 end
 
-class Homebrew::DevCmd::Lgtm::Args < Homebrew::CLI::Args; end
+class Homebrew::DevCmd::Lgtm::Args < Homebrew::CLI::Args
+  sig { returns(T::Boolean) }
+  def online?; end
+end

@@ -207,7 +207,11 @@ class Build
 
             # Find and link metafiles
             formula.prefix.install_metafiles T.must(formula.buildpath)
-            formula.prefix.install_metafiles formula.libexec if formula.libexec.exist?
+            if formula.libexec.exist?
+              require "metafiles"
+              no_metafiles = formula.prefix.children.none? { |p| p.file? && Metafiles.copy?(p.basename.to_s) }
+              formula.prefix.install_metafiles formula.libexec if no_metafiles
+            end
 
             normalize_pod2man_outputs!(formula)
           end

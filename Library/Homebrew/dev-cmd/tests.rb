@@ -34,7 +34,8 @@ module Homebrew
                description: "Run only `<test_script>_spec.rb`. Appending `:<line_number>` will start at a " \
                             "specific line."
         flag   "--profile=",
-               description: "Run the test suite serially to find the <n> slowest tests."
+               description: "Output the <n> slowest tests. When run without `--no-parallel` this will output " \
+                            "the slowest tests for each parallel test process."
         flag   "--seed=",
                description: "Randomise tests with the specified <value> instead of a random seed."
 
@@ -93,7 +94,7 @@ module Homebrew
           # than one but lower than the number of CPU cores in the execution
           # environment. Coverage information isn't saved in that scenario,
           # so we disable parallel testing as a workaround in this case.
-          parallel = false if args.profile || (args.coverage? && files.length < Hardware::CPU.cores)
+          parallel = false if args.coverage? && files.length < Hardware::CPU.cores
 
           parallel_rspec_log_name = "parallel_runtime_rspec"
           parallel_rspec_log_name = "#{parallel_rspec_log_name}.generic" if args.generic?

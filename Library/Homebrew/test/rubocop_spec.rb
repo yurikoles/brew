@@ -10,6 +10,7 @@ RSpec.describe "RuboCop" do
         allowlist = %w[
           HOMEBREW_TESTS
           HOMEBREW_USE_RUBY_FROM_PATH
+          HOMEBREW_BUNDLER_VERSION
         ]
         ENV.delete(key) if key.start_with?("HOMEBREW_") && allowlist.exclude?(key)
       end

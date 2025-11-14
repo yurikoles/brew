@@ -131,11 +131,15 @@ module OS
           tier = 2
           who = +"We"
           what = if OS::Mac.version.prerelease?
-            "pre-release version"
+            "pre-release version."
           elsif OS::Mac.version.outdated_release?
             tier = 3
             who << " (and Apple)"
-            "old version"
+            <<~EOS.chomp
+              old version.
+              You may have better luck with MacPorts which supports older versions of macOS:
+                #{Formatter.url("https://www.macports.org")}
+            EOS
           end
           return if what.blank?
 
@@ -143,7 +147,7 @@ module OS
 
           <<~EOS
             You are using macOS #{MacOS.version}.
-            #{who} do not provide support for this #{what}.
+            #{who} do not provide support for this #{what}
 
             #{support_tier_message(tier:)}
           EOS
@@ -455,7 +459,6 @@ module OS
         sig { returns(T.nilable(String)) }
         def check_if_supported_sdk_available
           return unless ::DevelopmentTools.installed?
-          return unless MacOS.sdk_root_needed?
           return if MacOS.sdk
 
           locator = MacOS.sdk_locator
