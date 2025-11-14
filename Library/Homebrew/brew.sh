@@ -168,6 +168,10 @@ case "$@" in
     echo "${HOMEBREW_CACHE}"
     exit 0
     ;;
+  --taps)
+    source "${HOMEBREW_LIBRARY}/Homebrew/cmd/--taps.sh"
+    homebrew---taps "$@" && exit 0
+    ;;
   # falls back to cmd/--prefix.rb and cmd/--cellar.rb on a non-zero return
   --prefix* | --cellar*)
     source "${HOMEBREW_LIBRARY}/Homebrew/formula_path.sh"

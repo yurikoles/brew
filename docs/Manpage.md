@@ -1953,6 +1953,10 @@ Display where Homebrew's Git repository is located.
 If *`user`*`/`*`repo`* are provided, display where tap *`user`*`/`*`repo`*'s
 directory is located.
 
+### `--taps`
+
+Display the path to Homebrew’s Taps directory.
+
 ### `--version`, `-v`
 
 Print the version numbers of Homebrew, Homebrew/homebrew-core and
