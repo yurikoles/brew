@@ -47,7 +47,7 @@ RSpec.describe Language::Node do
   end
 
   describe "#std_npm_install_args" do
-    npm_install_arg = Pathname("libexec")
+    let(:npm_install_arg) { Pathname("libexec") }
 
     it "raises error with non zero exitstatus" do
       allow(Utils).to receive(:popen_read).with(*npm_pack_cmd).and_return(`false`)
