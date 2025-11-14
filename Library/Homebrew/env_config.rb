@@ -575,6 +575,7 @@ module Homebrew
       :HOMEBREW_CASK_OPTS,
       :HOMEBREW_FORBID_PACKAGES_FROM_PATHS,
       :HOMEBREW_DOWNLOAD_CONCURRENCY,
+      :HOMEBREW_USE_INTERNAL_API,
     ]).freeze, T::Set[Symbol])
 
     FALSY_VALUES = T.let(%w[false no off nil 0].freeze, T::Array[String])
@@ -678,6 +679,14 @@ module Homebrew
       end
 
       [concurrency, 1].max
+    end
+
+    sig { returns(T::Boolean) }
+    def use_internal_api?
+      return false if Homebrew::EnvConfig.no_install_from_api?
+
+      use_internal_api = ENV.fetch("HOMEBREW_USE_INTERNAL_API", nil)
+      use_internal_api.present? && FALSY_VALUES.exclude?(use_internal_api.downcase)
     end
   end
 end
