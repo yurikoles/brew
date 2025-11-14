@@ -2172,8 +2172,11 @@ _brew_tests() {
     '(--changed)--only[Run only `test_script_spec.rb`. Appending `:line_number` will start at a specific line]' \
     '--profile[Output the n slowest tests. When run without `--no-parallel` this will output the slowest tests for each parallel test process]' \
     '--quiet[Make some output more quiet]' \
+    '(--stackprof --vernier)--ruby-prof[Use `ruby-prof` to profile tests]' \
     '--seed[Randomise tests with the specified value instead of a random seed]' \
-    '--verbose[Make some output more verbose]'
+    '(--vernier --ruby-prof)--stackprof[Use `stackprof` to profile tests]' \
+    '--verbose[Make some output more verbose]' \
+    '(--stackprof --ruby-prof)--vernier[Use `vernier` to profile tests]'
 }
 
 # brew typecheck

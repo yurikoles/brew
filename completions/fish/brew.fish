@@ -1769,8 +1769,11 @@ __fish_brew_complete_arg 'tests' -l online -d 'Include tests that use the GitHub
 __fish_brew_complete_arg 'tests' -l only -d 'Run only `test_script_spec.rb`. Appending `:line_number` will start at a specific line'
 __fish_brew_complete_arg 'tests' -l profile -d 'Output the n slowest tests. When run without `--no-parallel` this will output the slowest tests for each parallel test process'
 __fish_brew_complete_arg 'tests' -l quiet -d 'Make some output more quiet'
+__fish_brew_complete_arg 'tests' -l ruby-prof -d 'Use `ruby-prof` to profile tests'
 __fish_brew_complete_arg 'tests' -l seed -d 'Randomise tests with the specified value instead of a random seed'
+__fish_brew_complete_arg 'tests' -l stackprof -d 'Use `stackprof` to profile tests'
 __fish_brew_complete_arg 'tests' -l verbose -d 'Make some output more verbose'
+__fish_brew_complete_arg 'tests' -l vernier -d 'Use `vernier` to profile tests'
 
 
 __fish_brew_complete_cmd 'typecheck' 'Check for typechecking errors using Sorbet'

@@ -2700,8 +2700,11 @@ _brew_tests() {
       --only
       --profile
       --quiet
+      --ruby-prof
       --seed
+      --stackprof
       --verbose
+      --vernier
       "
       return
       ;;
