@@ -8,6 +8,8 @@ plugins:
       plugin_class_name: RuboCop::RSpec::Plugin
   - rubocop-sorbet:
       plugin_class_name: RuboCop::Sorbet::Plugin
+  - test_prof/rubocop:
+      plugin_class_name: RuboCop::TestProf::Plugin
 
 require:
   - ./Homebrew/rubocops.rb
