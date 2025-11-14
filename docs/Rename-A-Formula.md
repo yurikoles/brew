@@ -34,14 +34,3 @@ A `cask_renames.json` example:
   "old-token": "new-token"
 }
 ```
-
-## Important Rules
-
-When editing `formula_renames.json` or `cask_renames.json`, follow these rules:
-
-1. **Do not include `.rb` file extensions** - Use only the formula/cask token name
-2. **Ensure the target exists** - The new name must be an existing formula/cask in the tap
-3. **Avoid chained renames** - Don't create chains like `A → B` and `B → C`. Collapse chains to `A → C` directly as chained renames don't work automatically
-4. **Check for conflicts** - The old name should not conflict with an existing formula/cask
-
-These rules are validated by `brew audit` for tap maintainers.

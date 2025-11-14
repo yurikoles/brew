@@ -37,8 +37,9 @@ RSpec.describe Homebrew::TapAuditor do
 
         auditor.audit
         expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to include("'.rb' file extensions")
-        expect(auditor.problems.first[:message]).to include("oldcask.rb")
+        expect(auditor.problems.first[:message]).to match(
+          /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask\.rb": "newcask"/m,
+        )
       end
 
       it "detects .rb extension in new cask name (value)" do
@@ -48,8 +49,9 @@ RSpec.describe Homebrew::TapAuditor do
 
         auditor.audit
         expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to include("'.rb' file extensions")
-        expect(auditor.problems.first[:message]).to include("newcask.rb")
+        expect(auditor.problems.first[:message]).to match(
+          /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask": "newcask\.rb"/m,
+        )
       end
 
       it "detects missing target cask" do
@@ -59,8 +61,9 @@ RSpec.describe Homebrew::TapAuditor do
 
         auditor.audit
         expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to include("do not exist")
-        expect(auditor.problems.first[:message]).to include("nonexistent")
+        expect(auditor.problems.first[:message]).to match(
+          /cask_renames\.json contains renames to casks that do not exist .* tap\.\nInvalid targets: nonexistent/m,
+        )
       end
 
       it "detects chained renames" do
@@ -83,8 +86,9 @@ RSpec.describe Homebrew::TapAuditor do
         expect(auditor.problems).not_to be_empty
         problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
         expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to include("oldcask")
-        expect(problem_message[:message]).to include("finalcask")
+        expect(problem_message[:message]).to match(
+          /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
+        )
       end
 
       it "detects multi-level chained renames and suggests final target" do
@@ -118,8 +122,9 @@ RSpec.describe Homebrew::TapAuditor do
         expect(auditor.problems).not_to be_empty
         problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
         expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to include("oldcask")
-        expect(problem_message[:message]).to include("finalcask")
+        expect(problem_message[:message]).to match(
+          /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
+        )
         expect(problem_message[:message]).not_to include("intermediatecask")
       end
 
@@ -142,7 +147,9 @@ RSpec.describe Homebrew::TapAuditor do
         expect(auditor.problems).not_to be_empty
         problem_message = auditor.problems.find { |p| p[:message].include?("conflict") }
         expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to include("newcask")
+        expect(problem_message[:message]).to match(
+          /cask_renames\.json contains old names that conflict .* tap\.\n.*Conflicting names: newcask/m,
+        )
       end
 
       it "passes validation for correct rename entries" do
@@ -177,7 +184,9 @@ RSpec.describe Homebrew::TapAuditor do
 
         auditor.audit
         expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to include("'.rb' file extensions")
+        expect(auditor.problems.first[:message]).to match(
+          /formula_renames\.json contains entries with '\.rb' file extensions\.\n.*"oldformula\.rb"/m,
+        )
       end
 
       it "detects chained formula renames" do
@@ -198,6 +207,9 @@ RSpec.describe Homebrew::TapAuditor do
         expect(auditor.problems).not_to be_empty
         problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
         expect(problem_message).not_to be_nil
+        expect(problem_message[:message]).to match(
+          /formula_renames\.json contains chained renames.*"oldformula": "finalformula"/m,
+        )
       end
 
       it "passes validation for correct formula rename entries" do
