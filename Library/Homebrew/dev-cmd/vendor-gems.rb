@@ -42,6 +42,11 @@ module Homebrew
           ohai "bundle install --standalone"
           run_bundle "install", "--standalone"
 
+          if GitHub::Actions.env_set? && HOMEBREW_PREFIX.to_s == HOMEBREW_LINUX_DEFAULT_PREFIX
+            ohai "chmod +t -R /home/linuxbrew/"
+            system "sudo", "chmod", "+t", "-R", "/home/linuxbrew/"
+          end
+
           ohai "bundle pristine"
           run_bundle "pristine"
 
