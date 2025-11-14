@@ -24,11 +24,11 @@ module Homebrew
     HOMEBREW_TAP_REGEX = %r{^([\w-]+)/homebrew-([\w-]+)$}
 
     def cleanup?(args)
-      args.cleanup? || ENV["GITHUB_ACTIONS"].present?
+      args.cleanup? || GitHub::Actions.env_set?
     end
 
     def local?(args)
-      args.local? || ENV["GITHUB_ACTIONS"].present?
+      args.local? || GitHub::Actions.env_set?
     end
 
     def resolve_test_tap(tap = nil)

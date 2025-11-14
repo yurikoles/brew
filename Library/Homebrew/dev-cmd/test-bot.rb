@@ -120,7 +120,7 @@ module Homebrew
 
       sig { override.void }
       def run
-        if ENV["GITHUB_ACTIONS"].present?
+        if GitHub::Actions.env_set?
           ENV["HOMEBREW_COLOR"] = "1"
           ENV["HOMEBREW_GITHUB_ACTIONS"] = "1"
         end
