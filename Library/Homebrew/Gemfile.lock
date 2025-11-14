@@ -154,6 +154,7 @@ GEM
       spoom (>= 1.7.9)
       thor (>= 1.2.0)
       yard-sorbet
+    test-prof (1.4.4)
     thor (1.4.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
@@ -211,6 +212,7 @@ DEPENDENCIES
   spoom
   stackprof
   tapioca
+  test-prof
   vernier
   warning
   yard
