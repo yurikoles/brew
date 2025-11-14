@@ -15,6 +15,6 @@ First time contributing to Homebrew? Read our [Code of Conduct](https://github.c
 
 ### Discuss, ask questions about or disagree with changes in Homebrew
 
-* [Homebrew/discussions](https://github.com/orgs/Homebrew/discussions) is the place for community discussions around Homebrew. We aim to keep our issues and pull requests for discussing work to be done, not asking questions about usage or disagreeing with changes already made.
+* [Homebrew/discussions](https://github.com/orgs/Homebrew/discussions) is the place for community discussions around Homebrew. We aim to keep our issues and pull requests focused on discussing work to be done, not asking questions about usage or disagreeing with changes already made.
 
 Thanks!
