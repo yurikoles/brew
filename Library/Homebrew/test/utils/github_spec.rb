@@ -74,7 +74,12 @@ RSpec.describe GitHub do
   end
 
   describe "::pull_request_commits", :needs_network do
-    hashes = %w[188606a4a9587365d930b02c98ad6857b1d00150 25a71fe1ea1558415d6496d23834dc70778ddee5]
+    let(:hashes) do
+      %w[
+        188606a4a9587365d930b02c98ad6857b1d00150
+        25a71fe1ea1558415d6496d23834dc70778ddee5
+      ]
+    end
 
     it "gets commit hashes for a pull request" do
       expect(described_class.pull_request_commits("Homebrew", "legacy-homebrew", 50678)).to eq(hashes)

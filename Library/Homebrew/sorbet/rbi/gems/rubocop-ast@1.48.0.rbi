@@ -1507,6 +1507,7 @@ RuboCop::AST::NodePattern::Sets::SET_ESCAPE_ENCODE_UNESCAPE_DECODE = T.let(T.uns
 RuboCop::AST::NodePattern::Sets::SET_EXACTLY_AT_LEAST_AT_MOST = T.let(T.unsafe(nil), Set)
 RuboCop::AST::NodePattern::Sets::SET_EXIST_EXISTS = T.let(T.unsafe(nil), Set)
 RuboCop::AST::NodePattern::Sets::SET_EXPECT_ALLOW = T.let(T.unsafe(nil), Set)
+RuboCop::AST::NodePattern::Sets::SET_EXPECT_EXPECT_ANY_INSTANCE_OF = T.let(T.unsafe(nil), Set)
 RuboCop::AST::NodePattern::Sets::SET_EXTEND_INCLUDE = T.let(T.unsafe(nil), Set)
 RuboCop::AST::NodePattern::Sets::SET_FILETEST_FILE_DIR_SHELL = T.let(T.unsafe(nil), Set)
 RuboCop::AST::NodePattern::Sets::SET_FILE_DIR = T.let(T.unsafe(nil), Set)
