@@ -138,6 +138,7 @@ __brew_internal_commands() {
     '--env:Summarise Homebrew'\''s build environment as a plain list'
     '--prefix:Display Homebrew'\''s install path'
     '--repository:Display where Homebrew'\''s Git repository is located'
+    '--taps:Display the path to Homebrew’s Taps directory'
     '--version:Print the version numbers of Homebrew, Homebrew/homebrew-core and Homebrew/homebrew-cask (if tapped) to standard output'
     'alias:Show an alias'\''s command'
     'analytics:Control Homebrew'\''s anonymous aggregate user behaviour analytics'
@@ -378,6 +379,15 @@ _brew___repository() {
     '--verbose[Make some output more verbose]' \
     - tap \
     '*:tap:__brew_any_tap'
+}
+
+# brew --taps
+_brew___taps() {
+  _arguments \
+    '--debug[Display any debugging information]' \
+    '--help[Show this message]' \
+    '--quiet[Make some output more quiet]' \
+    '--verbose[Make some output more verbose]'
 }
 
 # brew --version

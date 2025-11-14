@@ -289,6 +289,22 @@ _brew___repository() {
   __brew_complete_tapped
 }
 
+_brew___taps() {
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  case "${cur}" in
+    -*)
+      __brewcomp "
+      --debug
+      --help
+      --quiet
+      --verbose
+      "
+      return
+      ;;
+    *) ;;
+  esac
+}
+
 _brew___version() {
   local cur="${COMP_WORDS[COMP_CWORD]}"
   case "${cur}" in
@@ -3300,6 +3316,7 @@ _brew() {
     --prefix) _brew___prefix ;;
     --repo) _brew___repo ;;
     --repository) _brew___repository ;;
+    --taps) _brew___taps ;;
     --version) _brew___version ;;
     -S) _brew__s ;;
     -v) _brew__v ;;

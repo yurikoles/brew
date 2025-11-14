@@ -263,6 +263,13 @@ __fish_brew_complete_arg '--repository' -l verbose -d 'Make some output more ver
 __fish_brew_complete_arg '--repository' -a '(__fish_brew_suggest_taps_installed)'
 
 
+__fish_brew_complete_cmd '--taps' 'Display the path to Homebrew’s Taps directory'
+__fish_brew_complete_arg '--taps' -l debug -d 'Display any debugging information'
+__fish_brew_complete_arg '--taps' -l help -d 'Show this message'
+__fish_brew_complete_arg '--taps' -l quiet -d 'Make some output more quiet'
+__fish_brew_complete_arg '--taps' -l verbose -d 'Make some output more verbose'
+
+
 __fish_brew_complete_cmd '--version' 'Print the version numbers of Homebrew, Homebrew/homebrew-core and Homebrew/homebrew-cask (if tapped) to standard output'
 __fish_brew_complete_arg '--version' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg '--version' -l help -d 'Show this message'
