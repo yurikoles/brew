@@ -35,6 +35,9 @@ class Homebrew::DevCmd::Contributions::Args < Homebrew::CLI::Args
   sig { returns(T.nilable(String)) }
   def to; end
 
+  sig { returns(T.nilable(String)) }
+  def quarter; end
+
   sig { returns(T.nilable(T::Array[String])) }
   def user; end
 end
