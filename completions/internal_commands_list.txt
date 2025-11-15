@@ -6,6 +6,7 @@
 --prefix
 --repo
 --repository
+--taps
 --version
 -S
 -v

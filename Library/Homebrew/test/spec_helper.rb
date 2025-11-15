@@ -25,6 +25,8 @@ end
 require_relative "../standalone"
 require_relative "../warnings"
 
+require "test-prof"
+
 Warnings.ignore :parser_syntax do
   require "rubocop"
 end

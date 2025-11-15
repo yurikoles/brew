@@ -969,6 +969,27 @@ RuboCop::Cop::RSpec::LeakyConstantDeclaration::MSG_CLASS = T.let(T.unsafe(nil), 
 RuboCop::Cop::RSpec::LeakyConstantDeclaration::MSG_CONST = T.let(T.unsafe(nil), String)
 RuboCop::Cop::RSpec::LeakyConstantDeclaration::MSG_MODULE = T.let(T.unsafe(nil), String)
 
+class RuboCop::Cop::RSpec::LeakyLocalVariable < ::RuboCop::Cop::RSpec::Base
+  def after_leaving_scope(scope, _variable_table); end
+  def example_method?(param0 = T.unsafe(nil)); end
+  def includes_method?(param0 = T.unsafe(nil)); end
+
+  private
+
+  def allowed_includes_arguments?(node, argument); end
+  def allowed_reference?(node); end
+  def check_references(variable); end
+  def example_scope?(node); end
+  def inside_describe_block?(node); end
+  def part_of_example_scope?(node); end
+
+  class << self
+    def joining_forces; end
+  end
+end
+
+RuboCop::Cop::RSpec::LeakyLocalVariable::MSG = T.let(T.unsafe(nil), String)
+
 class RuboCop::Cop::RSpec::LetBeforeExamples < ::RuboCop::Cop::RSpec::Base
   extend ::RuboCop::Cop::AutoCorrector
 
@@ -1000,6 +1021,8 @@ class RuboCop::Cop::RSpec::LetSetup < ::RuboCop::Cop::RSpec::Base
   private
 
   def child_let_bang(node, &block); end
+  def outer_let_bang?(ancestor_node, method_name); end
+  def overrides_outer_let_bang?(node, method_name); end
   def unused_let_bang(node); end
 end
 
@@ -1385,12 +1408,14 @@ RuboCop::Cop::RSpec::ReceiveMessages::MSG = T.let(T.unsafe(nil), String)
 class RuboCop::Cop::RSpec::ReceiveNever < ::RuboCop::Cop::RSpec::Base
   extend ::RuboCop::Cop::AutoCorrector
 
+  def expect_to_receive?(param0 = T.unsafe(nil)); end
   def method_on_stub?(param0); end
   def on_send(node); end
 
   private
 
   def autocorrect(corrector, node); end
+  def used_with_expect?(node); end
 end
 
 RuboCop::Cop::RSpec::ReceiveNever::MSG = T.let(T.unsafe(nil), String)
@@ -1454,8 +1479,11 @@ class RuboCop::Cop::RSpec::RepeatedExample < ::RuboCop::Cop::RSpec::Base
 
   private
 
-  def example_signature(example); end
-  def repeated_examples(node); end
+  def add_offenses_for_repeated_group(repeated_examples); end
+  def build_example_signature(example); end
+  def extract_other_lines(examples_group, current_example); end
+  def find_repeated_examples(node); end
+  def message(other_lines); end
 end
 
 RuboCop::Cop::RSpec::RepeatedExample::MSG = T.let(T.unsafe(nil), String)
@@ -1743,7 +1771,21 @@ class RuboCop::Cop::RSpec::SpecFilePathFormat < ::RuboCop::Cop::RSpec::Base
   def ignore_metadata; end
   def ignore_metadata?(arguments); end
   def ignore_methods?; end
+  def inflector; end
   def name_pattern(method_name); end
+end
+
+module RuboCop::Cop::RSpec::SpecFilePathFormat::ActiveSupportInflector
+  class << self
+    def call(string); end
+    def prepare_availability(config); end
+  end
+end
+
+module RuboCop::Cop::RSpec::SpecFilePathFormat::DefaultInflector
+  class << self
+    def call(string); end
+  end
 end
 
 RuboCop::Cop::RSpec::SpecFilePathFormat::MSG = T.let(T.unsafe(nil), String)
@@ -1871,9 +1913,7 @@ class RuboCop::Cop::RSpec::VariableDefinition < ::RuboCop::Cop::RSpec::Base
   private
 
   def correct_variable(variable); end
-  def string?(node); end
   def style_offense?(variable); end
-  def symbol?(node); end
 end
 
 RuboCop::Cop::RSpec::VariableDefinition::MSG = T.let(T.unsafe(nil), String)
@@ -1912,6 +1952,7 @@ class RuboCop::Cop::RSpec::VerifiedDoubles < ::RuboCop::Cop::RSpec::Base
 
   private
 
+  def hash?(arg); end
   def symbol?(name); end
 end
 

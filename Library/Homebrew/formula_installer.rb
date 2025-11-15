@@ -1157,7 +1157,8 @@ on_request: installed_on_request?, options:)
     Formula.clear_cache
 
     cask_installed_with_formula_name = begin
-      Cask::CaskLoader.load(formula.name, warn: false).installed?
+      (Cask::Caskroom.path/formula.name).exist? &&
+        Cask::CaskLoader.load(formula.name, warn: false).installed?
     rescue Cask::CaskUnavailableError, Cask::CaskInvalidError
       false
     end

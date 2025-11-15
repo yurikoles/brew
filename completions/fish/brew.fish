@@ -263,6 +263,13 @@ __fish_brew_complete_arg '--repository' -l verbose -d 'Make some output more ver
 __fish_brew_complete_arg '--repository' -a '(__fish_brew_suggest_taps_installed)'
 
 
+__fish_brew_complete_cmd '--taps' 'Display the path to Homebrew’s Taps directory'
+__fish_brew_complete_arg '--taps' -l debug -d 'Display any debugging information'
+__fish_brew_complete_arg '--taps' -l help -d 'Show this message'
+__fish_brew_complete_arg '--taps' -l quiet -d 'Make some output more quiet'
+__fish_brew_complete_arg '--taps' -l verbose -d 'Make some output more verbose'
+
+
 __fish_brew_complete_cmd '--version' 'Print the version numbers of Homebrew, Homebrew/homebrew-core and Homebrew/homebrew-cask (if tapped) to standard output'
 __fish_brew_complete_arg '--version' -l debug -d 'Display any debugging information'
 __fish_brew_complete_arg '--version' -l help -d 'Show this message'
@@ -612,6 +619,7 @@ __fish_brew_complete_arg 'contributions' -l debug -d 'Display any debugging info
 __fish_brew_complete_arg 'contributions' -l from -d 'Date (ISO 8601 format) to start searching contributions. Omitting this flag searches the past year'
 __fish_brew_complete_arg 'contributions' -l help -d 'Show this message'
 __fish_brew_complete_arg 'contributions' -l organisation -d 'Specify the organisation to populate sources repositories from. Omitting this flag searches the Homebrew primary repositories'
+__fish_brew_complete_arg 'contributions' -l quarter -d 'Quarter to search (1-4). Omitting this flag searches the past year. If `--from` or `--to` are set, they take precedence'
 __fish_brew_complete_arg 'contributions' -l quiet -d 'Make some output more quiet'
 __fish_brew_complete_arg 'contributions' -l repositories -d 'Specify a comma-separated list of repositories to search. All repositories must be under the same user or organisation. Omitting this flag, or specifying `--repositories=primary`, searches only the main repositories: `Homebrew/brew`, `Homebrew/homebrew-core`, `Homebrew/homebrew-cask`'
 __fish_brew_complete_arg 'contributions' -l team -d 'Specify the team to populate users from. The first part of the team name will be used as the organisation'
@@ -1762,8 +1770,11 @@ __fish_brew_complete_arg 'tests' -l online -d 'Include tests that use the GitHub
 __fish_brew_complete_arg 'tests' -l only -d 'Run only `test_script_spec.rb`. Appending `:line_number` will start at a specific line'
 __fish_brew_complete_arg 'tests' -l profile -d 'Output the n slowest tests. When run without `--no-parallel` this will output the slowest tests for each parallel test process'
 __fish_brew_complete_arg 'tests' -l quiet -d 'Make some output more quiet'
+__fish_brew_complete_arg 'tests' -l ruby-prof -d 'Use `ruby-prof` to profile tests'
 __fish_brew_complete_arg 'tests' -l seed -d 'Randomise tests with the specified value instead of a random seed'
+__fish_brew_complete_arg 'tests' -l stackprof -d 'Use `stackprof` to profile tests'
 __fish_brew_complete_arg 'tests' -l verbose -d 'Make some output more verbose'
+__fish_brew_complete_arg 'tests' -l vernier -d 'Use `vernier` to profile tests'
 
 
 __fish_brew_complete_cmd 'typecheck' 'Check for typechecking errors using Sorbet'

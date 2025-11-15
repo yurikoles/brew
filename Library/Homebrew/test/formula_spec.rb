@@ -3,6 +3,8 @@
 require "test/support/fixtures/testball"
 require "formula"
 
+PHASES = [:build, :postinstall, :test].freeze
+
 RSpec.describe Formula do
   alias_matcher :follow_installed_alias, :be_follow_installed_alias
   alias_matcher :have_any_version_installed, :be_any_version_installed
@@ -1953,9 +1955,8 @@ RSpec.describe Formula do
   end
 
   describe "{allow,deny}_network_access" do
-    phases = [:build, :postinstall, :test].freeze
     actions = %w[allow deny].freeze
-    phases.each do |phase|
+    PHASES.each do |phase|
       actions.each do |action|
         it "can #{action} network access for #{phase}" do
           f = Class.new(Testball) do
@@ -1973,7 +1974,7 @@ RSpec.describe Formula do
           send(:"#{action}_network_access!")
         end
 
-        phases.each do |phase|
+        PHASES.each do |phase|
           expect(f.network_access_allowed?(phase)).to be(action == "allow")
         end
       end

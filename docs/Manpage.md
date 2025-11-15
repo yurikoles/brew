@@ -1953,6 +1953,10 @@ Display where Homebrew's Git repository is located.
 If *`user`*`/`*`repo`* are provided, display where tap *`user`*`/`*`repo`*'s
 directory is located.
 
+### `--taps`
+
+Display the path to Homebrew’s Taps directory.
+
 ### `--version`, `-v`
 
 Print the version numbers of Homebrew, Homebrew/homebrew-core and
@@ -2416,7 +2420,7 @@ Display the source of a *`formula`* or *`cask`*.
 
 : Treat all named arguments as casks.
 
-### `contributions` \[`--user=`\] \[`--repositories=`\] \[`--from=`\] \[`--to=`\] \[`--csv`\]
+### `contributions` \[`--user=`\] \[`--repositories=`\] \[`--quarter=`\] \[`--from=`\] \[`--to=`\] \[`--csv`\]
 
 Summarise contributions to Homebrew repositories.
 
@@ -2441,6 +2445,11 @@ Summarise contributions to Homebrew repositories.
 
 : Specify the team to populate users from. The first part of the team name will
   be used as the organisation.
+
+`--quarter`
+
+: Quarter to search (1-4). Omitting this flag searches the past year. If
+  `--from` or `--to` are set, they take precedence.
 
 `--from`
 
@@ -3451,6 +3460,18 @@ Run Homebrew's unit and integration tests.
 `--no-parallel`
 
 : Run tests serially.
+
+`--stackprof`
+
+: Use `stackprof` to profile tests.
+
+`--vernier`
+
+: Use `vernier` to profile tests.
+
+`--ruby-prof`
+
+: Use `ruby-prof` to profile tests.
 
 `--only`
 
