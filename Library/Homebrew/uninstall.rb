@@ -1,6 +1,7 @@
 # typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
+require "dependents_message"
 require "installed_dependents"
 require "utils/output"
 
@@ -122,38 +123,6 @@ module Homebrew
 
       DependentsMessage.new(*result, named_args:).output
       true
-    end
-
-    class DependentsMessage
-      include ::Utils::Output::Mixin
-
-      attr_reader :reqs, :deps, :named_args
-
-      def initialize(requireds, dependents, named_args: [])
-        @reqs = requireds
-        @deps = dependents
-        @named_args = named_args
-      end
-
-      def output
-        ofail <<~EOS
-          Refusing to uninstall #{reqs.to_sentence}
-          because #{reqs.one? ? "it" : "they"} #{are_required_by_deps}.
-          You can override this and force removal with:
-            #{sample_command}
-        EOS
-      end
-
-      protected
-
-      def sample_command
-        "brew uninstall --ignore-dependencies #{named_args.join(" ")}"
-      end
-
-      def are_required_by_deps
-        "#{reqs.one? ? "is" : "are"} required by #{deps.to_sentence}, " \
-          "which #{deps.one? ? "is" : "are"} currently installed"
-      end
     end
 
     def self.rm_pin(rack)
