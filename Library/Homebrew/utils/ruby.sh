@@ -187,3 +187,18 @@ setup-gem-home-bundle-gemfile() {
   export GEM_HOME
   export BUNDLE_GEMFILE
 }
+
+ensure-bundle-dependencies() {
+  local install_args=()
+
+  if ! bundle check &>/dev/null
+  then
+    if [[ -n "${BUNDLE_WITH}" ]]
+    then
+      # Convert colon-separated BUNDLE_WITH to comma-separated for --add-groups
+      local groups_for_flag="${BUNDLE_WITH//:/,}"
+      install_args+=("--add-groups=${groups_for_flag}")
+    fi
+    "${HOMEBREW_BREW_FILE}" install-bundler-gems "${install_args[@]}"
+  fi
+}
