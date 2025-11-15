@@ -25,20 +25,23 @@ module Cask
     sig { params(casks: ::Cask::Cask, named_args: T::Array[String]).void }
     def self.check_dependent_casks(*casks, named_args: [])
       dependents = []
-      requireds = casks.map(&:token)
+      all_requireds = casks.map(&:token)
+      requireds = Set.new
       caskroom = ::Cask::Caskroom.casks
 
       caskroom.each do |dependent|
         d = CaskDependent.new(dependent)
         dependencies = d.recursive_requirements.filter_map { |r| r.cask if r.is_a?(CaskDependent::Requirement) }
-        next unless dependencies.intersect?(requireds)
+        found_dependents = dependencies.intersection(all_requireds)
+        next if found_dependents.empty?
 
+        requireds += found_dependents
         dependents << dependent.token
       end
 
       return if dependents.empty?
 
-      DependentsMessage.new(requireds, dependents, named_args:).output
+      DependentsMessage.new(requireds.to_a, dependents, named_args:).output
     end
   end
 end
