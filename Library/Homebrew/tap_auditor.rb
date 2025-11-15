@@ -179,7 +179,7 @@ module Homebrew
 
       problem <<~EOS
         #{list_file} contains old names that conflict with existing #{item_type} in the #{@name} tap.
-        Renames only work after the old cask/formula is deleted. Conflicting names: #{conflicts.join(", ")}
+        Renames only work after the old #{item_type} are deleted. Conflicting names: #{conflicts.join(", ")}
       EOS
     end
   end
