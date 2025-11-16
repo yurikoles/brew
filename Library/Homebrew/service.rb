@@ -23,7 +23,7 @@ module Homebrew
     PROCESS_TYPE_ADAPTIVE = :adaptive
 
     KEEP_ALIVE_KEYS = [:always, :successful_exit, :crashed, :path].freeze
-    NICE_RANGE = (-20..19).freeze
+    NICE_RANGE = (-20..19)
     SOCKET_STRING_REGEX = %r{^(?<type>[a-z]+)://(?<host>.+):(?<port>[0-9]+)$}i
 
     RunParam = T.type_alias { T.nilable(T.any(T::Array[T.any(String, Pathname)], String, Pathname)) }
@@ -359,6 +359,7 @@ module Homebrew
         @nice
       else
         raise TypeError, "Service#nice value should be in #{NICE_RANGE}" unless NICE_RANGE.cover?(value)
+
         @nice = value
         @require_root = true if value.negative?
       end
