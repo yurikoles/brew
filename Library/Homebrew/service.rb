@@ -23,7 +23,7 @@ module Homebrew
     PROCESS_TYPE_ADAPTIVE = :adaptive
 
     KEEP_ALIVE_KEYS = [:always, :successful_exit, :crashed, :path].freeze
-    NICE_RANGE = (-20..19)
+    NICE_RANGE = T.let(-20..19, T::Range[Integer])
     SOCKET_STRING_REGEX = %r{^(?<type>[a-z]+)://(?<host>.+):(?<port>[0-9]+)$}i
 
     RunParam = T.type_alias { T.nilable(T.any(T::Array[T.any(String, Pathname)], String, Pathname)) }
@@ -355,14 +355,12 @@ module Homebrew
 
     sig { params(value: Integer).returns(T.nilable(Integer)) }
     def nice(value = T.unsafe(nil))
-      if value.nil?
-        @nice
-      else
-        raise TypeError, "Service#nice value should be in #{NICE_RANGE}" unless NICE_RANGE.cover?(value)
+      return @nice if value.nil?
 
-        @require_root = true if value.negative?
-        @nice = value
-      end
+      raise TypeError, "Service#nice value should be in #{NICE_RANGE}" unless NICE_RANGE.cover?(value)
+
+      @require_root = true if value.negative?
+      @nice = value
     end
 
     delegate [:bin, :etc, :libexec, :opt_bin, :opt_libexec, :opt_pkgshare, :opt_prefix, :opt_sbin, :var] => :@formula
