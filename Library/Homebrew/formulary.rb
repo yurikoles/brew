@@ -1289,7 +1289,7 @@ module Formulary
 
     f = if Homebrew::EnvConfig.use_internal_api? && (loader = FromKegLoader.try_new(keg.name, warn: false))
       begin
-        loader.get_formula(spec, alias_path:, force_bottle:, flags:, ignore_errors: true)
+        loader.get_formula(spec, alias_path:, force_bottle:, flags:)
       rescue FormulaUnreadableError
         nil
       end
