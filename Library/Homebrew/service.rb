@@ -59,7 +59,7 @@ module Homebrew
       @working_dir = T.let(nil, T.nilable(String))
       instance_eval(&block) if block
 
-      raise TypeError, "Service#nice: negative nice values require root access. Set require_root: true" if nice_requires_root?
+      raise TypeError, "Service#nice: require_root true is required for negative nice values" if nice_requires_root?
     end
 
     sig { returns(T::Boolean) }
