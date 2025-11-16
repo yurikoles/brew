@@ -273,8 +273,7 @@ class Formula
       Tap.from_path(path)
     end
 
-    @pypi_packages_info = T.let(self.class.pypi_packages_info || PypiPackages.from_json_file(@tap, @name),
-                                PypiPackages)
+    @pypi_packages_info = T.let(self.class.pypi_packages_info || PypiPackages.new, PypiPackages)
 
     @full_name = T.let(T.must(full_name_with_optional_tap(name)), String)
     @full_alias_name = T.let(full_name_with_optional_tap(@alias_name), T.nilable(String))
@@ -4000,25 +3999,18 @@ class Formula
     # ```
     sig {
       params(
-        package_name:        T.nilable(String),
-        extra_packages:      T.nilable(T.any(String, T::Array[String])),
-        exclude_packages:    T.nilable(T.any(String, T::Array[String])),
-        dependencies:        T.nilable(T.any(String, T::Array[String])),
-        needs_manual_update: T::Boolean,
+        package_name:     T.nilable(String),
+        extra_packages:   T.nilable(T.any(String, T::Array[String])),
+        exclude_packages: T.nilable(T.any(String, T::Array[String])),
+        dependencies:     T.nilable(T.any(String, T::Array[String])),
       ).void
     }
     def pypi_packages(
       package_name: nil,
       extra_packages: nil,
       exclude_packages: nil,
-      dependencies: nil,
-      needs_manual_update: false
+      dependencies: nil
     )
-      if needs_manual_update
-        @pypi_packages_info = PypiPackages.new needs_manual_update: true
-        return
-      end
-
       if [package_name, extra_packages, exclude_packages, dependencies].all?(&:nil?)
         raise ArgumentError, "must provide at least one argument"
       end
