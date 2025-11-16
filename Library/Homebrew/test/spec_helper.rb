@@ -146,6 +146,13 @@ RSpec.configure do |config|
   config.include(Test::Helper::Formula)
   config.include(Test::Helper::MkTmpDir)
 
+  # Enable aggregate failures by default
+  config.define_derived_metadata do |metadata|
+    unless metadata.key?(:aggregate_failures)
+      metadata[:aggregate_failures] = true
+    end
+  end
+
   config.before(:each, :needs_linux) do
     skip "Not running on Linux." unless OS.linux?
   end
