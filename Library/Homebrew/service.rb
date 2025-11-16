@@ -64,7 +64,7 @@ module Homebrew
 
     sig { returns(T::Boolean) }
     def nice_requires_root?
-      @nice&.negative? && !requires_root?
+      @nice&.negative? == true && !requires_root?
     end
 
     sig { returns(Formula) }
