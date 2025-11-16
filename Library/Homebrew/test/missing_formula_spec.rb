@@ -16,17 +16,20 @@ RSpec.describe Homebrew::MissingFormula do
       end
     end
 
-    it { is_expected.to disallow("gem") }
-    it { is_expected.to disallow("pip") }
-    it { is_expected.to disallow("pil") }
-    it { is_expected.to disallow("macruby") }
-    it { is_expected.to disallow("lzma") }
-    it { is_expected.to disallow("gsutil") }
-    it { is_expected.to disallow("gfortran") }
-    it { is_expected.to disallow("play") }
-    it { is_expected.to disallow("haskell-platform") }
-    it { is_expected.to disallow("mysqldump-secure") }
-    it { is_expected.to disallow("ngrok") }
+    specify(:aggregate_failures) do
+      expect(subject).to disallow("gem")
+      expect(subject).to disallow("pip")
+      expect(subject).to disallow("pil")
+      expect(subject).to disallow("macruby")
+      expect(subject).to disallow("lzma")
+      expect(subject).to disallow("gsutil")
+      expect(subject).to disallow("gfortran")
+      expect(subject).to disallow("play")
+      expect(subject).to disallow("haskell-platform")
+      expect(subject).to disallow("mysqldump-secure")
+      expect(subject).to disallow("ngrok")
+    end
+
     it("disallows Xcode", :needs_macos) { is_expected.to disallow("xcode") }
   end
 
@@ -105,8 +108,10 @@ RSpec.describe Homebrew::MissingFormula do
       let(:formula) { "local-caffeine" }
       let(:show_info) { false }
 
-      it { is_expected.to match(/Found a cask named "local-caffeine" instead./) }
-      it { is_expected.to match(/Try\n  brew install --cask local-caffeine/) }
+      specify(:aggregate_failures) do
+        expect(subject).to match(/Found a cask named "local-caffeine" instead./)
+        expect(subject).to match(/Try\n  brew install --cask local-caffeine/)
+      end
     end
 
     context "with a formula name that is a cask and show_info: true" do
@@ -131,8 +136,10 @@ RSpec.describe Homebrew::MissingFormula do
       let(:name) { "local-caffeine" }
       let(:command) { "install" }
 
-      it { is_expected.to match(/Found a cask named "local-caffeine" instead./) }
-      it { is_expected.to match(/Try\n  brew install --cask local-caffeine/) }
+      specify(:aggregate_failures) do
+        expect(subject).to match(/Found a cask named "local-caffeine" instead./)
+        expect(subject).to match(/Try\n  brew install --cask local-caffeine/)
+      end
     end
 
     context "when uninstalling" do
@@ -146,8 +153,10 @@ RSpec.describe Homebrew::MissingFormula do
           allow(Cask::Caskroom).to receive(:casks).and_return(["local-caffeine"])
         end
 
-        it { is_expected.to match(/Found a cask named "local-caffeine" instead./) }
-        it { is_expected.to match(/Try\n  brew uninstall --cask local-caffeine/) }
+        specify(:aggregate_failures) do
+          expect(subject).to match(/Found a cask named "local-caffeine" instead./)
+          expect(subject).to match(/Try\n  brew uninstall --cask local-caffeine/)
+        end
       end
     end
 
@@ -155,8 +164,10 @@ RSpec.describe Homebrew::MissingFormula do
       let(:name) { "local-caffeine" }
       let(:command) { "info" }
 
-      it { is_expected.to match(/Found a cask named "local-caffeine" instead./) }
-      it { is_expected.to match(/local-caffeine: 1.2.3/) }
+      specify(:aggregate_failures) do
+        expect(subject).to match(/Found a cask named "local-caffeine" instead./)
+        expect(subject).to match(/local-caffeine: 1.2.3/)
+      end
     end
   end
 end

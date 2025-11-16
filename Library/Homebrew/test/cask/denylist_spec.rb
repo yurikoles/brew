@@ -10,13 +10,15 @@ RSpec.describe Cask::Denylist, :cask do
       end
     end
 
-    it { is_expected.not_to disallow("adobe-air") }
-    it { is_expected.to disallow("adobe-after-effects") }
-    it { is_expected.to disallow("adobe-illustrator") }
-    it { is_expected.to disallow("adobe-indesign") }
-    it { is_expected.to disallow("adobe-photoshop") }
-    it { is_expected.to disallow("adobe-premiere") }
-    it { is_expected.to disallow("pharo") }
-    it { is_expected.not_to disallow("allowed-cask") }
+    specify(:aggregate_failures) do
+      expect(subject).not_to disallow("adobe-air")
+      expect(subject).to disallow("adobe-after-effects")
+      expect(subject).to disallow("adobe-illustrator")
+      expect(subject).to disallow("adobe-indesign")
+      expect(subject).to disallow("adobe-photoshop")
+      expect(subject).to disallow("adobe-premiere")
+      expect(subject).to disallow("pharo")
+      expect(subject).not_to disallow("allowed-cask")
+    end
   end
 end
