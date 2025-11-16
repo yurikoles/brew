@@ -3,10 +3,31 @@
 require "tap_auditor"
 
 RSpec.describe Homebrew::TapAuditor do
-  subject(:auditor) { described_class.new(tap, strict: false) }
-
   let(:tap) { Tap.fetch("homebrew", "foo") }
   let(:tap_path) { tap.path }
+  let(:auditor) { described_class.new(tap, strict: false) }
+
+  def write_cask(token, path = tap_path/"Casks"/"#{token}.rb")
+    path.dirname.mkpath
+    path.write <<~RUBY
+      cask "#{token}" do
+        version "1.0"
+        url "https://brew.sh/#{token}-1.0.dmg"
+        name "#{token.capitalize} Cask"
+        homepage "https://brew.sh"
+      end
+    RUBY
+  end
+
+  def write_formula(name, path = tap_path/"Formula"/"#{name}.rb")
+    path.dirname.mkpath
+    path.write <<~RUBY
+      class #{name.capitalize} < Formula
+        url "https://brew.sh/#{name}-1.0.tar.gz"
+        version "1.0"
+      end
+    RUBY
+  end
 
   before do
     tap_path.mkpath
@@ -14,212 +35,176 @@ RSpec.describe Homebrew::TapAuditor do
   end
 
   describe "#audit" do
+    subject(:problems) do
+      auditor.audit
+      auditor.problems
+    end
+
     context "with cask_renames.json" do
       let(:cask_renames_path) { tap_path/"cask_renames.json" }
-      let(:cask_path) { tap_path/"Casks"/"newcask.rb" }
+      let(:renames_data) { {} }
 
       before do
-        cask_path.dirname.mkpath
-        cask_path.write <<~RUBY
-          cask "newcask" do
-            version "1.0"
-            url "https://brew.sh/newcask-1.0.dmg"
-            name "New Cask"
-            homepage "https://brew.sh"
-          end
-        RUBY
+        write_cask("newcask")
+        cask_renames_path.write JSON.pretty_generate(renames_data)
       end
 
-      it "detects .rb extension in old cask name (key)" do
-        cask_renames_path.write JSON.pretty_generate({
-          "oldcask.rb" => "newcask",
-        })
+      context "when .rb extension in old cask name (key)" do
+        let(:renames_data) { { "oldcask.rb" => "newcask" } }
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to match(
-          /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask\.rb": "newcask"/m,
-        )
+        it "detects the invalid format" do
+          expect(problems).not_to be_empty
+          expect(problems.first[:message]).to match(
+            /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask\.rb": "newcask"/m,
+          )
+        end
       end
 
-      it "detects .rb extension in new cask name (value)" do
-        cask_renames_path.write JSON.pretty_generate({
-          "oldcask" => "newcask.rb",
-        })
+      context "when .rb extension in new cask name (value)" do
+        let(:renames_data) { { "oldcask" => "newcask.rb" } }
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to match(
-          /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask": "newcask\.rb"/m,
-        )
+        it "detects the invalid format" do
+          expect(problems).not_to be_empty
+          expect(problems.first[:message]).to match(
+            /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask": "newcask\.rb"/m,
+          )
+        end
       end
 
-      it "detects missing target cask" do
-        cask_renames_path.write JSON.pretty_generate({
-          "oldcask" => "nonexistent",
-        })
+      context "when missing target cask" do
+        let(:renames_data) { { "oldcask" => "nonexistent" } }
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to match(
-          /cask_renames\.json contains renames to casks that do not exist .* tap\.\nInvalid targets: nonexistent/m,
-        )
+        it "detects the missing target" do
+          expect(problems).not_to be_empty
+          expect(problems.first[:message]).to match(
+            /cask_renames\.json contains renames to casks that do not exist .* tap\.\nInvalid targets: nonexistent/m,
+          )
+        end
       end
 
-      it "detects chained renames" do
-        another_cask_path = tap_path/"Casks"/"finalcask.rb"
-        another_cask_path.write <<~RUBY
-          cask "finalcask" do
-            version "1.0"
-            url "https://brew.sh/finalcask-1.0.dmg"
-            name "Final Cask"
-            homepage "https://brew.sh"
-          end
-        RUBY
+      context "with chained renames" do
+        let(:renames_data) do
+          {
+            "oldcask" => "newcask",
+            "newcask" => "finalcask",
+          }
+        end
 
-        cask_renames_path.write JSON.pretty_generate({
-          "oldcask" => "newcask",
-          "newcask" => "finalcask",
-        })
+        before do
+          write_cask("finalcask")
+        end
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
-        expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to match(
-          /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
-        )
+        it "detects the chained renames" do
+          expect(problems).not_to be_empty
+          problem_message = problems.find { |p| p[:message].include?("chained renames") }
+          expect(problem_message).not_to be_nil
+          expect(problem_message[:message]).to match(
+            /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
+          )
+        end
       end
 
-      it "detects multi-level chained renames and suggests final target" do
-        cask_path2 = tap_path/"Casks"/"intermediatecask.rb"
-        cask_path2.write <<~RUBY
-          cask "intermediatecask" do
-            version "1.0"
-            url "https://brew.sh/intermediatecask-1.0.dmg"
-            name "Intermediate Cask"
-            homepage "https://brew.sh"
-          end
-        RUBY
+      context "with multi-level chained renames" do
+        let(:renames_data) do
+          {
+            "oldcask"          => "newcask",
+            "newcask"          => "intermediatecask",
+            "intermediatecask" => "finalcask",
+          }
+        end
 
-        cask_path3 = tap_path/"Casks"/"finalcask.rb"
-        cask_path3.write <<~RUBY
-          cask "finalcask" do
-            version "1.0"
-            url "https://brew.sh/finalcask-1.0.dmg"
-            name "Final Cask"
-            homepage "https://brew.sh"
-          end
-        RUBY
+        before do
+          write_cask("intermediatecask")
+          write_cask("finalcask")
+        end
 
-        cask_renames_path.write JSON.pretty_generate({
-          "oldcask"          => "newcask",
-          "newcask"          => "intermediatecask",
-          "intermediatecask" => "finalcask",
-        })
-
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
-        expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to match(
-          /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
-        )
-        expect(problem_message[:message]).not_to include("intermediatecask")
+        it "suggests final target" do
+          expect(problems).not_to be_empty
+          problem_message = problems.find { |p| p[:message].include?("chained renames") }
+          expect(problem_message).not_to be_nil
+          expect(problem_message[:message]).to match(
+            /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
+          )
+          expect(problem_message[:message]).not_to include("intermediatecask")
+        end
       end
 
-      it "detects old name conflicts with existing cask" do
-        cask_renames_path.write JSON.pretty_generate({
-          "newcask" => "anothercask",
-        })
+      context "when old name conflicts with existing cask" do
+        let(:renames_data) { { "newcask" => "anothercask" } }
 
-        another_cask_path = tap_path/"Casks"/"anothercask.rb"
-        another_cask_path.write <<~RUBY
-          cask "anothercask" do
-            version "1.0"
-            url "https://brew.sh/anothercask-1.0.dmg"
-            name "Another Cask"
-            homepage "https://brew.sh"
-          end
-        RUBY
+        before do
+          write_cask("anothercask")
+        end
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        problem_message = auditor.problems.find { |p| p[:message].include?("conflict") }
-        expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to match(
-          /cask_renames\.json contains old names that conflict .* tap\.\n.*Conflicting names: newcask/m,
-        )
+        it "detects the conflict" do
+          expect(problems).not_to be_empty
+          problem_message = problems.find { |p| p[:message].include?("conflict") }
+          expect(problem_message).not_to be_nil
+          expect(problem_message[:message]).to match(
+            /cask_renames\.json contains old names that conflict .* tap\.\n.*Conflicting names: newcask/m,
+          )
+        end
       end
 
-      it "passes validation for correct rename entries" do
-        cask_renames_path.write JSON.pretty_generate({
-          "oldcask" => "newcask",
-        })
+      context "with correct rename entries" do
+        let(:renames_data) { { "oldcask" => "newcask" } }
 
-        auditor.audit
-        rename_problems = auditor.problems.select { |p| p[:message].include?("cask_renames") }
-        expect(rename_problems).to be_empty
+        it "passes validation" do
+          rename_problems = problems.select { |p| p[:message].include?("cask_renames") }
+          expect(rename_problems).to be_empty
+        end
       end
     end
 
     context "with formula_renames.json" do
       let(:formula_renames_path) { tap_path/"formula_renames.json" }
-      let(:formula_path) { tap_path/"Formula"/"newformula.rb" }
+      let(:renames_data) { {} }
 
       before do
-        formula_path.dirname.mkpath
-        formula_path.write <<~RUBY
-          class Newformula < Formula
-            url "https://brew.sh/newformula-1.0.tar.gz"
-            version "1.0"
-          end
-        RUBY
+        write_formula("newformula")
+        formula_renames_path.write JSON.pretty_generate(renames_data)
       end
 
-      it "detects .rb extension in formula rename keys" do
-        formula_renames_path.write JSON.pretty_generate({
-          "oldformula.rb" => "newformula",
-        })
+      context "when .rb extension in formula rename keys" do
+        let(:renames_data) { { "oldformula.rb" => "newformula" } }
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        expect(auditor.problems.first[:message]).to match(
-          /formula_renames\.json contains entries with '\.rb' file extensions\.\n.*"oldformula\.rb"/m,
-        )
+        it "detects the invalid format" do
+          expect(problems).not_to be_empty
+          expect(problems.first[:message]).to match(
+            /formula_renames\.json contains entries with '\.rb' file extensions\.\n.*"oldformula\.rb"/m,
+          )
+        end
       end
 
-      it "detects chained formula renames" do
-        another_formula_path = tap_path/"Formula"/"finalformula.rb"
-        another_formula_path.write <<~RUBY
-          class Finalformula < Formula
-            url "https://brew.sh/finalformula-1.0.tar.gz"
-            version "1.0"
-          end
-        RUBY
+      context "with chained formula renames" do
+        let(:renames_data) do
+          {
+            "oldformula" => "newformula",
+            "newformula" => "finalformula",
+          }
+        end
 
-        formula_renames_path.write JSON.pretty_generate({
-          "oldformula" => "newformula",
-          "newformula" => "finalformula",
-        })
+        before do
+          write_formula("finalformula")
+        end
 
-        auditor.audit
-        expect(auditor.problems).not_to be_empty
-        problem_message = auditor.problems.find { |p| p[:message].include?("chained renames") }
-        expect(problem_message).not_to be_nil
-        expect(problem_message[:message]).to match(
-          /formula_renames\.json contains chained renames.*"oldformula": "finalformula"/m,
-        )
+        it "detects the chained renames" do
+          expect(problems).not_to be_empty
+          problem_message = problems.find { |p| p[:message].include?("chained renames") }
+          expect(problem_message).not_to be_nil
+          expect(problem_message[:message]).to match(
+            /formula_renames\.json contains chained renames.*"oldformula": "finalformula"/m,
+          )
+        end
       end
 
-      it "passes validation for correct formula rename entries" do
-        formula_renames_path.write JSON.pretty_generate({
-          "oldformula" => "newformula",
-        })
+      context "with correct formula rename entries" do
+        let(:renames_data) { { "oldformula" => "newformula" } }
 
-        auditor.audit
-        rename_problems = auditor.problems.select { |p| p[:message].include?("formula_renames") }
-        expect(rename_problems).to be_empty
+        it "passes validation" do
+          rename_problems = problems.select { |p| p[:message].include?("formula_renames") }
+          expect(rename_problems).to be_empty
+        end
       end
     end
   end
