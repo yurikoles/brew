@@ -237,6 +237,15 @@ module PyPI
                                     exclude_packages: nil, dependencies: nil, install_dependencies: false,
                                     print_only: false, silent: false, verbose: false,
                                     ignore_errors: false, ignore_non_pypi_packages: false)
+    if [package_name, extra_packages, exclude_packages, dependencies].all?(&:blank?)
+      list_entry = formula.pypi_packages_info
+
+      package_name = list_entry.package_name
+      extra_packages = list_entry.extra_packages
+      exclude_packages = list_entry.exclude_packages
+      dependencies = list_entry.dependencies
+    end
+
     missing_dependencies = Array(dependencies).reject do |dependency|
       Formula[dependency].any_version_installed?
     rescue FormulaUnavailableError
