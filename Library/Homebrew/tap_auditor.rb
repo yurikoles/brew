@@ -130,7 +130,9 @@ module Homebrew
         end
 
         # Check that new name exists
-        invalid_targets << new_name if valid_tokens.exclude?(new_name) && valid_aliases.exclude?(new_name) && !renames_hash.key?(new_name)
+        if valid_tokens.exclude?(new_name) && valid_aliases.exclude?(new_name) && !renames_hash.key?(new_name)
+          invalid_targets << new_name
+        end
 
         # Check for chained renames and follow to final target
         if renames_hash.key?(new_name)
