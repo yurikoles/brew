@@ -360,8 +360,8 @@ module Homebrew
       else
         raise TypeError, "Service#nice value should be in #{NICE_RANGE}" unless NICE_RANGE.cover?(value)
 
-        @nice = value
         @require_root = true if value.negative?
+        @nice = value
       end
     end
 
