@@ -55,7 +55,7 @@ RSpec.describe Homebrew::TapAuditor do
         it "detects the invalid format" do
           expect(problems).not_to be_empty
           expect(problems.first[:message]).to match(
-            /cask_renames\.json contains entries with '\.rb' file extensions\.\n.*\n.*"oldcask\.rb": "newcask"/m,
+            /cask_renames\.json contains entries with '\.rb' file extensions\.\nRename entries should use formula\/cask names only, without '\.rb' extensions\.\nInvalid entries: "oldcask\.rb": "newcask"/,
           )
         end
       end
@@ -126,6 +126,26 @@ RSpec.describe Homebrew::TapAuditor do
             /cask_renames\.json contains chained renames that should be collapsed\.\n.*\n.*"oldcask": "finalcask"/m,
           )
           expect(problem_message[:message]).not_to include("intermediatecask")
+        end
+      end
+
+      context "with chained renames where intermediates don't exist" do
+        let(:renames_data) do
+          {
+            "veryoldcask" => "intermediatecask",
+            "intermediatecask" => "finalcask",
+          }
+        end
+
+        before do
+          write_cask("finalcask")
+        end
+
+        it "reports chained rename error, not invalid target error" do
+          expect(problems.count).to eq(1)
+          expect(problems.first[:message]).to match(
+            /\Acask_renames\.json contains chained renames that should be collapsed\.\nChained renames don't work automatically; each old name should point directly to the final target:\n {2}"veryoldcask": "finalcask" \(instead of chained rename\)\n\z/,
+          )
         end
       end
 
