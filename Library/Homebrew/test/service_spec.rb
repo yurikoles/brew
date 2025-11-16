@@ -77,7 +77,7 @@ RSpec.describe Homebrew::Service do
             nice(-10)
           end
         end.service
-      end.to raise_error TypeError, "Service#nice: negative nice values require root access. Set require_root: true"
+      end.to raise_error TypeError, "Service#nice: require_root true is required for negative nice values"
     end
 
     it "allows negative nice values when require_root is set" do
