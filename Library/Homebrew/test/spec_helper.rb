@@ -148,9 +148,7 @@ RSpec.configure do |config|
 
   # Enable aggregate failures by default
   config.define_derived_metadata do |metadata|
-    unless metadata.key?(:aggregate_failures)
-      metadata[:aggregate_failures] = true
-    end
+    metadata[:aggregate_failures] = true unless metadata.key?(:aggregate_failures)
   end
 
   config.before(:each, :needs_linux) do

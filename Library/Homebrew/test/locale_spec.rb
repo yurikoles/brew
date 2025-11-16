@@ -50,12 +50,12 @@ RSpec.describe Locale do
     subject { described_class.new("zh", "Hans", "CN") }
 
     specify(:aggregate_failures) do
-      expect(subject).to include("zh")
-      expect(subject).to include("zh-CN")
-      expect(subject).to include("CN")
-      expect(subject).to include("Hans-CN")
-      expect(subject).to include("Hans")
-      expect(subject).to include("zh-Hans-CN")
+      expect(subject).to include("zh") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to include("zh-CN") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to include("CN") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to include("Hans-CN") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to include("Hans") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to include("zh-Hans-CN") # rubocop:todo RSpec/NamedSubject
     end
   end
 
@@ -64,18 +64,18 @@ RSpec.describe Locale do
 
     context "when all parts match" do
       specify(:aggregate_failures) do
-        expect(subject).to eql("zh-Hans-CN")
-        expect(subject).to eql(locale)
+        expect(subject).to eql("zh-Hans-CN") # rubocop:todo RSpec/NamedSubject
+        expect(subject).to eql(locale) # rubocop:todo RSpec/NamedSubject
       end
     end
 
     context "when only some parts match" do
       specify(:aggregate_failures) do
-        expect(subject).not_to eql("zh")
-        expect(subject).not_to eql("zh-CN")
-        expect(subject).not_to eql("CN")
-        expect(subject).not_to eql("Hans-CN")
-        expect(subject).not_to eql("Hans")
+        expect(subject).not_to eql("zh") # rubocop:todo RSpec/NamedSubject
+        expect(subject).not_to eql("zh-CN") # rubocop:todo RSpec/NamedSubject
+        expect(subject).not_to eql("CN") # rubocop:todo RSpec/NamedSubject
+        expect(subject).not_to eql("Hans-CN") # rubocop:todo RSpec/NamedSubject
+        expect(subject).not_to eql("Hans") # rubocop:todo RSpec/NamedSubject
       end
     end
 

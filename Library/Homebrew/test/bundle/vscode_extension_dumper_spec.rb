@@ -17,7 +17,7 @@ RSpec.describe Homebrew::Bundle::VscodeExtensionDumper do
       expect(dumper.extensions).to be_empty
     end
 
-    it "dumps an empty string" do
+    it "dumps an empty string" do # rubocop:todo RSpec/AggregateExamples
       expect(dumper.dump).to eql("")
     end
   end

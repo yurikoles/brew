@@ -11,14 +11,14 @@ RSpec.describe Cask::Denylist, :cask do
     end
 
     specify(:aggregate_failures) do
-      expect(subject).not_to disallow("adobe-air")
-      expect(subject).to disallow("adobe-after-effects")
-      expect(subject).to disallow("adobe-illustrator")
-      expect(subject).to disallow("adobe-indesign")
-      expect(subject).to disallow("adobe-photoshop")
-      expect(subject).to disallow("adobe-premiere")
-      expect(subject).to disallow("pharo")
-      expect(subject).not_to disallow("allowed-cask")
+      expect(subject).not_to disallow("adobe-air") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("adobe-after-effects") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("adobe-illustrator") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("adobe-indesign") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("adobe-photoshop") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("adobe-premiere") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("pharo") # rubocop:todo RSpec/NamedSubject
+      expect(subject).not_to disallow("allowed-cask") # rubocop:todo RSpec/NamedSubject
     end
   end
 end

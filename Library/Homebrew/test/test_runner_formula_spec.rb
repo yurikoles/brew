@@ -29,7 +29,7 @@ RSpec.describe TestRunnerFormula do
       expect(described_class.new(testball).eval_all).to be(false)
     end
 
-    it "can be instantiated to be `true`" do
+    it "can be instantiated to be `true`" do # rubocop:todo RSpec/AggregateExamples
       expect(described_class.new(testball, eval_all: true).eval_all).to be(true)
     end
 
@@ -307,7 +307,9 @@ RSpec.describe TestRunnerFormula do
 
     context "when a formula has dependents" do
       let(:testball_user) { setup_test_runner_formula("testball_user", ["testball"]) }
-      let(:recursive_testball_dependent) { setup_test_runner_formula("recursive_testball_dependent", ["testball_user"]) }
+      let(:recursive_testball_dependent) do
+        setup_test_runner_formula("recursive_testball_dependent", ["testball_user"])
+      end
 
       it "returns an array of direct dependents" do
         allow(Formula).to receive(:all).and_return([testball_user, recursive_testball_dependent])

@@ -16,9 +16,9 @@ RSpec.describe Checksum do
     let(:other_reversed) { described_class.new(TEST_SHA256.reverse) }
 
     specify(:aggregate_failures) do
-      expect(subject).to eq(other)
-      expect(subject).not_to eq(other_reversed)
-      expect(subject).not_to be_nil
+      expect(subject).to eq(other) # rubocop:todo RSpec/NamedSubject
+      expect(subject).not_to eq(other_reversed) # rubocop:todo RSpec/NamedSubject
+      expect(subject).not_to be_nil # rubocop:todo RSpec/NamedSubject
     end
   end
 end

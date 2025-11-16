@@ -50,7 +50,7 @@ RSpec.describe Utils::Bottles::Tag do
       expect(described_class.new(system: :all, arch: :intel).standardized_arch).to eq(:x86_64)
     end
 
-    it "returns :arm64 for :arm" do
+    it "returns :arm64 for :arm" do # rubocop:todo RSpec/AggregateExamples
       expect(described_class.new(system: :all, arch: :arm).standardized_arch).to eq(:arm64)
     end
   end

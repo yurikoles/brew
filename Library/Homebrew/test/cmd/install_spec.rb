@@ -13,8 +13,6 @@ RSpec.describe Homebrew::Cmd::InstallCmd do
   it "installs a Formula", :integration_test do
     setup_test_formula "testball1"
 
-    testball1_rack = HOMEBREW_CELLAR/"testball1"
-
     expect { brew "install", "testball1" }
       .to output(%r{#{HOMEBREW_CELLAR}/testball1/0\.1}o).to_stdout
       .and output(/✔︎.*/m).to_stderr

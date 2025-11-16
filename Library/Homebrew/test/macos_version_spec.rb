@@ -66,7 +66,7 @@ RSpec.describe MacOSVersion do
     expect(version).to be < 11
   end
 
-  specify "comparison with String" do
+  specify "comparison with String" do # rubocop:todo RSpec/AggregateExamples
     expect(version).to be > "10.3"
     expect(version).to eq "10.15"
     # We're explicitly testing the `===` operator results here.
@@ -74,7 +74,7 @@ RSpec.describe MacOSVersion do
     expect(version).to be < "11"
   end
 
-  specify "comparison with Version" do
+  specify "comparison with Version" do # rubocop:todo RSpec/AggregateExamples
     expect(version).to be > Version.new("10.3")
     expect(version).to eq Version.new("10.15")
     # We're explicitly testing the `===` operator results here.
@@ -106,7 +106,7 @@ RSpec.describe MacOSVersion do
       expect(catalina_update.strip_patch).to eq(described_class.new("10.15"))
     end
 
-    it "returns self if version is null" do
+    it "returns self if version is null" do # rubocop:todo RSpec/AggregateExamples
       expect(described_class::NULL.strip_patch).to be described_class::NULL
     end
   end
@@ -141,20 +141,20 @@ RSpec.describe MacOSVersion do
     expect(frozen_version.instance_variable_get(:@pretty_name)).to be_nil
   end
 
-  specify "#inspect" do
+  specify "#inspect" do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new("11").inspect).to eq("#<MacOSVersion: \"11\">")
   end
 
-  specify "#outdated_release?" do
+  specify "#outdated_release?" do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(described_class::SYMBOLS.values.first).outdated_release?).to be false
     expect(described_class.new("10.0").outdated_release?).to be true
   end
 
-  specify "#prerelease?" do
+  specify "#prerelease?" do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new("1000").prerelease?).to be true
   end
 
-  specify "#unsupported_release?" do
+  specify "#unsupported_release?" do # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new("10.0").unsupported_release?).to be true
     expect(described_class.new("1000").prerelease?).to be true
   end

@@ -17,17 +17,17 @@ RSpec.describe Homebrew::MissingFormula do
     end
 
     specify(:aggregate_failures) do
-      expect(subject).to disallow("gem")
-      expect(subject).to disallow("pip")
-      expect(subject).to disallow("pil")
-      expect(subject).to disallow("macruby")
-      expect(subject).to disallow("lzma")
-      expect(subject).to disallow("gsutil")
-      expect(subject).to disallow("gfortran")
-      expect(subject).to disallow("play")
-      expect(subject).to disallow("haskell-platform")
-      expect(subject).to disallow("mysqldump-secure")
-      expect(subject).to disallow("ngrok")
+      expect(subject).to disallow("gem") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("pip") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("pil") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("macruby") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("lzma") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("gsutil") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("gfortran") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("play") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("haskell-platform") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("mysqldump-secure") # rubocop:todo RSpec/NamedSubject
+      expect(subject).to disallow("ngrok") # rubocop:todo RSpec/NamedSubject
     end
 
     it("disallows Xcode", :needs_macos) { is_expected.to disallow("xcode") }
@@ -109,8 +109,8 @@ RSpec.describe Homebrew::MissingFormula do
       let(:show_info) { false }
 
       specify(:aggregate_failures) do
-        expect(subject).to match(/Found a cask named "local-caffeine" instead./)
-        expect(subject).to match(/Try\n  brew install --cask local-caffeine/)
+        expect(subject).to match(/Found a cask named "local-caffeine" instead./) # rubocop:todo RSpec/NamedSubject
+        expect(subject).to match(/Try\n  brew install --cask local-caffeine/) # rubocop:todo RSpec/NamedSubject
       end
     end
 
@@ -137,8 +137,8 @@ RSpec.describe Homebrew::MissingFormula do
       let(:command) { "install" }
 
       specify(:aggregate_failures) do
-        expect(subject).to match(/Found a cask named "local-caffeine" instead./)
-        expect(subject).to match(/Try\n  brew install --cask local-caffeine/)
+        expect(subject).to match(/Found a cask named "local-caffeine" instead./) # rubocop:todo RSpec/NamedSubject
+        expect(subject).to match(/Try\n  brew install --cask local-caffeine/) # rubocop:todo RSpec/NamedSubject
       end
     end
 
@@ -154,8 +154,8 @@ RSpec.describe Homebrew::MissingFormula do
         end
 
         specify(:aggregate_failures) do
-          expect(subject).to match(/Found a cask named "local-caffeine" instead./)
-          expect(subject).to match(/Try\n  brew uninstall --cask local-caffeine/)
+          expect(subject).to match(/Found a cask named "local-caffeine" instead./) # rubocop:todo RSpec/NamedSubject
+          expect(subject).to match(/Try\n  brew uninstall --cask local-caffeine/) # rubocop:todo RSpec/NamedSubject
         end
       end
     end
@@ -165,8 +165,8 @@ RSpec.describe Homebrew::MissingFormula do
       let(:command) { "info" }
 
       specify(:aggregate_failures) do
-        expect(subject).to match(/Found a cask named "local-caffeine" instead./)
-        expect(subject).to match(/local-caffeine: 1.2.3/)
+        expect(subject).to match(/Found a cask named "local-caffeine" instead./) # rubocop:todo RSpec/NamedSubject
+        expect(subject).to match(/local-caffeine: 1.2.3/) # rubocop:todo RSpec/NamedSubject
       end
     end
   end

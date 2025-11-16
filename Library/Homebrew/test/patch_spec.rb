@@ -8,8 +8,8 @@ RSpec.describe Patch do
       subject(:patch) { described_class.create(:p2, nil) }
 
       specify(:aggregate_failures) do
-        expect(subject).to be_a ExternalPatch
-        expect(subject).to be_external
+        expect(subject).to be_a ExternalPatch # rubocop:todo RSpec/NamedSubject
+        expect(subject).to be_external # rubocop:todo RSpec/NamedSubject
       end
 
       it(:strip) { expect(patch.strip).to eq(:p2) }
