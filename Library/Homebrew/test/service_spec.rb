@@ -70,15 +70,13 @@ RSpec.describe Homebrew::Service do
     end
 
     it "throws error for negative nice values without require_root" do
-      f = stub_formula do
-        service do
-          run opt_bin/"beanstalkd"
-          nice(-10)
-        end
-      end
-
       expect do
-        f.service.to_plist
+        stub_formula do
+          service do
+            run opt_bin/"beanstalkd"
+            nice(-10)
+          end
+        end.service
       end.to raise_error TypeError, "Service#nice: negative nice values require root access. Set require_root: true"
     end
 
@@ -168,28 +166,24 @@ RSpec.describe Homebrew::Service do
     end
 
     it "throws for nice too low" do
-      f = stub_formula do
-        service do
-          run opt_bin/"beanstalkd"
-          nice(-21)
-        end
-      end
-
       expect do
-        f.service.manual_command
+        stub_formula do
+          service do
+            run opt_bin/"beanstalkd"
+            nice(-21)
+          end
+        end.service
       end.to raise_error TypeError, "Service#nice value should be in -20..19"
     end
 
     it "throws for nice too high" do
-      f = stub_formula do
-        service do
-          run opt_bin/"beanstalkd"
-          nice 20
-        end
-      end
-
       expect do
-        f.service.manual_command
+        stub_formula do
+          service do
+            run opt_bin/"beanstalkd"
+            nice 20
+          end
+        end.service
       end.to raise_error TypeError, "Service#nice value should be in -20..19"
     end
   end
