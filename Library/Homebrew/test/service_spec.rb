@@ -69,7 +69,7 @@ RSpec.describe Homebrew::Service do
       expect(f.service.nice).to be(5)
     end
 
-    it "automatically sets requires_root for negative nice values" do
+    it "throws error for negative nice values without require_root" do
       f = stub_formula do
         service do
           run opt_bin/"beanstalkd"
@@ -77,10 +77,25 @@ RSpec.describe Homebrew::Service do
         end
       end
 
-      expect(f.service.requires_root?).to be(true)
+      expect do
+        f.service.to_plist
+      end.to raise_error TypeError, "Service#nice: negative nice values require root access. Set require_root: true"
     end
 
-    it "does not set requires_root for positive nice values" do
+    it "allows negative nice values when require_root is set" do
+      f = stub_formula do
+        service do
+          run opt_bin/"beanstalkd"
+          require_root true
+          nice(-10)
+        end
+      end
+
+      expect(f.service.requires_root?).to be(true)
+      expect { f.service.to_plist }.not_to raise_error
+    end
+
+    it "does not require require_root for positive nice values" do
       f = stub_formula do
         service do
           run opt_bin/"beanstalkd"
@@ -89,6 +104,7 @@ RSpec.describe Homebrew::Service do
       end
 
       expect(f.service.requires_root?).to be(false)
+      expect { f.service.to_plist }.not_to raise_error
     end
 
     it "accepts nice value of zero" do
@@ -120,6 +136,7 @@ RSpec.describe Homebrew::Service do
       f = stub_formula do
         service do
           run opt_bin/"beanstalkd"
+          require_root true
           nice(-5)
         end
       end

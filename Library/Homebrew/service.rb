@@ -58,6 +58,8 @@ module Homebrew
       @sockets = T.let({}, Sockets)
       @working_dir = T.let(nil, T.nilable(String))
       instance_eval(&block) if block
+
+      raise TypeError, "Service#nice: negative nice values require root access. Set require_root: true" if @nice&.negative? && !requires_root?
     end
 
     sig { returns(Formula) }
@@ -359,7 +361,6 @@ module Homebrew
 
       raise TypeError, "Service#nice value should be in #{NICE_RANGE}" unless NICE_RANGE.cover?(value)
 
-      @require_root = true if value.negative?
       @nice = value
     end
 
