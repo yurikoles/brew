@@ -5,7 +5,7 @@ module Homebrew
   # Auditor for checking common violations in {Tap}s.
   class TapAuditor
     attr_reader :name, :path, :formula_names, :formula_aliases, :formula_renames, :cask_tokens, :cask_renames,
-                :tap_audit_exceptions, :tap_style_exceptions, :tap_pypi_formula_mappings, :problems
+                :tap_audit_exceptions, :tap_style_exceptions, :problems
 
     sig { params(tap: Tap, strict: T.nilable(T::Boolean)).void }
     def initialize(tap, strict:)
@@ -15,7 +15,6 @@ module Homebrew
         @path                         = tap.path
         @tap_audit_exceptions         = tap.audit_exceptions
         @tap_style_exceptions         = tap.style_exceptions
-        @tap_pypi_formula_mappings    = tap.pypi_formula_mappings
         @tap_synced_versions_formulae = tap.synced_versions_formulae
         @tap_autobump                 = tap.autobump
         @tap_official                 = tap.official?
@@ -56,7 +55,6 @@ module Homebrew
     def audit_tap_formula_lists
       check_formula_list_directory "audit_exceptions", @tap_audit_exceptions
       check_formula_list_directory "style_exceptions", @tap_style_exceptions
-      check_formula_list "pypi_formula_mappings", @tap_pypi_formula_mappings
       check_renames "formula_renames.json", @formula_renames, @formula_names, @formula_aliases
       check_renames "cask_renames.json", @cask_renames, @cask_tokens
       check_formula_list ".github/autobump.txt", @tap_autobump unless @tap_official

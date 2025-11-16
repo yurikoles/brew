@@ -237,17 +237,13 @@ module PyPI
                                     exclude_packages: nil, dependencies: nil, install_dependencies: false,
                                     print_only: false, silent: false, verbose: false,
                                     ignore_errors: false, ignore_non_pypi_packages: false)
-    list_entry = formula.pypi_packages_info
-    if list_entry.defined_pypi_mapping? && package_name.blank? && extra_packages.blank? && exclude_packages.blank?
+    if [package_name, extra_packages, exclude_packages, dependencies].all?(&:blank?)
+      list_entry = formula.pypi_packages_info
 
-      if list_entry.needs_manual_update? && !print_only
-        odie "The resources for \"#{formula.name}\" need special attention. Please update them manually."
-      else
-        package_name = list_entry.package_name
-        extra_packages = list_entry.extra_packages
-        exclude_packages = list_entry.exclude_packages
-        dependencies = list_entry.dependencies
-      end
+      package_name = list_entry.package_name
+      extra_packages = list_entry.extra_packages
+      exclude_packages = list_entry.exclude_packages
+      dependencies = list_entry.dependencies
     end
 
     missing_dependencies = Array(dependencies).reject do |dependency|
