@@ -312,7 +312,6 @@ RSpec.configure do |config|
         CoreTap.instance.path/"tap_migrations.json",
         CoreTap.instance.path/"audit_exceptions",
         CoreTap.instance.path/"style_exceptions",
-        CoreTap.instance.path/"pypi_formula_mappings.json",
         *Pathname.glob("#{HOMEBREW_CELLAR}/*/"),
         HOMEBREW_LIBRARY_PATH/"test/.vscode",
         HOMEBREW_LIBRARY_PATH/"test/.cursor",
