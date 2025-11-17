@@ -620,7 +620,8 @@ module Homebrew
         hash[key.to_sym] = replace_placeholders(value)
       end
 
-      %w[interval cron launch_only_once require_root restart_delay throttle_interval macos_legacy_timers].each do |key|
+      %w[interval cron launch_only_once require_root restart_delay throttle_interval
+         macos_legacy_timers].each do |key|
         next if (value = api_hash[key]).nil?
 
         hash[key.to_sym] = value
