@@ -57,6 +57,58 @@ RSpec.describe Homebrew::Service do
     end
   end
 
+  describe "#throttle_interval" do
+    it "accepts a valid throttle_interval value" do
+      f = stub_formula do
+        service do
+          run opt_bin/"beanstalkd"
+          throttle_interval 5
+        end
+      end
+
+      expect(f.service.throttle_interval).to be(5)
+    end
+
+    it "includes throttle_interval value in plist output" do
+      f = stub_formula do
+        service do
+          run opt_bin/"beanstalkd"
+          throttle_interval 15
+        end
+      end
+
+      plist = f.service.to_plist
+      expect(plist).to include("<key>ThrottleInterval</key>")
+      expect(plist).to include("<integer>15</integer>")
+    end
+
+    # Launchd says that it ignores ThrottleInterval values of zero but it's not actually true.
+    # https://gist.github.com/dabrahams/4092951#:~:text=Set%20%3CThrottleInterval%3E%20to,than%2010%20seconds.
+    it "includes throttle_interval value of zero in plist output" do
+      f = stub_formula do
+        service do
+          run opt_bin/"beanstalkd"
+          throttle_interval 0
+        end
+      end
+
+      plist = f.service.to_plist
+      expect(plist).to include("<key>ThrottleInterval</key>")
+      expect(plist).to include("<integer>0</integer>")
+    end
+
+    it "does not include throttle_interval in plist when not set" do
+      f = stub_formula do
+        service do
+          run opt_bin/"beanstalkd"
+        end
+      end
+
+      plist = f.service.to_plist
+      expect(plist).not_to include("<key>ThrottleInterval</key>")
+    end
+  end
+
   describe "#keep_alive" do
     it "throws for unexpected keys" do
       f = stub_formula do
@@ -205,6 +257,7 @@ RSpec.describe Homebrew::Service do
           launch_only_once true
           process_type :interactive
           restart_delay 30
+          throttle_interval 5
           interval 5
           macos_legacy_timers true
         end
@@ -258,6 +311,8 @@ RSpec.describe Homebrew::Service do
         \t<string>#{HOMEBREW_PREFIX}/var/in/beanstalkd</string>
         \t<key>StandardOutPath</key>
         \t<string>#{HOMEBREW_PREFIX}/var/log/beanstalkd.log</string>
+        \t<key>ThrottleInterval</key>
+        \t<integer>5</integer>
         \t<key>TimeOut</key>
         \t<integer>30</integer>
         \t<key>WorkingDirectory</key>
