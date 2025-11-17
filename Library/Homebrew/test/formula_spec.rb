@@ -140,7 +140,7 @@ RSpec.describe Formula do
       expect(f2.versioned_formula?).to be true
     end
 
-    it "returns false for non-@-versioned formulae" do
+    it "returns false for non-@-versioned formulae" do # rubocop:todo RSpec/AggregateExamples
       expect(f.versioned_formula?).to be false
     end
   end
