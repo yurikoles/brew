@@ -2,6 +2,7 @@
 
 require "bundle"
 require "bundle/commands/install"
+require "bundle/cask_dumper"
 require "bundle/skipper"
 
 RSpec.describe Homebrew::Bundle::Commands::Install do
@@ -17,6 +18,10 @@ RSpec.describe Homebrew::Bundle::Commands::Install do
   end
 
   context "when a Brewfile is found", :no_api do
+    before do
+      Homebrew::Bundle::CaskDumper.reset!
+    end
+
     let(:brewfile_contents) do
       <<~EOS
         tap 'phinze/cask'
