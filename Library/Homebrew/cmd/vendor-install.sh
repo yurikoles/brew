@@ -56,7 +56,7 @@ set_ruby_variables() {
     fi
     if [[ -n "${HOMEBREW_BOTTLE_DOMAIN}" ]]
     then
-      ruby_URLs+=("${HOMEBREW_BOTTLE_DOMAIN}/bottles-portable-ruby/${ruby_FILENAME}")
+      ruby_URLs+=("${HOMEBREW_BOTTLE_DOMAIN}/${ruby_FILENAME}")
     fi
     ruby_URLs+=(
       "https://ghcr.io/v2/homebrew/core/portable-ruby/blobs/sha256:${ruby_SHA}"
