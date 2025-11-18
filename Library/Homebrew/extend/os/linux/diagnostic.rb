@@ -82,7 +82,7 @@ module OS
         sig { returns(T.nilable(String)) }
         def check_supported_architecture
           return if ::Hardware::CPU.intel?
-          return if ::Hardware::CPU.arm? && ::Hardware::CPU.is_64_bit?
+          return if ::Hardware::CPU.arm64?
 
           <<~EOS
             Your CPU architecture (#{::Hardware::CPU.arch}) is not supported. We only support
