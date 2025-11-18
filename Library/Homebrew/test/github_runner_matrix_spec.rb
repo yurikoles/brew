@@ -285,6 +285,10 @@ RSpec.describe GitHubRunnerMatrix, :no_api do
               allow(Formula).to receive(:all).and_return([testball, testball_depender_linux].map(&:formula))
 
               matrix = described_class.new([testball], ["deleted"], all_supported: false, dependent_matrix: true)
+              expect(get_runner_names(matrix)).to eq(["Linux x86_64", "Linux arm64"])
+
+              allow(ENV).to receive(:[]).with("HOMEBREW_LINUX_RUNNER").and_return("linux-self-hosted-1")
+              matrix = described_class.new([testball], ["deleted"], all_supported: false, dependent_matrix: true)
               expect(get_runner_names(matrix)).to eq(["Linux x86_64"])
             end
           end
