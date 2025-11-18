@@ -67,7 +67,7 @@ RSpec.describe Cask::Audit, :cask do
         expect(audit).to be_online
       end
 
-      it "implies `strict`" do
+      it "implies `strict`" do # rubocop:todo RSpec/AggregateExamples
         expect(audit).to be_strict
       end
     end
@@ -998,7 +998,7 @@ RSpec.describe Cask::Audit, :cask do
         expect(run).to pass
       end
 
-      it "when download fails it fails" do
+      it "when download fails it fails" do # rubocop:todo RSpec/AggregateExamples
         expect(download_double).to receive(:fetch).and_raise(StandardError.new(message))
         expect(run).to error_with(/#{message}/)
       end

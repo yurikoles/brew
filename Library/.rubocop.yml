@@ -11,6 +11,7 @@ plugins:
 
 require:
   - ./Homebrew/rubocops.rb
+  - test_prof/rubocop
 
 inherit_mode:
   merge:

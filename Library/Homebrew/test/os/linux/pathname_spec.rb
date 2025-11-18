@@ -22,7 +22,7 @@ RSpec.describe Pathname do
       expect(exec.interpreter).to eq "/lib64/ld-linux-x86-64.so.2"
     end
 
-    it "returns nil when absent" do
+    it "returns nil when absent" do # rubocop:todo RSpec/AggregateExamples
       expect(sho.interpreter).to be_nil
     end
   end
@@ -32,11 +32,11 @@ RSpec.describe Pathname do
       expect(sho.rpath).to eq "runpath"
     end
 
-    it "returns runpath or rpath" do
+    it "returns runpath or rpath" do # rubocop:todo RSpec/AggregateExamples
       expect(exec.rpath).to eq "@@HOMEBREW_PREFIX@@/lib"
     end
 
-    it "returns nil when absent" do
+    it "returns nil when absent" do # rubocop:todo RSpec/AggregateExamples
       expect(sho_without_runpath_rpath.rpath).to be_nil
     end
   end

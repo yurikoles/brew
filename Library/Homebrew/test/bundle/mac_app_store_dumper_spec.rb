@@ -16,7 +16,7 @@ RSpec.describe Homebrew::Bundle::MacAppStoreDumper do
       expect(dumper.apps).to be_empty
     end
 
-    it "dumps as empty string" do
+    it "dumps as empty string" do # rubocop:todo RSpec/AggregateExamples
       expect(dumper.dump).to eql("")
     end
   end
@@ -32,7 +32,7 @@ RSpec.describe Homebrew::Bundle::MacAppStoreDumper do
       expect(dumper.apps).to be_empty
     end
 
-    it "dumps as empty string" do
+    it "dumps as empty string" do # rubocop:todo RSpec/AggregateExamples
       expect(dumper.dump).to eql("")
     end
   end
@@ -145,7 +145,7 @@ RSpec.describe Homebrew::Bundle::MacAppStoreDumper do
       expect(dumper.apps).to eql(expected_app_details_array)
     end
 
-    it "dumps excluding invalid apps" do
+    it "dumps excluding invalid apps" do # rubocop:todo RSpec/AggregateExamples
       expect(dumper.dump).to eq(expected_mas_dumped_output.strip)
     end
   end
