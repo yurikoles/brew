@@ -61,8 +61,7 @@ module Homebrew
         downloads.each do |downloadable, promise|
           promise.wait!
         rescue ChecksumMismatchError => e
-          opoo "#{downloadable.download_queue_type} reports different checksum: #{e.expected}"
-          Homebrew.failed = true if downloadable.is_a?(Resource::Patch)
+          ofail "#{downloadable.download_queue_type} reports different checksum: #{e.expected}"
         rescue => e
           raise e unless bottle_manifest_error?(downloadable, e)
         end
@@ -89,9 +88,15 @@ module Homebrew
             if future.rejected?
               if exception.is_a?(ChecksumMismatchError)
                 actual = Digest::SHA256.file(downloadable.cached_download).hexdigest
-                opoo "#{downloadable.download_queue_type} reports different checksum: #{exception.expected}"
-                puts (" " * downloadable.download_queue_type.size) + " SHA-256 checksum of downloaded file: #{actual}"
-                Homebrew.failed = true if downloadable.is_a?(Resource::Patch)
+                actual_checksum_output = "#{downloadable.download_queue_type} reports different checksum: "
+                expected_checksum_output = "SHA-256 checksum of downloaded file: "
+
+                # `.max` returns `T.nilable(Integer)`, use `|| 0` to pass the typecheck
+                rightpad = [actual_checksum_output, expected_checksum_output].map(&:size).max || 0
+
+                ofail actual_checksum_output.ljust(rightpad) + exception.expected.to_s
+                # 7 spaces are added to align with `ofail` message, which adds `Error: ` at the beginning
+                puts (" " * 7) + expected_checksum_output.ljust(rightpad) + actual.to_s
                 next 2
               elsif exception.is_a?(CannotInstallFormulaError)
                 cached_download = downloadable.cached_download
@@ -165,6 +170,8 @@ module Homebrew
       Context.current = context_before_fetch
 
       downloads.clear
+
+      exit 1 if Homebrew.failed?
     end
 
     sig { params(message: String).void }
