@@ -88,15 +88,10 @@ module Homebrew
             if future.rejected?
               if exception.is_a?(ChecksumMismatchError)
                 actual = Digest::SHA256.file(downloadable.cached_download).hexdigest
-                actual_checksum_output = "#{downloadable.download_queue_type} reports different checksum: "
-                expected_checksum_output = "SHA-256 checksum of downloaded file: "
+                actual_message, expected_message = align_checksum_mismatch_message(downloadable.download_queue_type)
 
-                # `.max` returns `T.nilable(Integer)`, use `|| 0` to pass the typecheck
-                rightpad = [actual_checksum_output, expected_checksum_output].map(&:size).max || 0
-
-                ofail actual_checksum_output.ljust(rightpad) + exception.expected.to_s
-                # 7 spaces are added to align with `ofail` message, which adds `Error: ` at the beginning
-                puts (" " * 7) + expected_checksum_output.ljust(rightpad) + actual.to_s
+                ofail "#{actual_message} #{exception.expected}"
+                puts "#{expected_message} #{actual}"
                 next 2
               elsif exception.is_a?(CannotInstallFormulaError)
                 cached_download = downloadable.cached_download
@@ -170,8 +165,6 @@ module Homebrew
       Context.current = context_before_fetch
 
       downloads.clear
-
-      exit 1 if Homebrew.failed?
     end
 
     sig { params(message: String).void }
@@ -254,6 +247,18 @@ module Homebrew
       else
         raise future.state.to_s
       end
+    end
+
+    sig { params(downloadable_type: String).returns(T::Array[String]) }
+    def align_checksum_mismatch_message(downloadable_type)
+      actual_checksum_output = "#{downloadable_type} reports different checksum:"
+      expected_checksum_output = "SHA-256 checksum of downloaded file:"
+
+      # `.max` returns `T.nilable(Integer)`, use `|| 0` to pass the typecheck
+      rightpad = [actual_checksum_output, expected_checksum_output].map(&:size).max || 0
+
+      # 7 spaces are added to align with `ofail` message, which adds `Error: ` at the beginning
+      [actual_checksum_output.ljust(rightpad), (" " * 7) + expected_checksum_output.ljust(rightpad)]
     end
 
     sig { returns(Spinner) }

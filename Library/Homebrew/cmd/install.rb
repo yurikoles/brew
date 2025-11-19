@@ -275,6 +275,8 @@ module Homebrew
             download_queue.fetch
           end
 
+          exit 1 if Homebrew.failed?
+
           new_casks.each do |cask|
             Cask::Installer.new(
               cask,
@@ -386,6 +388,10 @@ module Homebrew
 
         # Main block: if asking the user is enabled, show dependency and size information.
         Install.ask_formulae(formulae_installer, dependants, args: args) if args.ask?
+
+        formulae_installer = Install.fetch_formulae(formulae_installer) unless args.dry_run?
+
+        exit 1 if Homebrew.failed?
 
         Install.install_formulae(formulae_installer,
                                  dry_run: args.dry_run?,
