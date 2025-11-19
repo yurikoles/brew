@@ -49,6 +49,7 @@ module Homebrew
       @process_type = T.let(nil, T.nilable(Symbol))
       @require_root = T.let(false, T::Boolean)
       @restart_delay = T.let(nil, T.nilable(Integer))
+      @throttle_interval = T.let(nil, T.nilable(Integer))
       @root_dir = T.let(nil, T.nilable(String))
       @run = T.let([], T::Array[String])
       @run_at_load = T.let(true, T::Boolean)
@@ -256,6 +257,13 @@ module Homebrew
       end
     end
 
+    sig { params(value: Integer).returns(T.nilable(Integer)) }
+    def throttle_interval(value = T.unsafe(nil))
+      return @throttle_interval if value.nil?
+
+      @throttle_interval = value
+    end
+
     sig { params(value: Symbol).returns(T.nilable(Symbol)) }
     def process_type(value = T.unsafe(nil))
       case value
@@ -415,6 +423,7 @@ module Homebrew
       base[:LaunchOnlyOnce] = @launch_only_once if @launch_only_once == true
       base[:LegacyTimers] = @macos_legacy_timers if @macos_legacy_timers == true
       base[:TimeOut] = @restart_delay if @restart_delay.present?
+      base[:ThrottleInterval] = @throttle_interval if @throttle_interval.present?
       base[:ProcessType] = @process_type.to_s.capitalize if @process_type.present?
       base[:Nice] = @nice if @nice.present?
       base[:StartInterval] = @interval if @interval.present? && @run_type == RUN_TYPE_INTERVAL
@@ -576,6 +585,7 @@ module Homebrew
         log_path:              @log_path,
         error_log_path:        @error_log_path,
         restart_delay:         @restart_delay,
+        throttle_interval:     @throttle_interval,
         nice:                  @nice,
         process_type:          @process_type,
         macos_legacy_timers:   @macos_legacy_timers,
@@ -631,7 +641,8 @@ module Homebrew
         hash[key.to_sym] = replace_placeholders(value)
       end
 
-      %w[interval cron launch_only_once require_root restart_delay nice macos_legacy_timers].each do |key|
+      %w[interval cron launch_only_once require_root restart_delay throttle_interval nice
+         macos_legacy_timers].each do |key|
         next if (value = api_hash[key]).nil?
 
         hash[key.to_sym] = value
