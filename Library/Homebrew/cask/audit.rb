@@ -894,12 +894,24 @@ module Cask
                 macho[:LC_BUILD_VERSION].first&.minos_string,
               ]
             when MachO::FatFile
-              macho.machos.map do |slice|
-                [
+              # Collect requirements by architecture
+              arch_min_os = { arm: [], intel: [] }
+              macho.machos.each do |slice|
+                macos_reqs = [
                   slice[:LC_VERSION_MIN_MACOSX].first&.version_string,
                   slice[:LC_BUILD_VERSION].first&.minos_string,
                 ]
-              end.flatten
+
+                case slice.cputype
+                when *Hardware::CPU::ARM_ARCHS
+                  arch_min_os[:arm].concat(macos_reqs)
+                when *Hardware::CPU::INTEL_ARCHS
+                  arch_min_os[:intel].concat(macos_reqs)
+                end
+              end
+
+              # Only use the requirements for the current architecture
+              arch_min_os.fetch(Homebrew::SimulateSystem.current_arch, [])
             end.compact.max
             break if min_os
           end
