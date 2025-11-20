@@ -1091,6 +1091,18 @@ module Cask
     end
 
     sig { void }
+    def audit_conflicts_with
+      return if !cask.tap.official? || cask.conflicts_with.nil?
+
+      Homebrew.with_no_api_env do
+        nonexisting_conflicting_casks = cask.conflicts_with.fetch(:cask, Set.new) - core_cask_tokens
+        nonexisting_conflicting_casks.each do |c|
+          add_error("casks conflicts with non-existing cask `#{c}`")
+        end
+      end
+    end
+
+    sig { void }
     def audit_denylist
       return unless cask.tap
       return unless cask.tap.official?
@@ -1315,6 +1327,16 @@ module Cask
     sig { returns(T::Array[String]) }
     def core_formula_names
       core_tap.formula_names
+    end
+
+    sig { returns(Tap) }
+    def core_cask_tap
+      @core_cask_tap ||= T.let(CoreCaskTap.instance, T.nilable(Tap))
+    end
+
+    sig { returns(T::Array[String]) }
+    def core_cask_tokens
+      core_cask_tap.cask_tokens
     end
 
     sig { returns(String) }
