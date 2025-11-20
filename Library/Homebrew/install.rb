@@ -414,9 +414,7 @@ module Homebrew
           return
         end
 
-        valid_formula_installers = fetch_formulae(formula_installers)
-
-        valid_formula_installers.each do |fi|
+        formula_installers.each do |fi|
           formula = fi.formula
           upgrade = formula.linked? && formula.outdated? && !formula.head? && !Homebrew::EnvConfig.no_install_upgrade?
           install_formula(fi, upgrade:)

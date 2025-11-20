@@ -178,6 +178,8 @@ module Homebrew
 
           valid_formula_installers = Install.fetch_formulae(formulae_installers)
 
+          exit 1 if Homebrew.failed?
+
           reinstall_contexts.each do |reinstall_context|
             next unless valid_formula_installers.include?(reinstall_context.formula_installer)
 
