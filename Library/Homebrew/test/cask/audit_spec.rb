@@ -903,7 +903,7 @@ RSpec.describe Cask::Audit, :cask do
           allow(cask).to receive(:tap).and_return(tap)
         end
 
-        it { is_expected.to error_with(/casks conflicts with non-existing cask/) }
+        it { is_expected.to error_with(/cask conflicts with non-existing cask/) }
       end
     end
 

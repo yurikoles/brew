@@ -1097,7 +1097,7 @@ module Cask
       Homebrew.with_no_api_env do
         nonexisting_conflicting_casks = cask.conflicts_with.fetch(:cask, Set.new) - core_cask_tokens
         nonexisting_conflicting_casks.each do |c|
-          add_error("casks conflicts with non-existing cask `#{c}`")
+          add_error("cask conflicts with non-existing cask `#{c}`")
         end
       end
     end
