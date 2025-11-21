@@ -25,6 +25,7 @@ module Homebrew
 
       sig { override.void }
       def run
+        Homebrew.setup_gem_environment!
         ENV["BUNDLE_WITH"] = Homebrew.valid_gem_groups.join(":")
 
         ohai "cd #{HOMEBREW_LIBRARY_PATH}"
