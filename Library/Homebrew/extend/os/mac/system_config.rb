@@ -39,13 +39,13 @@ module OS
           @clt ||= MacOS::CLT.version if MacOS::CLT.installed?
         end
 
-        sig { params(out: T.any(File, StringIO)).void }
+        sig { params(out: T.any(File, StringIO, IO)).void }
         def core_tap_config(out = $stdout)
           dump_tap_config(CoreTap.instance, out)
           dump_tap_config(CoreCaskTap.instance, out)
         end
 
-        sig { params(out: T.any(File, StringIO)).void }
+        sig { params(out: T.any(File, StringIO, IO)).void }
         def dump_verbose_config(out = $stdout)
           super
           out.puts "macOS: #{MacOS.full_version}-#{kernel}"

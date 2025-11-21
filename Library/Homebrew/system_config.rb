@@ -73,7 +73,7 @@ module SystemConfig
       end
     end
 
-    sig { params(path: Pathname).returns(String) }
+    sig { params(path: T.nilable(Pathname)).returns(String) }
     def describe_path(path)
       return "N/A" if path.nil?
 
@@ -121,7 +121,7 @@ module SystemConfig
       end
     end
 
-    sig { params(tap: Tap, out: T.any(File, StringIO)).void }
+    sig { params(tap: Tap, out: T.any(File, StringIO, IO)).void }
     def dump_tap_config(tap, out = $stdout)
       case tap
       when CoreTap
@@ -150,12 +150,12 @@ module SystemConfig
       end
     end
 
-    sig { params(out: T.any(File, StringIO)).void }
+    sig { params(out: T.any(File, StringIO, IO)).void }
     def core_tap_config(out = $stdout)
       dump_tap_config(CoreTap.instance, out)
     end
 
-    sig { params(out: T.any(File, StringIO)).void }
+    sig { params(out: T.any(File, StringIO, IO)).void }
     def homebrew_config(out = $stdout)
       out.puts "HOMEBREW_VERSION: #{HOMEBREW_VERSION}"
       out.puts "ORIGIN: #{origin}"
@@ -164,7 +164,7 @@ module SystemConfig
       out.puts "Branch: #{branch}"
     end
 
-    sig { params(out: T.any(File, StringIO)).void }
+    sig { params(out: T.any(File, StringIO, IO)).void }
     def homebrew_env_config(out = $stdout)
       out.puts "HOMEBREW_PREFIX: #{HOMEBREW_PREFIX}"
       {
@@ -196,14 +196,14 @@ module SystemConfig
       out.puts "Homebrew Ruby: #{describe_homebrew_ruby}"
     end
 
-    sig { params(out: T.any(File, StringIO)).void }
+    sig { params(out: T.any(File, StringIO, IO)).void }
     def host_software_config(out = $stdout)
       out.puts "Clang: #{describe_clang}"
       out.puts "Git: #{describe_git}"
       out.puts "Curl: #{describe_curl}"
     end
 
-    sig { params(out: T.any(File, StringIO)).void }
+    sig { params(out: T.any(File, StringIO, IO)).void }
     def dump_verbose_config(out = $stdout)
       homebrew_config(out)
       core_tap_config(out)

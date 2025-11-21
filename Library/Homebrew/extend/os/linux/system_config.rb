@@ -35,7 +35,7 @@ module OS
           gcc = ::DevelopmentTools.host_gcc_path
           return "N/A" unless gcc.executable?
 
-          Utils.popen_read(gcc, "--version")[/ (\d+\.\d+\.\d+)/, 1]
+          Utils.popen_read(gcc, "--version")[/ (\d+\.\d+\.\d+)/, 1] || "N/A"
         end
 
         sig { params(formula: T.any(Pathname, String)).returns(T.any(String, PkgVersion)) }
@@ -55,7 +55,7 @@ module OS
           out
         end
 
-        sig { params(out: T.any(File, StringIO)).returns(T::Array[String]) }
+        sig { params(out: T.any(File, StringIO, IO)).void }
         def dump_verbose_config(out = $stdout)
           kernel = Utils.safe_popen_read("uname", "-mors").chomp
           super
