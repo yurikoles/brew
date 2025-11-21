@@ -47,6 +47,14 @@ RSpec.describe Utils do
                                                            HOMEBREW_PREFIX/"lib/libbrewbar#{suffix}")
         expect(result).to be false
       end
+
+      it "can check if the binary is linked to a non-brew library" do
+        non_brew_library = "/usr/lib/libtest#{suffix}"
+        shim = OS.mac? ? MachOShim : ELFShim
+        allow_any_instance_of(shim).to receive(:dynamically_linked_libraries).and_return([non_brew_library])
+        result = described_class.binary_linked_to_library?(HOMEBREW_PREFIX/"bin/brewtest", non_brew_library)
+        expect(result).to be true
+      end
     end
   end
 end
