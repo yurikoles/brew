@@ -45,12 +45,25 @@ module OS
           dump_tap_config(CoreCaskTap.instance, out)
         end
 
+        sig { returns(T.nilable(String)) }
+        def metal_toolchain
+          @metal_toolchain ||= T.let(if MacOS::Xcode.installed? || MacOS::CLT.installed?
+                                       result = SystemCommand.run("xcrun", args: ["metal", "-v"],
+                                       print_stderr: false, print_stdout: false)
+                                       "present" if result.success?
+          end, T.nilable(String))
+        end
+
         sig { params(out: T.any(File, StringIO, IO)).void }
         def dump_verbose_config(out = $stdout)
           super
           out.puts "macOS: #{MacOS.full_version}-#{kernel}"
           out.puts "CLT: #{clt || "N/A"}"
           out.puts "Xcode: #{xcode || "N/A"}"
+          # Metal Toolchain is a separate install starting with Xcode 26.
+          if MacOS::Xcode.installed? && MacOS::Xcode.version >= "26.0"
+            out.puts "Metal Toolchain: #{metal_toolchain || "N/A"}"
+          end
           out.puts "Rosetta 2: #{::Hardware::CPU.in_rosetta2?}" if ::Hardware::CPU.physical_cpu_arm64?
         end
       end
