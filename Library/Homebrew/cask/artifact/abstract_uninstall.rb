@@ -29,6 +29,10 @@ module Cask
         :rmdir,
       ].freeze
 
+      METADATA_KEYS = [
+        :on_upgrade,
+      ].freeze
+
       def self.from_args(cask, **directives)
         new(cask, **directives)
       end
@@ -36,7 +40,7 @@ module Cask
       attr_reader :directives
 
       def initialize(cask, **directives)
-        directives.assert_valid_keys(*ORDERED_DIRECTIVES)
+        directives.assert_valid_keys(*ORDERED_DIRECTIVES, *METADATA_KEYS)
 
         super
         directives[:signal] = Array(directives[:signal]).flatten.each_slice(2).to_a
