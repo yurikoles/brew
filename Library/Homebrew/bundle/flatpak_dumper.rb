@@ -69,18 +69,30 @@ module Homebrew
 
       sig { returns(String) }
       def self.dump
+        # 3-tier remote handling for dump:
+        # - Tier 1: flathub → no remote needed
+        # - Tier 2: single-app remote (*-origin) → dump with URL only
+        # - Tier 3: named shared remote → dump with remote: and url:
         packages_with_remotes.map do |pkg|
           remote_name = pkg[:remote]
           remote_url = pkg[:remote_url]
 
           if remote_name == "flathub"
-            # Don't specify remote for flathub (default)
+            # Tier 1: Don't specify remote for flathub (default)
             "flatpak \"#{pkg[:name]}\""
+          elsif remote_name&.end_with?("-origin")
+            # Tier 2: Single-app remote - dump with URL only
+            if remote_url.present?
+              "flatpak \"#{pkg[:name]}\", remote: \"#{remote_url}\""
+            else
+              # Fallback if URL not available (shouldn't happen for -origin remotes)
+              "flatpak \"#{pkg[:name]}\", remote: \"#{remote_name}\""
+            end
           elsif remote_url.present?
-            # Use URL for non-flathub packages if available
-            "flatpak \"#{pkg[:name]}\", remote: \"#{remote_url}\""
+            # Tier 3: Named shared remote - dump with name and URL
+            "flatpak \"#{pkg[:name]}\", remote: \"#{remote_name}\", url: \"#{remote_url}\""
           else
-            # Fallback to remote name if no URL available
+            # Named remote without URL (user-defined or system remote)
             "flatpak \"#{pkg[:name]}\", remote: \"#{remote_name}\""
           end
         end.join("\n")

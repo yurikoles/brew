@@ -84,7 +84,12 @@ module Homebrew
 
       sig { params(name: String, options: T::Hash[Symbol, String]).void }
       def flatpak(name, options = {})
-        # Default remote to "flathub" for backward compatibility
+        # Validate: url: can only be used with a named remote (not a URL remote)
+        if options[:url] && options[:remote]&.start_with?("http://", "https://")
+          raise "url: parameter cannot be used when remote: is already a URL"
+        end
+
+        # Default remote to "flathub"
         options[:remote] ||= "flathub"
 
         @entries << Entry.new(:flatpak, name, options)

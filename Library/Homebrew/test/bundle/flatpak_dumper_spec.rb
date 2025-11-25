@@ -53,31 +53,67 @@ RSpec.describe Homebrew::Bundle::FlatpakDumper do
       expect(dumper.packages).to eql(["com.spotify.Client", "org.gnome.Calculator"])
     end
 
-    it "dumps package list without remote for flathub packages" do
-      allow(dumper).to receive(:packages_with_remotes).and_return([
-        { name: "org.gnome.Calculator", remote: "flathub" },
-        { name: "com.spotify.Client", remote: "flathub" },
-      ])
-      expect(dumper.dump).to eql("flatpak \"org.gnome.Calculator\"\nflatpak \"com.spotify.Client\"")
-    end
+    describe "3-tier dump format" do
+      it "dumps Tier 1 packages without remote (flathub default)" do
+        allow(dumper).to receive(:packages_with_remotes).and_return([
+          { name: "org.gnome.Calculator", remote: "flathub", remote_url: "https://dl.flathub.org/repo/" },
+          { name: "com.spotify.Client", remote: "flathub", remote_url: "https://dl.flathub.org/repo/" },
+        ])
+        expect(dumper.dump).to eql("flatpak \"org.gnome.Calculator\"\nflatpak \"com.spotify.Client\"")
+      end
 
-    it "dumps package list with remote URL for non-flathub packages" do
-      allow(dumper).to receive(:packages_with_remotes).and_return([
-        { name: "org.gnome.Calculator", remote: "flathub", remote_url: "https://dl.flathub.org/repo/" },
-        { name: "org.godotengine.Godot", remote: "godot-beta", remote_url: "https://dl.flathub.org/beta-repo/" },
-      ])
-      expect(dumper.dump).to eql(
-        "flatpak \"org.gnome.Calculator\"\nflatpak \"org.godotengine.Godot\", remote: \"https://dl.flathub.org/beta-repo/\"",
-      )
-    end
+      it "dumps Tier 2 packages with URL only (single-app remote)" do
+        allow(dumper).to receive(:packages_with_remotes).and_return([
+          { name: "org.godotengine.Godot", remote: "org.godotengine.Godot-origin",
+            remote_url: "https://dl.flathub.org/beta-repo/" },
+        ])
+        expect(dumper.dump).to eql(
+          "flatpak \"org.godotengine.Godot\", remote: \"https://dl.flathub.org/beta-repo/\"",
+        )
+      end
 
-    it "dumps package with remote name when URL is not available" do
-      allow(dumper).to receive(:packages_with_remotes).and_return([
-        { name: "com.custom.App", remote: "custom-repo", remote_url: nil },
-      ])
-      expect(dumper.dump).to eql(
-        "flatpak \"com.custom.App\", remote: \"custom-repo\"",
-      )
+      it "dumps Tier 2 packages with remote name if URL not available" do
+        allow(dumper).to receive(:packages_with_remotes).and_return([
+          { name: "org.example.App", remote: "org.example.App-origin", remote_url: nil },
+        ])
+        expect(dumper.dump).to eql(
+          "flatpak \"org.example.App\", remote: \"org.example.App-origin\"",
+        )
+      end
+
+      it "dumps Tier 3 packages with remote name and URL (shared remote)" do
+        allow(dumper).to receive(:packages_with_remotes).and_return([
+          { name: "org.godotengine.Godot", remote: "flathub-beta",
+            remote_url: "https://dl.flathub.org/beta-repo/" },
+        ])
+        expect(dumper.dump).to eql(
+          "flatpak \"org.godotengine.Godot\", remote: \"flathub-beta\", url: \"https://dl.flathub.org/beta-repo/\"",
+        )
+      end
+
+      it "dumps named remote without URL when URL is not available" do
+        allow(dumper).to receive(:packages_with_remotes).and_return([
+          { name: "com.custom.App", remote: "custom-repo", remote_url: nil },
+        ])
+        expect(dumper.dump).to eql(
+          "flatpak \"com.custom.App\", remote: \"custom-repo\"",
+        )
+      end
+
+      it "dumps mixed packages correctly" do
+        allow(dumper).to receive(:packages_with_remotes).and_return([
+          { name: "com.spotify.Client", remote: "flathub", remote_url: "https://dl.flathub.org/repo/" },
+          { name: "org.godotengine.Godot", remote: "org.godotengine.Godot-origin",
+            remote_url: "https://dl.flathub.org/beta-repo/" },
+          { name: "io.github.dvlv.boxbuddyrs", remote: "flathub-beta",
+            remote_url: "https://dl.flathub.org/beta-repo/" },
+        ])
+        expect(dumper.dump).to eql(
+          "flatpak \"com.spotify.Client\"\n" \
+          "flatpak \"org.godotengine.Godot\", remote: \"https://dl.flathub.org/beta-repo/\"\n" \
+          "flatpak \"io.github.dvlv.boxbuddyrs\", remote: \"flathub-beta\", url: \"https://dl.flathub.org/beta-repo/\"",
+        )
+      end
     end
 
     it "handles packages without origin" do

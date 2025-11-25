@@ -22,11 +22,74 @@ RSpec.describe Homebrew::Bundle::Checker::FlatpakChecker do
       allow(Homebrew::Bundle::FlatpakInstaller).to receive(:package_installed?).and_return(true)
       expect(checker.installed_and_up_to_date?("org.gnome.Calculator")).to be(true)
     end
+
+    describe "3-tier remote handling" do
+      it "checks Tier 1 package with default remote (flathub)" do
+        allow(Homebrew::Bundle::FlatpakInstaller).to receive(:package_installed?)
+          .with("org.gnome.Calculator", remote: "flathub")
+          .and_return(true)
+
+        result = checker.installed_and_up_to_date?(
+          { name: "org.gnome.Calculator", options: {} },
+        )
+        expect(result).to be(true)
+      end
+
+      it "checks Tier 1 package with named remote" do
+        allow(Homebrew::Bundle::FlatpakInstaller).to receive(:package_installed?)
+          .with("org.gnome.Calculator", remote: "fedora")
+          .and_return(true)
+
+        result = checker.installed_and_up_to_date?(
+          { name: "org.gnome.Calculator", options: { remote: "fedora" } },
+        )
+        expect(result).to be(true)
+      end
+
+      it "checks Tier 2 package with URL remote (resolves to single-app remote)" do
+        allow(Homebrew::Bundle::FlatpakInstaller).to receive(:package_installed?)
+          .with("org.godotengine.Godot", remote: "org.godotengine.Godot-origin")
+          .and_return(true)
+
+        result = checker.installed_and_up_to_date?(
+          { name: "org.godotengine.Godot", options: { remote: "https://dl.flathub.org/beta-repo/" } },
+        )
+        expect(result).to be(true)
+      end
+
+      it "checks Tier 2 package with .flatpakref by name only" do
+        allow(Homebrew::Bundle::FlatpakInstaller).to receive(:package_installed?)
+          .with("org.example.App")
+          .and_return(true)
+
+        result = checker.installed_and_up_to_date?(
+          { name: "org.example.App", options: { remote: "https://example.com/app.flatpakref" } },
+        )
+        expect(result).to be(true)
+      end
+
+      it "checks Tier 3 package with URL and remote name" do
+        allow(Homebrew::Bundle::FlatpakInstaller).to receive(:package_installed?)
+          .with("org.godotengine.Godot", remote: "flathub-beta")
+          .and_return(true)
+
+        result = checker.installed_and_up_to_date?(
+          { name:    "org.godotengine.Godot",
+            options: { remote: "flathub-beta", url: "https://dl.flathub.org/beta-repo/" } },
+        )
+        expect(result).to be(true)
+      end
+    end
   end
 
   describe "#failure_reason", :needs_linux do
     it "returns the correct failure message" do
       expect(checker.failure_reason("org.gnome.Calculator", no_upgrade: false))
+        .to eq("Flatpak org.gnome.Calculator needs to be installed.")
+    end
+
+    it "returns the correct failure message for hash package" do
+      expect(checker.failure_reason({ name: "org.gnome.Calculator", options: {} }, no_upgrade: false))
         .to eq("Flatpak org.gnome.Calculator needs to be installed.")
     end
   end

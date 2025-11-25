@@ -41,9 +41,26 @@ module Homebrew
           if package.is_a?(Hash)
             name = package[:name]
             remote = package.dig(:options, :remote) || "flathub"
-            Homebrew::Bundle::FlatpakInstaller.package_installed?(name, remote:)
+            url = package.dig(:options, :url)
+
+            # 3-tier remote handling:
+            # - Tier 1: Named remote → check with that remote name
+            # - Tier 2: URL only → resolve to single-app remote name (<app-id>-origin)
+            # - Tier 3: URL + name → check with the named remote
+            actual_remote = if url.blank? && remote.start_with?("http://", "https://")
+              # Tier 2: URL only - resolve to single-app remote name
+              # (.flatpakref - check by name only since remote name varies)
+              return Homebrew::Bundle::FlatpakInstaller.package_installed?(name) if remote.end_with?(".flatpakref")
+
+              Homebrew::Bundle::FlatpakInstaller.generate_single_app_remote_name(name)
+            else
+              # Tier 1 (named remote) and Tier 3 (named remote with URL) both use the remote name
+              remote
+            end
+
+            Homebrew::Bundle::FlatpakInstaller.package_installed?(name, remote: actual_remote)
           else
-            # Backward compatibility: if just a string, check without remote
+            # If just a string, check without remote
             Homebrew::Bundle::FlatpakInstaller.package_installed?(package)
           end
         end
