@@ -229,6 +229,8 @@ module Homebrew
         end
 
         def self.flatpaks_to_uninstall(global: false, file: nil)
+          return [].freeze unless Bundle.flatpak_installed?
+
           require "bundle/brewfile"
           @dsl ||= Brewfile.read(global:, file:)
           kept_flatpaks = @dsl.entries.select { |e| e.type == :flatpak }.map(&:name)
@@ -250,5 +252,3 @@ module Homebrew
     end
   end
 end
-
-require "extend/os/bundle/commands/cleanup"
