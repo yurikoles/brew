@@ -72,7 +72,11 @@ module Homebrew
 
               unversioned_name = f.name.gsub(/@.+$/, "")
               maybe_paths = Dir.glob("#{f.etc}/#{unversioned_name}*")
-              excluded_names = Homebrew::API.formula_names
+              excluded_names = if Homebrew::EnvConfig.no_install_from_api?
+                Formula.names
+              else
+                Homebrew::API.formula_names
+              end
               maybe_paths = maybe_paths.reject do |path|
                 # Remove extension only if a file
                 # (e.g. directory with name "openssl@1.1" will be trimmed to "openssl@1")
