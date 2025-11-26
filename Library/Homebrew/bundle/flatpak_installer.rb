@@ -156,5 +156,3 @@ module Homebrew
     end
   end
 end
-
-require "extend/os/bundle/flatpak_installer"
