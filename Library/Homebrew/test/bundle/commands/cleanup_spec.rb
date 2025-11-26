@@ -133,6 +133,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
       allow_any_instance_of(Pathname).to receive(:read).and_return <<~EOS
         flatpak 'org.gnome.Calculator'
       EOS
+      allow(Homebrew::Bundle).to receive(:flatpak_installed?).and_return(true)
       allow(Homebrew::Bundle::FlatpakDumper).to receive(:packages).and_return(%w[org.gnome.Calculator
                                                                                  org.mozilla.firefox])
       expect(described_class.flatpaks_to_uninstall).to eql(%w[org.mozilla.firefox])
