@@ -686,6 +686,7 @@ _brew_bundle() {
       --no-flatpak
       --no-go
       --no-restart
+      --no-secrets
       --no-upgrade
       --no-vscode
       --quiet

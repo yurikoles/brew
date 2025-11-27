@@ -201,7 +201,7 @@ By default, only Homebrew formula dependencies are listed.
   corresponding type. Passing `--formula` also removes matches against formula
   aliases and old formula names.
 
-`brew bundle exec` \[`--check`\] *`command`*
+`brew bundle exec` \[`--check`\] \[`--no-secrets`\] *`command`*
 
 : Run an external command in an isolated build environment based on the
   `Brewfile` dependencies.
@@ -212,11 +212,11 @@ commands like `bundle install`, `npm install`, etc. It will also add compiler
 flags which will help with finding keg-only dependencies like `openssl`,
 `icu4c`, etc.
 
-`brew bundle sh` \[`--check`\]
+`brew bundle sh` \[`--check`\] \[`--no-secrets`\]
 
 : Run your shell in a `brew bundle exec` environment.
 
-`brew bundle env` \[`--check`\]
+`brew bundle env` \[`--check`\] \[`--no-secrets`\]
 
 : Print the environment variables that would be set in a `brew bundle exec`
   environment.
@@ -338,7 +338,12 @@ flags which will help with finding keg-only dependencies like `openssl`,
 `--check`
 
 : Check that all dependencies in the Brewfile are installed before running
-  `exec`, `sh`, or `env`.
+  `exec`, `sh`, or `env`. Enabled by default if `$HOMEBREW_BUNDLE_CHECK` is set.
+
+`--no-secrets`
+
+: Attempt to remove secrets from the environment before `exec`, `sh`, or `env`.
+  Enabled by default if `$HOMEBREW_BUNDLE_NO_SECRETS` is set.
 
 ### `casks`
 
