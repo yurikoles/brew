@@ -1975,14 +1975,16 @@ class Formula
 
   # Standard parameters for npm builds.
   #
+  # @param prefix [String, Pathname, false] installation prefix (default: libexec)
+  # @param ignore_scripts [Boolean] whether to add --ignore-scripts flag (default: true)
   # @api public
-  sig { params(prefix: T.any(String, Pathname, FalseClass)).returns(T::Array[String]) }
-  def std_npm_args(prefix: libexec)
+  sig { params(prefix: T.any(String, Pathname, FalseClass), ignore_scripts: T::Boolean).returns(T::Array[String]) }
+  def std_npm_args(prefix: libexec, ignore_scripts: true)
     require "language/node"
 
-    return Language::Node.std_npm_install_args(Pathname(prefix)) if prefix
+    return Language::Node.std_npm_install_args(Pathname(prefix), ignore_scripts:) if prefix
 
-    Language::Node.local_npm_install_args
+    Language::Node.local_npm_install_args(ignore_scripts:)
   end
 
   # Standard parameters for pip builds.
