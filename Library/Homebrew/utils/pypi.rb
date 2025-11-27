@@ -129,9 +129,14 @@ module PyPI
     end
 
     # Compare only names so we can use .include? and .uniq on a Package array
-    sig { params(other: Package).returns(T::Boolean) }
+    sig { params(other: T.anything).returns(T::Boolean) }
     def ==(other)
-      same_package?(other)
+      case other
+      when Package
+        same_package?(other)
+      else
+        false
+      end
     end
     alias eql? ==
 
