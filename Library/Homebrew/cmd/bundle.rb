@@ -53,15 +53,15 @@ module Homebrew
           `brew bundle remove` <name> [...]:
           Remove entries that match `name` from your `Brewfile`. Use `--formula`, `--cask`, `--tap`, `--mas` or `--vscode` to remove only entries of the corresponding type. Passing `--formula` also removes matches against formula aliases and old formula names.
 
-          `brew bundle exec` [`--check`] <command>:
+          `brew bundle exec` [`--check`] [`--no-secrets`] <command>:
           Run an external command in an isolated build environment based on the `Brewfile` dependencies.
 
           This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help with finding keg-only dependencies like `openssl`, `icu4c`, etc.
 
-          `brew bundle sh` [`--check`]:
+          `brew bundle sh` [`--check`] [`--no-secrets`]:
           Run your shell in a `brew bundle exec` environment.
 
-          `brew bundle env` [`--check`]:
+          `brew bundle env` [`--check`] [`--no-secrets`]:
           Print the environment variables that would be set in a `brew bundle exec` environment.
         EOS
         flag   "--file=",
@@ -132,7 +132,11 @@ module Homebrew
                description: "`cleanup` casks using the `zap` command instead of `uninstall`."
         switch "--check",
                description: "Check that all dependencies in the Brewfile are installed before " \
-                            "running `exec`, `sh`, or `env`."
+                            "running `exec`, `sh`, or `env`.",
+               env:         :bundle_check
+        switch "--no-secrets",
+               description: "Attempt to remove secrets from the environment before `exec`, `sh`, or `env`.",
+               env:         :bundle_no_secrets
 
         conflicts "--all", "--no-vscode"
         conflicts "--vscode", "--no-vscode"
@@ -163,6 +167,10 @@ module Homebrew
 
         if args.check? && BUNDLE_EXEC_COMMANDS.exclude?(subcommand)
           raise UsageError, "`--check` can be used only with #{BUNDLE_EXEC_COMMANDS.join(", ")}."
+        end
+
+        if args.no_secrets? && BUNDLE_EXEC_COMMANDS.exclude?(subcommand)
+          raise UsageError, "`--no-secrets` can be used only with #{BUNDLE_EXEC_COMMANDS.join(", ")}."
         end
 
         global = args.global?
@@ -318,8 +326,16 @@ module Homebrew
           when "env"
             ["env"]
           end
+
           require "bundle/commands/exec"
-          Homebrew::Bundle::Commands::Exec.run(*named_args, global:, file:, subcommand:, services: args.services?)
+          Homebrew::Bundle::Commands::Exec.run(
+            *named_args,
+            global:,
+            file:,
+            subcommand:,
+            services:   args.services?,
+            no_secrets: args.no_secrets?,
+          )
         else
           raise UsageError, "unknown subcommand: #{subcommand}"
         end
