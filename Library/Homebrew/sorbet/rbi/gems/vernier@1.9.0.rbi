@@ -23,23 +23,68 @@ class Vernier::Collector
   def add_marker(name:, start:, finish:, thread: T.unsafe(nil), phase: T.unsafe(nil), data: T.unsafe(nil)); end
   def current_time; end
   def record_interval(category, name = T.unsafe(nil)); end
-  def sample; end
   def stack_table; end
-  def start; end
   def stop; end
 
   private
 
   def add_hook(hook); end
-  def finish; end
 
   class << self
-    def _new(_arg0, _arg1); end
     def new(mode, options = T.unsafe(nil)); end
   end
 end
 
+class Vernier::Collector::CustomCollector < ::Vernier::Collector
+  def initialize(mode, options); end
+
+  def finish; end
+  def sample; end
+  def start; end
+end
+
+class Vernier::Collector::RetainedCollector < ::Vernier::Collector
+  def initialize(mode, options); end
+
+  def drain; end
+  def finish; end
+  def start; end
+end
+
+class Vernier::Collector::TimeCollector < ::Vernier::Collector
+  def start; end
+
+  private
+
+  def finish; end
+
+  class << self
+    def new(_arg0, _arg1); end
+  end
+end
+
 class Vernier::Error < ::StandardError; end
+
+class Vernier::HeapTracker
+  def allocated_objects; end
+  def collect; end
+  def data; end
+  def drain; end
+  def freed_objects; end
+  def inspect; end
+  def lock; end
+  def stack(obj); end
+  def stack_idx(_arg0); end
+  def stack_table; end
+  def track; end
+
+  class << self
+    def _new(_arg0); end
+    def new(stack_table = T.unsafe(nil)); end
+    def track(&block); end
+  end
+end
+
 module Vernier::Hooks; end
 
 class Vernier::Hooks::ActiveSupport
@@ -87,6 +132,17 @@ Vernier::Marker::Type::GVL_THREAD_STARTED = T.let(T.unsafe(nil), Integer)
 Vernier::Marker::Type::THREAD_RUNNING = T.let(T.unsafe(nil), Integer)
 Vernier::Marker::Type::THREAD_STALLED = T.let(T.unsafe(nil), Integer)
 Vernier::Marker::Type::THREAD_SUSPENDED = T.let(T.unsafe(nil), Integer)
+
+class Vernier::MemoryLeakDetector
+  def initialize(collect_time:, idle_time: T.unsafe(nil), drain_time: T.unsafe(nil), **collector_options); end
+
+  def result; end
+  def start_thread; end
+
+  class << self
+    def start_thread(*_arg0, **_arg1, &_arg2); end
+  end
+end
 
 class Vernier::MemoryTracker
   def record; end
@@ -289,24 +345,20 @@ class Vernier::Result
   def inspect; end
   def main_thread; end
   def meta; end
-  def meta=(_arg0); end
-  def mode; end
-  def mode=(_arg0); end
   def pid; end
   def pid=(_arg0); end
-  def sample_categories; end
-  def samples; end
   def stack(idx); end
   def stack_table; end
   def stack_table=(_arg0); end
   def started_at; end
   def threads; end
-  def threads=(_arg0); end
   def to_cpuprofile; end
   def to_firefox(gzip: T.unsafe(nil)); end
   def to_gecko(gzip: T.unsafe(nil)); end
   def total_bytes; end
-  def weights; end
+  def total_samples; end
+  def total_unique_samples; end
+  def total_weights; end
   def write(out:, format: T.unsafe(nil)); end
 end
 
@@ -315,13 +367,16 @@ class Vernier::StackTable
 
   def convert(_arg0, _arg1); end
   def current_stack(*_arg0); end
+  def finalize; end
   def frame_count; end
   def frame_func_idx(_arg0); end
   def frame_line_no(_arg0); end
+  def func_absolute_path(_arg0); end
   def func_count; end
   def func_filename(_arg0); end
   def func_first_lineno(_arg0); end
   def func_name(_arg0); end
+  def func_path(_arg0); end
   def stack_count; end
   def stack_frame_idx(_arg0); end
   def stack_parent_idx(_arg0); end
@@ -352,6 +407,7 @@ class Vernier::StackTableHelpers::Frame < ::Vernier::StackTableHelpers::BaseType
   def func; end
   def label; end
   def line; end
+  def lineno; end
   def name; end
   def to_s; end
 end
@@ -364,7 +420,7 @@ class Vernier::StackTableHelpers::Func < ::Vernier::StackTableHelpers::BaseType
 end
 
 class Vernier::StackTableHelpers::Stack < ::Vernier::StackTableHelpers::BaseType
-  def [](n); end
+  def [](offset); end
   def each; end
   def each_frame; end
   def frames; end
