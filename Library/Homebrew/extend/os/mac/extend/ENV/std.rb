@@ -9,9 +9,11 @@ module OS
       requires_ancestor { SharedEnvExtension }
       requires_ancestor { ::Stdenv }
 
-      sig { returns(T::Array[Pathname]) }
+      sig { returns(T::Array[::Pathname]) }
       def homebrew_extra_pkg_config_paths
-        [Pathname("#{HOMEBREW_LIBRARY}/Homebrew/os/mac/pkgconfig/#{MacOS.version}")]
+        %W[
+          #{HOMEBREW_LIBRARY}/Homebrew/os/mac/pkgconfig/#{MacOS.version}
+        ].map { |p| ::Pathname.new(p) }
       end
       private :homebrew_extra_pkg_config_paths
 

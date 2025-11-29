@@ -5,7 +5,6 @@ require "macos_version"
 
 require "os/mac/xcode"
 require "os/mac/sdk"
-require "os/mac/keg"
 
 module OS
   # Helper module for querying system information on macOS.
@@ -159,7 +158,7 @@ module OS
     # Returns the path to an SDK or nil, following the rules set by {sdk}.
     #
     # @api public
-    sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
+    sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(::Pathname)) }
     def self.sdk_path(version = nil)
       s = sdk(version)
       s&.path
@@ -171,7 +170,7 @@ module OS
     # 2. On CLT-only systems, return the CLT SDK.
     #
     # @api public
-    sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
+    sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(::Pathname)) }
     def self.sdk_path_if_needed(version = nil)
       sdk_path(version)
     end
@@ -196,7 +195,7 @@ module OS
       # not in the path they can still break builds if the build scripts
       # have these paths baked in.
       %w[/sw/bin/fink /opt/local/bin/port].each do |ponk|
-        path = Pathname.new(ponk)
+        path = ::Pathname.new(ponk)
         paths << path if path.exist?
       end
 
@@ -204,19 +203,19 @@ module OS
       # read-only in order to try out Homebrew, but this doesn't work as
       # some build scripts error out when trying to read from these now
       # unreadable paths.
-      %w[/sw /opt/local].map { |p| Pathname.new(p) }.each do |path|
+      %w[/sw /opt/local].map { |p| ::Pathname.new(p) }.each do |path|
         paths << path if path.exist? && !path.readable?
       end
 
       paths.uniq
     end
 
-    sig { params(ids: String).returns(T.nilable(Pathname)) }
+    sig { params(ids: String).returns(T.nilable(::Pathname)) }
     def self.app_with_bundle_id(*ids)
       require "bundle_version"
 
       paths = mdfind(*ids).filter_map do |bundle_path|
-        Pathname.new(bundle_path) if bundle_path.exclude?("/Backups.backupdb/")
+        ::Pathname.new(bundle_path) if bundle_path.exclude?("/Backups.backupdb/")
       end
       return paths.first unless paths.all? { |bp| (bp/"Contents/Info.plist").exist? }
 

@@ -2113,11 +2113,12 @@ class Formula
     raise "No universal binaries found to deuniversalize" if targets.blank?
 
     targets.compact.each do |target|
-      extract_macho_slice_from(Pathname(target), Hardware::CPU.arch)
+      target = MachOPathname.wrap(target)
+      extract_macho_slice_from(target, Hardware::CPU.arch)
     end
   end
 
-  sig { params(file: Pathname, arch: T.nilable(Symbol)).void }
+  sig { params(file: MachOShim, arch: T.nilable(Symbol)).void }
   def extract_macho_slice_from(file, arch = Hardware::CPU.arch)
     odebug "Extracting #{arch} slice from #{file}"
     file.ensure_writable do

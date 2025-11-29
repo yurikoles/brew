@@ -5,7 +5,7 @@ module OS
   module Mac
     # Helper module for querying Xcode information.
     module Xcode
-      DEFAULT_BUNDLE_PATH = T.let(Pathname("/Applications/Xcode.app").freeze, Pathname)
+      DEFAULT_BUNDLE_PATH = T.let(Pathname("/Applications/Xcode.app").freeze, ::Pathname)
       BUNDLE_ID = "com.apple.dt.Xcode"
       OLD_BUNDLE_ID = "com.apple.Xcode"
       APPLE_DEVELOPER_DOWNLOAD_URL = "https://developer.apple.com/download/all/"
@@ -85,7 +85,7 @@ module OS
 
       # Returns a Pathname object corresponding to Xcode.app's Developer
       # directory or nil if Xcode.app is not installed.
-      sig { returns(T.nilable(Pathname)) }
+      sig { returns(T.nilable(::Pathname)) }
       def self.prefix
         @prefix ||= T.let(begin
           dir = MacOS.active_developer_dir
@@ -95,17 +95,17 @@ module OS
             path/"Contents/Developer" if path
           else
             # Use cleanpath to avoid pathological trailing slash
-            Pathname.new(dir).cleanpath
+            ::Pathname.new(dir).cleanpath
           end
-        end, T.nilable(Pathname))
+        end, T.nilable(::Pathname))
       end
 
-      sig { returns(Pathname) }
+      sig { returns(::Pathname) }
       def self.toolchain_path
         Pathname("#{prefix}/Toolchains/XcodeDefault.xctoolchain")
       end
 
-      sig { returns(T.nilable(Pathname)) }
+      sig { returns(T.nilable(::Pathname)) }
       def self.bundle_path
         # Use the default location if it exists.
         return DEFAULT_BUNDLE_PATH if DEFAULT_BUNDLE_PATH.exist?
@@ -131,7 +131,7 @@ module OS
         sdk_locator.sdk_if_applicable(version)
       end
 
-      sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
+      sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(::Pathname)) }
       def self.sdk_path(version = nil)
         sdk(version)&.path
       end
@@ -271,7 +271,7 @@ module OS
         sdk_locator.sdk_if_applicable(version)
       end
 
-      sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(Pathname)) }
+      sig { params(version: T.nilable(MacOSVersion)).returns(T.nilable(::Pathname)) }
       def self.sdk_path(version = nil)
         sdk(version)&.path
       end

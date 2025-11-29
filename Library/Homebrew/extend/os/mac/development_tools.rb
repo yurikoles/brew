@@ -11,7 +11,7 @@ module OS
 
         requires_ancestor { ::DevelopmentTools }
 
-        sig { params(tool: T.any(String, Symbol)).returns(T.nilable(Pathname)) }
+        sig { params(tool: T.any(String, Symbol)).returns(T.nilable(::Pathname)) }
         def locate(tool)
           @locate ||= T.let({}, T.nilable(T::Hash[T.any(String, Symbol), Pathname]))
           @locate.fetch(tool) do |key|
@@ -19,7 +19,7 @@ module OS
               located_tool
             else
               path = Utils.popen_read("/usr/bin/xcrun", "-no-cache", "-find", tool, err: :close).chomp
-              Pathname.new(path) if File.executable?(path)
+              ::Pathname.new(path) if File.executable?(path)
             end
           end
         end

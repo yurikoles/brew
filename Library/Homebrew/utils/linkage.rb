@@ -9,7 +9,8 @@ module Utils
     library = library.to_s
     library = File.realpath(library) if library.start_with?(HOMEBREW_PREFIX.to_s)
 
-    Pathname.new(binary).dynamically_linked_libraries.any? do |dll|
+    binary_path = BinaryPathname.wrap(binary)
+    binary_path.dynamically_linked_libraries.any? do |dll|
       dll = File.realpath(dll) if dll.start_with?(HOMEBREW_PREFIX.to_s)
       dll == library
     end

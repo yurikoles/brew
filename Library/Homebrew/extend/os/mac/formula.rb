@@ -15,8 +15,8 @@ module OS
 
       sig {
         params(
-          install_prefix: T.any(String, Pathname),
-          install_libdir: T.any(String, Pathname),
+          install_prefix: T.any(String, ::Pathname),
+          install_libdir: T.any(String, ::Pathname),
           find_framework: String,
         ).returns(T::Array[String])
       }
@@ -31,7 +31,7 @@ module OS
 
       sig {
         params(
-          prefix:       T.any(String, Pathname),
+          prefix:       T.any(String, ::Pathname),
           release_mode: Symbol,
         ).returns(T::Array[String])
       }
