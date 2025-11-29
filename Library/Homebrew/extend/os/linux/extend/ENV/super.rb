@@ -10,12 +10,12 @@ module OS
       requires_ancestor { ::Superenv }
 
       module ClassMethods
-        sig { returns(Pathname) }
+        sig { returns(::Pathname) }
         def shims_path
           HOMEBREW_SHIMS_PATH/"linux/super"
         end
 
-        sig { returns(T.nilable(Pathname)) }
+        sig { returns(T.nilable(::Pathname)) }
         def bin
           shims_path.realpath
         end
@@ -60,7 +60,7 @@ module OS
         append_to_cccfg "b" if ::DevelopmentTools.gcc_version("gcc") >= 9
       end
 
-      sig { returns(T::Array[Pathname]) }
+      sig { returns(T::Array[::Pathname]) }
       def homebrew_extra_paths
         paths = super
         paths += %w[binutils make].filter_map do |f|
@@ -72,7 +72,7 @@ module OS
         paths
       end
 
-      sig { returns(T::Array[Pathname]) }
+      sig { returns(T::Array[::Pathname]) }
       def homebrew_extra_isystem_paths
         paths = []
         # Add paths for GCC headers when building against versioned glibc because we have to use -nostdinc.
@@ -81,7 +81,7 @@ module OS
           gcc_include_fixed_dir = Utils.safe_popen_read(cc, "--print-file-name=include-fixed").chomp
           paths << gcc_include_dir << gcc_include_fixed_dir
         end
-        paths.map { |p| Pathname(p) }
+        paths.map { |p| ::Pathname.new(p) }
       end
 
       sig { params(formula: T.nilable(Formula)).returns(PATH) }

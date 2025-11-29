@@ -12,7 +12,7 @@ module OS
           @volumes = T.let(get_mounts, T::Array[String])
         end
 
-        sig { params(path: T.nilable(Pathname)).returns(Integer) }
+        sig { params(path: T.nilable(::Pathname)).returns(Integer) }
         def index_of(path)
           vols = get_mounts path
 
@@ -26,7 +26,7 @@ module OS
           vol_index
         end
 
-        sig { params(path: T.nilable(Pathname)).returns(T::Array[String]) }
+        sig { params(path: T.nilable(::Pathname)).returns(T::Array[String]) }
         def get_mounts(path = nil)
           vols = []
           # get the volume of path, if path is nil returns all volumes
@@ -335,8 +335,8 @@ module OS
             # dir (e.g. /TMP and /tmp) this check falsely thinks it is case-insensitive
             # but we don't care because: 1. there is more than one dir checked, 2. the
             # check is not vital and 3. we would have to touch files otherwise.
-            upcased = Pathname.new(dir.to_s.upcase)
-            downcased = Pathname.new(dir.to_s.downcase)
+            upcased = ::Pathname.new(dir.to_s.upcase)
+            downcased = ::Pathname.new(dir.to_s.downcase)
             dir.exist? && !(upcased.exist? && downcased.exist?)
           end
           return if case_sensitive_dirs.empty?
@@ -377,7 +377,7 @@ module OS
             end
 
             return if @found.all? do |path|
-              realpath = Pathname.new(path).realpath.to_s
+              realpath = ::Pathname.new(path).realpath.to_s
               realpath.start_with?(*allowlist)
             end
           end
@@ -431,7 +431,7 @@ module OS
           where_cellar = volumes.index_of real_cellar
 
           begin
-            tmp = Pathname.new(Dir.mktmpdir("doctor", HOMEBREW_TEMP))
+            tmp = ::Pathname.new(Dir.mktmpdir("doctor", HOMEBREW_TEMP))
             begin
               real_tmp = tmp.realpath.parent
               where_tmp = volumes.index_of real_tmp
