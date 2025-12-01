@@ -7,9 +7,13 @@ require "extend/pathname/observer_pathname_extension"
 require "extend/pathname/write_mkpath_extension"
 require "utils/output"
 
+# Stubs needed to keep Sorbet happy.
+module MachOShim; end
+module ELFShim; end
+
 # @api private
 module BinaryPathname
-  sig { params(path: T.any(Pathname, String)).returns(BinaryPathname) }
+  sig { params(path: T.any(Pathname, String, MachOShim, ELFShim)).returns(T.any(MachOShim, ELFShim)) }
   def self.wrap(path) = raise NotImplementedError
 end
 
