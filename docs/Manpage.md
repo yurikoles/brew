@@ -2464,8 +2464,8 @@ Summarise contributions to Homebrew repositories.
 
 `--quarter`
 
-: Quarter to search (1-4). Omitting this flag searches the past year. If
-  `--from` or `--to` are set, they take precedence.
+: Homebrew contributions quarter to search (1-4). Omitting this flag searches
+  the past year. If `--from` or `--to` are set, they take precedence.
 
 `--from`
 
