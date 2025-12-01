@@ -1,10 +1,9 @@
 ---
-last_review_date: "1970-01-01"
+last_review_date: "2025-11-26"
 ---
+# How To Organize the AGM
 
-# How To Organize AGM
-
-AGM is our combination of business meeting, yearly work planning session, and opportunity to meet others in our international team in person.
+The Annual General Meeting (AGM) is our combination of a business meeting, yearly work planning session, and opportunity to meet others in our international team in person.
 
 This document is a _guide_ that assumes that the meeting will be held in person.
 If a situation occurs that prevents that, it is acceptable to execute it virtually, as was done in 2021 and 2022 during the COVID-19 pandemic.
@@ -13,7 +12,6 @@ If a situation occurs that prevents that, it is acceptable to execute it virtual
 
 * [Roles](#roles)
 * [Logistics Timeline](#logistics-timeline)
-  * [Three months prior](#three-months-prior)
   * [Two months prior](#two-months-prior)
   * [Four weeks prior](#four-weeks-prior)
   * [Three weeks prior](#three-weeks-prior)
@@ -25,9 +23,7 @@ If a situation occurs that prevents that, it is acceptable to execute it virtual
 * [Pre-planning](#pre-planning)
   * [Finding a Meeting Venue](#finding-a-meeting-venue)
   * [Who Qualifies For AGM Travel Assistance](#who-qualifies-for-agm-travel-assistance)
-* [Ideas for future AGMs](#ideas-for-future-agms)
-  * [Meeting enhancements](#meeting-enhancements)
-  * [Day-of enhancements](#day-of-enhancements)
+  * [Dietary Requirements](#dietary-requirements)
 
 <!-- TOC end -->
 
@@ -37,89 +33,81 @@ Expected participants:
 
 |Who|Role|
 |---|---|
-|Project Leadership Committee (PLC)|Should be physically present if possible, dialed-in if not. Several members must be present in person to run the event. Several members, regardless, needed to provide content for meeting.|
 |Project Leader (PL)|Should be physically present if possible, dialed-in if not. Regardless, needed to provide content for meeting.|
-|Technology Steering Committee (TSC)|Should be physically present if possible, dialed-in if not. Regardless, needed to provide content for meeting.|
-|Members|Should dial-in or participate in person if possible.|
+|Lead Maintainers (LM)|Should be physically present if possible, dialed-in if not. Regardless, needed to provide content for meeting.|
+|Maintainers|Should dial-in or participate in person if possible.|
 
-PLC members' roles of responsibility for planning and execution:
+Delegated maintainer roles of responsibility for planning and execution:
 
 |Who|Role|
 |---|---|
-|Logistics Coordinator (LC)|Coordinates with meeting venue, restaurants, members, committees, vendors|
+|Logistics Coordinator (LC)|Coordinates with meeting venue, restaurants, vendors, maintainers|
 |Agenda Coordinator (AC)|Coordinates agenda and content to be presented|
 |Technology Coordinator (TC)|Coordinates video conference audiovisual setup|
 
-:information_source: _(A person may have more than one role but one person should not have all roles.)_
+A person may have more than one role but one person should not have all roles.
 
 ## Logistics Timeline
 
-Past practice and future intent is for AGM to coincide with [FOSDEM](https://fosdem.org "Free and Open Source Developers European Meeting"), which is held in Brussels, Belgium annually typically on the Saturday and Sunday of the fifth ISO 8601 week of the calendar year, calculable with:
+Past practice and future intent is for AGM to coincide with [FOSDEM](https://fosdem.org "Free and Open Source Developers European Meeting"), which is held in Brussels, Belgium annually typically on the Saturday and Sunday of the fifth ISO-8601 week of the calendar year, calculable with:
 
-    ruby -rdate -e "s=ARGV[0].to_i;s.upto(s+4).map{|y|Date.commercial(y,5,6)}.each{|y|puts [y,y+1].join(' - ')}" 2024
+    ruby -rdate -e "s=ARGV[0].to_i;s.upto(s+4).map{|y|Date.commercial(y,5,6)}.each{|y|puts [y,y+1].join(' - ')}" 2026
 
 AGM should be held on the Friday before or the Monday following FOSDEM.
 
 :information_source: _Regenerate the dates for the WHEN lines in the next several headers
 using this quick command:_
 
-    ruby -rdate -e "YEAR=ARGV[0].to_i;puts ([[44,YEAR-1],[49,YEAR-1]]+(1.upto(4).map{|wk|[wk, YEAR]})).map{|wk,yr|Date.commercial(yr,wk).to_s}" 2024
-
-### Three months prior
-
-**When:** Week 44 of YEAR-1 :date: `2023-10-30`
-
-* [ ] LC: Seek venue through previous contacts or RFP.
-* [ ] PLC: Notify members of eligibility to attend AGM, with date to be determined.
-  * This is primarily to enable members to begin planning travel by
-      asking for time off, requesting employer reimbursement,
-      arranging childcare or pet sitters,
-      [applying for a visa](https://5195.f2w.bosa.be/en/themes/entry/border-control/visa/visa-type-c-visa-short-stay)
-      which may [take 2–7 weeks](https://dofi.ibz.be/en/themes/third-country-nationals/short-stay/processing-time-visa-application),
-      etc.
+    ruby -rdate -e "YEAR=ARGV[0].to_i;puts ([[49,YEAR-1]]+(1.upto(4).map{|wk|[wk, YEAR]})).map{|wk,yr|Date.commercial(yr,wk).to_s}" 2026
 
 ### Two months prior
 
-**When:** Week 49 of YEAR-1 :date: `2023-12-04`
+**When:** Week 49 of YEAR-1 :date: `2025-12-01`
 
-* [ ] LC: Seek informal count of members intending to attend in-person.
-* [ ] PL: Review maintainer activity per [Governance/Maintainers](Homebrew-Governance.md#8-maintainers).
-* [ ] PLC: Determine travel assistance budget.
-* [ ] PLC: Open travel assistance pre-approval process.
+* [ ] LC: Seek informal count of maintainers intending to attend in person.
+* [ ] PL: Review maintainer activity per [Homebrew Governance](Homebrew-Governance.md).
+* [ ] PL: Open travel assistance pre-approval process.
+  * This is primarily to enable maintainers to begin planning travel by
+    asking for time off, requesting employer reimbursement,
+    arranging childcare or pet sitters,
+    [applying for a visa](https://5195.f2w.bosa.be/en/themes/entry/border-control/visa/visa-type-c)
+    which may [take 2–7 weeks](https://dofi.ibz.be/en/themes/third-country-nationals/short-stay/processing-time-visa-application),
+    etc.
+* [ ] PL: Remind those traveling from countries exempt from EU visa requirements (e.g. US, UK, AU, CA) to file for [ETIAS travel authorization](https://travel-europe.europa.eu/etias_en) (generally processed in minutes but could take up to 30 days), advisable to get processed _before_ buying airfare.
 
 ### Four weeks prior
 
-**When:** Week 1 of YEAR :date: `2024-01-01`
+**When:** Week 1 of YEAR :date: `2025-12-29`
 
-* [ ] PLC: Solicit changes to [Homebrew Governance](Homebrew-Governance.md) in the form of PRs on the `homebrew-governance-private` repository.
+* [ ] PL: Solicit changes to [Homebrew Governance](Homebrew-Governance.md) in the form of PRs to the `private` repository.
 
 ### Three weeks prior
 
-**When:** Week 2 of YEAR :date: `2024-01-08`
+**When:** Week 2 of YEAR :date: `2026-01-05`
 
-* [ ] PLC: Close travel assistance pre-approval process.
+* [ ] PL: Close travel assistance pre-approval process.
 
 ### Two weeks prior
 
-**When:** Week 3 of YEAR :date: `2024-01-15`
+**When:** Week 3 of YEAR :date: `2025-01-06`
 
-* [ ] AC: Create agenda, solicit agenda items from PLC and TSC.
-* [ ] LC: Seek committed member attendance and dietary requirements for each.
-* [ ] PLC: Close proposals for new Governance changes.
+* [ ] AC: Create agenda, solicit agenda items from PL and LM.
+* [ ] LC: Seek committed maintainer attendance and dietary requirements for each.
+* [ ] PL: Close proposals for new Governance changes.
 
 ### 10 days prior
 
-**When:** Week 4 of YEAR :date: `2024-01-22`
+**When:** Week 3 of YEAR :date: `2026-01-12`
 
-* [ ] PLC: Resolve all open Governance PRs, roll-up changes, and open PR with changes to `docs/Homebrew-Governance.md` on `homebrew/brew`.
+* [ ] PL: Resolve all open Governance PRs, roll-up changes, and open PR with changes to `docs/Homebrew-Governance.md` on `homebrew/brew`.
 
 ### One week prior
 
-**When:** Week 4 of YEAR :date: `2024-01-22`
+**When:** Week 4 of YEAR :date: `2026-01-19`
 
-* [ ] PLC: Open voting for PLC, PL, and Governance changes.
-* [ ] AC: Solicit agenda items from membership.
-* [ ] LC: Secure a venue and reservation for dinner
+* [ ] PL: Open voting for PL and Governance changes.
+* [ ] AC: Solicit agenda items from maintainers.
+* [ ] LC: Secure a venue and reservation for dinner.
 
 ### Day before
 
@@ -134,34 +122,23 @@ using this quick command:_
 
 ## Pre-planning
 
-### Finding a meeting venue
+### Finding a Meeting Venue
 
-In the past, PLC hosted the AGM at the
+In the past, Homebrew hosted the AGM at the
 [THON Hotel Brussels City Centre](https://www.thonhotels.com/conference/belgium/brussels/thon-hotel-brussels-city-centre/?Persons=20)
 and arranged for a room block checking in the day before FOSDEM and AGM weekend, generally on Friday, and checking out the day after, generally Tuesday when the AGM is Monday.
 
-### Who qualifies for AGM travel assistance
+### Who Qualifies For AGM Travel Assistance
 
 Travel assistance is available for AGM participants who are expected to attend the AGM in-person.
 Those who have employers able to cover all or a part of the costs of attending FOSDEM should exhaust that
 source of funding before seeking Homebrew funding.
 
-PLC, TSC, PL and maintainers can expect to have all reasonable, in-policy expenses covered while members will be considered on a case-by-case basis.
+PL, LM and maintainers can expect to have all reasonable, in-policy expenses covered.
 
-Read the Expense and Reimbursement policy document in `Homebrew/homebrew-governance-private`.
-It contains the process and details on what is covered.
+See also the [Expense and Reimbursement Travel Policy](Expense-and-Reimbursement-Policy.md#travel-policy) for process and details on what is covered.
 It is important that all attendees expecting reimbursement stay in-policy.
 
-## Ideas for future AGMs
+### Dietary Requirements
 
-### Meeting enhancements
-
-* Captioning or transcription, or both - [White Coat Captioning](https://whitecoatcaptioning.com/) could handle the live captioning and provide us that for a transcript.
-* Separate meeting runner
-  * Keep PL ideally focused on content and not agenda or tracking who's asked to speak
-  * Should be a PLC member who is not the AC, LC, or TC
-  * Should be someone happy and willing to cut people off mid-sentence and, assertively but in a friendly manner, stop conversations that are not running to time
-
-### Day-of enhancements
-
-* Track dietary requirements centrally for in-person participants
+Track dietary requirements centrally for in-person participants.
