@@ -124,7 +124,7 @@ class CompilerSelector
   }.freeze, T::Hash[Symbol, T::Array[Symbol]])
 
   sig {
-    params(formula: Formula, compilers: T.nilable(T::Array[Symbol]), testing_formula: T::Boolean)
+    params(formula: T.any(Formula, SoftwareSpec), compilers: T.nilable(T::Array[Symbol]), testing_formula: T::Boolean)
       .returns(T.any(String, Symbol))
   }
   def self.select_for(formula, compilers = nil, testing_formula: false)
@@ -142,7 +142,7 @@ class CompilerSelector
     COMPILER_PRIORITY.fetch(DevelopmentTools.default_compiler)
   end
 
-  sig { returns(Formula) }
+  sig { returns(T.any(Formula, SoftwareSpec)) }
   attr_reader :formula
 
   sig { returns(T::Array[CompilerFailure]) }
@@ -154,7 +154,13 @@ class CompilerSelector
   sig { returns(T::Array[Symbol]) }
   attr_reader :compilers
 
-  sig { params(formula: Formula, versions: T.class_of(DevelopmentTools), compilers: T::Array[Symbol]).void }
+  sig {
+    params(
+      formula:   T.any(Formula, SoftwareSpec),
+      versions:  T.class_of(DevelopmentTools),
+      compilers: T::Array[Symbol],
+    ).void
+  }
   def initialize(formula, versions, compilers)
     @formula = formula
     @failures = T.let(formula.compiler_failures, T::Array[CompilerFailure])
