@@ -4392,7 +4392,7 @@ class Formula
     # @see .fails_with
     #
     # @api public
-    sig { params(standards: String).void }
+    sig { params(standards: Symbol).void }
     def needs(*standards)
       specs.each { |spec| spec.needs(*standards) }
     end
