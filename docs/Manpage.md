@@ -4595,20 +4595,16 @@ Homebrew API: <https://docs.brew.sh/rubydoc/>
 
 Homebrew's Project Leader is Mike McQuaid.
 
-Homebrew's Project Leadership Committee is Colin Dean, Michka Popoff, Mike
-McQuaid, Patrick Linnane and Vanessa Gennarelli.
+Homebrew's Lead Maintainers are Bevan Kay, Bo Anderson, Branch Vincent, Carlo
+Cabrera, Dustin Rodrigues, FX Coudert, Issy Long, Justin Krehel, Michael Cho,
+Michka Popoff, Mike McQuaid, Nanda H Krishna, Patrick Linnane, Rui Chen, Ruoyu
+Zhong, Sam Ford, Sean Molenaar and Thierry Moisan.
 
-Homebrew's Technical Steering Committee is Bo Anderson, Issy Long, Michael Cho,
-Mike McQuaid and Ruoyu Zhong.
+Homebrew's other Maintainers are Anton Melnikov, Caleb Xu, Daeho Ro, Douglas
+Eichelberger, Eric Knibbe, Klaus Hipp, Markus Reiter, Rylan Polster, Štefan
+Baebler and William Woodruff.
 
-Homebrew's maintainers are Anton Melnikov, Bevan Kay, Bo Anderson, Branch
-Vincent, Caleb Xu, Carlo Cabrera, Daeho Ro, Douglas Eichelberger, Dustin
-Rodrigues, Eric Knibbe, FX Coudert, Issy Long, Justin Krehel, Klaus Hipp, Markus
-Reiter, Michael Cho, Michka Popoff, Mike McQuaid, Nanda H Krishna, Patrick
-Linnane, Rui Chen, Ruoyu Zhong, Rylan Polster, Sam Ford, Sean Molenaar, Štefan
-Baebler, Thierry Moisan and William Woodruff.
-
-Former maintainers with significant contributions include Alexander Bayandin,
+Former Maintainers with significant contributions include Alexander Bayandin,
 Miccal Matthews, Misty De Méo, Shaun Jackman, Vítor Galvão, Claudia Pellegrino,
 Seeker, Jan Viljanen, JCount, commitay, Dominyk Tiller, Tim Smith, Baptiste
 Fontaine, Xu Cheng, Martin Afanasjew, Brett Koonce, Charlie Sharpsteen, Jack
