@@ -1,7 +1,7 @@
 ---
 last_review_date: "2025-11-26"
 ---
-# How To Organize the AGM
+# How To Organise the AGM
 
 The Annual General Meeting (AGM) is our combination of a business meeting, yearly work planning session, and opportunity to meet others in our international team in person.
 
