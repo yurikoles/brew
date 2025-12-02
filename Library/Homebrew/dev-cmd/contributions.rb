@@ -41,7 +41,7 @@ module Homebrew
                description: "Specify the team to populate users from. " \
                             "The first part of the team name will be used as the organisation."
         flag   "--quarter=",
-               description: "Quarter to search (1-4). " \
+               description: "Homebrew contributions quarter to search (1-4). " \
                             "Omitting this flag searches the past year. " \
                             "If `--from` or `--to` are set, they take precedence."
         flag   "--from=",
@@ -288,10 +288,10 @@ module Homebrew
         current_year = Date.today.year
         last_year = current_year - 1
         {
-          1 => [Date.new(last_year, 9, 1).iso8601, Date.new(last_year, 12, 1).iso8601],
-          2 => [Date.new(last_year, 12, 1).iso8601, Date.new(current_year, 3, 1).iso8601],
-          3 => [Date.new(current_year, 3, 1).iso8601, Date.new(current_year, 6, 1).iso8601],
-          4 => [Date.new(current_year, 6, 1).iso8601, Date.new(current_year, 9, 1).iso8601],
+          1 => [Date.new(last_year, 12, 1).iso8601, Date.new(current_year, 3, 1).iso8601],
+          2 => [Date.new(current_year, 3, 1).iso8601, Date.new(current_year,  6, 1).iso8601],
+          3 => [Date.new(current_year, 6, 1).iso8601, Date.new(current_year,  9, 1).iso8601],
+          4 => [Date.new(current_year, 9, 1).iso8601, Date.new(current_year, 12, 1).iso8601],
         }
       end
     end
