@@ -323,7 +323,7 @@ class SoftwareSpec
     compiler_failures << CompilerFailure.create(compiler, &block)
   end
 
-  sig { params(standards: T::Array[String]).void }
+  sig { params(standards: Symbol).void }
   def needs(*standards)
     standards.each do |standard|
       compiler_failures.concat CompilerFailure.for_standard(standard)
