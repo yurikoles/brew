@@ -117,7 +117,6 @@ To make changes on a new branch and submit it for review, create a GitHub pull r
    For formulae:
 
    ```sh
-   brew tests
    HOMEBREW_NO_INSTALL_FROM_API=1 brew install --build-from-source <CHANGED_FORMULA>
    brew test <CHANGED_FORMULA>
    brew audit --strict --online <CHANGED_FORMULA>
