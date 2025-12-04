@@ -426,7 +426,7 @@ module Homebrew
         params(
           formula:      Formula,
           dependencies: T::Array[[Dependency, Options]],
-          _block:       T.proc.params(arg0: Formula).void,
+          _block:       T.proc.params(arg0: Formula).returns(String),
         ).void
       }
       def print_dry_run_dependencies(formula, dependencies, &_block)
