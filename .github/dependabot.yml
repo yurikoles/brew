@@ -10,8 +10,10 @@ updates:
     day: friday
     time: '08:00'
     timezone: Etc/UTC
-  patterns:
-  - "*"
+  groups:
+    bundler:
+      patterns:
+      - "*"
   allow:
   - dependency-type: all
   cooldown:
@@ -23,8 +25,10 @@ updates:
     day: friday
     time: '08:00'
     timezone: Etc/UTC
-  patterns:
-  - "*"
+  groups:
+    devcontainers:
+      patterns:
+      - "*"
   allow:
   - dependency-type: all
   cooldown:
@@ -36,8 +40,10 @@ updates:
     day: friday
     time: '08:00'
     timezone: Etc/UTC
-  patterns:
-  - "*"
+  groups:
+    docker:
+      patterns:
+      - "*"
   allow:
   - dependency-type: all
   cooldown:
@@ -49,8 +55,10 @@ updates:
     day: friday
     time: '08:00'
     timezone: Etc/UTC
-  patterns:
-  - "*"
+  groups:
+    github-actions:
+      patterns:
+      - "*"
   allow:
   - dependency-type: all
   cooldown:
@@ -63,8 +71,10 @@ updates:
     day: friday
     time: '08:00'
     timezone: Etc/UTC
-  patterns:
-  - "*"
+  groups:
+    pip:
+      patterns:
+      - "*"
   allow:
   - dependency-type: all
   cooldown:
