@@ -293,7 +293,20 @@ module Homebrew
 
       max_phase_length = 11
       phase = format("%-<phase>#{max_phase_length}s", phase: downloadable.phase.to_s.capitalize)
-      progress = " [#{phase} #{formatted_fetched_size}/#{formatted_total_size}]"
+      progress = " #{phase} #{formatted_fetched_size}/#{formatted_total_size}"
+      message_limit = [43, message.length].max
+      bar_length = available_width - progress.length - message_limit - 1
+      if downloadable.phase == :downloading && bar_length >= 4
+        percent = if (total_size = downloadable.total_size)
+          (fetched_size.to_f / [1, total_size].max).clamp(0.0, 1.0)
+        else
+          0.0
+        end
+        bar_used = (percent * bar_length).round
+        bar_completed = "━" * bar_used
+        bar_pending = "┈" * (bar_length - bar_used)
+        progress = " #{bar_completed}#{bar_pending}#{progress}"
+      end
       message_length = available_width - progress.length
       return message[0, available_width].to_s unless message_length.positive?
 
