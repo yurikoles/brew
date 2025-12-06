@@ -1632,9 +1632,6 @@ class Formula
     false
   end
 
-  sig { returns(T::Boolean) }
-  def require_universal_deps? = false
-
   sig { void }
   def patch
     return if patchlist.empty?
