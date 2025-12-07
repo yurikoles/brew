@@ -10,7 +10,6 @@ require "descriptions"
 require "cleanup"
 require "description_cache_store"
 require "settings"
-require "linuxbrew-core-migration"
 require "reinstall"
 
 module Homebrew
@@ -153,6 +152,7 @@ module Homebrew
              Settings.read("linuxbrewmigrated") != "true"
             ohai "Migrating formulae from linuxbrew-core to homebrew-core"
 
+            require "linuxbrew-core-migration"
             LINUXBREW_CORE_MIGRATION_LIST.each do |name|
               begin
                 formula = Formula[name]
