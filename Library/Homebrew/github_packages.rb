@@ -357,7 +357,7 @@ class GitHubPackages
         "org.opencontainers.image.title"         => formula_full_name,
         "org.opencontainers.image.url"           => bottle_hash["formula"]["homepage"],
         "org.opencontainers.image.vendor"        => org,
-        "org.opencontainers.image.version"       => version,
+        "org.opencontainers.image.version"       => version.to_s, # Schema accepts strings for version
       }.compact_blank
       manifests = []
     end
