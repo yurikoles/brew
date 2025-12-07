@@ -89,7 +89,7 @@ class GitHubPackages
   def self.version_rebuild(version, rebuild, bottle_tag = nil)
     bottle_tag = (".#{bottle_tag}" if bottle_tag.present?)
 
-    rebuild = if rebuild.to_i.positive?
+    rebuild = if rebuild.positive?
       if bottle_tag
         ".#{rebuild}"
       else
@@ -242,8 +242,8 @@ class GitHubPackages
     _, org, repo, = *bottle_hash["bottle"]["root_url"].match(URL_REGEX)
     repo = "homebrew-#{repo}" unless repo.start_with?("homebrew-")
 
-    version = bottle_hash["formula"]["pkg_version"]
-    rebuild = bottle_hash["bottle"]["rebuild"]
+    version = Version.new(bottle_hash["formula"]["pkg_version"])
+    rebuild = bottle_hash["bottle"]["rebuild"].to_i
     version_rebuild = GitHubPackages.version_rebuild(version, rebuild)
 
     image_name = GitHubPackages.image_formula_name(formula_name)
