@@ -49,40 +49,6 @@ module Homebrew
 
       sig { void }
       def output_update_report
-        # Run `brew update` (again) if we've got a linuxbrew-core CoreTap
-        if CoreTap.instance.installed? && CoreTap.instance.linuxbrew_core? &&
-           ENV["HOMEBREW_LINUXBREW_CORE_MIGRATION"].blank?
-          ohai "Re-running `brew update` for linuxbrew-core migration"
-
-          if Homebrew::EnvConfig.core_git_remote != HOMEBREW_CORE_DEFAULT_GIT_REMOTE
-            opoo <<~EOS
-              `$HOMEBREW_CORE_GIT_REMOTE` was set: #{Homebrew::EnvConfig.core_git_remote}.
-              It has been unset for the migration.
-              You may need to change this from a linuxbrew-core mirror to a homebrew-core one.
-
-            EOS
-          end
-          ENV.delete("HOMEBREW_CORE_GIT_REMOTE")
-
-          if Homebrew::EnvConfig.bottle_domain != HOMEBREW_BOTTLE_DEFAULT_DOMAIN
-            opoo <<~EOS
-              `$HOMEBREW_BOTTLE_DOMAIN` was set: #{Homebrew::EnvConfig.bottle_domain}.
-              It has been unset for the migration.
-              You may need to change this from a Linuxbrew package mirror to a Homebrew one.
-
-            EOS
-          end
-          ENV.delete("HOMEBREW_BOTTLE_DOMAIN")
-
-          ENV["HOMEBREW_LINUXBREW_CORE_MIGRATION"] = "1"
-          FileUtils.rm_f HOMEBREW_LOCKS/"update"
-
-          update_args = []
-          update_args << "--auto-update" if args.auto_update?
-          update_args << "--force" if args.force?
-          exec HOMEBREW_BREW_FILE, "update", *update_args
-        end
-
         if ENV["HOMEBREW_ADDITIONAL_GOOGLE_ANALYTICS_ID"].present?
           opoo "HOMEBREW_ADDITIONAL_GOOGLE_ANALYTICS_ID is now a no-op so can be unset."
           puts "All Homebrew Google Analytics code and data was destroyed."
