@@ -887,7 +887,7 @@ class Formula
   #
   # @api internal
   sig { returns(T::Boolean) }
-  def linked? = linked_keg.symlink?
+  def linked? = linked_keg.exist?
 
   # Is the formula linked to `opt`?
   sig { returns(T::Boolean) }
