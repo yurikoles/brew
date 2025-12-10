@@ -4600,9 +4600,9 @@ Cabrera, Dustin Rodrigues, FX Coudert, Issy Long, Justin Krehel, Michael Cho,
 Michka Popoff, Mike McQuaid, Nanda H Krishna, Patrick Linnane, Rui Chen, Ruoyu
 Zhong, Sam Ford, Sean Molenaar and Thierry Moisan.
 
-Homebrew's other Maintainers are Anton Melnikov, Caleb Xu, Daeho Ro, Douglas
-Eichelberger, Eric Knibbe, Klaus Hipp, Markus Reiter, Rylan Polster, Štefan
-Baebler and William Woodruff.
+Homebrew's other Maintainers are Anton Melnikov, Caleb Xu, Daeho Ro, Eric
+Knibbe, Klaus Hipp, Markus Reiter, Rylan Polster, Štefan Baebler and William
+Woodruff.
 
 Former Maintainers with significant contributions include Alexander Bayandin,
 Miccal Matthews, Misty De Méo, Shaun Jackman, Vítor Galvão, Claudia Pellegrino,
