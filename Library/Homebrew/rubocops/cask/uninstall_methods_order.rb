@@ -46,8 +46,6 @@ module RuboCop
 
         private
 
-        # --- Ordering ---
-
         sig {
           params(
             hash_node: AST::HashNode,
@@ -86,8 +84,6 @@ module RuboCop
             corrector.replace(hash_node.source_range, new_code)
           end
         end
-
-        # --- Metadata ---
 
         sig {
           params(
@@ -161,8 +157,6 @@ module RuboCop
           add_offense(value_node,
                       message: format(PARTIAL_METADATA_MSG, symbols: symbols_str))
         end
-
-        # --- Shared helpers ---
 
         sig {
           params(
