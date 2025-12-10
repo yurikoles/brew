@@ -94,8 +94,8 @@ module Homebrew
         bottle_poured_file = Pathname("#{bottle_tmp_keg}.poured")
 
         unless bottle_poured_file.exist?
-          FileUtils.rm_r(bottle_tmp_keg) if bottle_tmp_keg.directory?
           FileUtils.rm(bottle_poured_file) if bottle_poured_file.symlink?
+          FileUtils.rm_r(bottle_tmp_keg) if bottle_tmp_keg.directory?
 
           UnpackStrategy.detect(download, prioritize_extension: true)
                         .extract_nestedly(to: HOMEBREW_TEMP_CELLAR)
