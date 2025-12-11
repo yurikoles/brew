@@ -390,6 +390,7 @@ RSpec.describe Formulary do
           "deprecation_reason"              => "repo_archived",
           "deprecation_replacement_formula" => nil,
           "deprecation_replacement_cask"    => nil,
+          "deprecate_args"                  => { date: "2022-06-15", because: :repo_archived },
         }
       end
 
@@ -400,6 +401,7 @@ RSpec.describe Formulary do
           "disable_reason"              => "requires something else",
           "disable_replacement_formula" => nil,
           "disable_replacement_cask"    => nil,
+          "disable_args"                => { date: "2022-06-15", because: "requires something else" },
         }
       end
 
@@ -500,6 +502,8 @@ RSpec.describe Formulary do
         formula = described_class.factory(formula_name)
         expect(formula).to be_a(Formula)
         expect(formula.deprecated?).to be true
+        expect(formula.deprecation_date).to eq(Date.parse("2022-06-15"))
+        expect(formula.deprecation_reason).to eq :repo_archived
         expect do
           formula.install
         end.to raise_error("Cannot build from source from abstract formula.")
@@ -511,6 +515,8 @@ RSpec.describe Formulary do
         formula = described_class.factory(formula_name)
         expect(formula).to be_a(Formula)
         expect(formula.disabled?).to be true
+        expect(formula.disable_date).to eq(Date.parse("2022-06-15"))
+        expect(formula.disable_reason).to eq("requires something else")
         expect do
           formula.install
         end.to raise_error("Cannot build from source from abstract formula.")
