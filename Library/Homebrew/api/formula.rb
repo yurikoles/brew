@@ -189,23 +189,17 @@ module Homebrew
           end
         end
 
-        if (deprecation_date = hash["deprecation_date"])
-          hash["deprecate_args"] = {
-            date:                deprecation_date,
-            because:             DeprecateDisable.to_reason_string_or_symbol(hash["deprecation_reason"],
-                                                                             type: :formula),
-            replacement_formula: hash["deprecation_replacement_formula"],
-            replacement_cask:    hash["deprecation_replacement_cask"],
-          }
+        if (deprecate_args = hash["deprecate_args"])
+          deprecate_args = deprecate_args.dup.transform_keys(&:to_sym)
+          deprecate_args[:because] =
+            DeprecateDisable.to_reason_string_or_symbol(deprecate_args[:because], type: :formula)
+          hash["deprecate_args"] = deprecate_args
         end
 
-        if (disable_date = hash["disable_date"])
-          hash["disable_args"] = {
-            date:                disable_date,
-            because:             DeprecateDisable.to_reason_string_or_symbol(hash["disable_reason"], type: :formula),
-            replacement_formula: hash["disable_replacement_formula"],
-            replacement_cask:    hash["disable_replacement_cask"],
-          }
+        if (disable_args = hash["disable_args"])
+          disable_args = disable_args.dup.transform_keys(&:to_sym)
+          disable_args[:because] = DeprecateDisable.to_reason_string_or_symbol(disable_args[:because], type: :formula)
+          hash["disable_args"] = disable_args
         end
 
         hash["head_dependency_hash"] = hash["head_dependencies"]
