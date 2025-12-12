@@ -199,13 +199,13 @@ sudo chown -R "${USER}" /usr/local/etc
 
 ## Use a caching proxy or mirror for Homebrew and data
 
-You can configure Homebrew to retrieve bottles and the Formulae API from a caching proxy or mirror.
+You can configure Homebrew to retrieve bottles and the JSON API from a caching proxy or mirror.
 
 For example, in JFrog's Artifactory, accessible at `https://artifacts.example.com`:
 
-- For the bottles, configure a new "remote" repository with `homebrew` as the "repository key" and `https://ghcr.io` as the URL.
+- For the bottles, configure a new "remote" repository with `homebrew` as the "repository key" and `https://ghcr.io` (GitHub Packages) as the URL.
   Set the cache expiry to a reasonable length relative to available storage capacity.
-- For the Formulae API, configure a new "remote" repository with `homebrew-formulae-api` as the "repository key" and `https://formulae.brew.sh/api` as the URL.
+- For the JSON API, configure a new "remote" repository with `homebrew-json-api` as the "repository key" and `https://formulae.brew.sh/api` as the URL.
   Set the cache expiry to 15 minutes.
 
 Then, set these environment variables for Homebrew to retrieve from the caching proxy.
