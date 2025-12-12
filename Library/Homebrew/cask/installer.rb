@@ -855,7 +855,15 @@ on_request: true)
       download_queue = @download_queue
       return if download_queue.nil?
 
-      Homebrew::API::Cask.source_download(@cask, download_queue:) if cask_from_source_api?
+      # FIXME: We need to load Cask source before enqueuing to support
+      # language-specific URLs, but this will block the main process.
+      if cask_from_source_api?
+        if @cask.languages.any?
+          load_cask_from_source_api!
+        else
+          Homebrew::API::Cask.source_download(@cask, download_queue:)
+        end
+      end
 
       download_queue.enqueue(downloader)
     end
