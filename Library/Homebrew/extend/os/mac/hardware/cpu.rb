@@ -156,8 +156,8 @@ module Hardware
         end
       end
 
-      sig { params(_family: T.untyped, _cpu_model: T.untyped).returns(Symbol) }
-      def intel_family(_family = nil, _cpu_model = nil)
+      sig { params(_family: Integer, _cpu_model: Integer).returns(Symbol) }
+      def intel_family(_family = T.unsafe(nil), _cpu_model = T.unsafe(nil))
         case sysctl_int("hw.cpufamily")
         when 0x73d67300 # Yonah: Core Solo/Duo
           :core
