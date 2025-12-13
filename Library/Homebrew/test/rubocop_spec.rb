@@ -18,8 +18,19 @@ RSpec.describe "RuboCop" do
       ENV["XDG_CACHE_HOME"] = (HOMEBREW_CACHE.realpath/"style").to_s
     end
 
-    it "loads all Formula cops without errors" do
-      stdout, stderr, status = Open3.capture3(RUBY_PATH, "-W0", "-S", "rubocop", TEST_FIXTURE_DIR/"testball.rb")
+    it "loads all Formula cops without errors", :focus do
+
+      # TODO: Remove these args once TestProf fixes their RuboCop plugin.
+      test_prof_rubocop_args = [
+        # Require "sorbet-runtime" to bring T into scope for warnings.rb
+        "-r", "sorbet-runtime",
+        # Require "extend/module" to include T::Sig in Module for warnings.rb
+        "-r", HOMEBREW_LIBRARY_PATH/"extend/module.rb",
+        # Work around TestProf RuboCop plugin issues
+        "-r", HOMEBREW_LIBRARY_PATH/"utils/test_prof_rubocop_stub.rb",
+      ]
+
+      stdout, stderr, status = Open3.capture3(RUBY_PATH, "-W0", *test_prof_rubocop_args, "-S", "rubocop", TEST_FIXTURE_DIR/"testball.rb")
       expect(stderr).to be_empty
       expect(stdout).to include("no offenses detected")
       expect(status).to be_a_success
