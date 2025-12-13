@@ -3166,10 +3166,9 @@ Homebrew in an Xcode-only configuration since it adds tools like `make` to your
 `$PATH` which build systems would not find otherwise.
 
 With `--ruby`, enter an interactive shell for Homebrew's Ruby environment. This
-sets up the correct Ruby paths, `$GEM_HOME`, and bundle configuration used by
+sets up the correct Ruby paths, `$GEM_HOME` and bundle configuration used by
 Homebrew's development tools. The environment includes gems from the installed
-groups, making tools like RuboCop, Sorbet, and RSpec available via `bundle
-exec`.
+groups, making tools like RuboCop, Sorbet and RSpec available via `bundle exec`.
 
 `-r`, `--ruby`
 
