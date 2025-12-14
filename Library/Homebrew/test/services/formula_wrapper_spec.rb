@@ -49,6 +49,14 @@ RSpec.describe Homebrew::Services::FormulaWrapper do
       allow(Homebrew::Services::System).to receive_messages(launchctl?: false, systemctl?: true)
       expect(service.service_file.to_s).to eq("/usr/local/opt/mysql/homebrew.mysql.service")
     end
+
+    it "Other - raises an error" do
+      allow(Homebrew::Services::System).to receive_messages(launchctl?: false, systemctl?: false)
+      expect do
+        service.service_file
+      end.to raise_error(UsageError,
+                         "Invalid usage: `brew services` is supported only on macOS or Linux (with systemd)!")
+    end
   end
 
   describe "#name" do
@@ -66,6 +74,14 @@ RSpec.describe Homebrew::Services::FormulaWrapper do
     it "systemD - outputs the service name" do
       allow(Homebrew::Services::System).to receive_messages(launchctl?: false, systemctl?: true)
       expect(service.service_name).to eq("plist-mysql-test")
+    end
+
+    it "Other - raises an error" do
+      allow(Homebrew::Services::System).to receive_messages(launchctl?: false, systemctl?: false)
+      expect do
+        service.service_name
+      end.to raise_error(UsageError,
+                         "Invalid usage: `brew services` is supported only on macOS or Linux (with systemd)!")
     end
   end
 
@@ -132,6 +148,14 @@ RSpec.describe Homebrew::Services::FormulaWrapper do
       allow(Homebrew::Services::System::Systemctl).to receive(:quiet_run).and_return(false)
       allow(Utils).to receive(:safe_popen_read)
       expect(service.loaded?).to be(false)
+    end
+
+    it "Other - raises an error" do
+      allow(Homebrew::Services::System).to receive_messages(launchctl?: false, systemctl?: false)
+      expect do
+        service.loaded?
+      end.to raise_error(UsageError,
+                         "Invalid usage: `brew services` is supported only on macOS or Linux (with systemd)!")
     end
   end
 

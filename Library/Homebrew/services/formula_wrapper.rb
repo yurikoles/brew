@@ -64,13 +64,13 @@ module Homebrew
       sig { returns(String) }
       def service_name
         @service_name ||= T.let(
-          T.must(
-            if System.launchctl?
-              formula.plist_name
-            elsif System.systemctl?
-              formula.service_name
-            end,
-          ), T.nilable(String)
+          if System.launchctl?
+            formula.plist_name
+          elsif System.systemctl?
+            formula.service_name
+          else
+            raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
+          end, T.nilable(String)
         )
       end
 
@@ -78,13 +78,13 @@ module Homebrew
       sig { returns(Pathname) }
       def service_file
         @service_file ||= T.let(
-          T.must(
-            if System.launchctl?
-              formula.launchd_service_path
-            elsif System.systemctl?
-              formula.systemd_service_path
-            end,
-          ), T.nilable(Pathname)
+          if System.launchctl?
+            formula.launchd_service_path
+          elsif System.systemctl?
+            formula.systemd_service_path
+          else
+            raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
+          end, T.nilable(Pathname)
         )
       end
 
@@ -139,14 +139,14 @@ module Homebrew
       # Returns `true` if the service is loaded, else false.
       sig { params(cached: T::Boolean).returns(T::Boolean) }
       def loaded?(cached: false)
-        T.must(
-          if System.launchctl?
-            reset_cache! unless cached
-            status_success
-          elsif System.systemctl?
-            System::Systemctl.quiet_run("status", service_file.basename)
-          end,
-        )
+        if System.launchctl?
+          reset_cache! unless cached
+          status_success
+        elsif System.systemctl?
+          System::Systemctl.quiet_run("status", service_file.basename)
+        else
+          raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
+        end
       end
 
       # Returns `true` if service is present (e.g. .plist is present in boot or user service path), else `false`
@@ -184,14 +184,14 @@ module Homebrew
 
       sig { returns(T::Boolean) }
       def pid?
-        pid.present? && T.must(pid).positive?
+        (p = pid).present? && p.positive?
       end
 
       sig { returns(T::Boolean) }
       def error?
         return false if pid?
 
-        exit_code.present? && !T.must(exit_code).zero?
+        (ec = exit_code).present? && !ec.zero?
       end
 
       sig { returns(T::Boolean) }
@@ -264,29 +264,29 @@ module Homebrew
 
       sig { returns(StatusOutputSuccessType) }
       def status_output_success_type
-        @status_output_success_type ||= T.must(
-          if System.launchctl?
-            cmd = [System.launchctl.to_s, "print", "#{System.domain_target}/#{service_name}"]
+        @status_output_success_type ||= if System.launchctl?
+          cmd = [System.launchctl.to_s, "print", "#{System.domain_target}/#{service_name}"]
+          output = Utils.popen_read(*cmd).chomp
+          if $CHILD_STATUS.present? && $CHILD_STATUS.success? && output.present?
+            success = true
+            type = :launchctl_print
+          else
+            cmd = [System.launchctl.to_s, "list", service_name]
             output = Utils.popen_read(*cmd).chomp
-            if $CHILD_STATUS.present? && $CHILD_STATUS.success? && output.present?
-              success = true
-              type = :launchctl_print
-            else
-              cmd = [System.launchctl.to_s, "list", service_name]
-              output = Utils.popen_read(*cmd).chomp
-              success = T.cast($CHILD_STATUS.present? && $CHILD_STATUS.success? && output.present?, T::Boolean)
-              type = :launchctl_list
-            end
-            odebug cmd.join(" "), output
-            StatusOutputSuccessType.new(output, success, type)
-          elsif System.systemctl?
-            cmd = ["status", service_name]
-            output = System::Systemctl.popen_read(*cmd).chomp
             success = T.cast($CHILD_STATUS.present? && $CHILD_STATUS.success? && output.present?, T::Boolean)
-            odebug [System::Systemctl.executable, System::Systemctl.scope, *cmd].join(" "), output
-            StatusOutputSuccessType.new(output, success, :systemctl)
-          end,
-        )
+            type = :launchctl_list
+          end
+          odebug cmd.join(" "), output
+          StatusOutputSuccessType.new(output, success, type)
+        elsif System.systemctl?
+          cmd = ["status", service_name]
+          output = System::Systemctl.popen_read(*cmd).chomp
+          success = T.cast($CHILD_STATUS.present? && $CHILD_STATUS.success? && output.present?, T::Boolean)
+          odebug [System::Systemctl.executable, System::Systemctl.scope, *cmd].join(" "), output
+          StatusOutputSuccessType.new(output, success, :systemctl)
+        else
+          raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
+        end
       end
 
       sig { returns(String) }
@@ -310,7 +310,7 @@ module Homebrew
           :started
         elsif !loaded?(cached: true)
           :none
-        elsif exit_code.present? && T.must(exit_code).zero?
+        elsif (ec = exit_code).present? && ec.zero?
           if timed?
             :scheduled
           else
