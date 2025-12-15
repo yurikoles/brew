@@ -460,7 +460,8 @@ passed, this command displays their actual runtime dependencies (similar to
 
 `--include-test`
 
-: Include `:test` dependencies for *`formula`* (non-recursive).
+: Include `:test` dependencies for *`formula`* (non-recursive unless `--graph`
+  or `--tree`).
 
 `--skip-recommended`
 

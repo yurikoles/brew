@@ -867,7 +867,7 @@ _brew_deps() {
     '--include-implicit[Include implicit dependencies used to download and unpack source files]' \
     '--include-optional[Include `:optional` dependencies for formula]' \
     '--include-requirements[Include requirements in addition to dependencies for formula]' \
-    '--include-test[Include `:test` dependencies for formula (non-recursive)]' \
+    '--include-test[Include `:test` dependencies for formula (non-recursive unless `--graph` or `--tree`)]' \
     '(--missing --eval-all)--installed[List dependencies for formulae that are currently installed. If formula is specified, list only its dependencies that are currently installed]' \
     '(--installed)--missing[Show only missing dependencies]' \
     '--os[Show dependencies for the given operating system]' \
