@@ -437,6 +437,10 @@ RSpec.describe "Utils::Curl" do
       expect(curl_args(*args, referer: nil).join(" ")).not_to include("--referer")
     end
 
+    it "omits `--user-agent` when `:user_agent` is `:curl`" do
+      expect(curl_args(*args, user_agent: :curl).join(" ")).not_to include("--user-agent")
+    end
+
     it "uses HOMEBREW_USER_AGENT_FAKE_SAFARI when `:user_agent` is `:browser` or `:fake`" do
       expect(curl_args(*args, user_agent: :browser).join(" "))
         .to include("--user-agent #{HOMEBREW_USER_AGENT_FAKE_SAFARI}")
@@ -457,7 +461,7 @@ RSpec.describe "Utils::Curl" do
 
     it "errors when `:user_agent` is not a String or supported Symbol" do
       expect { curl_args(*args, user_agent: :an_unsupported_symbol) }
-        .to raise_error(TypeError, ":user_agent must be :browser/:fake, :default, or a String")
+        .to raise_error(TypeError, ":user_agent must be :browser/:fake, :default, :curl, or a String")
       expect { curl_args(*args, user_agent: 123) }.to raise_error(TypeError)
     end
 
