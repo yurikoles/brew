@@ -31,6 +31,10 @@ module Homebrew
       def initialize(formula)
         @formula = T.let(formula, Formula)
         @status_output_success_type = T.let(nil, T.nilable(StatusOutputSuccessType))
+
+        return if System.launchctl? || System.systemctl?
+
+        raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
       end
 
       # Delegate access to `formula.name`.
@@ -66,10 +70,8 @@ module Homebrew
         @service_name ||= T.let(
           if System.launchctl?
             formula.plist_name
-          elsif System.systemctl?
+          else # System.systemctl?
             formula.service_name
-          else
-            raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
           end, T.nilable(String)
         )
       end
@@ -80,10 +82,8 @@ module Homebrew
         @service_file ||= T.let(
           if System.launchctl?
             formula.launchd_service_path
-          elsif System.systemctl?
+          else # System.systemctl?
             formula.systemd_service_path
-          else
-            raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
           end, T.nilable(Pathname)
         )
       end
@@ -142,10 +142,8 @@ module Homebrew
         if System.launchctl?
           reset_cache! unless cached
           status_success
-        elsif System.systemctl?
+        else # System.systemctl?
           System::Systemctl.quiet_run("status", service_file.basename)
-        else
-          raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
         end
       end
 
@@ -184,14 +182,14 @@ module Homebrew
 
       sig { returns(T::Boolean) }
       def pid?
-        (p = pid).present? && p.positive?
+        (pid = self.pid).present? && pid.positive?
       end
 
       sig { returns(T::Boolean) }
       def error?
         return false if pid?
 
-        (ec = exit_code).present? && !ec.zero?
+        (exit_code = self.exit_code).present? && !exit_code.zero?
       end
 
       sig { returns(T::Boolean) }
@@ -278,14 +276,12 @@ module Homebrew
           end
           odebug cmd.join(" "), output
           StatusOutputSuccessType.new(output, success, type)
-        elsif System.systemctl?
+        else # System.systemctl?
           cmd = ["status", service_name]
           output = System::Systemctl.popen_read(*cmd).chomp
           success = T.cast($CHILD_STATUS.present? && $CHILD_STATUS.success? && output.present?, T::Boolean)
           odebug [System::Systemctl.executable, System::Systemctl.scope, *cmd].join(" "), output
           StatusOutputSuccessType.new(output, success, :systemctl)
-        else
-          raise UsageError, System::MISSING_DAEMON_MANAGER_EXCEPTION_MESSAGE
         end
       end
 
@@ -310,7 +306,7 @@ module Homebrew
           :started
         elsif !loaded?(cached: true)
           :none
-        elsif (ec = exit_code).present? && ec.zero?
+        elsif (exit_code = self.exit_code).present? && exit_code.zero?
           if timed?
             :scheduled
           else
