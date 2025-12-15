@@ -685,7 +685,7 @@ __fish_brew_complete_arg 'deps' -l include-build -d 'Include `:build` dependenci
 __fish_brew_complete_arg 'deps' -l include-implicit -d 'Include implicit dependencies used to download and unpack source files'
 __fish_brew_complete_arg 'deps' -l include-optional -d 'Include `:optional` dependencies for formula'
 __fish_brew_complete_arg 'deps' -l include-requirements -d 'Include requirements in addition to dependencies for formula'
-__fish_brew_complete_arg 'deps' -l include-test -d 'Include `:test` dependencies for formula (non-recursive)'
+__fish_brew_complete_arg 'deps' -l include-test -d 'Include `:test` dependencies for formula (non-recursive unless `--graph` or `--tree`)'
 __fish_brew_complete_arg 'deps' -l installed -d 'List dependencies for formulae that are currently installed. If formula is specified, list only its dependencies that are currently installed'
 __fish_brew_complete_arg 'deps' -l missing -d 'Show only missing dependencies'
 __fish_brew_complete_arg 'deps' -l os -d 'Show dependencies for the given operating system'
