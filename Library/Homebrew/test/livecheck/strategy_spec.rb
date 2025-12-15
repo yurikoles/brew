@@ -195,6 +195,17 @@ RSpec.describe Homebrew::Livecheck::Strategy do
       ).to eq([responses.first[:headers]])
     end
 
+    it "handles `post_json` `url` options" do
+      allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
+
+      expect(
+        strategy.page_headers(
+          url,
+          options: Homebrew::Livecheck::Options.new(post_json: post_hash),
+        ),
+      ).to eq([responses.first[:headers]])
+    end
+
     it "handles `referer` `url` option" do
       allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
 
