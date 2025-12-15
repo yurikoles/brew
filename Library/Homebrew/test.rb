@@ -70,7 +70,7 @@ ensure
     $stderr.puts "Killing child processes..."
     system pkill, "-P", pid
     sleep 1
-    system pgrep, "-9", "-P", pid
+    system pkill, "-9", "-P", pid
   end
   exit! 1 if e
 end
