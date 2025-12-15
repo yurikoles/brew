@@ -11,11 +11,6 @@ module Homebrew
       extend FileUtils
       extend Utils::Output::Mixin
 
-      sig { void }
-      def self.initialize
-        @sudo_service_user = T.let(nil, T.nilable(String))
-      end
-
       sig { returns(T.nilable(String)) }
       def self.sudo_service_user
         @sudo_service_user
@@ -23,7 +18,7 @@ module Homebrew
 
       sig { params(sudo_service_user: String).void }
       def self.sudo_service_user=(sudo_service_user)
-        @sudo_service_user = sudo_service_user
+        @sudo_service_user = T.let(sudo_service_user, T.nilable(String))
       end
 
       # Binary name.
