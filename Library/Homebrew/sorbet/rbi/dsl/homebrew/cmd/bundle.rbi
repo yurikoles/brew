@@ -24,6 +24,9 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def casks?; end
 
   sig { returns(T::Boolean) }
+  def cargo?; end
+
+  sig { returns(T::Boolean) }
   def check?; end
 
   sig { returns(T::Boolean) }
@@ -67,6 +70,9 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
 
   sig { returns(T::Boolean) }
   def no_go?; end
+
+  sig { returns(T::Boolean) }
+  def no_cargo?; end
 
   sig { returns(T::Boolean) }
   def no_restart?; end

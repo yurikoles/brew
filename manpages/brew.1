@@ -83,7 +83,7 @@ Uninstall formulae that were only installed as a dependency of another formula a
 \fB\-n\fP, \fB\-\-dry\-run\fP
 List what would be uninstalled, but do not actually uninstall anything\.
 .SS "\fBbundle\fP \fR[\fIsubcommand\fP]"
-Bundler for non\-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Visual Studio Code (and forks/variants), Go packages and Flatpak\.
+Bundler for non\-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Visual Studio Code (and forks/variants), Go packages, Cargo packages and Flatpak\.
 .P
 Note: Flatpak support is only available on Linux\.
 .TP
@@ -188,6 +188,9 @@ Temporarily start services while running the \fBexec\fP or \fBsh\fP command\. En
 \fB\-\-go\fP
 \fBlist\fP or \fBdump\fP Go packages\.
 .TP
+\fB\-\-cargo\fP
+\fBlist\fP or \fBdump\fP Cargo packages\.
+.TP
 \fB\-\-flatpak\fP
 \fBlist\fP or \fBdump\fP Flatpak packages\. Note: Linux only\.
 .TP
@@ -196,6 +199,9 @@ Temporarily start services while running the \fBexec\fP or \fBsh\fP command\. En
 .TP
 \fB\-\-no\-go\fP
 \fBdump\fP without Go packages\. Enabled by default if \fB$HOMEBREW_BUNDLE_DUMP_NO_GO\fP is set\.
+.TP
+\fB\-\-no\-cargo\fP
+\fBdump\fP without Cargo packages\. Enabled by default if \fB$HOMEBREW_BUNDLE_DUMP_NO_CARGO\fP is set\.
 .TP
 \fB\-\-no\-flatpak\fP
 \fBdump\fP without Flatpak packages\. Enabled by default if \fB$HOMEBREW_BUNDLE_DUMP_NO_FLATPAK\fP is set\.
