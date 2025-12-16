@@ -113,15 +113,17 @@ module Utils
 
       args << "--show-error" if show_error
 
-      args << "--user-agent" << case user_agent
-      when :browser, :fake
-        HOMEBREW_USER_AGENT_FAKE_SAFARI
-      when :default, nil
-        HOMEBREW_USER_AGENT_CURL
-      when String
-        user_agent
-      else
-        raise TypeError, ":user_agent must be :browser/:fake, :default, or a String"
+      if user_agent != :curl
+        args << "--user-agent" << case user_agent
+        when :browser, :fake
+          HOMEBREW_USER_AGENT_FAKE_SAFARI
+        when :default, nil
+          HOMEBREW_USER_AGENT_CURL
+        when String
+          user_agent
+        else
+          raise TypeError, ":user_agent must be :browser/:fake, :default, :curl, or a String"
+        end
       end
 
       args << "--header" << "Accept-Language: en"
