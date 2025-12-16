@@ -214,7 +214,7 @@ class LinkageChecker
       end
     end
 
-    if formula
+    if (check_formula_deps = self.check_formula_deps)
       @indirect_deps, @undeclared_deps, @unnecessary_deps,
         @version_conflict_deps, @no_linkage_deps, @unexpected_linkage_deps = check_formula_deps
     end
@@ -246,11 +246,13 @@ class LinkageChecker
   end
 
   sig {
-    returns([T::Array[String], T::Array[String], T::Array[String],
-             T::Array[String], T::Array[String], T::Array[String]])
+    returns(T.nilable([T::Array[String], T::Array[String], T::Array[String],
+                       T::Array[String], T::Array[String], T::Array[String]]))
   }
   def check_formula_deps
-    formula = T.must(self.formula)
+    formula = self.formula
+    return if formula.nil?
+
     filter_out = proc do |dep|
       next true if dep.build? || dep.test?
 
