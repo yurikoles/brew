@@ -31,9 +31,9 @@ class LinkageChecker
     @system_dylibs    = T.let(Set.new, T::Set[String])
     @broken_dylibs    = T.let(Set.new, T::Set[String])
     @variable_dylibs  = T.let(Set.new, T::Set[String])
-    @brewed_dylibs    = T.let(Hash.new { |h, k| h[k] = Set.new }, T::Hash[String, T::Set[String]])
-    @reverse_links    = T.let(Hash.new { |h, k| h[k] = Set.new }, T::Hash[String, T::Set[String]])
-    @broken_deps      = T.let(Hash.new { |h, k| h[k] = [] }, T::Hash[String, T::Array[String]])
+    @brewed_dylibs    = T.let({}, T::Hash[String, T::Set[String]])
+    @reverse_links    = T.let({}, T::Hash[String, T::Set[String]])
+    @broken_deps      = T.let({}, T::Hash[String, T::Array[String]])
     @indirect_deps    = T.let([], T::Array[String])
     @undeclared_deps  = T.let([], T::Array[String])
     @unnecessary_deps = T.let([], T::Array[String])
@@ -163,7 +163,7 @@ class LinkageChecker
     keg_files_dylibs.each do |file, dylibs|
       file_has_any_rpath_dylibs = T.let(false, T::Boolean)
       dylibs.each do |dylib|
-        T.must(@reverse_links[dylib]) << file
+        (@reverse_links[dylib] ||= Set.new) << file
 
         # Files that link @rpath-prefixed dylibs must include at
         # least one rpath in order to resolve it.
@@ -193,7 +193,8 @@ class LinkageChecker
           next if harmless_broken_link?(dylib)
 
           if (dep = dylib_to_dep(dylib))
-            @broken_deps[dep] = T.must(@broken_deps[dep]) | [dylib]
+            broken_dep = (@broken_deps[dep] ||= [])
+            broken_dep << dylib unless broken_dep.include?(dylib)
           elsif system_libraries_exist_in_cache? && dylib_found_in_shared_cache?(dylib)
             # If we cannot associate the dylib with a dependency, then it may be a system library.
             # Check the dylib shared cache for the library to verify this.
@@ -208,7 +209,7 @@ class LinkageChecker
           else
             "#{tap}/#{owner.name}"
           end
-          T.must(@brewed_dylibs[f]) << dylib
+          (@brewed_dylibs[f] ||= Set.new) << dylib
         end
       end
     end
