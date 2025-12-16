@@ -375,8 +375,8 @@ class LinkageChecker
 
     output = ["#{label}:"]
     if things.is_a? Hash
-      things.keys.sort.each do |list_label|
-        T.must(things[list_label]).sort.each do |item|
+      things.sort.each do |list_label, items|
+        items.sort.each do |item|
           output << "#{item} (#{list_label})"
         end
       end
