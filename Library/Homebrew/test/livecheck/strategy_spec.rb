@@ -195,6 +195,39 @@ RSpec.describe Homebrew::Livecheck::Strategy do
       ).to eq([responses.first[:headers]])
     end
 
+    it "handles `post_json` `url` options" do
+      allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
+
+      expect(
+        strategy.page_headers(
+          url,
+          options: Homebrew::Livecheck::Options.new(post_json: post_hash),
+        ),
+      ).to eq([responses.first[:headers]])
+    end
+
+    it "handles `referer` `url` option" do
+      allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
+
+      expect(
+        strategy.page_headers(
+          url,
+          options: Homebrew::Livecheck::Options.new(referer: "https://brew.sh/"),
+        ),
+      ).to eq([responses.first[:headers]])
+    end
+
+    it "handles `user_agent` `url` option" do
+      allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
+
+      expect(
+        strategy.page_headers(
+          url,
+          options: Homebrew::Livecheck::Options.new(user_agent: :browser),
+        ),
+      ).to eq([responses.first[:headers]])
+    end
+
     it "returns an empty array if `curl_headers` only raises an `ErrorDuringExecution` error" do
       allow(strategy).to receive(:curl_headers).and_raise(ErrorDuringExecution.new([], status: 1))
 
@@ -233,6 +266,30 @@ RSpec.describe Homebrew::Livecheck::Strategy do
         strategy.page_content(
           url,
           options: Homebrew::Livecheck::Options.new(post_json: post_hash),
+        ),
+      ).to eq({ content: body })
+    end
+
+    it "handles `referer` `url` option" do
+      allow_any_instance_of(Utils::Curl).to receive(:curl_version).and_return(curl_version)
+      allow(strategy).to receive(:curl_output).and_return([response_text[:ok], nil, success_status])
+
+      expect(
+        strategy.page_content(
+          url,
+          options: Homebrew::Livecheck::Options.new(referer: "https://brew.sh/"),
+        ),
+      ).to eq({ content: body })
+    end
+
+    it "handles `user_agent` `url` option" do
+      allow_any_instance_of(Utils::Curl).to receive(:curl_version).and_return(curl_version)
+      allow(strategy).to receive(:curl_output).and_return([response_text[:ok], nil, success_status])
+
+      expect(
+        strategy.page_content(
+          url,
+          options: Homebrew::Livecheck::Options.new(user_agent: :browser),
         ),
       ).to eq({ content: body })
     end
