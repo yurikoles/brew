@@ -171,6 +171,7 @@ class Livecheck
     params(
       # URL to check for version information.
       url:           T.any(String, Symbol),
+      cookies:       T.nilable(T::Hash[String, String]),
       header:        T.nilable(T.any(String, T::Array[String])),
       homebrew_curl: T.nilable(T::Boolean),
       post_form:     T.nilable(T::Hash[Symbol, String]),
@@ -181,6 +182,7 @@ class Livecheck
   }
   def url(
     url = T.unsafe(nil),
+    cookies: nil,
     header: nil,
     homebrew_curl: nil,
     post_form: nil,
@@ -190,6 +192,7 @@ class Livecheck
   )
     raise ArgumentError, "Only use `post_form` or `post_json`, not both" if post_form && post_json
 
+    @options.cookies = cookies unless cookies.nil?
     @options.header = header unless header.nil?
     @options.homebrew_curl = homebrew_curl unless homebrew_curl.nil?
     @options.post_form = post_form unless post_form.nil?

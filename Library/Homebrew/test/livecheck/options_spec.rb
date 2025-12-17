@@ -5,6 +5,7 @@ require "livecheck/options"
 RSpec.describe Homebrew::Livecheck::Options do
   subject(:options) { described_class }
 
+  let(:cookies) { { "cookie_key" => "cookie_value" } }
   let(:header_string) { "Accept: */*" }
   let(:referer_url) { "https://example.com/referer" }
   let(:post_hash) do
@@ -18,6 +19,7 @@ RSpec.describe Homebrew::Livecheck::Options do
 
   let(:args) do
     {
+      cookies:       cookies,
       header:        header_string,
       homebrew_curl: true,
       post_form:     post_hash,
@@ -40,6 +42,7 @@ RSpec.describe Homebrew::Livecheck::Options do
   describe "#url_options" do
     it "returns a Hash of the options that are provided as arguments to the `url` DSL method" do
       expect(options.new.url_options).to eq({
+        cookies:       nil,
         header:        nil,
         homebrew_curl: nil,
         post_form:     nil,

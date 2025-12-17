@@ -167,6 +167,7 @@ RSpec.describe Livecheck do
       # implemented.]
       livecheck_f.url(
         url_string,
+        cookies:       { "cookie_key" => "cookie_value" },
         header:        "Accept: */*",
         homebrew_curl: true,
         post_form:     post_hash,
