@@ -167,6 +167,7 @@ RSpec.describe Livecheck do
       # implemented.]
       livecheck_f.url(
         url_string,
+        header:        "Accept: */*",
         homebrew_curl: true,
         post_form:     post_hash,
         referer:       referer_url,
@@ -178,6 +179,10 @@ RSpec.describe Livecheck do
       expect(livecheck_f.options.post_json).to eq(post_hash)
       expect(livecheck_f.options.referer).to eq(referer_url)
       expect(livecheck_f.options.user_agent).to eq(:browser)
+
+      header_array = ["Accept: */*", "X-Requested-With: XMLHttpRequest"]
+      livecheck_f.url(url_string, header: header_array)
+      expect(livecheck_f.options.header).to eq(header_array)
 
       livecheck_f.url(url_string, user_agent: "Example")
       expect(livecheck_f.options.user_agent).to eq("Example")

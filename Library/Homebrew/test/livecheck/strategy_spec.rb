@@ -184,6 +184,26 @@ RSpec.describe Homebrew::Livecheck::Strategy do
       expect(strategy.page_headers(url)).to eq([responses.first[:headers]])
     end
 
+    it "handles `header` `url` options" do
+      allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
+
+      expect(
+        strategy.page_headers(
+          url,
+          options: Homebrew::Livecheck::Options.new(header: "Accept: */*"),
+        ),
+      ).to eq([responses.first[:headers]])
+
+      expect(
+        strategy.page_headers(
+          url,
+          options: Homebrew::Livecheck::Options.new(
+            header: ["Accept: */*", "X-Requested-With: XMLHttpRequest"],
+          ),
+        ),
+      ).to eq([responses.first[:headers]])
+    end
+
     it "handles `post_form` `url` options" do
       allow(strategy).to receive(:curl_headers).and_return({ responses:, body: })
 
@@ -244,6 +264,27 @@ RSpec.describe Homebrew::Livecheck::Strategy do
       allow(strategy).to receive(:curl_output).and_return([response_text[:ok], nil, success_status])
 
       expect(strategy.page_content(url)).to eq({ content: body })
+    end
+
+    it "handles `header` `url` option" do
+      allow_any_instance_of(Utils::Curl).to receive(:curl_version).and_return(curl_version)
+      allow(strategy).to receive(:curl_output).and_return([response_text[:ok], nil, success_status])
+
+      expect(
+        strategy.page_content(
+          url,
+          options: Homebrew::Livecheck::Options.new(header: "Accept: */*"),
+        ),
+      ).to eq({ content: body })
+
+      expect(
+        strategy.page_content(
+          url,
+          options: Homebrew::Livecheck::Options.new(
+            header: ["Accept: */*", "X-Requested-With: XMLHttpRequest"],
+          ),
+        ),
+      ).to eq({ content: body })
     end
 
     it "handles `post_form` `url` option" do
