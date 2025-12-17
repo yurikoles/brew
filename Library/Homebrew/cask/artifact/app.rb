@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 require "cask/artifact/moved"
@@ -7,7 +7,28 @@ module Cask
   module Artifact
     # Artifact corresponding to the `app` stanza.
     class App < Moved
-      def install_phase(command: nil, **options)
+      sig {
+        params(
+          adopt:        T::Boolean,
+          auto_updates: T::Boolean,
+          force:        T::Boolean,
+          verbose:      T::Boolean,
+          predecessor:  T.nilable(Cask),
+          successor:    T.nilable(Cask),
+          reinstall:    T::Boolean,
+          command:      T.class_of(SystemCommand),
+        ).void
+      }
+      def install_phase(
+        adopt: false,
+        auto_updates: false,
+        force: false,
+        verbose: false,
+        predecessor: nil,
+        successor: nil,
+        reinstall: false,
+        command: SystemCommand
+      )
         super
 
         return if target.ascend.none? { OS::Mac.system_dir?(_1) }
