@@ -13,8 +13,8 @@ class LazyObject < Delegator
     super(callable)
   end
 
-  sig { returns(T.untyped) }
-  def __getobj__
+  sig { params(_blk: T.untyped).returns(T.untyped) }
+  def __getobj__(&_blk)
     return @__getobj__ if @getobj_set
 
     @__getobj__ = T.must(@__callable__).call
