@@ -10,7 +10,7 @@ module Cask
       def install_phase(command: nil, **options)
         super
 
-        return if target.parent.to_s != "/Applications"
+        return if target.ascend.none? { OS::Mac.system_dir?(_1) }
 
         odebug "Fixing up '#{target}' permissions for installation to '#{target.parent}'"
         # Ensure that globally installed applications can be accessed by all users.
