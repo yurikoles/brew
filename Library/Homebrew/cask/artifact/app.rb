@@ -15,6 +15,9 @@ module Cask
         odebug "Fixing up '#{target}' permissions for installation to '#{target.parent}'"
         # Ensure that globally installed applications can be accessed by all users.
         target.find do |child|
+          # Don't try to chmod symlinks outside the app bundle.
+          next if child.realpath.ascend.none? { _1 == target.realpath }
+
           permissions = (child.executable? || child.directory?) ? "a+rx" : "a+r"
           if child.writable?
             FileUtils.chmod(permissions, child)
