@@ -5,27 +5,28 @@ require "delegate"
 
 # An object which lazily evaluates its inner block only once a method is called on it.
 class LazyObject < Delegator
-  UNSET = T.let(Object.new.freeze, Object)
-
   sig { params(callable: T.nilable(Proc)).void }
   def initialize(&callable)
-    @__callable__ = T.let(nil, T.untyped)
-    @__getobj__ = T.let(UNSET, T.untyped)
+    @__callable__ = T.let(nil, T.nilable(Proc))
+    @getobj_set = T.let(false, T::Boolean)
+    @__getobj__ = T.let(nil, T.untyped)
     super(callable)
   end
 
   sig { returns(T.untyped) }
   def __getobj__
-    return @__getobj__ unless @__getobj__.equal?(UNSET)
+    return @__getobj__ if @getobj_set
 
-    @__getobj__ = @__callable__.call
+    @__getobj__ = T.must(@__callable__).call
+    @getobj_set = true
     @__getobj__
   end
 
-  sig { params(callable: T.untyped).void }
+  sig { params(callable: T.nilable(Proc)).void }
   def __setobj__(callable)
     @__callable__ = callable
-    @__getobj__ = UNSET
+    @getobj_set = false
+    @__getobj__ = nil
   end
 
   # Forward to the inner object to make lazy objects type-checkable.
