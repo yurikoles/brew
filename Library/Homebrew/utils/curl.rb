@@ -77,8 +77,9 @@ module Utils
         retry_max_time:  T.nilable(T.any(Integer, Float)),
         show_output:     T.nilable(T::Boolean),
         show_error:      T.nilable(T::Boolean),
-        user_agent:      T.nilable(T.any(String, Symbol)),
+        header:          T.nilable(T.any(String, T::Array[String])),
         referer:         T.nilable(String),
+        user_agent:      T.nilable(T.any(String, Symbol)),
       ).returns(T::Array[String])
     }
     def curl_args(
@@ -89,8 +90,9 @@ module Utils
       retry_max_time: nil,
       show_output: false,
       show_error: true,
-      user_agent: nil,
-      referer: nil
+      header: nil,
+      referer: nil,
+      user_agent: nil
     )
       args = []
 
@@ -127,6 +129,12 @@ module Utils
       end
 
       args << "--header" << "Accept-Language: en"
+      case header
+      when String
+        args << "--header" << header
+      when Array
+        header.each { |h| args << "--header" << h.strip }
+      end
 
       if show_output != true
         args << "--fail"
