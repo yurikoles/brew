@@ -25,7 +25,7 @@ class Migrator
 
   # Error for when the old name's path does not exist.
   class MigratorNoOldpathError < RuntimeError
-    sig { params(oldname: BasicObject).void }
+    sig { params(oldname: String).void }
     def initialize(oldname)
       super "#{HOMEBREW_CELLAR/oldname} doesn't exist."
     end
