@@ -14,7 +14,7 @@ class Migrator
 
   # Error for when a migration is necessary.
   class MigrationNeededError < RuntimeError
-    sig { params(oldname: BasicObject, newname: T.untyped).void }
+    sig { params(oldname: String, newname: String).void }
     def initialize(oldname, newname)
       super <<~EOS
         #{oldname} was renamed to #{newname} and needs to be migrated by running:
