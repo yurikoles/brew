@@ -10,7 +10,7 @@ module Cask
       sig {
         params(
           adopt:        T::Boolean,
-          auto_updates: T::Boolean,
+          auto_updates: T.nilable(T::Boolean),
           force:        T::Boolean,
           verbose:      T::Boolean,
           predecessor:  T.nilable(Cask),
