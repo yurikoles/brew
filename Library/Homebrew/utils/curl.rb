@@ -77,6 +77,7 @@ module Utils
         retry_max_time:  T.nilable(T.any(Integer, Float)),
         show_output:     T.nilable(T::Boolean),
         show_error:      T.nilable(T::Boolean),
+        cookies:         T.nilable(T::Hash[String, String]),
         header:          T.nilable(T.any(String, T::Array[String])),
         referer:         T.nilable(String),
         user_agent:      T.nilable(T.any(String, Symbol)),
@@ -90,6 +91,7 @@ module Utils
       retry_max_time: nil,
       show_output: false,
       show_error: true,
+      cookies: nil,
       header: nil,
       referer: nil,
       user_agent: nil
@@ -108,8 +110,12 @@ module Utils
         args << "--disable"
       end
 
-      # echo any cookies received on a redirect
-      args << "--cookie" << File::NULL
+      args << "--cookie" << if cookies
+        cookies.map { |k, v| "#{k}=#{v}" }.join(";")
+      else
+        # Echo any cookies received on a redirect
+        File::NULL
+      end
 
       args << "--globoff"
 
