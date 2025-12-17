@@ -137,7 +137,8 @@ and are now no longer needed.
 ### `bundle` \[*`subcommand`*\]
 
 Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store,
-Visual Studio Code (and forks/variants), Go packages and Flatpak.
+Visual Studio Code (and forks/variants), Go packages, Cargo packages and
+Flatpak.
 
 Note: Flatpak support is only available on Linux.
 
@@ -302,6 +303,10 @@ flags which will help with finding keg-only dependencies like `openssl`,
 
 : `list` or `dump` Go packages.
 
+`--cargo`
+
+: `list` or `dump` Cargo packages.
+
 `--flatpak`
 
 : `list` or `dump` Flatpak packages. Note: Linux only.
@@ -315,6 +320,11 @@ flags which will help with finding keg-only dependencies like `openssl`,
 
 : `dump` without Go packages. Enabled by default if
   `$HOMEBREW_BUNDLE_DUMP_NO_GO` is set.
+
+`--no-cargo`
+
+: `dump` without Cargo packages. Enabled by default if
+  `$HOMEBREW_BUNDLE_DUMP_NO_CARGO` is set.
 
 `--no-flatpak`
 
