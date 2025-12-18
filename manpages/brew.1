@@ -2678,7 +2678,7 @@ Use this X11 display when opening a page in a browser, for example with \fBbrew 
 If set, print install times for each formula at the end of the run\.
 .TP
 \fBHOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN\fP
-Use this base64 encoded username and password for authenticating with a Docker registry proxying GitHub Packages\. If \fB$HOMEBREW_DOCKER_REGISTRY_TOKEN\fP is set, it will be used instead\.
+Use this base64 encoded username and password for authenticating with a Docker registry proxying GitHub Packages\. If set to \-, no authentication header will be sent\. This can be used, if remote \fB$HOMEBREW_BOTTLE_DOMAIN\fP does not support any authentication\. If \fB$HOMEBREW_DOCKER_REGISTRY_TOKEN\fP is set, it will be used instead\.
 .TP
 \fBHOMEBREW_DOCKER_REGISTRY_TOKEN\fP
 Use this bearer token for authenticating with a Docker registry proxying GitHub Packages\. Preferred over \fB$HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN\fP\&\.
