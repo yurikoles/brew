@@ -318,7 +318,7 @@ class LinkageChecker
     version_hash = {}
     version_conflict_deps = Set.new
     @brewed_dylibs.each_key do |l|
-      name = T.must(l.split("/").last)
+      name = l.split("/").fetch(-1)
       unversioned_name, = name.split("@")
       version_hash[unversioned_name] ||= Set.new
       version_hash[unversioned_name] << name
@@ -339,7 +339,7 @@ class LinkageChecker
       elsif a.exclude?("/") && b.include?("/")
         -1
       else
-        T.must(a <=> b)
+        (a <=> b).to_i
       end
     end
   end
