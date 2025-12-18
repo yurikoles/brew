@@ -18,13 +18,13 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def brews?; end
 
   sig { returns(T::Boolean) }
+  def cargo?; end
+
+  sig { returns(T::Boolean) }
   def cask?; end
 
   sig { returns(T::Boolean) }
   def casks?; end
-
-  sig { returns(T::Boolean) }
-  def cargo?; end
 
   sig { returns(T::Boolean) }
   def check?; end
@@ -66,13 +66,13 @@ class Homebrew::Cmd::Bundle::Args < Homebrew::CLI::Args
   def mas?; end
 
   sig { returns(T::Boolean) }
+  def no_cargo?; end
+
+  sig { returns(T::Boolean) }
   def no_flatpak?; end
 
   sig { returns(T::Boolean) }
   def no_go?; end
-
-  sig { returns(T::Boolean) }
-  def no_cargo?; end
 
   sig { returns(T::Boolean) }
   def no_restart?; end
