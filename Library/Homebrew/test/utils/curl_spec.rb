@@ -429,6 +429,21 @@ RSpec.describe "Utils::Curl" do
       expect(curl_args(*args, show_error: false)).not_to include("--show-error")
     end
 
+    it "uses `--cookie` with argument when :cookies is present" do
+      cookies = { "cookie_key" => "cookie_value" }
+      expect(curl_args(*args, cookies:).join(" "))
+        .not_to include("--cookie #{File::NULL}")
+      expect(curl_args(*args, cookies:).join(" "))
+        .to include("--cookie cookie_key=cookie_value")
+    end
+
+    it "uses `--header` with argument when :header is present" do
+      expect(curl_args(*args, header: "Accept: */*").join(" "))
+        .to include("--header Accept: */*")
+      expect(curl_args(*args, header: ["Accept: */*", "X-Requested-With: XMLHttpRequest"]).join(" "))
+        .to include("--header Accept: */* --header X-Requested-With: XMLHttpRequest")
+    end
+
     it "uses `--referer` when :referer is present" do
       expect(curl_args(*args, referer: "https://brew.sh").join(" ")).to include("--referer https://brew.sh")
     end
