@@ -15756,7 +15756,6 @@ class Prism::Translation::Parser34 < ::Prism::Translation::Parser
 end
 
 Prism::Translation::Parser35 = Prism::Translation::Parser40
-class Prism::Translation::Parser35 < Prism::Translation::Parser; end
 
 class Prism::Translation::Parser40 < ::Prism::Translation::Parser
   sig { override.returns(Integer) }
