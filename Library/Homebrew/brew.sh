@@ -1042,7 +1042,7 @@ then
   # Support a sentinel value to unset basic auth. This is useful, if HOMEBREW_BOTTLE_DOMAIN can't handle auth.
   if [[ "${HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN}" == "-" ]]
   then
-    export HOMEBREW_GITHUB_PACKAGES_AUTH=""
+    unset HOMEBREW_GITHUB_PACKAGES_AUTH
   else
     export HOMEBREW_GITHUB_PACKAGES_AUTH="Basic ${HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN}"
   fi
