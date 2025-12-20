@@ -194,9 +194,9 @@ class Migrator
     formula_tap_user = formula.tap&.user
     old_tap_user = nil
 
-    new_tap = if old_tap
-      old_tap_user, = T.must(old_tap).user
-      if (migrate_tap = T.must(old_tap).tap_migrations[oldname])
+    new_tap = if (old_tap = self.old_tap)
+      old_tap_user, = old_tap.user
+      if (migrate_tap = old_tap.tap_migrations[oldname])
         new_tap_user, new_tap_repo = migrate_tap.split("/")
         "#{new_tap_user}/#{new_tap_repo}"
       end
@@ -325,6 +325,8 @@ class Migrator
   sig { void }
   def repin
     return unless pinned?
+
+    old_pin_link_record = self.old_pin_link_record
     return unless old_pin_link_record
 
     # `old_pin_record` is a relative symlink and when we try to to read it
@@ -339,7 +341,7 @@ class Migrator
     # `Pathname#make_relative_symlink`, where `Pathname#relative_path_from`
     # is used to find the relative path from source to destination parent
     # and it assumes no symlinks.
-    src_oldname = (old_pin_record.dirname/T.must(old_pin_link_record)).expand_path
+    src_oldname = (old_pin_record.dirname/old_pin_link_record).expand_path
     new_pin_record.make_relative_symlink(src_oldname.sub(oldname, newname))
     old_pin_record.delete
   end
@@ -502,7 +504,7 @@ class Migrator
     end
   end
 
-  sig { returns(T.nilable(T.any(T::Array[T.any(File, String, Pathname)], Integer))) }
+  sig { void }
   def backup_oldname_cellar
     FileUtils.mv(new_cellar, old_cellar) unless old_cellar.exist?
   end
@@ -514,10 +516,12 @@ class Migrator
 
   sig { void }
   def lock
-    @newname_lock = T.let(FormulaLock.new(newname), T.nilable(FormulaLock))
-    @oldname_lock = T.let(FormulaLock.new(oldname), T.nilable(FormulaLock))
-    T.must(@newname_lock).lock
-    T.must(@oldname_lock).lock
+    newname_lock = FormulaLock.new(newname)
+    oldname_lock = FormulaLock.new(oldname)
+    newname_lock.lock
+    oldname_lock.lock
+    @newname_lock = T.let(newname_lock, T.nilable(FormulaLock))
+    @oldname_lock = T.let(oldname_lock, T.nilable(FormulaLock))
   end
 
   sig { void }
