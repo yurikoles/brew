@@ -2234,6 +2234,18 @@ class Formula
   # (zsh_completion/"_foo").write Utils.safe_popen_read({ "SHELL" => "zsh", "COMPLETE" => "zsh" }, bin/"foo")
   # ```
   #
+  # Using predefined `shell_parameter_format :typer`.
+  #
+  # ```ruby
+  # generate_completions_from_executable(bin/"foo", shell_parameter_format: :typer, shells: [:zsh])
+  #
+  # # translates to
+  # (zsh_completion/"_foo").write Utils.safe_popen_read(
+  #   { "SHELL" => "zsh", "_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION" => "1" },
+  #   bin/"foo", "--show-completion", "zsh"
+  # )
+  # ```
+  #
   # Using custom `shell_parameter_format`.
   #
   # ```ruby
@@ -2255,7 +2267,7 @@ class Formula
   #   the shells to generate completion scripts for. Defaults to `[:bash, :zsh, :fish]`.
   # @param shell_parameter_format
   #   specify how `shells` should each be passed to the `executable`. Takes either a String representing a
-  #   prefix, or one of `[:flag, :arg, :none, :click, :clap]`. Defaults to plainly passing the shell.
+  #   prefix, or one of `[:flag, :arg, :none, :click, :clap, :typer]`. Defaults to plainly passing the shell.
   sig {
     params(
       commands:               T.any(Pathname, String),
@@ -2299,6 +2311,9 @@ class Formula
       elsif shell_parameter_format == :clap
         popen_read_env["COMPLETE"] = shell_argument.to_s
         nil
+      elsif shell_parameter_format == :typer
+        popen_read_env["_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION"] = "1"
+        ["--show-completion", shell_argument]
       else
         "#{shell_parameter_format}#{shell_argument}"
       end
