@@ -1,4 +1,4 @@
-# typed: true # rubocop:todo Sorbet/StrictSigil
+# typed: strict
 # frozen_string_literal: true
 
 require "bundle/dsl"
@@ -15,6 +15,18 @@ require "bundle/skipper"
 module Homebrew
   module Bundle
     module Installer
+      sig {
+        params(
+          entries:    T::Array[Dsl::Entry],
+          global:     T::Boolean,
+          file:       T.nilable(String),
+          no_lock:    T::Boolean,
+          no_upgrade: T::Boolean,
+          verbose:    T::Boolean,
+          force:      T::Boolean,
+          quiet:      T::Boolean,
+        ).returns(T::Boolean)
+      }
       def self.install!(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false,
                         force: false, quiet: false)
         success = 0
@@ -106,6 +118,17 @@ module Homebrew
         true
       end
 
+      sig {
+        params(
+          entries:    T::Array[{ name:    String,
+                                 args:    T::Array[T.anything],
+                                 options: T::Hash[Symbol, T.untyped],
+                                 verb:    String,
+                                 type:    Symbol,
+                                 cls:     T::Module[T.anything] }],
+          no_upgrade: T::Boolean,
+        ).returns(T::Array[String])
+      }
       def self.fetchable_formulae_and_casks(entries, no_upgrade:)
         entries.filter_map do |entry|
           name = entry.fetch(:name)
