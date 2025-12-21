@@ -1039,8 +1039,8 @@ then
   export HOMEBREW_GITHUB_PACKAGES_AUTH="Bearer ${HOMEBREW_DOCKER_REGISTRY_TOKEN}"
 elif [[ -n "${HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN}" ]]
 then
-  # Support a sentinel value to unset basic auth. This is useful, if HOMEBREW_BOTTLE_DOMAIN can't handle auth.
-  if [[ "${HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN}" == "-" ]]
+  # If the token is to the special value "none", unset any existing auth to use anonymous access.
+  if [[ "${HOMEBREW_DOCKER_REGISTRY_BASIC_AUTH_TOKEN}" == "none" ]]
   then
     unset HOMEBREW_GITHUB_PACKAGES_AUTH
   else
