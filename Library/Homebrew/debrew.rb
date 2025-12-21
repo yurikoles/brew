@@ -17,7 +17,10 @@ module Debrew
       Debrew.debrew { super }
     end
 
-    sig { returns(T.nilable(T::Boolean)) }
+    sig {
+      # TODO: replace `returns(BasicObject)` with `void` after dropping `return false` handling in test
+      returns(BasicObject)
+    }
     def test
       Debrew.debrew { super }
     end
