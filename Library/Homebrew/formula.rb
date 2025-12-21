@@ -1301,7 +1301,12 @@ class Formula
   end
 
   # Runs a block with the given log type in effect for its duration.
-  sig { params(log_type: String, _block: T.proc.void).void }
+  sig {
+    type_parameters(:U).params(
+      log_type: String,
+      _block:   T.proc.returns(T.type_parameter(:U)),
+    ).returns(T.type_parameter(:U))
+  }
   def with_logging(log_type, &_block)
     old_log_type = @active_log_type
     @active_log_type = T.let(log_type, T.nilable(String))
@@ -3345,12 +3350,12 @@ class Formula
   # or calling `do |staging| ... staging.retain!` in the block will skip
   # the deletion and retain the temporary directory's contents.
   sig {
-    params(
+    type_parameters(:U).params(
       prefix:          String,
       retain:          T::Boolean,
       retain_in_cache: T::Boolean,
-      block:           T.proc.params(arg0: Mktemp).void,
-    ).void
+      block:           T.proc.params(arg0: Mktemp).returns(T.type_parameter(:U)),
+    ).returns(T.type_parameter(:U))
   }
   def mktemp(prefix = name, retain: false, retain_in_cache: false, &block)
     Mktemp.new(prefix, retain:, retain_in_cache:).run(&block)
