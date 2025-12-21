@@ -44,9 +44,8 @@ module Homebrew
       ) do |download, force, quiet, check_attestation|
         download.clear_cache if force
         download.fetch(quiet:)
-        if check_attestation
-          bottle = T.cast(downloadable, Bottle)
-          Utils::Attestation.check_attestation(bottle, quiet: true)
+        if check_attestation && downloadable.is_a?(Bottle)
+          Utils::Attestation.check_attestation(downloadable, quiet: true)
         end
       end
     end
