@@ -250,10 +250,10 @@ class Formula
     # Now that we have an instance, it's too late to make any changes to the class-level definition.
     self.class.freeze
 
-    @name = T.let(name, String)
-    @unresolved_path = T.let(path, Pathname)
+    @name = name
+    @unresolved_path = path
     @path = T.let(path.resolved_path, Pathname)
-    @alias_path = T.let(alias_path, T.nilable(Pathname))
+    @alias_path = alias_path
     @alias_name = T.let((File.basename(alias_path) if alias_path), T.nilable(String))
     @revision = T.let(self.class.revision || 0, Integer)
     @version_scheme = T.let(self.class.version_scheme || 0, Integer)
@@ -264,7 +264,7 @@ class Formula
     @autobump = T.let(true, T::Boolean)
     @no_autobump_message = T.let(nil, T.nilable(T.any(String, Symbol)))
 
-    @force_bottle = T.let(force_bottle, T::Boolean)
+    @force_bottle = force_bottle
 
     @tap = T.let(tap, T.nilable(Tap))
     @tap ||= if path == Formulary.core_path(name)

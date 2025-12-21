@@ -77,7 +77,7 @@ class SoftwareSpec
     @bottle_specification = T.let(BottleSpecification.new, BottleSpecification)
     @patches = T.let([], T::Array[T.any(EmbeddedPatch, ExternalPatch)])
     @options = T.let(Options.new, Options)
-    @flags = T.let(flags, T::Array[String])
+    @flags = flags
     @deprecated_flags = T.let([], T::Array[DeprecatedOption])
     @deprecated_options = T.let([], T::Array[DeprecatedOption])
     @build = T.let(BuildOptions.new(Options.create(@flags), options), BuildOptions)

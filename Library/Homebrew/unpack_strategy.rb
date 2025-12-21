@@ -135,7 +135,7 @@ module UnpackStrategy
     @path = T.let(Pathname(path).expand_path, Pathname)
     @ref_type = T.let(ref_type, T.nilable(Symbol))
     @ref = T.let(ref, T.nilable(String))
-    @merge_xattrs = T.let(merge_xattrs, T::Boolean)
+    @merge_xattrs = merge_xattrs
   end
 
   sig { abstract.params(unpack_dir: Pathname, basename: Pathname, verbose: T::Boolean).void }
