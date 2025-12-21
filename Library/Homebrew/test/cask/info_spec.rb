@@ -12,6 +12,17 @@ RSpec.describe Cask::Info, :cask do
     "#{Tty.bold}#{string} #{Formatter.error("✘")}#{Tty.reset}"
   end
 
+  def installed(string)
+    "#{Tty.bold}#{string} #{Formatter.success("✔")}#{Tty.reset}"
+  end
+
+  def mock_cask_installed(cask_name)
+    cask = Cask::CaskLoader.load(cask_name)
+    allow(cask).to receive(:installed?).and_return(true)
+    allow(Cask::CaskLoader).to receive(:load).and_call_original
+    allow(Cask::CaskLoader).to receive(:load).with(cask_name).and_return(cask)
+  end
+
   before do
     # Prevent unnecessary network requests in `Utils::Analytics.cask_output`
     ENV["HOMEBREW_NO_ANALYTICS"] = "1"
@@ -36,6 +47,7 @@ RSpec.describe Cask::Info, :cask do
 
   it "prints cask dependencies if the Cask has any" do
     allow_any_instance_of(StringIO).to receive(:tty?).and_return(true)
+    mock_cask_installed("local-transmission-zip")
     expect do
       described_class.info(Cask::CaskLoader.load("with-depends-on-cask-multiple"), args:)
     end.to output(<<~EOS).to_stdout
@@ -48,7 +60,7 @@ RSpec.describe Cask::Info, :cask do
       #{ohai_title "Description"}
       #{Formatter.error("None")}
       #{ohai_title "Dependencies"}
-      #{uninstalled("local-caffeine (cask)")}, #{uninstalled("local-transmission-zip (cask)")}
+      #{uninstalled("local-caffeine (cask)")}, #{installed("local-transmission-zip (cask)")}
       #{ohai_title "Artifacts"}
       Caffeine.app (App)
     EOS
