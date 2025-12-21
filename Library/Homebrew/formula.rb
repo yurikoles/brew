@@ -2995,7 +2995,10 @@ class Formula
     self.class.on_system_blocks_exist? || @on_system_blocks_exist
   end
 
-  sig { params(keep_tmp: T::Boolean).returns(T.untyped) }
+  sig {
+    # TODO: replace `returns(BasicObject)` with `void` after dropping `return false` handling in test
+    params(keep_tmp: T::Boolean).returns(BasicObject)
+  }
   def run_test(keep_tmp: false)
     @prefix_returns_versioned_prefix = T.let(true, T.nilable(T::Boolean))
 
@@ -3040,7 +3043,10 @@ class Formula
     method(:test).owner != Formula
   end
 
-  sig { returns(T.nilable(T::Boolean)) }
+  sig {
+    # TODO: replace `returns(BasicObject)` with `void` after dropping `return false` handling in test
+    returns(BasicObject)
+  }
   def test; end
 
   sig { params(file: T.any(Pathname, String)).returns(Pathname) }
@@ -4460,9 +4466,11 @@ class Formula
     # Failed assertions and failed `system` commands will raise exceptions.
     #
     # @see https://docs.brew.sh/Formula-Cookbook#add-a-test-to-the-formula Tests
-    # @return [Boolean]
     # @api public
-    sig { params(block: T.proc.returns(T.untyped)).returns(T.untyped) }
+    sig {
+      # TODO: replace `returns(BasicObject)` with `void` after dropping `return false` handling in test
+      params(block: T.proc.returns(BasicObject)).returns(BasicObject)
+    }
     def test(&block) = define_method(:test, &block)
 
     # {Livecheck} can be used to check for newer versions of the software.
