@@ -20,7 +20,9 @@ module Homebrew
         success = 0
         failure = 0
 
-        entries.each do |entry|
+        installable_entries = entries.filter_map do |entry|
+          next if Homebrew::Bundle::Skipper.skip? entry
+
           name = entry.name
           args = [name]
           options = {}
@@ -52,9 +54,26 @@ module Homebrew
             options = entry.options
             Homebrew::Bundle::TapInstaller
           end
-
           next if cls.nil?
-          next if Homebrew::Bundle::Skipper.skip? entry
+
+          { name:, args:, options:, verb:, type:, cls: }
+        end
+
+        if (fetchable_names = fetchable_formulae_and_casks(installable_entries, no_upgrade:).presence)
+          fetchable_names_joined = fetchable_names.join(", ")
+          Formatter.success("Fetching #{fetchable_names_joined}") unless quiet
+          unless Bundle.brew("fetch", *fetchable_names, verbose:)
+            $stderr.puts Formatter.error "`brew bundle` failed! Failed to fetch #{fetchable_names_joined}"
+            return false
+          end
+        end
+
+        installable_entries.each do |entry|
+          name = entry.fetch(:name)
+          args = entry.fetch(:args)
+          options = entry.fetch(:options)
+          verb = entry.fetch(:verb)
+          cls = entry.fetch(:cls)
 
           preinstall = if cls.preinstall!(*args, **options, no_upgrade:, verbose:)
             puts Formatter.success("#{verb} #{name}")
@@ -85,6 +104,24 @@ module Homebrew
         end
 
         true
+      end
+
+      def self.fetchable_formulae_and_casks(entries, no_upgrade:)
+        entries.filter_map do |entry|
+          name = entry.fetch(:name)
+          options = entry.fetch(:options)
+
+          case entry.fetch(:type)
+          when :brew
+            next if Homebrew::Bundle::FormulaInstaller.formula_installed_and_up_to_date?(name, no_upgrade:)
+
+            name
+          when :cask
+            next unless Homebrew::Bundle::CaskInstaller.installable_or_upgradable?(name, no_upgrade:, **options)
+
+            options.fetch(:full_name, name)
+          end
+        end
       end
     end
   end
