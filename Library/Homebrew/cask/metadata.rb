@@ -46,7 +46,7 @@ module Cask
       when :now
         timestamp = new_timestamp
       when Symbol
-        raise CaskError, "Cannot create metadata path when timestamp is :#{timestamp}."
+        raise CaskError, "Invalid timestamp symbol :#{timestamp}. Valid symbols are :latest and :now."
       end
 
       path = metadata_versioned_path(version:, caskroom_path:).join(timestamp)
