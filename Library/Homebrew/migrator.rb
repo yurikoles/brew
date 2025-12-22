@@ -33,16 +33,16 @@ class Migrator
 
   # Error for when a formula is migrated to a different tap without explicitly using its fully-qualified name.
   class MigratorDifferentTapsError < RuntimeError
-    sig { params(formula: Formula, oldname: String, tap: Tap).void }
+    sig { params(formula: Formula, oldname: String, tap: T.nilable(Tap)).void }
     def initialize(formula, oldname, tap)
-      msg = if tap.core_tap?
+      msg = if tap&.core_tap?
         "Please try to use #{oldname} to refer to the formula.\n"
       elsif tap
         "Please try to use fully-qualified #{tap}/#{oldname} to refer to the formula.\n"
       end
 
       super <<~EOS
-        #{formula.name} from #{formula.tap} is given, but old name #{oldname} was installed from #{tap}.
+        #{formula.name} from #{formula.tap} is given, but old name #{oldname} was installed from #{tap || "path or url"}}.
         #{msg}To force migration, run:
           brew migrate --force #{oldname}
       EOS
@@ -157,7 +157,7 @@ class Migrator
     first_tab = old_tabs.first
     @old_tap = T.let(first_tab&.tap, T.nilable(Tap))
 
-    raise MigratorDifferentTapsError.new(formula, oldname, T.must(old_tap)) if !force && !from_same_tap_user?
+    raise MigratorDifferentTapsError.new(formula, oldname, old_tap) if !force && !from_same_tap_user?
 
     @new_cellar = T.let(HOMEBREW_CELLAR/formula.name, Pathname)
     @new_cellar_existed = T.let(@new_cellar.exist?, T::Boolean)
