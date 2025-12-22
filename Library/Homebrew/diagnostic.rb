@@ -61,7 +61,7 @@ module Homebrew
 
       sig { params(verbose: T::Boolean).void }
       def initialize(verbose: true)
-        @verbose = T.let(verbose, T::Boolean)
+        @verbose = verbose
         @found = T.let([], T::Array[String])
         @seen_prefix_bin = T.let(false, T::Boolean)
         @seen_prefix_sbin = T.let(false, T::Boolean)
