@@ -1459,9 +1459,8 @@ on_request: installed_on_request?, options:)
       download_queue.enqueue(downloadable_object, check_attestation:)
     else
       downloadable_object.fetch
-      if check_attestation
-        bottle = T.cast(downloadable_object, Bottle)
-        Utils::Attestation.check_attestation(bottle, quiet: @quiet)
+      if check_attestation && downloadable_object.is_a?(Bottle)
+        Utils::Attestation.check_attestation(downloadable_object, quiet: @quiet)
       end
     end
 
