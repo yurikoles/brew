@@ -42,7 +42,7 @@ class Migrator
       end
 
       super <<~EOS
-        #{formula.name} from #{formula.tap} is given, but old name #{oldname} was installed from #{tap || "path or url"}}.
+        #{formula.name} from #{formula.tap} is given, but old name #{oldname} was installed from #{tap || "path or url"}.
         #{msg}To force migration, run:
           brew migrate --force #{oldname}
       EOS
