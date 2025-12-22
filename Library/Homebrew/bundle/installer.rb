@@ -93,13 +93,15 @@ module Homebrew
         end
 
         unless failure.zero?
-          dependency = Homebrew::Bundle::Dsl.pluralize_dependency(failure)
+          require "utils"
+          dependency = Utils.pluralize("dependency", failure)
           $stderr.puts Formatter.error "`brew bundle` failed! #{failure} Brewfile #{dependency} failed to install"
           return false
         end
 
         unless quiet
-          dependency = Homebrew::Bundle::Dsl.pluralize_dependency(success)
+          require "utils"
+          dependency = Utils.pluralize("dependency", success)
           puts Formatter.success "`brew bundle` complete! #{success} Brewfile #{dependency} now installed."
         end
 
