@@ -27,6 +27,5 @@ RSpec.describe Homebrew::Cmd::TapInfo do
       .to output(/Not installed/).to_stdout
       .and not_to_output.to_stderr
       .and be_a_failure
-    end
   end
 end
