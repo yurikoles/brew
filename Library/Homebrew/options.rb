@@ -3,13 +3,13 @@
 
 # A formula option.
 class Option
-  sig { returns(T.any(String, Symbol)) }
+  sig { returns(String) }
   attr_reader :name
 
   sig { returns(String) }
   attr_reader :description, :flag
 
-  sig { params(name: T.any(String, Symbol), description: String).void }
+  sig { params(name: String, description: String).void }
   def initialize(name, description = "")
     @name = name
     @flag = T.let("--#{name}", String)
@@ -51,10 +51,10 @@ end
 
 # A deprecated formula option.
 class DeprecatedOption
-  sig { returns(T.any(String, Symbol)) }
+  sig { returns(String) }
   attr_reader :old, :current
 
-  sig { params(old: T.any(String, Symbol), current: T.any(String, Symbol)).void }
+  sig { params(old: String, current: String).void }
   def initialize(old, current)
     @old = old
     @current = current
@@ -170,7 +170,7 @@ class Options
     map(&:flag)
   end
 
-  sig { params(option: T.any(Option, String, Symbol)).returns(T::Boolean) }
+  sig { params(option: T.any(Option, String)).returns(T::Boolean) }
   def include?(option)
     any? { |opt| opt == option || opt.name == option || opt.flag == option }
   end
