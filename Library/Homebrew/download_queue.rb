@@ -303,8 +303,8 @@ module Homebrew
           0.0
         end
         bar_used = (percent * bar_length).round
-        bar_completed = "━" * bar_used
-        bar_pending = "┈" * (bar_length - bar_used)
+        bar_completed = "=" * bar_used
+        bar_pending = "-" * (bar_length - bar_used)
         progress = " #{bar_completed}#{bar_pending}#{progress}"
       end
       message_length = available_width - progress.length
