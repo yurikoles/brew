@@ -1,3 +1,4 @@
+# typed: strict
 # frozen_string_literal: true
 
 require "cmd/shared_examples/args_parse"
@@ -25,6 +26,13 @@ RSpec.describe Homebrew::Cmd::TapInfo do
   it "fails for an unknown tap", :integration_test do
     expect { brew "tap-info", "does-not-exist/tap" }
       .to output(/Not installed/).to_stdout
+      .and not_to_output.to_stderr
+      .and be_a_failure
+  end
+
+  it "fails for an unknown tap with JSON output", :integration_test do
+    expect { brew "tap-info", "--json=v1", "does-not-exist/tap" }
+      .to output.to_stdout
       .and not_to_output.to_stderr
       .and be_a_failure
   end
