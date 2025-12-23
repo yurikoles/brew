@@ -138,15 +138,26 @@ module Homebrew
 
           case entry.fetch(:type)
           when :brew
+            next unless tap_installed?(name)
             next if Homebrew::Bundle::FormulaInstaller.formula_installed_and_up_to_date?(name, no_upgrade:)
 
             name
           when :cask
+            full_name = options.fetch(:full_name, name)
+            next unless tap_installed?(full_name)
             next unless Homebrew::Bundle::CaskInstaller.installable_or_upgradable?(name, no_upgrade:, **options)
 
-            options.fetch(:full_name, name)
+            full_name
           end
         end
+      end
+
+      sig { params(package_full_name: String).returns(T::Boolean) }
+      def self.tap_installed?(package_full_name)
+        user, repository, = package_full_name.split("/", 3)
+        return true if user.blank? || repository.blank?
+
+        Homebrew::Bundle::TapInstaller.installed_taps.include?("#{user}/#{repository}")
       end
     end
   end
