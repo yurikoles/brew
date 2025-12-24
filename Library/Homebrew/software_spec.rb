@@ -197,7 +197,7 @@ class SoftwareSpec
     end
   end
 
-  sig { params(name: String).returns(T::Boolean) }
+  sig { params(name: T.any(Option, String)).returns(T::Boolean) }
   def option_defined?(name)
     options.include?(name)
   end
