@@ -106,11 +106,8 @@ jobs:
           key: tap-syntax-style-cache-${{ github.sha }}
           restore-keys: tap-syntax-style-cache-
 
-      - name: Run brew style on homebrew-core
-        run: brew style homebrew/core
-
-      - name: Run brew style on homebrew-cask
-        run: brew style homebrew/cask
+      - name: Run brew style on official taps
+        run: brew style homebrew/core homebrew/cask
 
   formula-audit:
     name: formula audit
