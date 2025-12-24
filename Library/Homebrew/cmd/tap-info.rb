@@ -5,11 +5,6 @@ require "abstract_command"
 
 module Homebrew
   module Cmd
-    # Implementation of the `brew tap-info` command.
-    #
-    # Shows detailed information about taps or displays brief statistics
-    # for all installed taps when no arguments are provided. See `tap.rb` for
-    # more information about taps.
     class TapInfo < AbstractCommand
       cmd_args do
         description <<~EOS
