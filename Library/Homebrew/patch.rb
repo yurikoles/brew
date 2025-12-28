@@ -5,6 +5,8 @@ require "resource"
 require "erb"
 require "utils/output"
 
+Owner = T.type_alias { T.any(Formula, Resource, SoftwareSpec) }
+
 # Helper module for creating patches.
 module Patch
   sig {
@@ -39,7 +41,7 @@ class EmbeddedPatch
   extend T::Helpers
   abstract!
 
-  sig { params(owner: T.untyped).returns(T.untyped) }
+  sig { params(owner: T.nilable(Owner)).returns(T.nilable(Owner)) }
   attr_writer :owner
 
   sig { returns(T.any(String, Symbol)) }
@@ -48,7 +50,7 @@ class EmbeddedPatch
   sig { params(strip: T.any(String, Symbol)).void }
   def initialize(strip)
     @strip = T.let(strip, T.any(String, Symbol))
-    @owner = T.let(nil, T.untyped)
+    @owner = T.let(nil, T.nilable(Owner))
   end
 
   sig { returns(T::Boolean) }
@@ -144,7 +146,7 @@ class ExternalPatch
     true
   end
 
-  sig { params(owner: T.untyped).void }
+  sig { params(owner: T.nilable(Owner)).void }
   def owner=(owner)
     resource.owner = owner
     resource.version(resource.checksum&.hexdigest || ERB::Util.url_encode(resource.url))
