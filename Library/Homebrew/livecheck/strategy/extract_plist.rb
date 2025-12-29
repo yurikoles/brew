@@ -107,6 +107,14 @@ module Homebrew
             cask_copy = Cask::CaskLoader.load(cask.sourcefile_path)
             cask_copy.allow_reassignment = true
             cask_copy.url url
+
+            cask.livecheck.options.to_h.each_key do |options_key|
+              next unless cask_copy.url.specs.key?(options_key)
+
+              value = cask.livecheck.options.public_send(options_key)
+              cask_copy.url.specs[options_key] = value if value
+            end
+
             UnversionedCaskChecker.new(cask_copy)
           else
             UnversionedCaskChecker.new(cask)
