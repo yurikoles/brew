@@ -351,18 +351,14 @@ module Cask
       nil
     end
 
-    def populate_from_api!(json_cask)
+    sig { params(cask_struct: Homebrew::API::CaskStruct).void }
+    def populate_from_api!(cask_struct)
       raise ArgumentError, "Expected cask to be loaded from the API" unless loaded_from_api?
 
-      @languages = json_cask.fetch(:languages, [])
-      @tap_git_head = json_cask.fetch(:tap_git_head, "HEAD")
-
-      @ruby_source_path = json_cask[:ruby_source_path]
-
-      # TODO: Clean this up when we deprecate the current JSON API and move to the internal JSON v3.
-      ruby_source_sha256 = json_cask.dig(:ruby_source_checksum, :sha256)
-      ruby_source_sha256 ||= json_cask[:ruby_source_sha256]
-      @ruby_source_checksum = { sha256: ruby_source_sha256 }
+      @languages = cask_struct.languages
+      @tap_git_head = cask_struct.tap_git_head
+      @ruby_source_path = cask_struct.ruby_source_path
+      @ruby_source_checksum = cask_struct.ruby_source_checksum
     end
 
     # @api public
