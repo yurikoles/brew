@@ -467,13 +467,6 @@ module Formulary
     class_name
   end
 
-  sig { params(string: String).returns(T.any(String, Symbol)) }
-  def self.convert_to_string_or_symbol(string)
-    return T.must(string[1..]).to_sym if string.start_with?(":")
-
-    string
-  end
-
   # A {FormulaLoader} returns instances of formulae.
   # Subclasses implement loaders for particular sources of formulae.
   class FormulaLoader
