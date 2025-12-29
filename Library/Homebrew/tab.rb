@@ -467,12 +467,12 @@ class Tab < AbstractTab
 
   sig { returns(T.nilable(Version)) }
   def stable_version
-    versions["stable"]&.then { Version.new(_1) }
+    versions["stable"]&.then { Version.new(it) }
   end
 
   sig { returns(T.nilable(Version)) }
   def head_version
-    versions["head"]&.then { Version.new(_1) }
+    versions["head"]&.then { Version.new(it) }
   end
 
   sig { returns(Integer) }
