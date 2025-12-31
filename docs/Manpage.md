@@ -1532,6 +1532,15 @@ evaluation of this command's output to your dotfiles (e.g. `~/.bash_profile` or
 The shell can be specified explicitly with a supported shell name parameter.
 Unknown shells will output POSIX exports.
 
+### `source` \[*`formula`* ...\]
+
+Open a *`formula`*'s source repository in a browser, or open Homebrew's own
+repository if no argument is provided.
+
+The repository URL is determined from the formula's head URL, stable URL, or
+homepage. Supports GitHub, GitLab, Bitbucket, Codeberg, and SourceHut
+repositories.
+
 ### `tab` \[*`options`*\] *`installed_formula`*\|*`installed_cask`* \[...\]
 
 Edit tab information for installed formulae or casks.
