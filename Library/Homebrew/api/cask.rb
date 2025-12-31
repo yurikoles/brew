@@ -146,19 +146,20 @@ module Homebrew
         Homebrew::API.write_names_file!(all_casks.keys, "cask", regenerate:)
       end
 
+      # NOTE: this will be used to load installed cask JSON files, so it must never fail with older JSON API versions)
       sig { params(hash: T::Hash[String, T.untyped]).returns(CaskStruct) }
       def self.generate_cask_struct_hash(hash)
         hash = Homebrew::API.merge_variations(hash).dup.deep_symbolize_keys.transform_keys(&:to_s)
 
         hash["conflicts_with_args"] = hash["conflicts_with"]
 
-        hash["container_args"] = hash["container"].to_h do |key, value|
+        hash["container_args"] = hash["container"]&.to_h do |key, value|
           next [key, value.to_sym] if key == :type
 
           [key, value]
         end
 
-        hash["depends_on_args"] = hash["depends_on"].to_h do |key, value|
+        hash["depends_on_args"] = hash["depends_on"]&.to_h do |key, value|
           # Arch dependencies are encoded like `{ type: :intel, bits: 64 }`
           # but `depends_on arch:` only accepts `:intel` or `:arm64`
           if key == :arch
@@ -181,7 +182,7 @@ module Homebrew
           version_symbol = MacOSVersion::SYMBOLS.key(version_symbol)
           version_dep = "#{dep_type} :#{version_symbol}" if version_symbol
           [key, version_dep]
-        end.compact_blank
+        end&.compact_blank
 
         if (deprecate_args = hash["deprecate_args"])
           deprecate_args = deprecate_args.dup
@@ -216,7 +217,7 @@ module Homebrew
 
         hash["raw_caveats"] = hash["caveats"]
 
-        hash["renames"] = hash["rename"].map do |operation|
+        hash["renames"] = hash["rename"]&.map do |operation|
           [operation[:from], operation[:to]]
         end
 
@@ -230,7 +231,7 @@ module Homebrew
 
         hash["url_args"] = [hash["url"]]
 
-        hash["url_kwargs"] = hash["url_specs"].to_h do |key, value|
+        hash["url_kwargs"] = hash["url_specs"]&.to_h do |key, value|
           value = case key
           when :user_agent
             Utils.convert_to_string_or_symbol(value)
@@ -241,7 +242,7 @@ module Homebrew
           end
 
           [key, value]
-        end.compact_blank
+        end&.compact_blank
 
         # Should match CaskStruct::PREDICATES
         hash["auto_updates_present"] = hash["auto_updates"].present?
