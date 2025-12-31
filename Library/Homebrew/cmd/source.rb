@@ -13,7 +13,7 @@ module Homebrew
           Homebrew's own repository if no argument is provided.
 
           The repository URL is determined from the formula's head URL,
-          stable URL, or homepage. Supports GitHub, GitLab, Bitbucket, Codeberg, and
+          stable URL, or homepage. Supports GitHub, GitLab, Bitbucket, Codeberg and
           SourceHut repositories.
         EOS
 
