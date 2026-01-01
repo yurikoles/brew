@@ -249,7 +249,7 @@ module Homebrew
         hash["caveats_present"] = hash["caveats"].present?
         hash["conflicts_present"] = hash["conflicts_with"].present?
         hash["container_present"] = hash["container"].present?
-        hash["depends_on_present"] = !hash["depends_on_args"].empty?
+        hash["depends_on_present"] = hash["depends_on_args"].present?
         hash["deprecate_present"] = hash["deprecate_args"].present?
         hash["desc_present"] = hash["desc"].present?
         hash["disable_present"] = hash["disable_args"].present?
