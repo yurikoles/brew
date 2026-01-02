@@ -143,12 +143,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there are no formulae to uninstall and no taps to untap" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    [],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "does nothing" do
@@ -161,12 +162,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there are casks to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    %w[a b],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls casks" do
@@ -185,12 +187,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there are casks to zap" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    %w[a b],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls casks" do
@@ -209,12 +212,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there are formulae to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    [],
-                                                 formulae_to_uninstall:                 %w[a b],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          %w[a b],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls formulae" do
@@ -233,12 +237,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there are taps to untap" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    [],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         %w[a b],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  %w[a b],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "untaps taps" do
@@ -258,12 +263,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
     before do
       described_class.reset!
       allow(Homebrew::Bundle).to receive(:which_vscode).and_return(Pathname("code"))
-      allow(described_class).to receive_messages(casks_to_uninstall:                    [],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        %w[GitHub.codespaces],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: %w[GitHub.codespaces],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls extensions" do
@@ -282,12 +288,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there are flatpaks to uninstall", :needs_linux do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    [],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 %w[org.gnome.Calculator],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          %w[org.gnome.Calculator])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls flatpaks" do
@@ -332,12 +339,13 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
   context "when there is brew cleanup output" do
     before do
       described_class.reset!
-      allow(described_class).to receive_messages(casks_to_uninstall:                    [],
-                                                 formulae_to_uninstall:                 [],
-                                                 taps_to_untap:                         [],
-                                                 vscode_extensions_to_uninstall:        [],
-                                                 flatpaks_to_uninstall:                 [],
-                                                 mark_formulae_as_installed_on_request: nil)
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 flatpaks_to_uninstall:          [])
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     define_method(:sane?) do
@@ -378,66 +386,12 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
       )
       allow(Kernel).to receive(:system)
       allow(described_class).to receive(:system_output_no_stderr).and_return("")
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "marks Brewfile formulae as installed_on_request before uninstalling" do
-      expect(described_class).to receive(:mark_formulae_as_installed_on_request)
+      expect(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
       described_class.run(force: true)
-    end
-  end
-
-  describe ".mark_formulae_as_installed_on_request", :no_api do
-    before do
-      described_class.reset!
-      allow(DevelopmentTools).to receive_messages(needs_libc_formula?: false, needs_compiler_formula?: false)
-    end
-
-    it "sets installed_on_request=true for installed Brewfile formulae" do
-      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'myformula'")
-
-      myformula = formula("myformula") { url "myformula-1.0" }
-      stub_formula_loader myformula, "myformula"
-      allow(myformula).to receive(:any_version_installed?).and_return(true)
-
-      tabfile = Pathname.new("/fake/INSTALL_RECEIPT.json")
-      tab = instance_double(Tab, installed_on_request: false, tabfile:)
-      allow(Tab).to receive(:for_formula).with(myformula).and_return(tab)
-      allow(tabfile).to receive_messages(blank?: false, exist?: true)
-
-      expect(tab).to receive(:installed_on_request=).with(true)
-      expect(tab).to receive(:write)
-
-      described_class.send(:mark_formulae_as_installed_on_request)
-    end
-
-    it "skips formulae that are not installed" do
-      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'notinstalled'")
-
-      myformula = formula("notinstalled") { url "notinstalled-1.0" }
-      stub_formula_loader myformula, "notinstalled"
-      allow(myformula).to receive(:any_version_installed?).and_return(false)
-
-      expect(Tab).not_to receive(:for_formula)
-
-      described_class.send(:mark_formulae_as_installed_on_request)
-    end
-
-    it "skips formulae already marked as installed_on_request" do
-      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'alreadymarked'")
-
-      myformula = formula("alreadymarked") { url "alreadymarked-1.0" }
-      stub_formula_loader myformula, "alreadymarked"
-      allow(myformula).to receive(:any_version_installed?).and_return(true)
-
-      tabfile = Pathname.new("/fake/INSTALL_RECEIPT.json")
-      tab = instance_double(Tab, installed_on_request: true, tabfile:)
-      allow(Tab).to receive(:for_formula).with(myformula).and_return(tab)
-      allow(tabfile).to receive_messages(blank?: false, exist?: true)
-
-      expect(tab).not_to receive(:installed_on_request=)
-      expect(tab).not_to receive(:write)
-
-      described_class.send(:mark_formulae_as_installed_on_request)
     end
   end
 end

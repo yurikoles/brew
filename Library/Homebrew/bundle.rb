@@ -173,6 +173,30 @@ module Homebrew
         @formula_versions_from_env = T.let(nil, T.nilable(T::Hash[String, String]))
         @upgrade_formulae = T.let(nil, T.nilable(T::Array[String]))
       end
+
+      # Marks Brewfile formulae as installed_on_request to prevent autoremove
+      # from removing them when their dependents are uninstalled.
+      sig { params(dsl: Dsl).void }
+      def mark_as_installed_on_request(dsl)
+        require "tab"
+
+        brewfile_formulae = dsl.entries.select { |e| e.type == :brew }.map(&:name)
+
+        brewfile_formulae.each do |name|
+          formula = Formulary.factory(name)
+          next unless formula.any_version_installed?
+
+          tab = Tab.for_formula(formula)
+          next if tab.tabfile.blank? || !tab.tabfile.exist?
+          next if tab.installed_on_request
+
+          tab.installed_on_request = true
+          tab.write
+        rescue FormulaUnavailableError
+          # Formula not found, skip it
+          nil
+        end
+      end
     end
   end
 end

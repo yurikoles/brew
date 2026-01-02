@@ -46,4 +46,58 @@ RSpec.describe Homebrew::Bundle do
       expect(described_class.mas_installed?).to be(true)
     end
   end
+
+  describe ".mark_as_installed_on_request", :no_api do
+    before do
+      allow(DevelopmentTools).to receive_messages(needs_libc_formula?: false, needs_compiler_formula?: false)
+    end
+
+    it "sets installed_on_request=true for installed Brewfile formulae" do
+      myformula = formula("myformula") { url "myformula-1.0" }
+      stub_formula_loader myformula, "myformula"
+      allow(myformula).to receive(:any_version_installed?).and_return(true)
+
+      tabfile = Pathname.new("/fake/INSTALL_RECEIPT.json")
+      tab = instance_double(Tab, installed_on_request: false, tabfile:)
+      allow(Tab).to receive(:for_formula).with(myformula).and_return(tab)
+      allow(tabfile).to receive_messages(blank?: false, exist?: true)
+
+      expect(tab).to receive(:installed_on_request=).with(true)
+      expect(tab).to receive(:write)
+
+      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'myformula'")
+      dsl = Homebrew::Bundle::Dsl.new(Pathname.new("/fake/Brewfile"))
+      described_class.mark_as_installed_on_request(dsl)
+    end
+
+    it "skips formulae that are not installed" do
+      myformula = formula("notinstalled") { url "notinstalled-1.0" }
+      stub_formula_loader myformula, "notinstalled"
+      allow(myformula).to receive(:any_version_installed?).and_return(false)
+
+      expect(Tab).not_to receive(:for_formula)
+
+      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'notinstalled'")
+      dsl = Homebrew::Bundle::Dsl.new(Pathname.new("/fake/Brewfile"))
+      described_class.mark_as_installed_on_request(dsl)
+    end
+
+    it "skips formulae already marked as installed_on_request" do
+      myformula = formula("alreadymarked") { url "alreadymarked-1.0" }
+      stub_formula_loader myformula, "alreadymarked"
+      allow(myformula).to receive(:any_version_installed?).and_return(true)
+
+      tabfile = Pathname.new("/fake/INSTALL_RECEIPT.json")
+      tab = instance_double(Tab, installed_on_request: true, tabfile:)
+      allow(Tab).to receive(:for_formula).with(myformula).and_return(tab)
+      allow(tabfile).to receive_messages(blank?: false, exist?: true)
+
+      expect(tab).not_to receive(:installed_on_request=)
+      expect(tab).not_to receive(:write)
+
+      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'alreadymarked'")
+      dsl = Homebrew::Bundle::Dsl.new(Pathname.new("/fake/Brewfile"))
+      described_class.mark_as_installed_on_request(dsl)
+    end
+  end
 end
