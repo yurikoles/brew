@@ -122,7 +122,7 @@ We use the macOS sandbox to stop this but this doesn't work when run as the `roo
 
 Did you `chown root /Applications/TextMate.app`? Probably not. So is it that important to `chown root wget`?
 
-If you need to run Homebrew in a multi-user environment, consider creating a separate user account specifically for use of Homebrew.
+Note: Homebrew is primarily designed for single-user use and does not work well in multi-user configurations.
 
 ## What is the default ownership and permissions used by Homebrew?
 
@@ -132,9 +132,11 @@ Ownership on macOS, all subdirectories and files use a forced default of `admin`
 
 Ownership on Linux, all subdirectories and files default to the current user and the user group that executed the installation.
 
-By default, permissions for Homebrew-managed directories and files are `0755 (u=rwx,g=rx,o=rx)` on both macOS and Linux. This means that only the owning user (typically the installing user) can modify or replace files within the Homebrew prefix, while all users are allowed to read and execute installed binaries. On multi-user systems, Homebrew recommends managing the installation from a dedicated user account rather than running `brew` as multiple users.
+By default, permissions for Homebrew-managed directories and files are `0755 (u=rwx,g=rx,o=rx)` on both macOS and Linux. This means that only the owning user (typically the installing user) can modify or replace files within the Homebrew prefix, while all users are allowed to read and execute installed binaries.
 
 When a Homebrew-installed binary is executed, it runs with the privileges of the user who launched it.
+
+Note: Homebrew is primarily designed for single-user use and does not work well in multi-user configurations.
 
 ## Why isn’t a particular command documented?
 
