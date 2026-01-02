@@ -4023,11 +4023,8 @@ class RuboCop::ResultCache
 
   def any_symlink?(path); end
   def context_checksum(team, options); end
-  def digest(path); end
   def file_checksum(file, config_store); end
   def relevant_options_digest(options); end
-  def rubocop_checksum; end
-  def rubocop_extra_features; end
   def symlink_protection_triggered?(path); end
 
   class << self
@@ -4039,13 +4036,14 @@ class RuboCop::ResultCache
     def rubocop_required_features; end
     def rubocop_required_features=(_arg0); end
     def source_checksum; end
-    def source_checksum=(_arg0); end
 
     private
 
-    def remove_files(files, dirs, remove_count); end
-    def remove_oldest_files(files, dirs, rubocop_cache_dir, verbose); end
+    def digest(path); end
+    def remove_files(files, remove_count); end
+    def remove_oldest_files(files, rubocop_cache_dir, verbose); end
     def requires_file_removal?(file_count, config_store); end
+    def rubocop_extra_features; end
   end
 end
 
