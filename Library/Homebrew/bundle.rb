@@ -179,10 +179,12 @@ module Homebrew
       sig { params(entries: T::Array[Dsl::Entry]).void }
       def mark_as_installed_on_request!(entries)
         return if entries.empty?
+
         require "tab"
 
         installed_formulae = Formula.installed_formula_names
         return if installed_formulae.empty?
+
         entries.each do |entry|
           next if entry.type != :brew
 

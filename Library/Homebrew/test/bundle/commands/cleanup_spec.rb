@@ -148,8 +148,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "does nothing" do
@@ -167,8 +165,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls casks" do
@@ -192,8 +188,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls casks" do
@@ -242,8 +236,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  %w[a b],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "untaps taps" do
@@ -268,8 +260,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: %w[GitHub.codespaces],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls extensions" do
@@ -293,8 +283,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          %w[org.gnome.Calculator])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     it "uninstalls flatpaks" do
@@ -344,8 +332,6 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
-      allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
     define_method(:sane?) do
