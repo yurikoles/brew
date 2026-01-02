@@ -37,6 +37,10 @@ module Homebrew
           vscode_extensions = vscode ? vscode_extensions_to_uninstall(global:, file:) : []
           flatpaks = flatpak ? flatpaks_to_uninstall(global:, file:) : []
           if force
+            # Mark Brewfile formulae as installed_on_request to prevent autoremove
+            # from removing them when their dependents are uninstalled
+            mark_formulae_as_installed_on_request(global:, file:)
+
             if casks.any?
               args = zap ? ["--zap"] : []
               Kernel.system HOMEBREW_BREW_FILE, "uninstall", "--cask", *args, "--force", *casks
@@ -247,6 +251,29 @@ module Homebrew
 
         def self.system_output_no_stderr(cmd, *args)
           IO.popen([cmd, *args], err: :close).read
+        end
+
+        private_class_method def self.mark_formulae_as_installed_on_request(global: false, file: nil)
+          require "bundle/brewfile"
+          require "tab"
+
+          @dsl ||= Brewfile.read(global:, file:)
+          brewfile_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+
+          brewfile_formulae.each do |name|
+            formula = Formulary.factory(name)
+            next unless formula.any_version_installed?
+
+            tab = Tab.for_formula(formula)
+            next if tab.tabfile.blank? || !tab.tabfile.exist?
+            next if tab.installed_on_request
+
+            tab.installed_on_request = true
+            tab.write
+          rescue FormulaUnavailableError
+            # Formula not found, skip it
+            nil
+          end
         end
       end
     end
