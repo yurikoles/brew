@@ -177,16 +177,17 @@ module Homebrew
       # Marks Brewfile formulae as installed_on_request to prevent autoremove
       # from removing them when their dependents are uninstalled.
       sig { params(dsl: Dsl).void }
-      def mark_as_installed_on_request(dsl)
+      def mark_as_installed_on_request!(dsl)
         require "tab"
 
-        brewfile_formulae = dsl.entries.select { |e| e.type == :brew }.map(&:name)
+        installed_formulae = Formula.installed_formula_names
+        dsl.entries do |name|
+          next if e.type != :brew
 
-        brewfile_formulae.each do |name|
-          formula = Formulary.factory(name)
-          next unless formula.any_version_installed?
+					name = e.name
+          next if installed_formulae.exclude?(name)
 
-          tab = Tab.for_formula(formula)
+          tab = Tab.for_name(name)
           next if tab.tabfile.blank? || !tab.tabfile.exist?
           next if tab.installed_on_request
 
