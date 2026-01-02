@@ -148,7 +148,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -167,7 +167,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -192,7 +192,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -217,7 +217,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -242,7 +242,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  %w[a b],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -268,7 +268,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: %w[GitHub.codespaces],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -293,7 +293,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          %w[org.gnome.Calculator])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -344,7 +344,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
                                                  taps_to_untap:                  [],
                                                  vscode_extensions_to_uninstall: [],
                                                  flatpaks_to_uninstall:          [])
-      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      allow(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
     end
 
@@ -390,7 +390,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
     end
 
     it "marks Brewfile formulae as installed_on_request before uninstalling" do
-      expect(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      expect(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       described_class.run(force: true)
     end
   end

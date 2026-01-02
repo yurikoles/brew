@@ -102,7 +102,7 @@ RSpec.describe Homebrew::Bundle::Commands::Install do
       allow(Homebrew::Bundle::MacAppStoreInstaller).to receive_messages(preinstall!: true, install!: true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'test_formula'")
 
-      expect(Homebrew::Bundle).to receive(:mark_as_installed_on_request)
+      expect(Homebrew::Bundle).to receive(:mark_as_installed_on_request!)
       described_class.run
     end
   end

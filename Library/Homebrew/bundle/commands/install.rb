@@ -29,7 +29,7 @@ module Homebrew
 
           # Mark Brewfile formulae as installed_on_request to prevent autoremove
           # from removing them when their dependents are uninstalled
-          Homebrew::Bundle.mark_as_installed_on_request(@dsl)
+          Homebrew::Bundle.mark_as_installed_on_request!(@dsl.entries)
 
           result || exit(1)
         end

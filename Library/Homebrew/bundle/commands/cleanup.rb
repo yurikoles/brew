@@ -41,7 +41,7 @@ module Homebrew
             # from removing them when their dependents are uninstalled
             require "bundle/brewfile"
             @dsl ||= Brewfile.read(global:, file:)
-            Homebrew::Bundle.mark_as_installed_on_request(@dsl)
+            Homebrew::Bundle.mark_as_installed_on_request!(@dsl.entries)
 
             if casks.any?
               args = zap ? ["--zap"] : []
