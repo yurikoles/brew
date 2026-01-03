@@ -197,9 +197,6 @@ module Homebrew
 
           tab.installed_on_request = true
           tab.write
-        rescue FormulaUnavailableError
-          # Formula not found, skip it
-          nil
         end
       end
     end
