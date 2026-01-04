@@ -282,9 +282,10 @@ module Homebrew
       size, unit = disk_usage_readable_size_unit(fetched_size, precision:)
       formatted_fetched_size = format(size_formatting_string, size:, unit:)
 
+      total_size = downloadable.total_size
       formatted_total_size = if future.fulfilled?
         formatted_fetched_size
-      elsif (total_size = downloadable.total_size)
+      elsif total_size
         size, unit = disk_usage_readable_size_unit(total_size, precision:)
         format(size_formatting_string, size:, unit:)
       else
@@ -296,15 +297,11 @@ module Homebrew
       phase = format("%-<phase>#{max_phase_length}s", phase: downloadable.phase.to_s.capitalize)
       progress = " #{phase} #{formatted_fetched_size}/#{formatted_total_size}"
       bar_length = [4, available_width - progress.length - message_length_max - 1].max
-      if downloadable.phase == :downloading
-        percent = if (total_size = downloadable.total_size)
-          (fetched_size.to_f / [1, total_size].max).clamp(0.0, 1.0)
-        else
-          0.0
-        end
+      if downloadable.phase == :downloading && total_size
+        percent = (fetched_size.to_f / [1, total_size].max).clamp(0.0, 1.0)
         bar_used = (percent * bar_length).round
         bar_completed = "#" * bar_used
-        bar_pending = "-" * (bar_length - bar_used)
+        bar_pending = " " * (bar_length - bar_used)
         progress = " #{bar_completed}#{bar_pending}#{progress}"
       end
       message_length = available_width - progress.length
