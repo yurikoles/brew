@@ -366,8 +366,11 @@ class Migrator
 
   sig { returns(T.nilable(Integer)) }
   def link_newname
+    new_linked_keg_record = self.new_linked_keg_record
+    return unless new_linked_keg_record
+
     oh1 "Relinking #{Formatter.identifier(newname)}"
-    new_keg = Keg.new(T.must(new_linked_keg_record))
+    new_keg = Keg.new(new_linked_keg_record)
 
     # If old_keg wasn't linked then we just optlink a keg.
     # If old keg wasn't optlinked and linked, we don't call this method at all.
@@ -415,9 +418,12 @@ class Migrator
   # Link keg to opt if it was linked before migrating.
   sig { void }
   def link_oldname_opt
+    new_linked_keg_record = self.new_linked_keg_record
+    return unless new_linked_keg_record
+
     old_opt_records.each do |old_opt_record|
       old_opt_record.delete if old_opt_record.symlink?
-      old_opt_record.make_relative_symlink(T.must(new_linked_keg_record))
+      old_opt_record.make_relative_symlink(new_linked_keg_record)
     end
   end
 
@@ -471,8 +477,8 @@ class Migrator
     backup_oldname_cellar
     backup_old_tabs
 
-    if pinned? && !old_pin_record.symlink? && old_pin_link_record
-      src_oldname = (old_pin_record.dirname/T.must(old_pin_link_record)).expand_path
+    if pinned? && !old_pin_record.symlink? && (old_pin_link = old_pin_link_record)
+      src_oldname = (old_pin_record.dirname/old_pin_link).expand_path
       old_pin_record.make_relative_symlink(src_oldname)
       new_pin_record.delete
     end
