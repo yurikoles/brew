@@ -441,12 +441,13 @@ class Migrator
   # Remove `opt/oldname` link if it belongs to newname.
   sig { void }
   def unlink_oldname_opt
+    new_linked_keg_record = self.new_linked_keg_record
     return unless new_linked_keg_record&.exist?
 
     old_opt_records.each do |old_opt_record|
       next unless old_opt_record.symlink?
       next unless old_opt_record.exist?
-      next if new_linked_keg_record&.realpath != old_opt_record.realpath
+      next if new_linked_keg_record.realpath != old_opt_record.realpath
 
       old_opt_record.unlink
       old_opt_record.parent.rmdir_if_possible
