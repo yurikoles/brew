@@ -29,6 +29,7 @@ module Homebrew
       @pool = T.let(Concurrent::FixedThreadPool.new(concurrency), Concurrent::FixedThreadPool)
       @tty = T.let($stdout.tty?, T::Boolean)
       @spinner = T.let(nil, T.nilable(Spinner))
+      @symlink_targets = T.let({}, T::Hash[Pathname, T::Set[Downloadable]])
     end
 
     sig {
@@ -38,6 +39,12 @@ module Homebrew
       ).void
     }
     def enqueue(downloadable, check_attestation: false)
+      cached_location = downloadable.cached_download
+
+      @symlink_targets[cached_location] ||= Set.new
+      targets = @symlink_targets.fetch(cached_location)
+      targets << downloadable
+
       downloads[downloadable] ||= Concurrent::Promises.future_on(
         pool, RetryableDownload.new(downloadable, tries:, pour:),
         force, quiet, check_attestation
@@ -47,6 +54,7 @@ module Homebrew
         if check_attestation && downloadable.is_a?(Bottle)
           Utils::Attestation.check_attestation(downloadable, quiet: true)
         end
+        create_symlinks_for_shared_download(cached_location)
       end
     end
 
@@ -185,6 +193,20 @@ module Homebrew
     end
 
     private
+
+    sig { params(cached_location: Pathname).void }
+    def create_symlinks_for_shared_download(cached_location)
+      targets = @symlink_targets.fetch(cached_location, Set.new)
+      targets.each do |target|
+        downloader = target.downloader
+        next unless downloader.is_a?(AbstractFileDownloadStrategy)
+
+        symlink_location = downloader.symlink_location
+        next if symlink_location.symlink? && symlink_location.exist?
+
+        downloader.create_symlink_to_cached_download(cached_location)
+      end
+    end
 
     sig { params(downloadable: Downloadable, exception: T.nilable(Exception)).returns(T::Boolean) }
     def bottle_manifest_error?(downloadable, exception)
