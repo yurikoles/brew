@@ -39,6 +39,7 @@ end
 class EmbeddedPatch
   include Utils::Output::Mixin
   extend T::Helpers
+
   abstract!
 
   sig { params(owner: T.nilable(Owner)).returns(T.nilable(Owner)) }
@@ -91,6 +92,9 @@ class DATAPatch < EmbeddedPatch
 
   sig { override.returns(String) }
   def contents
+    path = self.path
+    raise ArgumentError, "DATAPatch#contents called before path was set!" unless path
+
     data = +""
     path.open("rb") do |f|
       loop do
