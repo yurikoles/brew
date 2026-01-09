@@ -4,8 +4,10 @@
 module Homebrew
   module API
     class CaskStruct < T::Struct
-      sig { params(cask_hash: T::Hash[String, T.untyped]).returns(CaskStruct) }
-      def self.from_hash(cask_hash)
+      sig { params(cask_hash: T::Hash[String, T.untyped], ignore_types: T::Boolean).returns(CaskStruct) }
+      def self.from_hash(cask_hash, ignore_types: false)
+        return super(cask_hash) if ignore_types
+
         cask_hash = cask_hash.transform_keys(&:to_sym)
                              .slice(*decorator.all_props)
                              .compact_blank
