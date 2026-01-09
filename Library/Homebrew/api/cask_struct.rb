@@ -13,6 +13,7 @@ module Homebrew
         :deprecate,
         :desc,
         :disable,
+        :homepage,
       ].freeze
 
       ArtifactArgs = T.type_alias do
@@ -43,15 +44,15 @@ module Homebrew
       const :deprecate_args, T::Hash[Symbol, T.nilable(T.any(String, Symbol))], default: {}
       const :desc, T.nilable(String)
       const :disable_args, T::Hash[Symbol, T.nilable(T.any(String, Symbol))], default: {}
-      const :homepage, String
+      const :homepage, T.nilable(String)
       const :languages, T::Array[String], default: []
       const :names, T::Array[String], default: []
       const :renames, T::Array[[String, String]], default: []
       const :ruby_source_checksum, T::Hash[Symbol, String]
-      const :ruby_source_path, String
+      const :ruby_source_path, T.nilable(String)
       const :sha256, T.any(String, Symbol)
-      const :tap_git_head, String
-      const :tap_string, String
+      const :tap_git_head, T.nilable(String)
+      const :tap_string, T.nilable(String)
       const :url_args, T::Array[String], default: []
       const :url_kwargs, T::Hash[Symbol, T.anything], default: {}
       const :version, T.any(String, Symbol)
