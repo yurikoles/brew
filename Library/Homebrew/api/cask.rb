@@ -253,6 +253,7 @@ module Homebrew
         hash["deprecate_present"] = hash["deprecate_args"].present?
         hash["desc_present"] = hash["desc"].present?
         hash["disable_present"] = hash["disable_args"].present?
+        hash["homepage_present"] = hash["homepage"].present?
 
         CaskStruct.from_hash(hash)
       end

@@ -352,8 +352,11 @@ module Cask
           source:          JSON.pretty_generate(json_cask),
           config:,
           loader:          self,
-          tap:             Tap.fetch(cask_struct.tap_string),
         }
+
+        if (tap_string = cask_struct.tap_string)
+          cask_options[:tap] = Tap.fetch(tap_string)
+        end
 
         api_cask = Cask.new(token, **cask_options) do
           version cask_struct.version
@@ -364,7 +367,7 @@ module Cask
             name cask_name
           end
           desc cask_struct.desc if cask_struct.desc?
-          homepage cask_struct.homepage
+          homepage cask_struct.homepage if cask_struct.homepage?
 
           deprecate!(**cask_struct.deprecate_args) if cask_struct.deprecate?
           disable!(**cask_struct.disable_args) if cask_struct.disable?
