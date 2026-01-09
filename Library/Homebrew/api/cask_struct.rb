@@ -4,6 +4,14 @@
 module Homebrew
   module API
     class CaskStruct < T::Struct
+      sig { params(cask_hash: T::Hash[String, T.untyped]).returns(CaskStruct) }
+      def self.from_hash(cask_hash)
+        cask_hash = cask_hash.transform_keys(&:to_sym)
+                             .slice(*decorator.all_props)
+                             .compact_blank
+        new(**cask_hash)
+      end
+
       PREDICATES = [
         :auto_updates,
         :caveats,
@@ -35,11 +43,27 @@ module Homebrew
         end
       end
 
+      DependsOnArgs = T.type_alias do
+        T::Hash[
+          # Keys are dependency types like :macos, :arch, :cask, :formula
+          Symbol,
+          # Values can be any of:
+          T.any(
+            # Strings like ">= :catalina" for :macos
+            String,
+            # Symbols like :intel or :arm64 for :arch
+            Symbol,
+            # Array of strings or symbols for :cask and :formula
+            T::Array[T.any(String, Symbol)],
+          ),
+        ]
+      end
+
       # Changes to this struct must be mirrored in Homebrew::API::Cask.generate_cask_struct_hash
       const :auto_updates, T::Boolean, default: false
       const :conflicts_with_args, T::Hash[Symbol, T::Array[String]], default: {}
       const :container_args, T::Hash[Symbol, T.any(Symbol, T.anything)], default: {}
-      const :depends_on_args, T::Hash[Symbol, T::Array[T.any(String, Symbol)]], default: {}
+      const :depends_on_args, DependsOnArgs, default: {}
       const :deprecate_args, T::Hash[Symbol, T.nilable(T.any(String, Symbol))], default: {}
       const :desc, T.nilable(String)
       const :disable_args, T::Hash[Symbol, T.nilable(T.any(String, Symbol))], default: {}
