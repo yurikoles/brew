@@ -50,4 +50,49 @@ RSpec.describe Homebrew::Cmd::Info do
         .to eq("https://mywebsite.com/foo/bar.rb")
     end
   end
+
+  describe "#info_formula" do
+    it "displays info for an uninstalled formula", :integration_test do
+      setup_test_formula "testball"
+      allow_any_instance_of(StringIO).to receive(:tty?).and_return(true)
+
+      formula = Formula["testball"]
+
+      expect do
+        described_class.new([]).send(:info_formula, formula)
+      end.to output(<<~EOS).to_stdout
+        ==> testball ✘: stable 0.1
+        Some test
+        https://brew.sh/testball
+        Not installed
+        From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/testball.rb
+        ==> Options
+        --with-foo
+        \tBuild with foo
+      EOS
+    end
+
+    it "displays info for an installed formula", :integration_test do
+      install_test_formula "testball"
+      allow_any_instance_of(StringIO).to receive(:tty?).and_return(true)
+
+      formula = Formula["testball"]
+      keg = formula.installed_kegs.first
+
+      expect do
+        described_class.new([]).send(:info_formula, formula)
+      end.to output(<<~EOS).to_stdout
+        ==> testball ✔: stable 0.1
+        Some test
+        https://brew.sh/testball
+        Installed
+        #{keg} (#{keg.abv}) *
+          #{keg.tab}
+        From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/testball.rb
+        ==> Options
+        --with-foo
+        \tBuild with foo
+      EOS
+    end
+  end
 end
