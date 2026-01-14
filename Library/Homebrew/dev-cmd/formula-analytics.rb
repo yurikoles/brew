@@ -151,7 +151,7 @@ module Homebrew
         category_matching_buckets = [:build_error, :cask_install, :command_run, :test_bot_test]
 
         categories.each do |category|
-          additional_where = all_core_formulae_json ? " AND tap_name ~ '^homebrew/(core|cask)$'" : ""
+          additional_where = ""
           bucket = if category_matching_buckets.include?(category)
             category
           elsif category == :command_run_options
@@ -265,7 +265,11 @@ module Homebrew
               end
               next if dimension.blank?
 
-              if (tap_name = record["tap_name"].presence) &&
+              tap_name = record["tap_name"].presence
+              # Filter to homebrew/core and homebrew/cask client-side to avoid InfluxDB Parquet query bug
+              next if all_core_formulae_json && tap_name && %w[homebrew/core homebrew/cask].exclude?(tap_name)
+
+              if tap_name &&
                  ((tap_name != "homebrew/cask" && dimension_key == :cask) ||
                   (tap_name != "homebrew/core" && dimension_key == :formula))
                 dimension = "#{tap_name}/#{dimension}"
