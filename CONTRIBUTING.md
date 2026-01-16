@@ -21,4 +21,13 @@ First time contributing to Homebrew? Read our [Code of Conduct](https://github.c
 * If not, open an issue with a detailed description of your proposed feature, the motivation for it and alternatives considered.
 * Please note we may close this issue or ask you to create a pull request if this is not something we see as sufficiently high priority.
 
+### "Artificial Intelligence"/Large Language Model (AI/LLM) usage
+
+We allow you to create issues and pull requests with AI/LLM with the following requirements:
+
+* You must disclose in the initial issue or pull request that you used AI/LLM and what tool/model/etc. you used.
+* You must review all AI/LLM generated code, prose, etc. content before you ask anyone in Homebrew to review it for you.
+* You must be able to address all pull request review comments, manually if the AI/LLM cannot do so for you.
+* If you reach the point where you feel unwilling or unable to do the above, please close your issue or pull request.
+
 Thanks!
