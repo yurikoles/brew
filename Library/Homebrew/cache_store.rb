@@ -111,7 +111,7 @@ class CacheStoreDatabase
 
   # Performs a `select` on the underlying database.
   #
-  # @return [Array]
+  # @return [Hash]
   sig { params(block: T.proc.params(arg0: T.untyped, arg1: T.untyped).returns(BasicObject)).returns(T::Hash[T.untyped, T.untyped]) }
   def select(&block)
     db.select(&block)
@@ -127,7 +127,7 @@ class CacheStoreDatabase
 
   # Performs a `each_key` on the underlying database.
   #
-  # @return [Array]
+  # @return [Hash]
   sig { params(block: T.proc.params(arg0: T.untyped).returns(BasicObject)).returns(T::Hash[T.untyped, T.untyped]) }
   def each_key(&block)
     db.each_key(&block)
