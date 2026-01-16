@@ -45,8 +45,8 @@ class CacheStoreDatabase
   # @return [nil]
   sig { params(type: T.untyped).void }
   def initialize(type)
-    @type = type
-    @dirty = T.let(true, T.nilable(TrueClass))
+    @type = T.let(type, T.untyped)
+    @dirty = T.let(false, T.nilable(T::Boolean))
   end
 
   # Sets a value in the underlying database (and creates it if necessary).
@@ -157,7 +157,7 @@ class CacheStoreDatabase
   # The path where the database resides in the `HOMEBREW_CACHE` for the given
   # `@type`.
   #
-  # @return [String]
+  # @return [Pathname]
   sig { returns(Pathname) }
   def cache_path
     HOMEBREW_CACHE/"#{@type}.json"
@@ -172,9 +172,9 @@ class CacheStoreDatabase
   # Returns `true` if the cache needs to be written to disk.
   #
   # @return [Boolean]
-  sig { returns(T.nilable(TrueClass)) }
+  sig { returns(T::Boolean) }
   def dirty?
-    @dirty
+    !!@dirty
   end
 end
 
