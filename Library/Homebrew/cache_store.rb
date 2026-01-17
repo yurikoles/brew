@@ -13,7 +13,14 @@ class CacheStoreDatabase
   #
   # @param  [Symbol] type
   # @yield  [CacheStoreDatabase] self
-  sig { params(type: T.untyped, _blk: T.proc.params(arg0: CacheStoreDatabase).returns(T.untyped)).returns(T.untyped) }
+  sig {
+    type_parameters(:U)
+      .params(
+        type: Symbol,
+        _blk: T.proc.params(arg0: CacheStoreDatabase).returns(T.type_parameter(:U)),
+      )
+      .returns(T.type_parameter(:U))
+  }
   def self.use(type, &_blk)
     @db_type_reference_hash ||= T.let({}, T.nilable(T::Hash[T.untyped, T.untyped]))
     @db_type_reference_hash[type] ||= {}
@@ -43,9 +50,9 @@ class CacheStoreDatabase
   #
   # @param  [Symbol] type
   # @return [nil]
-  sig { params(type: T.untyped).void }
+  sig { params(type: Symbol).void }
   def initialize(type)
-    @type = T.let(type, T.untyped)
+    @type = T.let(type, Symbol)
     @dirty = T.let(false, T.nilable(T::Boolean))
   end
 
