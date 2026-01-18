@@ -1,5 +1,5 @@
 ---
-last_review_date: "2025-11-26"
+last_review_date: "2026-01-13"
 ---
 
 # Homebrew Governance
