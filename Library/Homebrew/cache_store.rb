@@ -57,14 +57,14 @@ class CacheStoreDatabase
   end
 
   # Sets a value in the underlying database (and creates it if necessary).
-  sig { params(key: T.untyped, value: T.untyped).void }
+  sig { params(key: T.anything, value: T.anything).void }
   def set(key, value)
     dirty!
     db[key] = value
   end
 
   # Gets a value from the underlying database (if it already exists).
-  sig { params(key: T.untyped).returns(T.untyped) }
+  sig { params(key: T.anything).returns(T.untyped) }
   def get(key)
     return unless created?
 
@@ -72,7 +72,7 @@ class CacheStoreDatabase
   end
 
   # Deletes a value from the underlying database (if it already exists).
-  sig { params(key: T.untyped).void }
+  sig { params(key: T.anything).void }
   def delete(key)
     return unless created?
 
@@ -200,7 +200,7 @@ class CacheStore
   # Inserts new values or updates existing cached values to persistent storage.
   #
   # @abstract
-  sig { params(args: T.untyped).void }
+  sig { params(args: T.anything).void }
   def update!(*args)
     raise NotImplementedError
   end
@@ -209,7 +209,7 @@ class CacheStore
   # stored.
   #
   # @abstract
-  sig { params(args: T.untyped).returns(T.untyped) }
+  sig { params(args: T.anything).returns(T.untyped) }
   def fetch(*args)
     raise NotImplementedError
   end
@@ -217,7 +217,7 @@ class CacheStore
   # Deletes data from the cache based on a condition defined in a concrete class.
   #
   # @abstract
-  sig { params(args: T.untyped).void }
+  sig { params(args: T.anything).void }
   def delete!(*args)
     raise NotImplementedError
   end
