@@ -37,10 +37,9 @@ module Homebrew
       sig { params(describe: T::Boolean).returns(String) }
       def self.dump(describe: false)
         casks.map do |cask|
-          name = cask.respond_to?(:full_name) ? cask.full_name : cask.to_s
           description = "# #{cask.desc}\n" if describe && cask.desc.present?
           config = ", args: { #{explicit_s(cask.config)} }" if cask.config.present? && cask.config.explicit.present?
-          "#{description}cask \"#{name}\"#{config}"
+          "#{description}cask \"#{cask.full_name}\"#{config}"
         end.join("\n")
       end
 
