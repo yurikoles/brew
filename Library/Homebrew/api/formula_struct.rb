@@ -21,7 +21,7 @@ module Homebrew
         :disable,
         :head,
         :keg_only,
-        :no_autobump_message,
+        :no_autobump,
         :pour_bottle,
         :service,
         :service_run,
@@ -117,7 +117,6 @@ module Homebrew
       const :pour_bottle_args, T::Hash[Symbol, Symbol], default: {}
       const :revision, Integer, default: 0
       const :ruby_source_checksum, String
-      const :ruby_source_path, String
       const :service_args, T::Array[[Symbol, BasicObject]], default: []
       const :service_name_args, T::Hash[Symbol, String], default: {}
       const :service_run_args, T::Array[Homebrew::Service::RunParam], default: []
@@ -125,7 +124,6 @@ module Homebrew
       const :stable_checksum, T.nilable(String)
       const :stable_url_args, [String, T::Hash[Symbol, T.anything]]
       const :stable_version, String
-      const :tap_git_head, String
       const :version_scheme, Integer, default: 0
       const :versioned_formulae, T::Array[String], default: []
 
