@@ -56,7 +56,7 @@ class GitRepository
   # Gets the name of the currently checked-out branch, or HEAD if the repository is in a detached HEAD state.
   sig { params(safe: T::Boolean).returns(T.nilable(String)) }
   def branch_name(safe: false)
-    popen_git("rev-parse", "HEAD", safe:)&.delete_prefix("refs/heads/")
+    popen_git("rev-parse", "--symbolic-full-name", "HEAD", safe:)&.delete_prefix("refs/heads/")
   end
 
   # Change the name of a local branch
