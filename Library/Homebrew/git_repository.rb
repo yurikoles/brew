@@ -56,7 +56,7 @@ class GitRepository
   # Gets the name of the currently checked-out branch, or HEAD if the repository is in a detached HEAD state.
   sig { params(safe: T::Boolean).returns(T.nilable(String)) }
   def branch_name(safe: false)
-    popen_git("rev-parse", "--abbrev-ref", "HEAD", safe:)&.split("/")&.last
+    popen_git("rev-parse", "HEAD", safe:)&.delete_prefix("refs/heads/")
   end
 
   # Change the name of a local branch
@@ -74,7 +74,7 @@ class GitRepository
   # Gets the name of the default origin HEAD branch.
   sig { returns(T.nilable(String)) }
   def origin_branch_name
-    popen_git("symbolic-ref", "-q", "--short", "refs/remotes/origin/HEAD")&.split("/")&.last
+    popen_git("symbolic-ref", "-q", "refs/remotes/origin/HEAD")&.delete_prefix("refs/remotes/origin/")
   end
 
   # Returns true if the repository's current branch matches the default origin branch.
