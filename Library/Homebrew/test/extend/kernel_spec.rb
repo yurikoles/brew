@@ -21,18 +21,6 @@ RSpec.describe Kernel do
     end
   end
 
-  describe "#with_custom_locale" do
-    it "temporarily overrides the system locale" do
-      ENV["LC_ALL"] = "en_US.UTF-8"
-
-      with_custom_locale("C") do
-        expect(ENV.fetch("LC_ALL")).to eq("C")
-      end
-
-      expect(ENV.fetch("LC_ALL")).to eq("en_US.UTF-8")
-    end
-  end
-
   describe "#which" do
     let(:cmd) { dir/"foo" }
 

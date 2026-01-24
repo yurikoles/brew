@@ -40,15 +40,6 @@ module Kernel
     with_env(PATH: PATH.new(ORIGINAL_PATHS).to_s, &block)
   end
 
-  sig {
-    type_parameters(:U)
-      .params(locale: String, block: T.proc.returns(T.type_parameter(:U)))
-      .returns(T.type_parameter(:U))
-  }
-  def with_custom_locale(locale, &block)
-    with_env(LC_ALL: locale, &block)
-  end
-
   # Kernel.system but with exceptions.
   sig {
     params(
