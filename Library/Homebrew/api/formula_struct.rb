@@ -29,25 +29,22 @@ module Homebrew
         :stable,
       ].freeze
 
-      # `:codesign` and custom requirement classes are not supported.
-      API_SUPPORTED_REQUIREMENTS = [:arch, :linux, :macos, :maximum_macos, :xcode].freeze
-      private_constant :API_SUPPORTED_REQUIREMENTS
-
-      DependencyArgs = T.type_alias do
+      DependsOnArgs = T.type_alias do
         T.any(
-          # Formula name: "foo"
-          String,
-          # Formula name and dependency type: { "foo" => :build }
-          T::Hash[String, Symbol],
-        )
-      end
-
-      RequirementArgs = T.type_alias do
-        T.any(
-          # Requirement name: :macos
-          Symbol,
-          # Requirement name and other info: { macos: :build }
-          T::Hash[Symbol, T::Array[T.anything]],
+          # Dependencies
+          T.any(
+            # Formula name: "foo"
+            String,
+            # Formula name and dependency type: { "foo" => :build }
+            T::Hash[String, Symbol],
+          ),
+          # Requirements
+          T.any(
+            # Requirement name: :macos
+            Symbol,
+            # Requirement name and other info: { macos: :build }
+            T::Hash[Symbol, T::Array[T.anything]],
+          ),
         )
       end
 
@@ -62,27 +59,6 @@ module Homebrew
           ),
           # If the first argument is only a name, this argument contains the version bounds: { since: :catalina }
           T::Hash[Symbol, Symbol],
-        ]
-      end
-
-      DependencyHash = T.type_alias do
-        T::Hash[
-          # Keys are strings of the dependency type (e.g. "dependencies", "build_dependencies")
-          String,
-          # Values are arrays of either:
-          T::Array[
-            T.any(
-              # Formula name: "foo"
-              String,
-              # Hash like { "foo" => :build } or { "foo" => [:build, :test] }
-              T::Hash[
-                String,
-                T.any(Symbol, T::Array[Symbol]),
-              ],
-              # Hash like { since: :catalina } for uses_from_macos_bounds
-              T::Hash[Symbol, Symbol],
-            ),
-          ],
         ]
       end
 
@@ -106,7 +82,9 @@ module Homebrew
       const :deprecate_args, T::Hash[Symbol, T.nilable(T.any(String, Symbol))], default: {}
       const :desc, String
       const :disable_args, T::Hash[Symbol, T.nilable(T.any(String, Symbol))], default: {}
+      const :head_dependencies, T::Array[DependsOnArgs], default: []
       const :head_url_args, [String, T::Hash[Symbol, T.anything]]
+      const :head_uses_from_macos, T::Array[UsesFromMacOSArgs], default: []
       const :homepage, String
       const :keg_only_args, T::Array[T.any(String, Symbol)], default: []
       const :license, SPDX::LicenseExpression
@@ -121,108 +99,13 @@ module Homebrew
       const :service_name_args, T::Hash[Symbol, String], default: {}
       const :service_run_args, T::Array[Homebrew::Service::RunParam], default: []
       const :service_run_kwargs, T::Hash[Symbol, Homebrew::Service::RunParam], default: {}
+      const :stable_dependencies, T::Array[DependsOnArgs], default: []
       const :stable_checksum, T.nilable(String)
       const :stable_url_args, [String, T::Hash[Symbol, T.anything]]
+      const :stable_uses_from_macos, T::Array[UsesFromMacOSArgs], default: []
       const :stable_version, String
       const :version_scheme, Integer, default: 0
       const :versioned_formulae, T::Array[String], default: []
-
-      sig { returns(T::Array[T.any(DependencyArgs, RequirementArgs)]) }
-      def head_dependencies
-        spec_dependencies(:head) + spec_requirements(:head)
-      end
-
-      sig { returns(T::Array[T.any(DependencyArgs, RequirementArgs)]) }
-      def stable_dependencies
-        spec_dependencies(:stable) + spec_requirements(:stable)
-      end
-
-      sig { returns(T::Array[UsesFromMacOSArgs]) }
-      def head_uses_from_macos
-        spec_uses_from_macos(:head)
-      end
-
-      sig { returns(T::Array[UsesFromMacOSArgs]) }
-      def stable_uses_from_macos
-        spec_uses_from_macos(:stable)
-      end
-
-      private
-
-      const :stable_dependency_hash, DependencyHash, default: {}
-      const :head_dependency_hash, DependencyHash, default: {}
-      const :requirements_array, T::Array[T::Hash[String, T.untyped]], default: []
-
-      sig { params(spec: Symbol).returns(T::Array[DependencyArgs]) }
-      def spec_dependencies(spec)
-        deps_hash = send("#{spec}_dependency_hash")
-        dependencies = deps_hash.fetch("dependencies", [])
-        dependencies + [:build, :test, :recommended, :optional].filter_map do |type|
-          deps_hash["#{type}_dependencies"]&.map do |dep|
-            { dep => type }
-          end
-        end.flatten(1)
-      end
-
-      sig { params(spec: Symbol).returns(T::Array[UsesFromMacOSArgs]) }
-      def spec_uses_from_macos(spec)
-        deps_hash = send("#{spec}_dependency_hash")
-        zipped_array = deps_hash["uses_from_macos"]&.zip(deps_hash["uses_from_macos_bounds"])
-        return [] unless zipped_array
-
-        zipped_array.map do |entry, bounds|
-          bounds ||= {}
-          bounds = bounds.transform_keys(&:to_sym).transform_values(&:to_sym)
-
-          if entry.is_a?(Hash)
-            # The key is the dependency name, the value is the dep type. Only the type should be a symbol
-            entry = entry.deep_transform_values(&:to_sym)
-            # When passing both a dep type and bounds, uses_from_macos expects them both in the first argument
-            entry = entry.merge(bounds)
-            [entry, {}]
-          else
-            [entry, bounds]
-          end
-        end
-      end
-
-      sig { params(spec: Symbol).returns(T::Array[RequirementArgs]) }
-      def spec_requirements(spec)
-        requirements_array.filter_map do |req|
-          next unless req["specs"].include?(spec.to_s)
-
-          req_name = req["name"].to_sym
-          next if API_SUPPORTED_REQUIREMENTS.exclude?(req_name)
-
-          req_version = case req_name
-          when :arch
-            req["version"]&.to_sym
-          when :macos, :maximum_macos
-            MacOSVersion::SYMBOLS.key(req["version"])
-          else
-            req["version"]
-          end
-
-          req_tags = []
-          req_tags << req_version if req_version.present?
-          req_tags += req["contexts"]&.map do |tag|
-            case tag
-            when String
-              tag.to_sym
-            when Hash
-              tag.deep_transform_keys(&:to_sym)
-            else
-              tag
-            end
-          end
-
-          if req_tags.empty?
-            req_name
-          else
-            { req_name => req_tags }
-          end
-        end
-      end
     end
   end
 end

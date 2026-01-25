@@ -231,7 +231,7 @@ module Formulary
 
     class_name = class_s(name)
     ruby_source_path = "Formula/#{CoreTap.instance.new_formula_subdirectory(name)}/#{name.downcase}.rb"
-    formula_struct = Homebrew::API::Formula.generate_formula_struct_hash(json_formula_with_variations)
+    formula_struct = Homebrew::API::Formula::FormulaStructGenerator.generate_formula_struct_hash(json_formula_with_variations)
 
     klass = Class.new(::Formula) do
       @loaded_from_api = T.let(true, T.nilable(T::Boolean))
