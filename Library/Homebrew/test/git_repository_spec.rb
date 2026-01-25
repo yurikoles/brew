@@ -3,6 +3,8 @@
 require "git_repository"
 
 RSpec.describe GitRepository do
+  subject(:git_repo) { described_class.new(clone_path) }
+
   let(:branch_name) { "main" }
   let(:tag_name) { branch_name }
   let(:repo_root) { mktmpdir }
@@ -34,8 +36,6 @@ RSpec.describe GitRepository do
       safe_system Utils::Git.git, "remote", "set-head", "origin", "--auto"
     end
   end
-
-  subject(:git_repo) { described_class.new(clone_path) }
 
   describe "when the origin has a branch and tag with the same name" do
     it "disambiguates branch_name, origin_branch_name, and default_origin_branch?" do
@@ -85,7 +85,7 @@ RSpec.describe GitRepository do
         .and_return("refs/tags/#{tag_name}")
 
       expect { git_repo.branch_name }.to raise_error(RuntimeError, /Unexpected HEAD ref/)
-      expect { git_repo.origin_branch_name }.to raise_error(RuntimeError, /Unexpected origin\/HEAD ref/)
+      expect { git_repo.origin_branch_name }.to raise_error(RuntimeError, %r{Unexpected origin/HEAD ref})
     end
   end
 end
