@@ -57,23 +57,6 @@ RSpec.describe Kernel do
     expect(which_editor).to eq("vemate -w")
   end
 
-  specify "#disk_usage_readable" do
-    expect(disk_usage_readable(1)).to eq("1B")
-    expect(disk_usage_readable(999)).to eq("999B")
-    expect(disk_usage_readable(1000)).to eq("1KB")
-    expect(disk_usage_readable(1025)).to eq("1KB")
-    expect(disk_usage_readable(4_404_020)).to eq("4.4MB")
-    expect(disk_usage_readable(4_509_715_660)).to eq("4.5GB")
-  end
-
-  describe "#number_readable" do
-    it "returns a string with thousands separators" do
-      expect(number_readable(1)).to eq("1")
-      expect(number_readable(1_000)).to eq("1,000")
-      expect(number_readable(1_000_000)).to eq("1,000,000")
-    end
-  end
-
   describe "#with_env" do
     it "sets environment variables within the block" do
       expect(ENV.fetch("PATH")).not_to eq("/bin")
