@@ -118,7 +118,7 @@ module Homebrew
                 Utils.safe_popen_read("git", "-C", tap.path, "merge-base", "origin/HEAD",
                                       current_branch_head).strip
               else
-                T.must(current_branch_head)
+                current_branch_head || odie("Failed to get current branch head")
               end
               odebug "Pull request merge-base: #{original_commit}"
 

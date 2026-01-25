@@ -11,6 +11,8 @@ module Utils
   module Curl
     include SystemCommand::Mixin
     extend SystemCommand::Mixin
+    include Utils::Output::Mixin
+    extend Utils::Output::Mixin
     extend T::Helpers
 
     requires_ancestor { Kernel }
@@ -55,12 +57,14 @@ module Utils
       @curl_executable ||= T.let(HOMEBREW_SHIMS_PATH/"shared/curl", T.nilable(T.any(Pathname, String)))
     end
 
-    sig { returns(T.nilable(String)) }
+    sig { returns(String) }
     def curl_path
       @curl_path ||= T.let(
-        Utils.popen_read(curl_executable, "--homebrew=print-path").chomp.presence,
+        Utils.popen_read(curl_executable, "--homebrew=print-path").chomp,
         T.nilable(String),
       )
+      odie("Failed to get curl path") if @curl_path.blank?
+      @curl_path
     end
 
     sig { void }
@@ -598,7 +602,13 @@ module Utils
     sig { returns(Version) }
     def curl_version
       @curl_version ||= T.let({}, T.nilable(T::Hash[String, Version]))
-      @curl_version[T.must(curl_path)] ||= Version.new(T.must(curl_output("-V").stdout[/curl (\d+(\.\d+)+)/, 1]))
+      curl_v_stdout = curl_output("-V").stdout
+      version = curl_v_stdout[/curl (\d+(?:\.\d+)+)/, 1]
+      if version
+        @curl_version[curl_path] ||= Version.new(version)
+      else
+        odie("Failed to parse curl version from #{curl_v_stdout}")
+      end
     end
 
     sig { returns(T::Boolean) }
