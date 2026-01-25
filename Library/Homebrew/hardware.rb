@@ -102,9 +102,9 @@ module Hardware
       def cores
         return @cores if @cores
 
-        @cores = Utils.popen_read("getconf", "_NPROCESSORS_ONLN").chomp.to_i
-        @cores = T.let(1, T.nilable(Integer)) unless $CHILD_STATUS.success?
-        @cores
+        @cores = T.let(Utils.popen_read("getconf", "_NPROCESSORS_ONLN").chomp.to_i, T.nilable(Integer))
+        @cores = 1 unless $CHILD_STATUS.success?
+        T.must(@cores)
       end
 
       sig { returns(T.nilable(Integer)) }

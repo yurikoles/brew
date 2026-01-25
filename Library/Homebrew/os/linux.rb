@@ -22,7 +22,7 @@ module OS
     def self.os_version
       if which("lsb_release")
         lsb_info = Utils.popen_read("lsb_release", "-a")
-        description = lsb_info[/^Description:\s*(.*)$/, 1].force_encoding("UTF-8")
+        description = T.must(lsb_info[/^Description:\s*(.*)$/, 1]).force_encoding("UTF-8")
         codename = lsb_info[/^Codename:\s*(.*)$/, 1]
         if codename.blank? || (codename == "n/a")
           description
@@ -63,8 +63,9 @@ module OS
 
       locale_variables = ENV.keys.grep(/^(?:LC_\S+|LANG|LANGUAGE)\Z/).sort
       ctl_ret = Utils.popen_read("localectl", "list-locales")
+      list = T.let([], T::Array[String])
       if ctl_ret.present?
-        list = ctl_ret.scan(/[^ \n"(),]+/)
+        list = T.cast(ctl_ret.scan(/[^ \n"(),]+/), T::Array[String])
       elsif locale_variables.present?
         keys = locale_variables.select { |var| ENV.fetch(var) }
         list = keys.map { |key| ENV.fetch(key) }
@@ -72,7 +73,7 @@ module OS
         list = ["en_US.utf8"]
       end
 
-      @languages = list.map { |item| item.split(".").first.tr("_", "-") }
+      @languages = list.map { |item| item.split(".").fetch(0).tr("_", "-") }
     end
 
     sig { returns(T.nilable(String)) }

@@ -61,7 +61,7 @@ module Homebrew
             Utils.popen_read("git", "rev-list", "-n1", "--before=#{date}", "origin/main").chomp
           elsif args.to_tag?
             tags = git_tags
-            current_tag, previous_tag, = tags.lines
+            current_tag, previous_tag, = T.must(tags).lines
             current_tag = current_tag.to_s.chomp
             odie "Could not find current tag in:\n#{tags}" if current_tag.empty?
             # ^0 ensures this points to the commit rather than the tag object.
@@ -79,7 +79,7 @@ module Homebrew
           start_commit = Utils.popen_read("git", "rev-parse", start_commit).chomp
           odie "Could not find start commit!" if start_commit.empty?
 
-          end_commit = T.cast(Utils.popen_read("git", "rev-parse", end_commit).chomp, String)
+          end_commit = Utils.popen_read("git", "rev-parse", end_commit).chomp
           odie "Could not find end commit!" if end_commit.empty?
 
           if Utils.popen_read("git", "branch", "--list", "main").blank?
@@ -142,7 +142,7 @@ module Homebrew
 
       private
 
-      sig { returns(String) }
+      sig { returns(T.nilable(String)) }
       def git_tags
         tags = Utils.popen_read("git", "tag", "--list", "--sort=-version:refname")
         if tags.blank?

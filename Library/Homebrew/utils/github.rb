@@ -706,16 +706,17 @@ module GitHub
       if args.no_fork? || args.write_only?
         remote_url = Utils.popen_read("git", "remote", "get-url", "--push", "origin").chomp
         username = tap.user
-        add_auth_token_to_url!(remote_url)
+        add_auth_token_to_url!(T.must(remote_url))
       else
         begin
-          remote_url, username = forked_repo_info!(tap_remote_repo, org: args.fork_org)
+          url, username = forked_repo_info!(tap_remote_repo, org: args.fork_org)
         rescue *API::ERRORS => e
           commits.each do |commit|
             commit[:sourcefile_path].atomic_write(commit[:old_contents])
           end
           odie "Unable to fork: #{e.message}!"
         end
+        remote_url = T.must(url)
       end
 
       next if args.dry_run?

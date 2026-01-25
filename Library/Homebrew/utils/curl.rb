@@ -55,7 +55,7 @@ module Utils
       @curl_executable ||= T.let(HOMEBREW_SHIMS_PATH/"shared/curl", T.nilable(T.any(Pathname, String)))
     end
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     def curl_path
       @curl_path ||= T.let(
         Utils.popen_read(curl_executable, "--homebrew=print-path").chomp.presence,
@@ -598,7 +598,7 @@ module Utils
     sig { returns(Version) }
     def curl_version
       @curl_version ||= T.let({}, T.nilable(T::Hash[String, Version]))
-      @curl_version[curl_path] ||= Version.new(T.must(curl_output("-V").stdout[/curl (\d+(\.\d+)+)/, 1]))
+      @curl_version[T.must(curl_path)] ||= Version.new(T.must(curl_output("-V").stdout[/curl (\d+(\.\d+)+)/, 1]))
     end
 
     sig { returns(T::Boolean) }
