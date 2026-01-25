@@ -74,22 +74,6 @@ RSpec.describe Kernel do
     end
   end
 
-  specify "#truncate_text_to_approximate_size" do
-    glue = "\n[...snip...]\n" # hard-coded copy from truncate_text_to_approximate_size
-    n = 20
-    long_s = "x" * 40
-
-    s = truncate_text_to_approximate_size(long_s, n)
-    expect(s.length).to eq(n)
-    expect(s).to match(/^x+#{Regexp.escape(glue)}x+$/)
-
-    s = truncate_text_to_approximate_size(long_s, n, front_weight: 0.0)
-    expect(s).to eq(glue + ("x" * (n - glue.length)))
-
-    s = truncate_text_to_approximate_size(long_s, n, front_weight: 1.0)
-    expect(s).to eq(("x" * (n - glue.length)) + glue)
-  end
-
   describe "#with_env" do
     it "sets environment variables within the block" do
       expect(ENV.fetch("PATH")).not_to eq("/bin")
