@@ -238,7 +238,7 @@ module Homebrew
          .filter_map do |filestub|
             if filestub.start_with?("test/")
               # Only run tests on *_spec.rb files in test/ folder
-              filestub.end_with?("_spec") ? Pathname("#{filestub}.rb") : nil
+              Pathname("#{filestub}.rb") if filestub.end_with?("_spec")
             else
               # For all other changed .rb files guess the associated test file name
               Pathname("test/#{filestub}_spec.rb")

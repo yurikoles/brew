@@ -1,7 +1,11 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "utils/output"
+
 class Keg
+  extend Utils::Output::Mixin
+
   PREFIX_PLACEHOLDER = T.let("@@HOMEBREW_PREFIX@@", String)
   CELLAR_PLACEHOLDER = T.let("@@HOMEBREW_CELLAR@@", String)
   REPOSITORY_PLACEHOLDER = T.let("@@HOMEBREW_REPOSITORY@@", String)
@@ -420,11 +424,12 @@ class Keg
         next unless str.match? path_regex
 
         offset, match = str.split(" ", 2)
+        odie "Failed to parse strings output: #{str.inspect}" unless match
 
         # Some binaries contain strings with lists of files
         # e.g. `/usr/local/lib/foo:/usr/local/share/foo:/usr/lib/foo`
         # Each item in the list should be checked separately
-        T.must(match).split(":").each do |sub_match|
+        match.split(":").each do |sub_match|
           # Not all items in the list may be matches
           next unless sub_match.match? path_regex
           next if linked_libraries.include? sub_match # Don't bother reporting a string if it was found by otool

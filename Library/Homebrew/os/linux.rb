@@ -13,6 +13,8 @@ module OS
     raise "Loaded OS::Linux on macOS!" if OS.mac?
     # rubocop:enable Homebrew/MoveToExtendOS
 
+    extend Utils::Output::Mixin
+
     @languages = T.let([], T::Array[String])
 
     # Get the OS version.
@@ -22,7 +24,10 @@ module OS
     def self.os_version
       if which("lsb_release")
         lsb_info = Utils.popen_read("lsb_release", "-a")
-        description = T.must(lsb_info[/^Description:\s*(.*)$/, 1]).force_encoding("UTF-8")
+        description = lsb_info[/^Description:\s*(.*)$/, 1]&.force_encoding("UTF-8")
+
+        odie "Failed to parse lsb_release output: #{lsb_info.inspect}" unless description
+
         codename = lsb_info[/^Codename:\s*(.*)$/, 1]
         if codename.blank? || (codename == "n/a")
           description

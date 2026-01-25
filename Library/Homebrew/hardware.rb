@@ -100,11 +100,13 @@ module Hardware
 
       sig { returns(Integer) }
       def cores
-        return @cores if @cores
-
-        @cores = T.let(Utils.popen_read("getconf", "_NPROCESSORS_ONLN").chomp.to_i, T.nilable(Integer))
-        @cores = 1 unless $CHILD_STATUS.success?
-        T.must(@cores)
+        @cores ||= T.let(
+          begin
+            cores = Utils.popen_read("getconf", "_NPROCESSORS_ONLN").chomp.to_i
+            $CHILD_STATUS.success? ? cores : 1
+          end,
+          T.nilable(Integer),
+        )
       end
 
       sig { returns(T.nilable(Integer)) }

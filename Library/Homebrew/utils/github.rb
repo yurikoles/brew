@@ -706,7 +706,7 @@ module GitHub
       if args.no_fork? || args.write_only?
         remote_url = Utils.popen_read("git", "remote", "get-url", "--push", "origin").chomp
         username = tap.user
-        add_auth_token_to_url!(T.must(remote_url))
+        add_auth_token_to_url!(remote_url)
       else
         begin
           url, username = forked_repo_info!(tap_remote_repo, org: args.fork_org)
@@ -716,7 +716,8 @@ module GitHub
           end
           odie "Unable to fork: #{e.message}!"
         end
-        remote_url = T.must(url)
+        odie "Failed to get forked repository URL for #{tap_remote_repo}!" unless url
+        remote_url = url
       end
 
       next if args.dry_run?
