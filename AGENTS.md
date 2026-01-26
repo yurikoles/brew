@@ -8,7 +8,7 @@ Please follow these guidelines when contributing:
 
 ### Required Before Each Commit
 
-- Run `brew lgtm` to run typecheck, style and tests in one go.
+- Always run `brew lgtm` to verify changes; it runs typecheck, style and tests in one go.
 - Run `brew typecheck` to verify types are declared correctly using Sorbet.
   Individual files/directories cannot be checked.
   `brew typecheck` is fast enough to just be run globally every time.
@@ -52,4 +52,4 @@ Please follow these guidelines when contributing:
 6. Follow software principles such as DRY and YAGNI.
 7. Keep diffs as minimal as possible.
 8. Prefer shelling out via `HOMEBREW_BREW_FILE` instead of requiring `cmd/` or `dev-cmd` when composing brew commands.
-9. Inline one-off helpers unless they are reused or needed for tests.
+9. Inline new or existing methods as methods or local variables unless they are reused 2+ times or needed for unit tests.
