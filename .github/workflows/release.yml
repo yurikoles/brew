@@ -276,11 +276,10 @@ jobs:
             --generate-notes \
             --fail-on-no-commits
 
-      - name: Copy installer to unversioned path
-        if: github.event_name == 'workflow_dispatch'
+      - name: Rename installer to unversioned path
         env:
           INSTALLER_PATH: ${{ needs.build.outputs.installer_path }}
-        run: cp "${INSTALLER_PATH}" Homebrew.pkg
+        run: mv "${INSTALLER_PATH}" Homebrew.pkg
 
       - name: Upload installer to GitHub release
         if: github.event_name == 'workflow_dispatch'
@@ -290,4 +289,4 @@ jobs:
         run: |
           VERSION="${INSTALLER_PATH#Homebrew-}"
           VERSION="${VERSION%.pkg}"
-          gh release upload --repo Homebrew/brew "${VERSION}" "${INSTALLER_PATH}" Homebrew.pkg
+          gh release upload --repo Homebrew/brew "${VERSION}" Homebrew.pkg
