@@ -59,9 +59,10 @@ class GitRepository
     ref = popen_git("rev-parse", "--symbolic-full-name", "HEAD", safe:)
     return if ref.blank?
     return "HEAD" if ref == "HEAD"
-    return ref.delete_prefix("refs/heads/") if ref.start_with?("refs/heads/")
+    refs_format = "refs/heads/"
+    return ref.delete_prefix(refs_format) if ref.start_with?(refs_format)
 
-    raise "Unexpected HEAD ref: #{ref}"
+    raise "Unexpected HEAD ref format: #{ref}"
   end
 
   # Change the name of a local branch
@@ -81,9 +82,10 @@ class GitRepository
   def origin_branch_name
     ref = popen_git("symbolic-ref", "-q", "refs/remotes/origin/HEAD")
     return if ref.blank?
-    return ref.delete_prefix("refs/remotes/origin/") if ref.start_with?("refs/remotes/origin/")
+    refs_format = "refs/remotes/origin/"
+    return ref.delete_prefix(refs_format) if ref.start_with?(refs_format)
 
-    raise "Unexpected origin/HEAD ref: #{ref}"
+    raise "Unexpected origin/HEAD ref format: #{ref}"
   end
 
   # Returns true if the repository's current branch matches the default origin branch.
