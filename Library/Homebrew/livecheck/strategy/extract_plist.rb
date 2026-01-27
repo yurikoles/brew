@@ -103,10 +103,6 @@ module Homebrew
           match_data = { matches: {}, regex:, url: }
 
           unversioned_cask_checker = if url.present? && url != cask.url.to_s
-            # Create a copy of the `cask` to use the `livecheck` block URL
-            cask_copy = Cask::CaskLoader.load(cask.sourcefile_path)
-            cask_copy.allow_reassignment = true
-
             # Collect the `Cask::URL` initializer keyword parameter symbols
             @cask_url_kw_params ||= T.let(
               T::Utils.signature_for_method(
@@ -115,14 +111,28 @@ module Homebrew
               T.nilable(T::Array[Symbol]),
             )
 
-            # Use `livecheck` block URL options that correspond to a `Cask::URL`
-            # keyword parameter
+            # Collect `livecheck` block options supported by `Cask::URL`
             url_kwargs = {}
+            unused_opts = []
             cask.livecheck.options.url_options.compact.each_key do |option_key|
-              next unless @cask_url_kw_params.include?(option_key)
-
-              url_kwargs[option_key] = cask.livecheck.options.public_send(option_key)
+              if @cask_url_kw_params.include?(option_key)
+                url_kwargs[option_key] = cask.livecheck.options.public_send(option_key)
+              else
+                unused_opts << option_key
+              end
             end
+
+            unless unused_opts.empty?
+              raise ArgumentError,
+                    "Cask `url` does not support `#{unused_opts.join("`, `")}` " \
+                    "#{Utils.pluralize("option", unused_opts.length)} from " \
+                    "`livecheck` block"
+            end
+
+            # Create a copy of the cask that overrides the artifact URL with the
+            # provided URL and supported `livecheck` block options
+            cask_copy = Cask::CaskLoader.load(cask.sourcefile_path)
+            cask_copy.allow_reassignment = true
             cask_copy.url(url, **url_kwargs)
 
             UnversionedCaskChecker.new(cask_copy)
