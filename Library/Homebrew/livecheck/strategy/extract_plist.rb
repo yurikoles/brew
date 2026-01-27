@@ -107,19 +107,21 @@ module Homebrew
             @cask_url_kw_params ||= T.let(
               T::Utils.signature_for_method(
                 Cask::URL.instance_method(:initialize),
-              ).parameters.filter_map { |type, sym| (type == :key) ? sym : nil },
+              ).parameters.filter_map { |type, sym| sym if type == :key },
               T.nilable(T::Array[Symbol]),
             )
 
-            # Collect `livecheck` block options supported by `Cask::URL`
-            url_kwargs = {}
+            # Collect `livecheck` block URL options supported by `Cask::URL`
             unused_opts = []
-            cask.livecheck.options.url_options.compact.each_key do |option_key|
-              if @cask_url_kw_params.include?(option_key)
-                url_kwargs[option_key] = cask.livecheck.options.public_send(option_key)
-              else
-                unused_opts << option_key
+            url_kwargs = options.url_options.select do |key, value|
+              next if value.nil?
+
+              unless @cask_url_kw_params.include?(key)
+                unused_opts << key
+                next
               end
+
+              true
             end
 
             unless unused_opts.empty?
@@ -130,7 +132,7 @@ module Homebrew
             end
 
             # Create a copy of the cask that overrides the artifact URL with the
-            # provided URL and supported `livecheck` block options
+            # provided URL and supported `livecheck` block URL options
             cask_copy = Cask::CaskLoader.load(cask.sourcefile_path)
             cask_copy.allow_reassignment = true
             cask_copy.url(url, **url_kwargs)
