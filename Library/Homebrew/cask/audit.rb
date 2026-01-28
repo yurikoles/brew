@@ -888,7 +888,7 @@ module Cask
           if artifact.is_a?(Artifact::Pkg)
             pkg_expanded_dir = tmpdir/"pkg-expanded"
             begin
-              system_command!("pkgutil", args: ["--expand-full", path.to_s, pkg_expanded_dir.to_s])
+              system_command!("pkgutil", args: ["--expand", path.to_s, pkg_expanded_dir.to_s])
 
               distribution_file = pkg_expanded_dir/"Distribution"
               if File.exist?(distribution_file)
@@ -900,8 +900,6 @@ module Cask
               end
             rescue
               break
-            ensure
-              FileUtils.remove_entry(pkg_expanded_dir) if pkg_expanded_dir.exist?
             end
           end
 
