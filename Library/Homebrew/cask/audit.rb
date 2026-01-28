@@ -799,7 +799,7 @@ module Cask
       bundle_min_os = cask_bundle_min_os
       sparkle_min_os = cask_sparkle_min_os
 
-      app_min_os = bundle_min_os || sparkle_min_os
+      app_min_os = [bundle_min_os, sparkle_min_os].compact.max
       debug_messages = []
       debug_messages << "from artifact: #{bundle_min_os.to_sym}" if bundle_min_os
       debug_messages << "from upstream: #{sparkle_min_os.to_sym}" if sparkle_min_os
