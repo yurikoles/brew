@@ -58,7 +58,7 @@ module Homebrew
         create_symlinks_for_shared_download(cached_location)
       end
 
-      downloads[downloadable] = T.must(@downloads_by_location[cached_location])
+      downloads[downloadable] = @downloads_by_location.fetch(cached_location)
     end
 
     sig { void }
