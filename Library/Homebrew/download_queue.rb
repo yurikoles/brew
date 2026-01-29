@@ -76,7 +76,7 @@ module Homebrew
           ofail "#{downloadable&.download_queue_type || "Download"} reports different checksum: #{e.expected}"
         rescue => e
           downloadable = @symlink_targets[cached_location]&.first
-          raise e unless downloadable && bottle_manifest_error?(downloadable, e)
+          raise e if downloadable.nil? || !bottle_manifest_error?(downloadable, e)
         end
       else
         message_length_max = @downloads_by_location.keys.map { |location| location.basename.to_s.length }.max || 0
@@ -89,7 +89,6 @@ module Homebrew
           output_message = lambda do |cached_location, future, last|
             status = status_from_future(future)
             exception = future.reason if future.rejected?
-            
             downloadable = @symlink_targets[cached_location]&.first
             next 1 if downloadable && bottle_manifest_error?(downloadable, exception)
 
