@@ -31,6 +31,7 @@ module Homebrew
       @spinner = T.let(nil, T.nilable(Spinner))
       @symlink_targets = T.let({}, T::Hash[Pathname, T::Set[Downloadable]])
       @downloads_by_location = T.let({}, T::Hash[Pathname, Concurrent::Promises::Future])
+      @downloadable_to_location = T.let({}, T::Hash[Downloadable, Pathname])
     end
 
     sig {
@@ -46,6 +47,8 @@ module Homebrew
       targets = @symlink_targets.fetch(cached_location)
       targets << downloadable
 
+      @downloadable_to_location[downloadable] = cached_location
+
       @downloads_by_location[cached_location] ||= Concurrent::Promises.future_on(
         pool, RetryableDownload.new(downloadable, tries:, pour:),
         force, quiet, check_attestation
@@ -57,40 +60,42 @@ module Homebrew
         end
         create_symlinks_for_shared_download(cached_location)
       end
-
-      downloads[downloadable] = @downloads_by_location.fetch(cached_location)
     end
 
     sig { void }
     def fetch
-      return if downloads.empty?
+      return if @downloads_by_location.empty?
 
       context_before_fetch = Context.current
 
       if concurrency == 1
-        downloads.each do |downloadable, promise|
+        @downloads_by_location.each do |cached_location, promise|
           promise.wait!
         rescue ChecksumMismatchError => e
-          ofail "#{downloadable.download_queue_type} reports different checksum: #{e.expected}"
+          downloadable = @symlink_targets[cached_location]&.first
+          ofail "#{downloadable&.download_queue_type || "Download"} reports different checksum: #{e.expected}"
         rescue => e
-          raise e unless bottle_manifest_error?(downloadable, e)
+          downloadable = @symlink_targets[cached_location]&.first
+          raise e unless downloadable && bottle_manifest_error?(downloadable, e)
         end
       else
-        message_length_max = downloads.keys.map { |download| download.download_queue_message.length }.max || 0
-        remaining_downloads = downloads.dup.to_a
+        message_length_max = @downloads_by_location.keys.map { |location| location.basename.to_s.length }.max || 0
+        remaining_downloads = @downloads_by_location.dup.to_a
         previous_pending_line_count = 0
 
         begin
           stdout_print_and_flush_if_tty Tty.hide_cursor
 
-          output_message = lambda do |downloadable, future, last|
+          output_message = lambda do |cached_location, future, last|
             status = status_from_future(future)
             exception = future.reason if future.rejected?
-            next 1 if bottle_manifest_error?(downloadable, exception)
+            
+            downloadable = @symlink_targets[cached_location]&.first
+            next 1 if downloadable && bottle_manifest_error?(downloadable, exception)
 
-            message = downloadable.download_queue_message
+            message = cached_location.basename.to_s
             if tty
-              message = message_with_progress(downloadable, future, message, message_length_max)
+              message = message_with_progress(cached_location, future, message, message_length_max)
               stdout_print_and_flush "#{status} #{message}#{"\n" unless last}"
             elsif status
               $stderr.puts "#{status} #{message}"
@@ -98,15 +103,15 @@ module Homebrew
 
             if future.rejected?
               if exception.is_a?(ChecksumMismatchError)
-                actual = Digest::SHA256.file(downloadable.cached_download).hexdigest
-                actual_message, expected_message = align_checksum_mismatch_message(downloadable.download_queue_type)
+                actual = Digest::SHA256.file(cached_location).hexdigest
+                download_type = downloadable&.download_queue_type || "Download"
+                actual_message, expected_message = align_checksum_mismatch_message(download_type)
 
                 ofail "#{actual_message} #{exception.expected}"
                 puts "#{expected_message} #{actual}"
                 next 2
               elsif exception.is_a?(CannotInstallFormulaError)
-                cached_download = downloadable.cached_download
-                cached_download.unlink if cached_download&.exist?
+                cached_location.unlink if cached_location.exist?
                 raise exception
               else
                 message = future.reason.to_s
@@ -126,20 +131,20 @@ module Homebrew
                 finished_states.include?(future.state)
               end
 
-              finished_downloads.each do |downloadable, future|
+              finished_downloads.each do |cached_location, future|
                 previous_pending_line_count -= 1
                 stdout_print_and_flush_if_tty Tty.clear_to_end
-                output_message.call(downloadable, future, false)
+                output_message.call(cached_location, future, false)
               end
 
               previous_pending_line_count = 0
               max_lines = [concurrency, Tty.height].min
-              remaining_downloads.each_with_index do |(downloadable, future), i|
+              remaining_downloads.each_with_index do |(cached_location, future), i|
                 break if previous_pending_line_count >= max_lines
 
                 stdout_print_and_flush_if_tty Tty.clear_to_end
                 last = i == max_lines - 1 || i == remaining_downloads.count - 1
-                previous_pending_line_count += output_message.call(downloadable, future, last)
+                previous_pending_line_count += output_message.call(cached_location, future, last)
               end
 
               if previous_pending_line_count.positive?
@@ -175,8 +180,9 @@ module Homebrew
       # Restore the pre-parallel fetch context to avoid e.g. quiet state bleeding out from threads.
       Context.current = context_before_fetch
 
-      downloads.clear
       @downloads_by_location.clear
+      @symlink_targets.clear
+      @downloadable_to_location.clear
     end
 
     sig { params(message: String).void }
@@ -248,11 +254,6 @@ module Homebrew
     sig { returns(T::Boolean) }
     attr_reader :tty
 
-    sig { returns(T::Hash[Downloadable, Concurrent::Promises::Future]) }
-    def downloads
-      @downloads ||= T.let({}, T.nilable(T::Hash[Downloadable, Concurrent::Promises::Future]))
-    end
-
     sig { params(future: Concurrent::Promises::Future).returns(T.nilable(String)) }
     def status_from_future(future)
       case future.state
@@ -292,12 +293,15 @@ module Homebrew
       @spinner ||= Spinner.new
     end
 
-    sig { params(downloadable: Downloadable, future: Concurrent::Promises::Future, message: String, message_length_max: Integer).returns(String) }
-    def message_with_progress(downloadable, future, message, message_length_max)
+    sig { params(cached_location: Pathname, future: Concurrent::Promises::Future, message: String, message_length_max: Integer).returns(String) }
+    def message_with_progress(cached_location, future, message, message_length_max)
       tty_width = Tty.width
       return message unless tty_width.positive?
 
       available_width = tty_width - 2
+      downloadable = @symlink_targets[cached_location]&.first
+      return message[0, available_width].to_s if downloadable.nil?
+
       fetched_size = downloadable.fetched_size
       return message[0, available_width].to_s if fetched_size.blank?
 
