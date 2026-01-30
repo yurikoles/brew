@@ -267,6 +267,9 @@ class Bottle
     @resource.url("#{val}/#{path}", **select_download_strategy(specs))
     return unless resolved_basename.present?
 
-    T.cast(@resource.downloader, CurlGitHubPackagesDownloadStrategy).resolved_basename = resolved_basename
+    downloader = @resource.downloader
+    return unless downloader.is_a?(CurlGitHubPackagesDownloadStrategy)
+
+    downloader.resolved_basename = resolved_basename
   end
 end

@@ -130,7 +130,7 @@ class AbstractDownloadStrategy
 
     if File.directory? entries.fetch(0)
       # chdir yields the directory name as an argument, which is unused in our case
-      # Howeber, sorbet requires us to pass a block with matching arity, so we use T.unsafe here
+      # However, sorbet requires us to pass a block with matching arity, so we use T.unsafe here
       Dir.chdir(entries.fetch(0), &T.unsafe(block))
     else
       yield
