@@ -2876,6 +2876,8 @@ class Formula
 
     bottle_spec.collector.each_tag do |tag|
       tag_spec = bottle_spec.collector.specification_for(tag, no_older_versions: true)
+      odie "Specification for tag #{tag} is nil" if tag_spec.nil?
+
       os_cellar = tag_spec.cellar
       os_cellar = os_cellar.inspect if os_cellar.is_a?(Symbol)
       checksum = tag_spec.checksum.hexdigest

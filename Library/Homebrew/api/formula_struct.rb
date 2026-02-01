@@ -75,7 +75,7 @@ module Homebrew
 
       # Changes to this struct must be mirrored in Homebrew::API::Formula.generate_formula_struct_hash
       const :aliases, T::Array[String], default: []
-      const :bottle_checksums, T::Array[T::Hash[Symbol, T.anything]], default: []
+      const :bottle_checksums, T::Array[T::Hash[Symbol, T.any(String, Symbol)]], default: []
       const :bottle_rebuild, Integer, default: 0
       const :caveats, T.nilable(String)
       const :conflicts, T::Array[[String, T::Hash[Symbol, String]]], default: []
