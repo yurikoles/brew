@@ -35,6 +35,17 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
   let(:versions) { ["1.2", "1.2.3"] }
   let(:multipart_versions) { ["1.2.3,45", "1.2.3,45,abcdef"] }
 
+  describe "Item" do
+    describe "#to_h" do
+      it "returns a hash containing non-nil values" do
+        expect(items["first"].to_h).to eq({
+          bundle_version: { version: "1.2" },
+        })
+        expect(extract_plist::Item.new.to_h).to eq({})
+      end
+    end
+  end
+
   describe "::match?" do
     it "returns true for an HTTP URL" do
       expect(extract_plist.match?(http_url)).to be true
@@ -45,26 +56,26 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
     end
   end
 
-  describe "::versions_from_items" do
+  describe "::versions_from_content" do
     it "returns an empty array if Items hash is empty" do
-      expect(extract_plist.versions_from_items({})).to eq([])
+      expect(extract_plist.versions_from_content({})).to eq([])
     end
 
     it "returns an array of version strings when given Items" do
-      expect(extract_plist.versions_from_items(items)).to eq(versions)
+      expect(extract_plist.versions_from_content(items)).to eq(versions)
     end
 
     it "returns an array of version strings when given Items and a block" do
       # Returning a string from block
       expect(
-        extract_plist.versions_from_items(items) do |items|
+        extract_plist.versions_from_content(items) do |items|
           items["first"].version
         end,
       ).to eq(["1.2"])
 
       # Returning an array of strings from block
       expect(
-        extract_plist.versions_from_items(items) do |items|
+        extract_plist.versions_from_content(items) do |items|
           items.map do |_key, item|
             item.bundle_version.nice_version
           end
@@ -75,7 +86,7 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
     it "returns an array of version strings when given `Item`s, a regex and a block" do
       # Returning a string from block
       expect(
-        extract_plist.versions_from_items(multipart_items, multipart_regex) do |items, regex|
+        extract_plist.versions_from_content(multipart_items, multipart_regex) do |items, regex|
           match = items["first"].version.match(regex)
           next if match.blank?
 
@@ -85,7 +96,7 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
 
       # Returning an array of strings from block
       expect(
-        extract_plist.versions_from_items(multipart_items, multipart_regex) do |items, regex|
+        extract_plist.versions_from_content(multipart_items, multipart_regex) do |items, regex|
           items.map do |_key, item|
             match = item.version.match(regex)
             next if match.blank?
@@ -97,11 +108,11 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
     end
 
     it "allows a nil return from a block" do
-      expect(extract_plist.versions_from_items(items) { next }).to eq([])
+      expect(extract_plist.versions_from_content(items) { next }).to eq([])
     end
 
     it "errors on an invalid return type from a block" do
-      expect { extract_plist.versions_from_items(items) { 123 } }
+      expect { extract_plist.versions_from_content(items) { 123 } }
         .to raise_error(TypeError, Homebrew::Livecheck::Strategy::INVALID_BLOCK_RETURN_VALUE_MSG)
     end
   end
@@ -160,12 +171,41 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
 
   describe "::find_versions" do
     let(:cask) { Cask::CaskLoader.load(cask_path("livecheck/livecheck-extract-plist")) }
-    let(:matches) { { "1.2.3" => Version.new("1.2.3") } }
+    let(:content) { '{"com.caffeine":{"bundle_version":{"version":"1.2.3"}}}' }
+    let(:match_data) do
+      base = {
+        matches: { "1.2.3" => Version.new("1.2.3") },
+        regex:   nil,
+        url:     nil,
+      }
+
+      {
+        uncached:       base.merge({ content: }),
+        cached:         base.merge({ cached: true }),
+        cached_default: base.merge({ matches: {}, cached: true }),
+      }
+    end
 
     it "raises an error if a regex is provided with no block" do
       expect do
         extract_plist.find_versions(cask:, regex: multipart_regex)
       end.to raise_error(ArgumentError, "ExtractPlist only supports a regex when using a `strategy` block")
+    end
+
+    it "finds versions using provided content" do
+      expect(extract_plist.find_versions(cask:, content:))
+        .to eq(match_data[:cached])
+
+      # This `strategy` block is unnecessary but it's intended to test using a
+      # regex in a `strategy` block.
+      expect(extract_plist.find_versions(cask:, content:) do |items|
+        items["com.caffeine"]&.version
+      end).to eq(match_data[:cached])
+    end
+
+    it "returns default match_data when provided content is blank" do
+      expect(extract_plist.find_versions(cask:, content: "{}"))
+        .to eq(match_data[:cached_default])
     end
 
     it "checks the cask using the livecheck URL string", :needs_macos do
@@ -174,18 +214,18 @@ RSpec.describe Homebrew::Livecheck::Strategy::ExtractPlist do
 
       expect(
         extract_plist.find_versions(cask: cask_with_url, url: livecheck_url),
-      ).to eq({ matches:, regex: nil, url: livecheck_url })
+      ).to eq(match_data[:uncached].merge({ url: livecheck_url }))
     end
 
     it "checks the original cask if the provided URL is the same as the artifact URL", :needs_macos do
       cask_url = cask.url.to_s
 
       expect(extract_plist.find_versions(cask:, url: cask_url))
-        .to eq({ matches:, regex: nil, url: cask_url })
+        .to eq(match_data[:uncached].merge({ url: cask_url }))
     end
 
     it "checks the original cask if a URL is not provided", :needs_macos do
-      expect(extract_plist.find_versions(cask:)).to eq({ matches:, regex: nil, url: nil })
+      expect(extract_plist.find_versions(cask:)).to eq(match_data[:uncached])
     end
   end
 end
