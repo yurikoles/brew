@@ -117,6 +117,16 @@ module Homebrew
       const :version_scheme, Integer, default: 0
       const :versioned_formulae, T::Array[String], default: []
 
+      sig { params(other: T.anything).returns(T::Boolean) }
+      def ==(other)
+        case other
+        when FormulaStruct
+          serialize == other.serialize
+        else
+          false
+        end
+      end
+
       sig { params(bottle_tag: ::Utils::Bottles::Tag).returns(T.nilable(T::Hash[String, T.untyped])) }
       def serialize_bottle(bottle_tag: ::Utils::Bottles.tag)
         bottle_collector = ::Utils::Bottles::Collector.new
