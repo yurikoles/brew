@@ -109,7 +109,15 @@ module Homebrew
                 cached_download.unlink if cached_download&.exist?
                 raise exception
               else
-                message = future.reason.to_s
+                message = if exception.is_a?(DownloadError) && exception.cause.is_a?(ErrorDuringExecution)
+                  if (stderr_output = exception.cause.stderr.presence)
+                    "#{stderr_output}#{exception.cause.message}"
+                  else
+                    exception.cause.message
+                  end
+                else
+                  future.reason.to_s
+                end
                 ofail message
                 next message.count("\n")
               end
