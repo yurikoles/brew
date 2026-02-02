@@ -65,8 +65,7 @@ module Homebrew
         # If a regex is provided, it will be passed as the second argument to
         # the `strategy` block (after the parsed YAML data).
         # @param content [String] the YAML text to parse and check
-        # @param regex [Regexp, nil] a regex used for matching versions in the
-        #   content
+        # @param regex [Regexp, nil] a regex for use in a strategy block
         # @return [Array]
         sig {
           params(

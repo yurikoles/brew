@@ -42,12 +42,11 @@ module Homebrew
         end
 
         # Uses the regex to match text in the content or, if a block is
-        # provided, passes the page content to the block to handle matching.
-        # With either approach, an array of unique matches is returned.
+        # provided, passes the content to the block to handle matching. With
+        # either approach, an array of unique matches is returned.
         #
-        # @param content [String] the page content to check
-        # @param regex [Regexp, nil] a regex used for matching versions in the
-        #   content
+        # @param content [String] the content to check
+        # @param regex [Regexp, nil] a regex for matching versions in content
         # @return [Array]
         sig {
           params(

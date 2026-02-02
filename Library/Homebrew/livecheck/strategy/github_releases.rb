@@ -90,10 +90,8 @@ module Homebrew
         # provided, passes the JSON to the block to handle matching. With
         # either approach, an array of unique matches is returned.
         #
-        # @param content [Array, Hash] array of releases or a single release
-        # @param regex [Regexp] a regex used for matching versions in the
-        # content
-        # @param block [Proc, nil] a block to match the content
+        # @param content [Array, Hash] an array of releases or a single release
+        # @param regex [Regexp] a regex for matching versions in content
         # @return [Array]
         sig {
           params(

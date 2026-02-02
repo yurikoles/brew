@@ -67,8 +67,7 @@ module Homebrew
         # Otherwise, only the parsed JSON data will be passed to the block.
         #
         # @param content [String] the JSON text to parse and check
-        # @param regex [Regexp, nil] a regex used for matching versions in the
-        #   content
+        # @param regex [Regexp, nil] a regex for use in a strategy block
         # @return [Array]
         sig {
           params(

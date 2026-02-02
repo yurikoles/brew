@@ -195,9 +195,9 @@ module Homebrew
         }
         def self.versions_from_content(content, regex = nil, &block)
           items = sort_items(filter_items(items_from_content(content)))
-          return [] if items.blank?
+          return [] if items.empty?
 
-          item = items.first
+          item = T.must(items.first)
 
           if block
             block_return_value = case block.parameters[0]
@@ -211,7 +211,7 @@ module Homebrew
             return Strategy.handle_block_return(block_return_value)
           end
 
-          version = T.must(item).bundle_version&.nice_version
+          version = item.bundle_version&.nice_version
           version.present? ? [version] : []
         end
 

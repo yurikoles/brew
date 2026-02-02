@@ -153,7 +153,7 @@ module Homebrew
         # group around the version text.
         #
         # @param content [String] the content to check
-        # @param regex [Regexp, nil] a regex to identify versions
+        # @param regex [Regexp, nil] a regex for matching versions in content
         # @return [Array]
         sig {
           params(
