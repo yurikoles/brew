@@ -289,8 +289,10 @@ module Cask
       private :quit
 
       # :signal should come after :quit so it can be used as a backup when :quit fails
-      sig { params(signals: [String, String], command: T.class_of(SystemCommand), _kwargs: T.anything).void }
-      def uninstall_signal(*signals, command:, **_kwargs)
+      sig {
+        params(signals: [String, String], command: T.nilable(T.class_of(SystemCommand)), _kwargs: T.anything).void
+      }
+      def uninstall_signal(*signals, command: nil, **_kwargs)
         signals.each do |pair|
           raise CaskInvalidError.new(cask, "Each #{stanza} :signal must consist of 2 elements.") if pair.size != 2
 
@@ -438,49 +440,48 @@ module Cask
         end
       end
 
+      # This returns T::Enumerable[[Pathname, T::Array[Pathname]]] when called without a block,
+      # but sorbet doesn't support overloads.
       sig {
         params(
           action: Symbol,
           paths:  T::Array[T.any(Pathname, String)],
-          _block: T.nilable(T.proc.params(path: Pathname, resolved_paths: T::Array[Pathname]).void),
-        ).returns(T::Enumerable[T::Array[Pathname]])
+          _block: T.nilable(T.proc.params(path: T.any(Pathname, String), resolved_paths: T::Array[Pathname]).void),
+        ).returns(T.untyped)
       }
       def each_resolved_path(action, paths, &_block)
-        if block_given?
-          paths.each do |path|
-            resolved_path = Pathname.new(path)
+        return enum_for(:each_resolved_path, action, paths) unless block_given?
 
-            resolved_path = resolved_path.expand_path if path.to_s.start_with?("~")
+        paths.each do |path|
+          resolved_path = Pathname.new(path)
 
-            if resolved_path.relative? || resolved_path.split.any? { |part| part.to_s == ".." }
-              opoo "Skipping #{Formatter.identifier(action)} for relative path '#{path}'."
-              next
+          resolved_path = resolved_path.expand_path if path.to_s.start_with?("~")
+
+          if resolved_path.relative? || resolved_path.split.any? { |part| part.to_s == ".." }
+            opoo "Skipping #{Formatter.identifier(action)} for relative path '#{path}'."
+            next
+          end
+
+          if undeletable?(resolved_path)
+            opoo "Skipping #{Formatter.identifier(action)} for undeletable path '#{path}'."
+            next
+          end
+
+          begin
+            yield path, Pathname.glob(resolved_path)
+          rescue Errno::EPERM
+            raise if File.readable?(File.expand_path("~/Library/Application Support/com.apple.TCC"))
+
+            navigation_path = if MacOS.version >= :ventura
+              "System Settings → Privacy & Security"
+            else
+              "System Preferences → Security & Privacy → Privacy"
             end
 
-            if undeletable?(resolved_path)
-              opoo "Skipping #{Formatter.identifier(action)} for undeletable path '#{path}'."
-              next
-            end
-
-            begin
-              yield resolved_path, Pathname.glob(resolved_path)
-            rescue Errno::EPERM
-              raise if File.readable?(File.expand_path("~/Library/Application Support/com.apple.TCC"))
-
-              navigation_path = if MacOS.version >= :ventura
-                "System Settings → Privacy & Security"
-              else
-                "System Preferences → Security & Privacy → Privacy"
-              end
-
-              odie "Unable to remove some files. Please enable Full Disk Access for your terminal under " \
-                   "#{navigation_path} → Full Disk Access."
-            end
+            odie "Unable to remove some files. Please enable Full Disk Access for your terminal under " \
+                 "#{navigation_path} → Full Disk Access."
           end
         end
-        # it's a bit of a hack to return an Enumerator when a block is given,
-        # but Sorbet doesn't support overloading, and this keeps the return type simple.
-        enum_for(:each_resolved_path, action, paths)
       end
 
       sig { params(paths: T.any(Pathname, String), command: T.class_of(SystemCommand), _kwargs: T.anything).void }
@@ -510,10 +511,10 @@ module Cask
       end
 
       sig {
-        params(paths: Pathname, command: T.class_of(SystemCommand), _kwargs: T.anything)
+        params(paths: Pathname, command: T.nilable(T.class_of(SystemCommand)), _kwargs: T.anything)
           .returns(T.nilable([T::Array[String], T::Array[String]]))
       }
-      def trash_paths(*paths, command:, **_kwargs)
+      def trash_paths(*paths, command: nil, **_kwargs)
         return if paths.empty?
 
         stdout = system_command(HOMEBREW_LIBRARY_PATH/"cask/utils/trash.swift",

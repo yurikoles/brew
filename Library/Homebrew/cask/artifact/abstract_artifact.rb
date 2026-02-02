@@ -112,8 +112,7 @@ module Cask
         when AbstractArtifact
           return 0 if instance_of?(other.class)
 
-          # Safe once https://github.com/sorbet/sorbet/pull/9864 lands
-          (T.unsafe(sort_order[self.class]) <=> T.unsafe(sort_order[other.class])).to_i
+          (sort_order[self.class] <=> sort_order[other.class]).to_i
         end
       end
 
