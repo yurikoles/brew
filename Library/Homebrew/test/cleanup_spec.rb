@@ -444,6 +444,22 @@ RSpec.describe Homebrew::Cleanup do
         expect(testball_resource).not_to exist
       end
     end
+
+    it "does not remove bottle manifests for the latest installed version when using GitHub Packages" do
+      manifest = HOMEBREW_CACHE/"foo_bottle_manifest--1.0.json"
+      FileUtils.touch manifest
+
+      resource = instance_double(Resource, version: Version.new("1.0.arm64_sonoma"))
+      bottle   = instance_double(Bottle, resource:, rebuild: 0)
+      formula  = instance_double(Formula, latest_version_installed?: true, bottle:)
+
+      allow(Formulary).to receive(:from_rack).and_return(nil, formula)
+      allow(described_class).to receive(:excluded_versions_from_cleanup).with(formula).and_return([])
+
+      cleanup.cleanup_cache
+
+      expect(manifest).to exist
+    end
   end
 
   describe "::cleanup_python_site_packages" do
