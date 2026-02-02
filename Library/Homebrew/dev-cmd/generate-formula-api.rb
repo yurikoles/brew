@@ -77,8 +77,10 @@ module Homebrew
 
             json_contents = {
               formulae:,
-              tap_git_head:   CoreTap.instance.git_head,
-              tap_migrations: CoreTap.instance.tap_migrations,
+              aliases:        tap.alias_table,
+              renames:        tap.formula_renames,
+              tap_git_head:   tap.git_head,
+              tap_migrations: tap.tap_migrations,
             }
 
             File.write("api/internal/formula.#{bottle_tag}.json", JSON.generate(json_contents)) unless args.dry_run?
