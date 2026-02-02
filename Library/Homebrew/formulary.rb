@@ -203,14 +203,15 @@ module Formulary
 
   sig {
     params(
-      name:                         String,
-      json_formula_with_variations: T::Hash[String, T.untyped],
-      tap_git_head:                 String,
-      flags:                        T::Array[String],
+      name:           String,
+      formula_struct: Homebrew::API::FormulaStruct,
+      api_source:     T::Hash[String, T.untyped],
+      tap_git_head:   String,
+      flags:          T::Array[String],
     ).returns(T.class_of(Formula))
   }
-  def self.load_formula_from_json!(name, json_formula_with_variations, tap_git_head:, flags:)
-    namespace = :"FormulaNamespaceAPI#{namespace_key(json_formula_with_variations.to_json)}"
+  def self.load_formula_from_struct!(name, formula_struct, api_source:, tap_git_head:, flags:)
+    namespace = :"FormulaNamespaceAPI#{namespace_key(api_source.to_json)}"
 
     mod = Module.new
     remove_const(namespace) if const_defined?(namespace)
@@ -220,11 +221,10 @@ module Formulary
 
     class_name = class_s(name)
     ruby_source_path = "Formula/#{CoreTap.instance.new_formula_subdirectory(name)}/#{name.downcase}.rb"
-    formula_struct = Homebrew::API::Formula::FormulaStructGenerator.generate_formula_struct_hash(json_formula_with_variations)
 
     klass = Class.new(::Formula) do
       @loaded_from_api = T.let(true, T.nilable(T::Boolean))
-      @api_source = T.let(json_formula_with_variations, T.nilable(T::Hash[String, T.untyped]))
+      @api_source = T.let(api_source, T.nilable(T::Hash[String, T.untyped]))
 
       desc formula_struct.desc
       homepage formula_struct.homepage
@@ -875,16 +875,25 @@ module Formulary
 
     sig { overridable.params(flags: T::Array[String]).void }
     def load_from_api(flags:)
-      json_formula = if Homebrew::EnvConfig.use_internal_api?
-        Homebrew::API::Formula.formula_json(name)
-      else
-        Homebrew::API::Formula.all_formulae[name]
-      end
+      return load_from_internal_api(flags:) if Homebrew::EnvConfig.use_internal_api?
 
-      raise FormulaUnavailableError, name if json_formula.nil?
+      api_source = Homebrew::API::Formula.all_formulae[name]
+      raise FormulaUnavailableError, name if api_source.nil?
 
-      tap_git_head = json_formula.fetch("tap_git_head", "")
-      Formulary.load_formula_from_json!(name, json_formula, tap_git_head:, flags:)
+      tap_git_head = api_source.fetch("tap_git_head", "")
+      formula_struct = Homebrew::API::Formula::FormulaStructGenerator.generate_formula_struct_hash(api_source)
+      Formulary.load_formula_from_struct!(name, formula_struct, api_source:, tap_git_head:, flags:)
+    end
+
+    sig { params(flags: T::Array[String]).void }
+    def load_from_internal_api(flags:)
+      formula_struct = Homebrew::API::Internal.formula_struct(name)
+      api_source = Homebrew::API::Internal.formula_hashes[name]
+      tap_git_head = Homebrew::API::Internal.formula_tap_git_head
+
+      raise FormulaUnavailableError, name if api_source.nil?
+
+      Formulary.load_formula_from_struct!(name, formula_struct, api_source:, tap_git_head:, flags:)
     end
   end
 
@@ -901,7 +910,8 @@ module Formulary
     sig { override.params(flags: T::Array[String]).void }
     def load_from_api(flags:)
       tap_git_head = @contents.fetch("tap_git_head", "")
-      Formulary.load_formula_from_json!(name, @contents, tap_git_head:, flags:)
+      formula_struct = Homebrew::API::Formula::FormulaStructGenerator.generate_formula_struct_hash(@contents)
+      Formulary.load_formula_from_struct!(name, formula_struct, api_source: @contents, tap_git_head:, flags:)
     end
   end
 
