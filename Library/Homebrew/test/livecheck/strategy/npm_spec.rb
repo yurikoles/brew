@@ -61,17 +61,24 @@ RSpec.describe Homebrew::Livecheck::Strategy::Npm do
 
   describe "::find_versions" do
     let(:match_data) do
-      cached = {
+      base = {
         matches: matches.to_h { |v| [v, Version.new(v)] },
         regex:   nil,
         url:     generated[:typical][:url],
-        cached:  true,
       }
 
       {
-        cached:,
-        cached_default: cached.merge({ matches: {} }),
+        fetched:        base.merge({ content: }),
+        cached:         base.merge({ cached: true }),
+        cached_default: base.merge({ matches: {}, cached: true }),
       }
+    end
+
+    it "finds versions in fetched content" do
+      allow(Homebrew::Livecheck::Strategy).to receive(:page_content).and_return({ content: })
+
+      expect(npm.find_versions(url: npm_urls[:typical]))
+        .to eq(match_data[:fetched])
     end
 
     it "finds versions in provided content" do

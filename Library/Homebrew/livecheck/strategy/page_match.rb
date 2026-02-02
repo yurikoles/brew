@@ -70,6 +70,10 @@ module Homebrew
               match
             when Array
               match.first
+            else
+              # :nocov:
+              T.absurd(match)
+              # :nocov:
             end
           end.uniq
         end

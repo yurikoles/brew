@@ -79,8 +79,6 @@ module Homebrew
           return [] if content.blank? || !block_given?
 
           yaml = parse_yaml(content)
-          return [] if yaml.blank?
-
           block_return_value = if regex.present?
             yield(yaml, regex)
           elsif block.arity == 2

@@ -142,12 +142,14 @@ RSpec.describe Homebrew::Livecheck::Strategy::Sparkle do
     EOS
 
     # Set the first item in a copy of `appcast` to a bad `minimumSystemVersion`
-    # value, to test `MacOSVersion::Error` handling.
+    # value, to test `MacOSVersion::Error` handling. The version string needs
+    # to be something that cannot be adequately cleaned up by the related
+    # `#gsub` call in `items_from_content`.
     bad_macos_version = appcast.sub(
       v123_item,
       v123_item.sub(
         /(<sparkle:minimumSystemVersion>)[^<]+?</m,
-        '\1Not a macOS version<',
+        '\1a1b2c3d<',
       ),
     )
 
@@ -459,20 +461,27 @@ RSpec.describe Homebrew::Livecheck::Strategy::Sparkle do
 
   describe "::find_versions" do
     let(:match_data) do
-      cached = {
+      base = {
         matches: matches.to_h { |v| [v, Version.new(v)] },
         regex:   nil,
         url:     appcast_url,
-        cached:  true,
       }
 
       {
-        cached:,
-        cached_default: cached.merge({ matches: {} }),
+        fetched:        base.merge({ content: xml[:appcast] }),
+        cached:         base.merge({ cached: true }),
+        cached_default: base.merge({ matches: {}, cached: true }),
       }
     end
 
     let(:appcast_regex) { %r{/example[._-]v?(\d+(?:\.\d+)+)\.t}i }
+
+    it "finds versions in fetched content" do
+      allow(Homebrew::Livecheck::Strategy).to receive(:page_content).and_return({ content: xml[:appcast] })
+
+      expect(sparkle.find_versions(url: appcast_url))
+        .to eq(match_data[:fetched])
+    end
 
     it "finds versions in provided content" do
       expect(sparkle.find_versions(url: appcast_url, content: xml[:appcast]))

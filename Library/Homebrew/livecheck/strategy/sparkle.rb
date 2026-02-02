@@ -160,7 +160,10 @@ module Homebrew
             next false if item.os && APPCAST_MACOS_STRINGS.none?(item.os)
 
             # Omit items for prerelease macOS versions
-            next false if item.minimum_system_version&.strip_patch&.prerelease?
+            if (minimum_system_version = item.minimum_system_version) &&
+               minimum_system_version.strip_patch.prerelease?
+              next false
+            end
 
             true
           end.compact

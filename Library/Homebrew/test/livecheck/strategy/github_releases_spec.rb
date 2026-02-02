@@ -169,20 +169,27 @@ RSpec.describe Homebrew::Livecheck::Strategy::GithubReleases do
 
   describe "::find_versions" do
     let(:match_data) do
-      cached = {
+      base = {
         matches: matches.to_h { |v| [v, Version.new(v)] },
         regex:,
         url:     generated[:brew][:url],
-        cached:  true,
       }
 
       {
-        cached:,
-        cached_default: cached.merge({ matches: {} }),
+        fetched:        base.merge({ content: }),
+        cached:         base.merge({ cached: true }),
+        cached_default: base.merge({ matches: {}, cached: true }),
       }
     end
 
     let(:brew_regex) { /^v?(\d+(?:\.\d+)+)$/i }
+
+    it "finds versions in fetched content" do
+      allow(GitHub::API).to receive(:open_rest).and_return(content)
+
+      expect(github_releases.find_versions(url: github_urls[:brew_tag_archive]))
+        .to eq(match_data[:fetched])
+    end
 
     it "finds versions in provided content" do
       expect(github_releases.find_versions(url: github_urls[:brew_tag_archive], content:))

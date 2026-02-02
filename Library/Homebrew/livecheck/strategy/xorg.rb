@@ -142,7 +142,7 @@ module Homebrew
           return match_data if content.blank?
 
           # Cache any new page content
-          @page_data[generated_url] = content unless cached_content
+          @page_data[generated_url] = content
 
           match_data
         end

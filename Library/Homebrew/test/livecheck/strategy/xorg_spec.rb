@@ -152,17 +152,33 @@ RSpec.describe Homebrew::Livecheck::Strategy::Xorg do
 
   describe "::find_versions" do
     let(:match_data) do
-      cached = {
+      base = {
         matches: matches.to_h { |v| [v, Version.new(v)] },
         regex:   generated[:app][:regex],
         url:     generated[:app][:url],
-        cached:  true,
       }
 
       {
-        cached:,
-        cached_default: cached.merge({ matches: {} }),
+        fetched:        base.merge({ content: }),
+        cached:         base.merge({ cached: true }),
+        cached_default: base.merge({ matches: {}, cached: true }),
       }
+    end
+
+    before { xorg.instance_variable_set(:@page_data, {}) }
+
+    it "finds versions in fetched content" do
+      allow(Homebrew::Livecheck::Strategy).to receive(:page_content).and_return({ content: })
+
+      expect(xorg.find_versions(url: xorg_urls[:app])).to eq(match_data[:fetched])
+    end
+
+    it "finds versions in cached content" do
+      xorg.instance_variable_set(
+        :@page_data,
+        { generated[:app][:url] => content },
+      )
+      expect(xorg.find_versions(url: xorg_urls[:app])).to eq(match_data[:cached])
     end
 
     it "finds versions in provided content" do

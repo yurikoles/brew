@@ -99,17 +99,26 @@ RSpec.describe Homebrew::Livecheck::Strategy::Json do
 
   describe "::find_versions" do
     let(:match_data) do
-      cached = {
+      base = {
         matches: matches[:content].to_h { |v| [v, Version.new(v)] },
         regex:,
         url:     http_url,
-        cached:  true,
       }
 
       {
-        cached:,
-        cached_default: cached.merge({ matches: {} }),
+        fetched:        base.merge({ content: }),
+        cached:         base.merge({ cached: true }),
+        cached_default: base.merge({ matches: {}, cached: true }),
       }
+    end
+
+    it "finds versions in fetched content" do
+      allow(Homebrew::Livecheck::Strategy).to receive(:page_content).and_return({ content: })
+
+      expect(json.find_versions(url: http_url, regex:) do |json, regex|
+        json["versions"].select { |item| item["version"]&.match?(regex) }
+                        .map { |item| item["version"][regex, 1] }
+      end).to eq(match_data[:fetched])
     end
 
     it "finds versions in content using a block" do
