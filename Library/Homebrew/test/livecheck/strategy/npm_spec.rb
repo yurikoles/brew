@@ -75,20 +75,20 @@ RSpec.describe Homebrew::Livecheck::Strategy::Npm do
     end
 
     it "finds versions in provided content" do
-      expect(npm.find_versions(url: npm_urls[:typical], provided_content: content))
+      expect(npm.find_versions(url: npm_urls[:typical], content:))
         .to eq(match_data[:cached])
     end
 
     it "finds versions in provided content using a block" do
       # This `strategy` block is unnecessary but it's only intended to test
       # using a provided `strategy` block.
-      expect(npm.find_versions(url: npm_urls[:typical], provided_content: content) do |json|
+      expect(npm.find_versions(url: npm_urls[:typical], content:) do |json|
         json["version"]
       end).to eq(match_data[:cached])
     end
 
     it "returns default match_data when block doesn't return version information" do
-      expect(npm.find_versions(url: npm_urls[:typical], provided_content: content) do |json|
+      expect(npm.find_versions(url: npm_urls[:typical], content:) do |json|
         json["nonexistentValue"]
       end).to eq(match_data[:cached_default])
     end
@@ -99,7 +99,7 @@ RSpec.describe Homebrew::Livecheck::Strategy::Npm do
     end
 
     it "returns default match_data when content is blank" do
-      expect(npm.find_versions(url: npm_urls[:typical], provided_content: ""))
+      expect(npm.find_versions(url: npm_urls[:typical], content: ""))
         .to eq(match_data[:cached_default])
     end
   end

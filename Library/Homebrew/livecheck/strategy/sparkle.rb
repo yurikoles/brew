@@ -216,26 +216,32 @@ module Homebrew
         #
         # @param url [String] the URL of the content to check
         # @param regex [Regexp, nil] a regex for use in a strategy block
+        # @param content [String, nil] content to check instead of fetching
         # @param options [Options] options to modify behavior
         # @return [Hash]
         sig {
-          override(allow_incompatible: true).params(
+          override.params(
             url:     String,
             regex:   T.nilable(Regexp),
+            content: T.nilable(String),
             options: Options,
             block:   T.nilable(Proc),
           ).returns(T::Hash[Symbol, T.anything])
         }
-        def self.find_versions(url:, regex: nil, options: Options.new, &block)
+        def self.find_versions(url:, regex: nil, content: nil, options: Options.new, &block)
           if regex.present? && !block_given?
             raise ArgumentError,
                   "#{Utils.demodulize(name)} only supports a regex when using a `strategy` block"
           end
 
           match_data = { matches: {}, regex:, url: }
+          match_data[:cached] = true if content
+          return match_data if url.blank?
 
-          match_data.merge!(Strategy.page_content(url, options:))
-          content = match_data.delete(:content)
+          unless match_data[:cached]
+            match_data.merge!(Strategy.page_content(url, options:))
+            content = match_data[:content]
+          end
           return match_data if content.blank?
 
           versions_from_content(content, regex, &block).each do |version_text|

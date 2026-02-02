@@ -8,7 +8,9 @@ RSpec.describe Homebrew::Livecheck::Strategy::Crate do
   let(:crate_url) { "https://static.crates.io/crates/example/example-0.1.0.crate" }
   let(:non_crate_url) { "https://brew.sh/test" }
 
-  let(:regex) { /^v?(\d+(?:\.\d+)+)$/i }
+  # This only differs from the `DEFAULT_REGEX` so we can distinguish between a
+  # provided regex and the default strategy regex in testing.
+  let(:regex) { /v?(\d+(?:\.\d+)+)/i }
 
   let(:generated) do
     { url: "https://crates.io/api/v1/crates/example/versions" }
@@ -54,7 +56,7 @@ RSpec.describe Homebrew::Livecheck::Strategy::Crate do
         "1.0.1" => Version.new("1.0.1"),
         "1.0.0" => Version.new("1.0.0"),
       },
-      regex:,
+      regex:   crate::DEFAULT_REGEX,
       url:     generated[:url],
     }
   end
@@ -99,15 +101,15 @@ RSpec.describe Homebrew::Livecheck::Strategy::Crate do
     end
 
     it "finds versions in provided content" do
-      expect(crate.find_versions(url: crate_url, regex:, provided_content: content))
+      expect(crate.find_versions(url: crate_url, regex:, content:))
         .to eq(match_data[:cached].merge({ regex: }))
 
-      expect(crate.find_versions(url: crate_url, provided_content: content))
+      expect(crate.find_versions(url: crate_url, content:))
         .to eq(match_data[:cached])
     end
 
     it "finds versions in provided content using a block" do
-      expect(crate.find_versions(url: crate_url, regex:, provided_content: content) do |json, regex|
+      expect(crate.find_versions(url: crate_url, regex:, content:) do |json, regex|
         json["versions"]&.map do |version|
           next if version["yanked"] == true
           next if (match = version["num"]&.match(regex)).blank?
@@ -116,7 +118,7 @@ RSpec.describe Homebrew::Livecheck::Strategy::Crate do
         end
       end).to eq(match_data[:cached].merge({ regex: }))
 
-      expect(crate.find_versions(url: crate_url, provided_content: content) do |json|
+      expect(crate.find_versions(url: crate_url, content:) do |json|
         json["versions"]&.map do |version|
           next if version["yanked"] == true
           next if (match = version["num"]&.match(regex)).blank?
@@ -129,23 +131,23 @@ RSpec.describe Homebrew::Livecheck::Strategy::Crate do
     it "returns default match_data when block doesn't return version information" do
       no_match_regex = /will_not_match/i
 
-      expect(crate.find_versions(url: crate_url, provided_content: '{"other":true}'))
+      expect(crate.find_versions(url: crate_url, content: '{"other":true}'))
         .to eq(match_data[:cached_default])
-      expect(crate.find_versions(url: crate_url, provided_content: '{"versions":[{}]}'))
+      expect(crate.find_versions(url: crate_url, content: '{"versions":[{}]}'))
         .to eq(match_data[:cached_default])
-      expect(crate.find_versions(url: crate_url, regex: no_match_regex, provided_content: content))
+      expect(crate.find_versions(url: crate_url, regex: no_match_regex, content:))
         .to eq(match_data[:cached_default].merge({ regex: no_match_regex }))
     end
 
     it "returns default match_data when url is blank" do
-      expect(crate.find_versions(url: "") { "1.2.3" })
+      expect(crate.find_versions(url: ""))
         .to eq({ matches: {}, regex: nil, url: "" })
     end
 
     it "returns default match_data when content is blank" do
-      expect(crate.find_versions(url: crate_url, provided_content: "{}") { "1.2.3" })
+      expect(crate.find_versions(url: crate_url, content: "{}"))
         .to eq(match_data[:cached_default])
-      expect(crate.find_versions(url: crate_url, provided_content: "") { "1.2.3" })
+      expect(crate.find_versions(url: crate_url, content: ""))
         .to eq(match_data[:cached_default])
     end
   end
