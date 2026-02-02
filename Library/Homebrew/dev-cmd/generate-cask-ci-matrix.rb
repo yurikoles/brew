@@ -154,6 +154,8 @@ module Homebrew
         filtered_runners.merge(linux_runners)
       end
 
+      private
+
       sig { params(cask: Cask::Cask, os: Symbol).returns(T::Array[Symbol]) }
       def architectures(cask:, os:)
         architectures = T.let([], T::Array[Symbol])

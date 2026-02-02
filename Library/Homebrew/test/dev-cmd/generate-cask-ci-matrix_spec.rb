@@ -148,7 +148,7 @@ RSpec.describe Homebrew::DevCmd::GenerateCaskCiMatrix do
 
     context "when cask does not have on_system blocks/calls or `depends_on arch`" do
       it "returns an array including everything" do
-        expect(generate_matrix.send(:filter_runners, c))
+        expect(generate_matrix.filter_runners(c))
           .to eq({
             { arch: :arm, name: "macos-14", symbol: :sonoma }          => 0.0,
             { arch: :arm, name: "macos-15", symbol: :sequoia }         => 0.0,
@@ -158,7 +158,7 @@ RSpec.describe Homebrew::DevCmd::GenerateCaskCiMatrix do
             { arch: :intel, name: "ubuntu-22.04", symbol: :linux }     => 1.0,
           })
 
-        expect(generate_matrix.send(:filter_runners, c_app_only_macos))
+        expect(generate_matrix.filter_runners(c_app_only_macos))
           .to eq({
             { arch: :arm, name: "macos-14", symbol: :sonoma }          => 0.0,
             { arch: :arm, name: "macos-15", symbol: :sequoia }         => 0.0,
@@ -172,7 +172,7 @@ RSpec.describe Homebrew::DevCmd::GenerateCaskCiMatrix do
 
     context "when cask does not have on_system blocks/calls but has macOS specific stanza" do
       it "returns an array including all macOS" do
-        expect(generate_matrix.send(:filter_runners, c_app))
+        expect(generate_matrix.filter_runners(c_app))
           .to eq({
             { arch: :arm, name: "macos-14", symbol: :sonoma }          => 0.0,
             { arch: :arm, name: "macos-15", symbol: :sequoia }         => 0.0,
@@ -184,14 +184,14 @@ RSpec.describe Homebrew::DevCmd::GenerateCaskCiMatrix do
 
     context "when cask does not have on_system blocks/calls but has `depends_on arch`" do
       it "returns an array only including macOS/`depends_on arch` value" do
-        expect(generate_matrix.send(:filter_runners, c_depends_macos_on_intel))
+        expect(generate_matrix.filter_runners(c_depends_macos_on_intel))
           .to eq({ { arch: :intel, name: "macos-15-intel", symbol: :sequoia } => 1.0 })
       end
     end
 
     context "when cask has on_system blocks/calls but does not have `depends_on arch`" do
       it "returns an array with combinations of OS and architectures" do
-        expect(generate_matrix.send(:filter_runners, c_on_system))
+        expect(generate_matrix.filter_runners(c_on_system))
           .to eq({
             { arch: :arm, name: "macos-14", symbol: :sonoma }          => 0.0,
             { arch: :arm, name: "macos-15", symbol: :sequoia }         => 0.0,
@@ -205,13 +205,13 @@ RSpec.describe Homebrew::DevCmd::GenerateCaskCiMatrix do
 
     context "when cask has on_system blocks/calls and `depends_on arch`" do
       it "returns an array with combinations of OS and `depends_on arch` value" do
-        expect(generate_matrix.send(:filter_runners, c_on_system_depends_on_intel))
+        expect(generate_matrix.filter_runners(c_on_system_depends_on_intel))
           .to eq({
             { arch: :intel, name: "macos-15-intel", symbol: :sequoia } => 1.0,
             { arch: :intel, name: "ubuntu-22.04", symbol: :linux }     => 1.0,
           })
 
-        expect(generate_matrix.send(:filter_runners, c_on_linux_depends_on_intel))
+        expect(generate_matrix.filter_runners(c_on_linux_depends_on_intel))
           .to eq({
             { arch: :arm, name: "macos-14", symbol: :sonoma }          => 0.0,
             { arch: :arm, name: "macos-15", symbol: :sequoia }         => 0.0,
@@ -220,14 +220,14 @@ RSpec.describe Homebrew::DevCmd::GenerateCaskCiMatrix do
             { arch: :intel, name: "ubuntu-22.04", symbol: :linux }     => 1.0,
           })
 
-        expect(generate_matrix.send(:filter_runners, c_on_macos_depends_on_intel))
+        expect(generate_matrix.filter_runners(c_on_macos_depends_on_intel))
           .to eq({
             { arch: :intel, name: "macos-15-intel", symbol: :sequoia } => 1.0,
             { arch: :intel, name: "ubuntu-22.04", symbol: :linux }     => 1.0,
             { arch: :arm, name: "ubuntu-22.04-arm", symbol: :linux }   => 1.0,
           })
 
-        expect(generate_matrix.send(:filter_runners, c_on_system_depends_on_mixed))
+        expect(generate_matrix.filter_runners(c_on_system_depends_on_mixed))
           .to eq({
             { arch: :arm, name: "ubuntu-22.04-arm", symbol: :linux }   => 1.0,
             { arch: :intel, name: "macos-15-intel", symbol: :sequoia } => 1.0,
