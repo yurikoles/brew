@@ -1081,7 +1081,8 @@ module Cask
 
       odebug "Auditing GitHub repo"
 
-      error = SharedAudits.github(user, repo)
+      self_submission = self_submission?(user)
+      error = SharedAudits.github(user, repo, self_submission:)
       add_error error, location: url.location if error
     end
 
@@ -1095,7 +1096,8 @@ module Cask
 
       odebug "Auditing GitLab repo"
 
-      error = SharedAudits.gitlab(user, repo)
+      self_submission = self_submission?(user)
+      error = SharedAudits.gitlab(user, repo, self_submission:)
       add_error error, location: url.location if error
     end
 
@@ -1109,7 +1111,8 @@ module Cask
 
       odebug "Auditing Bitbucket repo"
 
-      error = SharedAudits.bitbucket(user, repo)
+      self_submission = self_submission?(user)
+      error = SharedAudits.bitbucket(user, repo, self_submission:)
       add_error error, location: url.location if error
     end
 
@@ -1123,7 +1126,8 @@ module Cask
 
       odebug "Auditing Forgejo repo"
 
-      error = SharedAudits.forgejo(user, repo)
+      self_submission = self_submission?(user)
+      error = SharedAudits.forgejo(user, repo, self_submission:)
       add_error error, location: url.location if error
     end
 
@@ -1273,6 +1277,13 @@ module Cask
       repo.gsub!(/.git$/, "")
 
       [user, repo]
+    end
+
+    sig { params(repo_owner: String).returns(T::Boolean) }
+    def self_submission?(repo_owner)
+      return false if repo_owner.empty?
+
+      SharedAudits.self_submission_for_repo_owner?(repo_owner)
     end
 
     sig {
