@@ -59,6 +59,7 @@ class GitRepository
     ref = popen_git("rev-parse", "--symbolic-full-name", "HEAD", safe:)
     return if ref.blank?
     return "HEAD" if ref == "HEAD"
+
     refs_format = "refs/heads/"
     return ref.delete_prefix(refs_format) if ref.start_with?(refs_format)
 
@@ -82,6 +83,7 @@ class GitRepository
   def origin_branch_name
     ref = popen_git("symbolic-ref", "-q", "refs/remotes/origin/HEAD")
     return if ref.blank?
+
     refs_format = "refs/remotes/origin/"
     return ref.delete_prefix(refs_format) if ref.start_with?(refs_format)
 
