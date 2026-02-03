@@ -445,20 +445,51 @@ RSpec.describe Homebrew::Cleanup do
       end
     end
 
-    it "does not remove bottle manifests for the latest installed version when using GitHub Packages" do
-      manifest = HOMEBREW_CACHE/"foo_bottle_manifest--1.0.json"
-      FileUtils.touch manifest
+    context "when the cache path is a bottle manifest file" do
+      let(:bottle_manifest_path) { (HOMEBREW_CACHE/"testball_bottle_manifest--1.0.bottle_manifest.json") }
 
-      resource = instance_double(Resource, version: Version.new("1.0.arm64_sonoma"))
-      bottle   = instance_double(Bottle, resource:, rebuild: 0)
-      formula  = instance_double(Formula, latest_version_installed?: true, bottle:)
+      before do
+        HOMEBREW_CACHE.mkpath
+        FileUtils.touch bottle_manifest_path
+        (HOMEBREW_CELLAR/"testball"/"0.1/bin").mkpath
+        FileUtils.touch(CoreTap.instance.new_formula_path("testball"))
+      end
 
-      allow(Formulary).to receive(:from_rack).and_return(nil, formula)
-      allow(described_class).to receive(:excluded_versions_from_cleanup).with(formula).and_return([])
+      it "does not remove the file when bottle resource version is nil" do
+        allow(Formulary).to receive(:from_rack).with(HOMEBREW_CELLAR/"testball_bottle_manifest").and_return(nil)
+        allow(Formulary).to receive(:from_rack).and_call_original
+        allow(Formulary).to receive(:from_rack).with(HOMEBREW_CELLAR/"testball").and_wrap_original do |m, *args|
+          formula = m.call(*args)
+          if formula
+            bottle_nil_version = instance_double(Bottle,
+                                                 resource: instance_double(Resource, version: nil),
+                                                 rebuild:  0)
+            allow(formula).to receive(:bottle).and_return(bottle_nil_version)
+          end
+          formula
+        end
+        cleanup.cleanup_cache([{ path: bottle_manifest_path, type: nil }])
+        expect(bottle_manifest_path).to exist
+      end
 
-      cleanup.cleanup_cache
-
-      expect(manifest).to exist
+      it "removes the file when path version differs from bottle version_rebuild" do
+        pathname_mismatch = (HOMEBREW_CACHE/"testball_bottle_manifest--2.0.bottle_manifest.json")
+        FileUtils.touch pathname_mismatch
+        allow(Formulary).to receive(:from_rack).with(HOMEBREW_CELLAR/"testball_bottle_manifest").and_return(nil)
+        allow(Formulary).to receive(:from_rack).and_call_original
+        allow(Formulary).to receive(:from_rack).with(HOMEBREW_CELLAR/"testball").and_wrap_original do |m, *args|
+          formula = m.call(*args)
+          if formula
+            bottle_double = instance_double(Bottle,
+                                            resource: instance_double(Resource, version: Version.new("1.0")),
+                                            rebuild:  0)
+            allow(formula).to receive(:bottle).and_return(bottle_double)
+          end
+          formula
+        end
+        cleanup.cleanup_cache([{ path: pathname_mismatch, type: nil }])
+        expect(pathname_mismatch).not_to exist
+      end
     end
   end
 

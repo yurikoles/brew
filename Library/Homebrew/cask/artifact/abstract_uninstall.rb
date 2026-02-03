@@ -582,7 +582,7 @@ module Cask
 
           begin
             Utils.gain_permissions_rmdir(resolved_path, command:)
-          rescue Errno::ENOTEMPTY
+          rescue Errno::ENOTEMPTY, ErrorDuringExecution
             next false
           end
 

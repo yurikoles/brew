@@ -169,7 +169,7 @@ module Homebrew
           resource_version = bottle.resource.version
           return false unless resource_version
 
-          return resource_version != GitHubPackages.version_rebuild(resource_version, bottle.rebuild)
+          return version != GitHubPackages.version_rebuild(resource_version, bottle.rebuild)
         end
 
         return false if formula.blank?
