@@ -673,7 +673,8 @@ module Homebrew
 
       return if user.blank?
 
-      warning = SharedAudits.github(user, repo)
+      self_submission = self_submission?(user)
+      warning = SharedAudits.github(user, repo, self_submission:)
       return if warning.nil?
 
       new_formula_problem warning
@@ -683,7 +684,8 @@ module Homebrew
       user, repo = get_repo_data(%r{https?://gitlab\.com/([^/]+)/([^/]+)/?.*}) if @new_formula
       return if user.blank?
 
-      warning = SharedAudits.gitlab(user, repo)
+      self_submission = self_submission?(user)
+      warning = SharedAudits.gitlab(user, repo, self_submission:)
       return if warning.nil?
 
       new_formula_problem warning
@@ -693,7 +695,8 @@ module Homebrew
       user, repo = get_repo_data(%r{https?://bitbucket\.org/([^/]+)/([^/]+)/?.*}) if @new_formula
       return if user.blank?
 
-      warning = SharedAudits.bitbucket(user, repo)
+      self_submission = self_submission?(user)
+      warning = SharedAudits.bitbucket(user, repo, self_submission:)
       return if warning.nil?
 
       new_formula_problem warning
@@ -704,7 +707,8 @@ module Homebrew
       user, repo = get_repo_data(%r{https?://codeberg\.org/([^/]+)/([^/]+)/?.*}) if @new_formula
       return if user.blank?
 
-      warning = SharedAudits.forgejo(user, repo)
+      self_submission = self_submission?(user)
+      warning = SharedAudits.forgejo(user, repo, self_submission:)
       return if warning.nil?
 
       new_formula_problem warning
@@ -1112,6 +1116,12 @@ module Homebrew
 
     def new_formula_problem(message, location: nil, corrected: false)
       @new_formula_problems << ({ message:, location:, corrected: })
+    end
+
+    def self_submission?(repo_owner)
+      return false if repo_owner.blank?
+
+      SharedAudits.self_submission_for_repo_owner?(repo_owner)
     end
 
     def head_only?(formula)
