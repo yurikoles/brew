@@ -88,11 +88,10 @@ module Homebrew
           match_data[:cached] = true if content
           return match_data if url.blank?
 
-          if match_data[:cached]
-            content = Json.parse_json(T.must(content))
+          content = if content
+            Json.parse_json(content)
           else
             match_data[:content] = Strategy.page_headers(url, options:)
-            content = match_data[:content]
           end
           return match_data if content.blank?
 
