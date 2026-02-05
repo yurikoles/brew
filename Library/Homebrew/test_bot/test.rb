@@ -63,10 +63,8 @@ module Homebrew
 
         @steps = T.let([], T::Array[Step])
 
-        @repository = T.let(
-          @tap ? @tap.path : CoreTap.instance.path,
-          Pathname,
-        )
+        tap_path = @tap ? @tap.path : CoreTap.instance.path
+        @repository = T.let(tap_path, Pathname)
       end
 
       sig { params(klass: Symbol, method: T.nilable(T.any(String, Symbol))).void }

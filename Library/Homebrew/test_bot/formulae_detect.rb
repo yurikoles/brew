@@ -83,10 +83,10 @@ module Homebrew
               No known CI provider detected! If you are using GitHub Actions then we cannot find the expected environment variables! Check you have e.g. exported them to a Docker container.
             EOS
           end
-        elsif tap.present? && T.must(tap).full_name.casecmp(github_repository)&.zero?
+        elsif (tap = self.tap.presence) && tap.full_name.casecmp(github_repository)&.zero?
           # Use GitHub Actions variables for pull request jobs.
           if (base_ref = ENV.fetch("GITHUB_BASE_REF", nil)).present?
-            unless T.must(tap).official?
+            unless tap.official?
               test git.to_s, "-C", repository.to_s, "fetch",
                    "origin", "+refs/heads/#{base_ref}"
             end
@@ -100,7 +100,7 @@ module Homebrew
             diff_end_sha1 = github_sha
           # Use GitHub Actions variables for branch jobs.
           else
-            test git.to_s, "-C", repository.to_s, "fetch", "origin", "+#{github_ref}" unless T.must(tap).official?
+            test git.to_s, "-C", repository.to_s, "fetch", "origin", "+#{github_ref}" unless tap.official?
             origin_ref = "origin/#{github_ref.gsub(%r{^refs/heads/}, "")}"
             diff_end_sha1 = diff_start_sha1 = github_sha
           end
@@ -118,9 +118,9 @@ module Homebrew
 
         diff_start_sha1 = diff_end_sha1 if @testing_formulae.present?
 
-        if tap
+        if (tap = self.tap.presence)
           tap_origin_ref_revision_args =
-            [git, "-C", T.must(tap).path.to_s, "log", "-1", "--format=%h (%s)", origin_ref]
+            [git, "-C", tap.path.to_s, "log", "-1", "--format=%h (%s)", origin_ref]
           tap_origin_ref_revision = if args.dry_run?
             # May fail on dry run as we've not fetched.
             Utils.popen_read(*tap_origin_ref_revision_args).strip
@@ -128,7 +128,7 @@ module Homebrew
             Utils.safe_popen_read(*tap_origin_ref_revision_args)
           end.strip
           tap_revision = Utils.safe_popen_read(
-            git, "-C", T.must(tap).path.to_s,
+            git, "-C", tap.path.to_s,
             "log", "-1", "--format=%h (%s)"
           ).strip
         end
@@ -143,8 +143,8 @@ module Homebrew
 
         modified_formulae = []
 
-        if tap && diff_start_sha1 != diff_end_sha1
-          formula_path = T.must(tap).formula_dir.to_s
+        if diff_start_sha1 != diff_end_sha1 && (tap = self.tap.presence)
+          formula_path = tap.formula_dir.to_s
           @added_formulae +=
             diff_formulae(diff_start_sha1, diff_end_sha1, formula_path, "A")
           modified_formulae +=
@@ -255,17 +255,17 @@ module Homebrew
         ).returns(T::Array[String])
       }
       def diff_formulae(start_revision, end_revision, path, filter)
-        raise "A tap is required to call diff_formulae" unless tap
+        raise "A tap is required to call diff_formulae" unless @tap
 
         Utils.safe_popen_read(
           git, "-C", repository,
           "diff-tree", "-r", "--name-only", "--diff-filter=#{filter}",
           start_revision, end_revision, "--", path
         ).lines(chomp: true).filter_map do |file|
-          next unless T.must(tap).formula_file?(file)
+          next unless @tap.formula_file?(file)
 
           file = Pathname.new(file)
-          T.must(tap).formula_file_to_name(file)
+          @tap.formula_file_to_name(file)
         end
       end
     end

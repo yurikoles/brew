@@ -21,9 +21,9 @@ module Homebrew
       }
       def initialize(tap:, git:, dry_run:, fail_fast:, verbose:)
         super
-        @testing_formulae_with_tested_dependents = T.let(nil, T.nilable(T::Array[String]))
+        @testing_formulae_with_tested_dependents = T.let([], T::Array[String])
         @tested_dependents_list = T.let(nil, T.nilable(Pathname))
-        @dependent_testing_formulae = T.let(nil, T.nilable(T::Array[String]))
+        @dependent_testing_formulae = T.let([], T::Array[String])
       end
 
       sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
@@ -37,7 +37,7 @@ module Homebrew
         info_header "Skipped or failed formulae:"
         puts skipped_or_failed_formulae
 
-        @testing_formulae_with_tested_dependents = T.let([], T.nilable(T::Array[String]))
+        @testing_formulae_with_tested_dependents = []
         @tested_dependents_list = Pathname("tested-dependents-#{Utils::Bottles.tag}.txt")
 
         @dependent_testing_formulae = sorted_formulae - skipped_or_failed_formulae
@@ -92,10 +92,10 @@ module Homebrew
 
       sig { params(formula_name: String, args: Homebrew::Cmd::TestBotCmd::Args).void }
       def dependent_formulae!(formula_name, args:)
-        cleanup_during!(T.must(@dependent_testing_formulae), args:)
+        cleanup_during!(@dependent_testing_formulae, args:)
 
         test_header(:FormulaeDependents, method: "dependent_formulae!(#{formula_name})")
-        T.must(@testing_formulae_with_tested_dependents) << formula_name
+        @testing_formulae_with_tested_dependents << formula_name
 
         formula = Formulary.factory(formula_name)
 
@@ -208,7 +208,7 @@ module Homebrew
         # Defer formulae which could be tested later
         # i.e. formulae that also depend on something else yet to be built in this test run.
         dependents.reject! do |_, deps|
-          still_to_test = T.must(@dependent_testing_formulae) - T.must(@testing_formulae_with_tested_dependents)
+          still_to_test = @dependent_testing_formulae - @testing_formulae_with_tested_dependents
           deps.map { |d| d.to_formula.full_name }.intersect?(still_to_test)
         end
 
@@ -223,7 +223,7 @@ module Homebrew
           # rubocop:enable Homebrew/MoveToExtendOS
 
           all_deps_bottled_or_built = deps.all? do |d|
-            bottled_or_built?(d.to_formula, T.must(@dependent_testing_formulae))
+            bottled_or_built?(d.to_formula, @dependent_testing_formulae)
           end
           args.build_dependents_from_source? && all_deps_bottled_or_built
         end
@@ -282,7 +282,7 @@ module Homebrew
           return
         end
 
-        cleanup_during!(T.must(@dependent_testing_formulae), args:)
+        cleanup_during!(@dependent_testing_formulae, args:)
 
         required_dependent_deps = dependent.deps.reject(&:optional?)
         bottled_on_current_version = bottled?(dependent, no_older_versions: true)
