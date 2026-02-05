@@ -1,3 +1,4 @@
+# typed: strict
 # frozen_string_literal: true
 
 require "test/support/fixtures/testball"
@@ -92,6 +93,54 @@ RSpec.describe Homebrew::Cleanup do
         cleanup.cleanup_formula formula_zero_dot_two
         expect(cleanup.unremovable_kegs).to contain_exactly(formula_zero_dot_one.installed_kegs[0])
       end
+    end
+  end
+
+  describe "::autoremove" do
+    it "filters out formulae that have installed dependents" do
+      dependency = formula "dep" do
+        url "dep-1.0"
+      end
+
+      dependent = formula "main" do
+        url "main-1.0"
+
+        depends_on "dep"
+      end
+
+      dep_keg = instance_double(Keg, name: "dep", optlinked?: true)
+      main_keg = instance_double(Keg, name: "main", optlinked?: true)
+      dep_tab = instance_double(Tab, poured_from_bottle: true, installed_on_request: false,
+                                     installed_on_request_present?: true)
+      main_tab = instance_double(Tab, poured_from_bottle: true, installed_on_request: true,
+                                      installed_on_request_present?: true)
+
+      allow(dependency).to receive_messages(
+        any_installed_keg:                      dep_keg,
+        installed_runtime_formula_dependencies: [],
+      )
+      allow(dependent).to receive_messages(
+        any_installed_keg:                      main_keg,
+        installed_runtime_formula_dependencies: [dependency],
+        missing_dependencies:                   [dependency],
+      )
+      allow(dep_keg).to receive_messages(
+        tab:                dep_tab,
+        to_formula:         dependency,
+        scheme_and_version: Version.new("1.0"),
+        rack:               HOMEBREW_CELLAR/"dep",
+      )
+      allow(main_keg).to receive_messages(
+        tab:                main_tab,
+        to_formula:         dependent,
+        scheme_and_version: Version.new("1.0"),
+        rack:               HOMEBREW_CELLAR/"main",
+      )
+
+      allow(Formula).to receive_messages(installed: [dependency, dependent], clear_cache: nil)
+      allow(Cask::Caskroom).to receive(:casks).and_return([])
+
+      expect { described_class.autoremove(dry_run: true) }.not_to output(/dep/).to_stdout
     end
   end
 
