@@ -765,7 +765,6 @@ module Homebrew
     def self.autoremove(dry_run: false)
       require "utils/autoremove"
       require "cask/caskroom"
-      require "installed_dependents"
 
       # If this runs after install, uninstall, reinstall or upgrade,
       # the cache of installed formulae may no longer be valid.
@@ -780,13 +779,6 @@ module Homebrew
       casks = Cask::Caskroom.casks
 
       removable_formulae = Utils::Autoremove.removable_formulae(formulae, casks)
-
-      kegs = removable_formulae.filter_map(&:any_installed_keg)
-      if kegs.any? && (result = InstalledDependents.find_some_installed_dependents(kegs, casks:))
-        required_kegs, = result
-        required_names = required_kegs.to_set(&:name)
-        removable_formulae = removable_formulae.reject { |f| required_names.include?(f.name) }
-      end
 
       return if removable_formulae.blank?
 

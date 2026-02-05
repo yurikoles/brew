@@ -1,6 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "installed_dependents"
+
 module Utils
   # Helper function for finding autoremovable formulae.
   #
@@ -14,7 +16,8 @@ module Utils
       sig { params(formulae: T::Array[Formula], casks: T::Array[Cask::Cask]).returns(T::Array[Formula]) }
       def removable_formulae(formulae, casks)
         unused_formulae = unused_formulae_with_no_formula_dependents(formulae)
-        unused_formulae - formulae_with_cask_dependents(casks)
+        unused_formulae -= formulae_with_cask_dependents(casks)
+        filter_formulae_with_installed_dependents(unused_formulae, casks)
       end
 
       private
@@ -33,6 +36,22 @@ module Utils
 
           [f, *f.installed_runtime_formula_dependencies].compact
         end
+      end
+
+      # Filters out formulae that have installed dependents.
+      # Uses InstalledDependents which checks by name strings, avoiding Formula object identity issues.
+      # @private
+      sig { params(formulae: T::Array[Formula], casks: T::Array[Cask::Cask]).returns(T::Array[Formula]) }
+      def filter_formulae_with_installed_dependents(formulae, casks)
+        kegs = formulae.filter_map(&:any_installed_keg)
+        return formulae if kegs.empty?
+
+        result = InstalledDependents.find_some_installed_dependents(kegs, casks:)
+        return formulae if result.nil?
+
+        required_kegs, = result
+        required_names = required_kegs.to_set(&:name)
+        formulae.reject { |f| required_names.include?(f.name) }
       end
 
       # An array of all installed bottled {Formula} without runtime {Formula}

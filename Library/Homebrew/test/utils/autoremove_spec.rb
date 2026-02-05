@@ -181,4 +181,53 @@ RSpec.describe Utils::Autoremove do
         .to contain_exactly(formula_with_deps, first_formula_dep, second_formula_dep)
     end
   end
+
+  describe "::removable_formulae" do
+    include_context "with formulae and casks for dependency testing"
+
+    before do
+      allow(tab_from_keg).to receive_messages(
+        poured_from_bottle:            true,
+        installed_on_request:          false,
+        installed_on_request_present?: true,
+      )
+    end
+
+    it "filters out formulae that have installed dependents" do
+      dependent = formula "dependent" do
+        url "dependent-1.0"
+        depends_on "two"
+      end
+
+      dep_keg = instance_double(Keg, name: "two", optlinked?: true)
+      dependent_keg = instance_double(Keg, name: "dependent", optlinked?: true)
+      dependent_tab = instance_double(Tab, poured_from_bottle: true, installed_on_request: true,
+                                           installed_on_request_present?: true)
+
+      allow(second_formula_dep).to receive(:any_installed_keg).and_return(dep_keg)
+      allow(dep_keg).to receive_messages(
+        tab:                tab_from_keg,
+        to_formula:         second_formula_dep,
+        scheme_and_version: Version.new("1.1"),
+        rack:               HOMEBREW_CELLAR/"two",
+      )
+      allow(dependent).to receive_messages(
+        any_installed_keg:                      dependent_keg,
+        installed_runtime_formula_dependencies: [second_formula_dep],
+        missing_dependencies:                   [second_formula_dep],
+      )
+      allow(dependent_keg).to receive_messages(
+        tab:                dependent_tab,
+        to_formula:         dependent,
+        scheme_and_version: Version.new("1.0"),
+        rack:               HOMEBREW_CELLAR/"dependent",
+      )
+
+      allow(Formula).to receive(:installed).and_return([*formulae, dependent])
+      allow(Cask::Caskroom).to receive(:casks).and_return([])
+
+      result = described_class.removable_formulae(formulae, [])
+      expect(result).not_to include(second_formula_dep)
+    end
+  end
 end
