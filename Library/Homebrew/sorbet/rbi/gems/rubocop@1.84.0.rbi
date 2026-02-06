@@ -2584,6 +2584,10 @@ RuboCop::Cop::Style::EmptyCaseCondition::MSG = T.let(T.unsafe(nil), String)
 
 RuboCop::Cop::Style::EmptyCaseCondition::NOT_SUPPORTED_PARENT_TYPES = T.let(T.unsafe(nil), Array)
 
+RuboCop::Cop::Style::EmptyClassDefinition::MSG_CLASS_DEFINITION = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::EmptyClassDefinition::MSG_CLASS_NEW = T.let(T.unsafe(nil), String)
+
 RuboCop::Cop::Style::EmptyElse::EMPTY_STYLES = T.let(T.unsafe(nil), Array)
 
 RuboCop::Cop::Style::EmptyElse::MSG = T.let(T.unsafe(nil), String)
@@ -2751,6 +2755,12 @@ RuboCop::Cop::Style::HashFetchChain::MSG = T.let(T.unsafe(nil), String)
 RuboCop::Cop::Style::HashFetchChain::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 RuboCop::Cop::Style::HashLikeCase::MSG = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::HashLookupMethod::BRACKET_MSG = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::HashLookupMethod::FETCH_MSG = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::HashLookupMethod::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 RuboCop::Cop::Style::HashSyntax::MSG_19 = T.let(T.unsafe(nil), String)
 
@@ -2920,6 +2930,12 @@ RuboCop::Cop::Style::ModuleFunction::FORBIDDEN_MSG = T.let(T.unsafe(nil), String
 
 RuboCop::Cop::Style::ModuleFunction::MODULE_FUNCTION_MSG = T.let(T.unsafe(nil), String)
 
+RuboCop::Cop::Style::ModuleMemberExistenceCheck::METHODS_WITHOUT_INHERIT_PARAM = T.let(T.unsafe(nil), Set)
+
+RuboCop::Cop::Style::ModuleMemberExistenceCheck::METHODS_WITH_INHERIT_PARAM = T.let(T.unsafe(nil), Set)
+
+RuboCop::Cop::Style::ModuleMemberExistenceCheck::METHOD_REPLACEMENTS = T.let(T.unsafe(nil), Hash)
+
 RuboCop::Cop::Style::ModuleMemberExistenceCheck::MSG = T.let(T.unsafe(nil), String)
 
 RuboCop::Cop::Style::ModuleMemberExistenceCheck::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
@@ -2955,6 +2971,16 @@ RuboCop::Cop::Style::MutableConstant::MSG = T.let(T.unsafe(nil), String)
 RuboCop::Cop::Style::NegatedIfElseCondition::MSG = T.let(T.unsafe(nil), String)
 
 RuboCop::Cop::Style::NegatedIfElseCondition::NEGATED_EQUALITY_METHODS = T.let(T.unsafe(nil), Array)
+
+RuboCop::Cop::Style::NegativeArrayIndex::LENGTH_METHODS = T.let(T.unsafe(nil), Array)
+
+RuboCop::Cop::Style::NegativeArrayIndex::MSG = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::NegativeArrayIndex::MSG_RANGE = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::NegativeArrayIndex::PRESERVING_METHODS = T.let(T.unsafe(nil), Array)
+
+RuboCop::Cop::Style::NegativeArrayIndex::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 RuboCop::Cop::Style::NestedFileDirname::MSG = T.let(T.unsafe(nil), String)
 
@@ -3293,6 +3319,10 @@ RuboCop::Cop::Style::ReturnNil::RETURN_MSG = T.let(T.unsafe(nil), String)
 RuboCop::Cop::Style::ReturnNil::RETURN_NIL_MSG = T.let(T.unsafe(nil), String)
 
 RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition::MSG = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::ReverseFind::MSG = T.let(T.unsafe(nil), String)
+
+RuboCop::Cop::Style::ReverseFind::RESTRICT_ON_SEND = T.let(T.unsafe(nil), Array)
 
 RuboCop::Cop::Style::SafeNavigation::LOGIC_JUMP_KEYWORDS = T.let(T.unsafe(nil), Array)
 
