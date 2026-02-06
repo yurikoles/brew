@@ -136,8 +136,8 @@ module Homebrew
 
               finished_downloads.each do |downloadable, future|
                 previous_pending_line_count -= 1
-                stdout_print_and_flush_if_tty Tty.clear_to_end
                 output_message.call(downloadable, future, false)
+                stdout_print_and_flush_if_tty Tty.clear_to_end
               end
 
               previous_pending_line_count = 0
@@ -145,9 +145,9 @@ module Homebrew
               remaining_downloads.each_with_index do |(downloadable, future), i|
                 break if previous_pending_line_count >= max_lines
 
-                stdout_print_and_flush_if_tty Tty.clear_to_end
                 last = i == max_lines - 1 || i == remaining_downloads.count - 1
                 previous_pending_line_count += output_message.call(downloadable, future, last)
+                stdout_print_and_flush_if_tty Tty.clear_to_end
               end
 
               if previous_pending_line_count.positive?
