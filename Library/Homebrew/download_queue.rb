@@ -13,6 +13,7 @@ module Homebrew
   # Raised when a download is cancelled cooperatively.
   class CancelledDownloadError < StandardError; end
 
+  # Manages a queue of concurrent downloads with cooperative cancellation support.
   class DownloadQueue
     include Utils::Output::Mixin
 
@@ -355,6 +356,7 @@ module Homebrew
       "#{message[0, message_length].to_s.ljust(message_length)}#{progress}"
     end
 
+    # Animated spinner for download progress display.
     class Spinner
       FRAMES = [
         "⠋",
