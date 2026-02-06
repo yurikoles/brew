@@ -1,32 +1,30 @@
-# typed: strict
+# typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
 module Homebrew
   module TestBot
     class TapSyntax < Test
-      sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
       def run!(args:)
         test_header(:TapSyntax)
-        tapped = T.must(tap)
-        return unless tapped.installed?
+        return unless tap.installed?
 
         unless args.stable?
           # Run `brew typecheck` if this tap is typed.
           # TODO: consider in future if we want to allow unsupported taps here.
-          if tapped.official? && quiet_system(git, "-C", tapped.path.to_s, "grep", "-qE",
-                                              "^# typed: (true|strict|strong)$")
-            test "brew", "typecheck", tapped.name
+          if tap.official? && quiet_system(git, "-C", tap.path.to_s, "grep", "-qE",
+                                           "^# typed: (true|strict|strong)$")
+            test "brew", "typecheck", tap.name
           end
 
-          test "brew", "style", tapped.name
+          test "brew", "style", tap.name
         end
 
-        return if tapped.formula_files.blank? && tapped.cask_files.blank?
+        return if tap.formula_files.blank? && tap.cask_files.blank?
 
-        test "brew", "readall", "--aliases", "--os=all", "--arch=all", tapped.name
+        test "brew", "readall", "--aliases", "--os=all", "--arch=all", tap.name
         return if args.stable?
 
-        test "brew", "audit", "--except=installed", "--tap=#{tapped.name}"
+        test "brew", "audit", "--except=installed", "--tap=#{tap.name}"
       end
     end
   end

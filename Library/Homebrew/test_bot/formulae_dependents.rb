@@ -1,32 +1,11 @@
-# typed: strict
+# typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
 module Homebrew
   module TestBot
     class FormulaeDependents < TestFormulae
-      sig { params(testing_formulae: T::Array[String]).returns(T::Array[String]) }
-      attr_writer :testing_formulae
+      attr_writer :testing_formulae, :tested_formulae
 
-      sig { params(tested_formulae: T::Array[String]).returns(T::Array[String]) }
-      attr_writer :tested_formulae
-
-      sig {
-        params(
-          tap:       T.nilable(Tap),
-          git:       T.nilable(String),
-          dry_run:   T::Boolean,
-          fail_fast: T::Boolean,
-          verbose:   T::Boolean,
-        ).void
-      }
-      def initialize(tap:, git:, dry_run:, fail_fast:, verbose:)
-        super
-        @testing_formulae_with_tested_dependents = T.let([], T::Array[String])
-        @tested_dependents_list = T.let(nil, T.nilable(Pathname))
-        @dependent_testing_formulae = T.let([], T::Array[String])
-      end
-
-      sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
       def run!(args:)
         test "brew", "untap", "--force", "homebrew/cask" if !tap&.core_cask_tap? && CoreCaskTap.instance.installed?
 
@@ -54,14 +33,11 @@ module Homebrew
         # rubocop:enable Homebrew/MoveToExtendOS
 
         download_artifacts_from_previous_run!("dependents{,_#{artifact_specifier}*}", dry_run: args.dry_run?)
-        @skip_candidates = T.let(
-          if (tested_dependents_cache = artifact_cache/@tested_dependents_list).exist?
-            tested_dependents_cache.read.split("\n")
-          else
-            []
-          end,
-          T.nilable(T::Array[String]),
-        )
+        @skip_candidates = if (tested_dependents_cache = artifact_cache/@tested_dependents_list).exist?
+          tested_dependents_cache.read.split("\n")
+        else
+          []
+        end
 
         @dependent_testing_formulae.each do |formula_name|
           dependent_formulae!(formula_name, args:)
@@ -80,7 +56,6 @@ module Homebrew
 
       private
 
-      sig { params(installable_bottles: T::Array[String], args: Homebrew::Cmd::TestBotCmd::Args).void }
       def install_formulae_if_needed_from_bottles!(installable_bottles, args:)
         installable_bottles.each do |formula_name|
           formula = Formulary.factory(formula_name)
@@ -90,7 +65,6 @@ module Homebrew
         end
       end
 
-      sig { params(formula_name: String, args: Homebrew::Cmd::TestBotCmd::Args).void }
       def dependent_formulae!(formula_name, args:)
         cleanup_during!(@dependent_testing_formulae, args:)
 
@@ -118,13 +92,13 @@ module Homebrew
              named_args:      formula_name,
              ignore_failures: !bottled?(formula, no_older_versions: true),
              env:             { "HOMEBREW_DEVELOPER" => nil }
-        return unless steps.fetch(-1).passed?
+        return unless steps.last.passed?
 
         # Restore etc/var files that may have been nuked in the build stage.
         test "brew", "postinstall",
              named_args:      formula_name,
              ignore_failures: !bottled?(formula, no_older_versions: true)
-        return unless steps.fetch(-1).passed?
+        return unless steps.last.passed?
 
         # Test texlive first to avoid GitHub-hosted runners running out of storage.
         # TODO: Try generalising this by sorting dependents according to install size,
@@ -147,10 +121,6 @@ module Homebrew
         end
       end
 
-      sig {
-        params(formula: Formula, formula_name: String, args: Homebrew::Cmd::TestBotCmd::Args)
-          .returns([T::Array[Formula], T::Array[Formula], T::Array[Formula]])
-      }
       def dependents_for_formula(formula, formula_name, args:)
         info_header "Determining dependents..."
 
@@ -254,25 +224,17 @@ module Homebrew
         [source_dependents, bottled_dependents, testable_dependents]
       end
 
-      sig {
-        params(
-          dependent:           Formula,
-          testable_dependents: T::Array[Formula],
-          args:                Homebrew::Cmd::TestBotCmd::Args,
-          build_from_source:   T::Boolean,
-        ).void
-      }
       def install_dependent(dependent, testable_dependents, args:, build_from_source: false)
-        if @skip_candidates&.include?(dependent.full_name) &&
+        if @skip_candidates.include?(dependent.full_name) &&
            artifact_cache_valid?(dependent, formulae_dependents: true)
-          @tested_dependents_list&.write(dependent.full_name, mode: "a")
-          @tested_dependents_list&.write("\n", mode: "a")
+          @tested_dependents_list.write(dependent.full_name, mode: "a")
+          @tested_dependents_list.write("\n", mode: "a")
           skipped dependent.name, "#{dependent.full_name} has been tested at #{previous_github_sha}"
           return
         end
 
         if (messages = unsatisfied_requirements_messages(dependent))
-          skipped dependent.name, messages
+          skipped dependent, messages
           return
         end
 
@@ -315,14 +277,14 @@ module Homebrew
             build_args << "--build-from-source"
 
             test "brew", "fetch", "--build-from-source", "--retry", dependent.full_name
-            return if steps.fetch(-1).failed?
+            return if steps.last.failed?
           else
             fetch_formulae << dependent.full_name
           end
 
           if fetch_formulae.present?
             test "brew", "fetch", "--retry", *fetch_formulae
-            return if steps.fetch(-1).failed?
+            return if steps.last.failed?
           end
 
           unlink_conflicts dependent
@@ -340,7 +302,7 @@ module Homebrew
                named_args:      dependent.full_name,
                env:             env.merge({ "HOMEBREW_DEVELOPER" => nil }),
                ignore_failures: !args.test_default_formula? && !bottled_on_current_version
-          install_step = steps.fetch(-1)
+          install_step = steps.last
 
           return unless install_step.passed?
         end
@@ -354,7 +316,7 @@ module Homebrew
         test "brew", "linkage", "--test",
              named_args:      dependent.full_name,
              ignore_failures: !args.test_default_formula? && !bottled_on_current_version
-        linkage_step = steps.fetch(-1)
+        linkage_step = steps.last
 
         if linkage_step.passed? && !build_from_source
           # Check for opportunistic linkage. Ignore failures because
@@ -384,18 +346,18 @@ module Homebrew
                named_args:      dependent.full_name,
                env:,
                ignore_failures: !args.test_default_formula? && !bottled_on_current_version
-          test_step = steps.fetch(-1)
+          test_step = steps.last
         end
 
         test "brew", "uninstall", "--force", "--ignore-dependencies", dependent.full_name
 
         all_tests_passed = (dependent_was_previously_installed || install_step.passed?) &&
                            linkage_step.passed? &&
-                           (testable_dependents.exclude?(dependent) || test_step&.passed?)
+                           (testable_dependents.exclude?(dependent) || test_step.passed?)
 
         if all_tests_passed
-          @tested_dependents_list&.write(dependent.full_name, mode: "a")
-          @tested_dependents_list&.write("\n", mode: "a")
+          @tested_dependents_list.write(dependent.full_name, mode: "a")
+          @tested_dependents_list.write("\n", mode: "a")
         end
 
         return unless GitHub::Actions.env_set?
@@ -426,7 +388,6 @@ module Homebrew
         end
       end
 
-      sig { params(formula: Formula).void }
       def unlink_conflicts(formula)
         return if formula.keg_only?
         return if formula.linked_keg.exist?
