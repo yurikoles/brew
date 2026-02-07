@@ -8,6 +8,10 @@ module Homebrew
     class Junit
       sig { params(tests: T::Array[Test]).void }
       def initialize(tests)
+        require "rexml/document"
+        require "rexml/xmldecl"
+        require "rexml/cdata"
+
         @tests = tests
         @xml_document = T.let(nil, T.nilable(REXML::Document))
       end
@@ -15,10 +19,6 @@ module Homebrew
       sig { params(filters: T.nilable(T::Array[String])).void }
       def build(filters: nil)
         filters ||= []
-
-        require "rexml/document"
-        require "rexml/xmldecl"
-        require "rexml/cdata"
 
         @xml_document = REXML::Document.new
         @xml_document << REXML::XMLDecl.new

@@ -175,7 +175,8 @@ module Homebrew
         return if wanted_artifacts.empty?
 
         if (attempted_artifact = wanted_artifacts.find do |artifact|
-              @downloaded_artifacts.fetch(sha).include?(artifact.fetch("name"))
+              # Hash value must exist due to the hash having a default value of an empty array.
+              T.must(@downloaded_artifacts[sha]).include?(artifact.fetch("name"))
             end)
           opoo "Already tried #{attempted_artifact.fetch("name")} from #{sha}, giving up"
           return
@@ -191,7 +192,8 @@ module Homebrew
           wanted_artifacts.each do |artifact|
             name = artifact.fetch("name")
             ohai "Downloading artifact #{name} from #{sha}"
-            @downloaded_artifacts.fetch(sha) << name
+            # Hash value must exist due to the hash having a default value of an empty array.
+            T.must(@downloaded_artifacts[sha]) << name
 
             download_url = artifact.fetch("archive_download_url")
             artifact_id = artifact.fetch("id")
