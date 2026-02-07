@@ -36,8 +36,6 @@ module Homebrew
       @spinner = T.let(nil, T.nilable(Spinner))
       @symlink_targets = T.let({}, T::Hash[Pathname, T::Set[Downloadable]])
       @downloads_by_location = T.let({}, T::Hash[Pathname, Concurrent::Promises::Future])
-
-      # Cooperative cancellation flag
       @cancelled = T.let(Concurrent::AtomicBoolean.new(false), Concurrent::AtomicBoolean)
     end
 
@@ -48,6 +46,7 @@ module Homebrew
       ).void
     }
     def enqueue(downloadable, check_attestation: false)
+      @cancelled.make_false
       cached_location = downloadable.cached_download
 
       @symlink_targets[cached_location] ||= Set.new
