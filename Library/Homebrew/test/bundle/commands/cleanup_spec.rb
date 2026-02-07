@@ -28,8 +28,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
         mas 'appstoreapp1', id: 1
         vscode 'VsCodeExtension1'
       EOS
-      require "bundle/brewfile"
-      described_class.instance_variable_set(:@dsl, Homebrew::Bundle::Brewfile.read)
+      described_class.read_dsl_from_brewfile!
       %w[a b d2 homebrew/tap/f homebrew/tap/g homebrew/tap/h homebrew/tap/i2
          homebrew/tap/hasdependency hasbuilddependency1 hasbuilddependency2].each do |full_name|
         tap_name, _, name = full_name.rpartition("/")
@@ -43,7 +42,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
       cask_123 = instance_double(Cask::Cask, to_s: "123", old_tokens: [])
       cask_456 = instance_double(Cask::Cask, to_s: "456", old_tokens: [])
       allow(Homebrew::Bundle::CaskDumper).to receive(:casks).and_return([cask_123, cask_456])
-      expect(described_class.send(:casks_to_uninstall)).to eql(%w[456])
+      expect(described_class.casks_to_uninstall).to eql(%w[456])
     end
 
     it "computes which formulae to uninstall" do
@@ -86,7 +85,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
       end
 
       allow(Homebrew::Bundle::CaskDumper).to receive(:formula_dependencies).and_return(%w[caskdependency])
-      expect(described_class.send(:formulae_to_uninstall)).to eql %w[
+      expect(described_class.formulae_to_uninstall).to eql %w[
         c
         homebrew/tap/e
         other/tap/h
@@ -97,7 +96,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
     it "computes which tap to untap" do
       allow(Homebrew::Bundle::TapDumper).to \
         receive(:tap_names).and_return(%w[z homebrew/core homebrew/tap])
-      expect(described_class.send(:taps_to_untap)).to eql(%w[z])
+      expect(described_class.taps_to_untap).to eql(%w[z])
     end
 
     it "ignores unavailable formulae when computing which taps to keep" do
@@ -105,7 +104,7 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
         receive(:factory).and_raise(TapFormulaUnavailableError.new(Tap.fetch("homebrew/tap"), "foo"))
       allow(Homebrew::Bundle::TapDumper).to \
         receive(:tap_names).and_return(%w[z homebrew/core homebrew/tap])
-      expect(described_class.send(:taps_to_untap)).to eql(%w[z homebrew/tap])
+      expect(described_class.taps_to_untap).to eql(%w[z homebrew/tap])
     end
 
     it "ignores formulae with .keepme references when computing which formulae to uninstall" do
@@ -118,28 +117,28 @@ RSpec.describe Homebrew::Bundle::Commands::Cleanup do
       allow(keg).to receive(:keepme_refs).and_return(["/some/file"])
       allow(f).to receive(:installed_kegs).and_return([keg])
 
-      expect(described_class.send(:formulae_to_uninstall)).to be_empty
+      expect(described_class.formulae_to_uninstall).to be_empty
     end
 
     it "computes which VSCode extensions to uninstall" do
       allow(Homebrew::Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z])
-      expect(described_class.send(:vscode_extensions_to_uninstall)).to eql(%w[z])
+      expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
     end
 
     it "computes which VSCode extensions to uninstall irrespective of case of the extension name" do
       allow(Homebrew::Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z vscodeextension1])
-      expect(described_class.send(:vscode_extensions_to_uninstall)).to eql(%w[z])
+      expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
     end
 
     it "computes which flatpaks to uninstall", :needs_linux do
       allow_any_instance_of(Pathname).to receive(:read).and_return <<~EOS
         flatpak 'org.gnome.Calculator'
       EOS
-      described_class.instance_variable_set(:@dsl, Homebrew::Bundle::Brewfile.read)
+      described_class.read_dsl_from_brewfile!
       allow(Homebrew::Bundle).to receive(:flatpak_installed?).and_return(true)
       allow(Homebrew::Bundle::FlatpakDumper).to receive(:packages).and_return(%w[org.gnome.Calculator
                                                                                  org.mozilla.firefox])
-      expect(described_class.send(:flatpaks_to_uninstall)).to eql(%w[org.mozilla.firefox])
+      expect(described_class.flatpaks_to_uninstall).to eql(%w[org.mozilla.firefox])
     end
   end
 

@@ -30,8 +30,7 @@ module Homebrew
 
         def self.run(global: false, file: nil, force: false, zap: false, dsl: nil,
                      formulae: true, casks: true, taps: true, vscode: true, flatpak: true)
-          require "bundle/brewfile"
-          @dsl = dsl || Brewfile.read(global:, file:)
+          read_dsl_from_brewfile!(global:, file:, dsl:)
 
           casks = casks ? casks_to_uninstall(global:, file:) : []
           formulae = formulae ? formulae_to_uninstall(global:, file:) : []
@@ -115,12 +114,25 @@ module Homebrew
           end
         end
 
-        private_class_method def self.casks_to_uninstall(global: false, file: nil)
+        def self.read_dsl_from_brewfile!(global: false, file: nil, dsl: nil)
+          if dsl
+            @dsl = dsl
+          else
+            require "bundle/brewfile"
+            @dsl = Brewfile.read(global:, file:)
+          end
+        end
+
+        def self.casks_to_uninstall(global: false, file: nil)
+          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+
           require "bundle/cask_dumper"
           Homebrew::Bundle::CaskDumper.cask_names - kept_casks(global:, file:)
         end
 
-        private_class_method def self.formulae_to_uninstall(global: false, file: nil)
+        def self.formulae_to_uninstall(global: false, file: nil)
+          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+
           kept_formulae = self.kept_formulae(global:, file:)
 
           require "bundle/formula_dumper"
@@ -195,7 +207,9 @@ module Homebrew
 
         IGNORED_TAPS = %w[homebrew/core].freeze
 
-        private_class_method def self.taps_to_untap(global: false, file: nil)
+        def self.taps_to_untap(global: false, file: nil)
+          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+
           require "bundle/tap_dumper"
 
           kept_formulae = self.kept_formulae(global:, file:).filter_map { lookup_formula(it) }
@@ -212,7 +226,9 @@ module Homebrew
           nil
         end
 
-        private_class_method def self.vscode_extensions_to_uninstall(global: false, file: nil)
+        def self.vscode_extensions_to_uninstall(global: false, file: nil)
+          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+
           kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map { |x| x.name.downcase }
 
           # To provide a graceful migration from `Brewfile`s that don't yet or
@@ -225,7 +241,8 @@ module Homebrew
           current_extensions - kept_extensions
         end
 
-        private_class_method def self.flatpaks_to_uninstall(global: false, file: nil)
+        def self.flatpaks_to_uninstall(global: false, file: nil)
+          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
           return [].freeze unless Bundle.flatpak_installed?
 
           kept_flatpaks = @dsl.entries.select { |e| e.type == :flatpak }.map(&:name)
