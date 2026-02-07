@@ -6,7 +6,7 @@ require "utils/formatter"
 module Homebrew
   module Bundle
     module Commands
-      # Uninstalls formulae, casks, taps and extensions not listed in the Brewfile.
+      # Uninstalls formulae, casks, taps, VSCode extensions and Flatpak packages not listed in the Brewfile.
       # TODO: refactor into multiple modules
       module Cleanup
         def self.reset!
