@@ -39,7 +39,7 @@ module Homebrew
 
         if ENV["GITHUB_ACTIONS_HOMEBREW_SELF_HOSTED"].present?
           if sudo
-            test "sudo", "rm", "-rf", *paths
+            test "sudo", "rm", "-rf", *paths.map(&:to_s)
           else
             FileUtils.rm_rf paths
           end

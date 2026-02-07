@@ -151,7 +151,7 @@ module Homebrew
         end
       end
 
-      sig { params(name: String).returns([Pathname, T.nilable(Integer)]) }
+      sig { params(name: String).returns([T.nilable(String), T.nilable(Integer)]) }
       def annotation_location(name)
         formula = Formulary.factory(name)
         method_sym = command.fetch(1).to_sym
@@ -160,10 +160,11 @@ module Homebrew
         if method_location.present? && (method_location.first == formula.path.to_s)
           method_location
         else
-          [formula.path, nil]
+          [formula.path.to_s, nil]
         end
       rescue FormulaUnavailableError
-        [@repository&.glob("**/#{name}*")&.first, nil]
+        glob_result = @repository ? @repository.glob("**/#{name}*").first&.to_s : nil
+        [glob_result, nil]
       end
 
       sig { params(output: String, max_kb: Integer, context_lines: Integer).returns(String) }
@@ -274,7 +275,7 @@ module Homebrew
           annotation_output = truncate_output(@output, max_kb: 4, context_lines: 5)
 
           annotation_title = "`#{command_trimmed}` failed on #{os_string}!"
-          file = path.to_s.delete_prefix("#{@repository}/")
+          file = path.delete_prefix("#{@repository}/")
           puts_in_github_actions_group("Truncated #{command_short} output") do
             puts_github_actions_annotation(annotation_output, annotation_title, file, line)
           end
