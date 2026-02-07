@@ -6,6 +6,7 @@ require "utils/formatter"
 module Homebrew
   module Bundle
     module Commands
+      # Uninstalls formulae, casks, taps and extensions not listed in the Brewfile.
       # TODO: refactor into multiple modules
       module Cleanup
         def self.reset!
@@ -114,12 +115,12 @@ module Homebrew
           end
         end
 
-        def self.casks_to_uninstall(global: false, file: nil)
+        private_class_method def self.casks_to_uninstall(global: false, file: nil)
           require "bundle/cask_dumper"
           Homebrew::Bundle::CaskDumper.cask_names - kept_casks(global:, file:)
         end
 
-        def self.formulae_to_uninstall(global: false, file: nil)
+        private_class_method def self.formulae_to_uninstall(global: false, file: nil)
           kept_formulae = self.kept_formulae(global:, file:)
 
           require "bundle/formula_dumper"
@@ -194,7 +195,7 @@ module Homebrew
 
         IGNORED_TAPS = %w[homebrew/core].freeze
 
-        def self.taps_to_untap(global: false, file: nil)
+        private_class_method def self.taps_to_untap(global: false, file: nil)
           require "bundle/tap_dumper"
 
           kept_formulae = self.kept_formulae(global:, file:).filter_map { lookup_formula(it) }
@@ -204,14 +205,14 @@ module Homebrew
           current_taps - kept_taps - IGNORED_TAPS
         end
 
-        def self.lookup_formula(formula)
+        private_class_method def self.lookup_formula(formula)
           Formulary.factory(formula)
         rescue TapFormulaUnavailableError
           # ignore these as an unavailable formula implies there is no tap to worry about
           nil
         end
 
-        def self.vscode_extensions_to_uninstall(global: false, file: nil)
+        private_class_method def self.vscode_extensions_to_uninstall(global: false, file: nil)
           kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map { |x| x.name.downcase }
 
           # To provide a graceful migration from `Brewfile`s that don't yet or
@@ -224,7 +225,7 @@ module Homebrew
           current_extensions - kept_extensions
         end
 
-        def self.flatpaks_to_uninstall(global: false, file: nil)
+        private_class_method def self.flatpaks_to_uninstall(global: false, file: nil)
           return [].freeze unless Bundle.flatpak_installed?
 
           kept_flatpaks = @dsl.entries.select { |e| e.type == :flatpak }.map(&:name)
