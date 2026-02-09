@@ -115,23 +115,23 @@ module Homebrew
         end
 
         def self.read_dsl_from_brewfile!(global: false, file: nil, dsl: nil)
-          if dsl
-            @dsl = dsl
+          @dsl = if dsl
+            dsl
           else
             require "bundle/brewfile"
-            @dsl = Brewfile.read(global:, file:)
+            Brewfile.read(global:, file:)
           end
         end
 
         def self.casks_to_uninstall(global: false, file: nil)
-          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+          raise ArgumentError, "@dsl is unset!" unless @dsl
 
           require "bundle/cask_dumper"
           Homebrew::Bundle::CaskDumper.cask_names - kept_casks(global:, file:)
         end
 
         def self.formulae_to_uninstall(global: false, file: nil)
-          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+          raise ArgumentError, "@dsl is unset!" unless @dsl
 
           kept_formulae = self.kept_formulae(global:, file:)
 
@@ -208,7 +208,7 @@ module Homebrew
         IGNORED_TAPS = %w[homebrew/core].freeze
 
         def self.taps_to_untap(global: false, file: nil)
-          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+          raise ArgumentError, "@dsl is unset!" unless @dsl
 
           require "bundle/tap_dumper"
 
@@ -227,7 +227,7 @@ module Homebrew
         end
 
         def self.vscode_extensions_to_uninstall(global: false, file: nil)
-          raise "call `run` or `read_dsl_from_brewfile!` first" unless @dsl
+          raise ArgumentError, "@dsl is unset!" unless @dsl
 
           kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map { |x| x.name.downcase }
 
