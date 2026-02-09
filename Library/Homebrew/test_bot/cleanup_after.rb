@@ -1,10 +1,9 @@
-# typed: strict
+# typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
 module Homebrew
   module TestBot
     class CleanupAfter < TestCleanup
-      sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
       def run!(args:)
         if ENV["HOMEBREW_GITHUB_ACTIONS"].present? && ENV["GITHUB_ACTIONS_HOMEBREW_SELF_HOSTED"].blank? &&
            # don't need to do post-build cleanup unless testing test-bot itself.
@@ -28,7 +27,6 @@ module Homebrew
 
       private
 
-      sig { void }
       def pkill_if_needed
         pgrep = ["pgrep", "-f", HOMEBREW_CELLAR.to_s]
 
