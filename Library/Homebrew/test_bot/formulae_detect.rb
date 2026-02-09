@@ -1,33 +1,20 @@
-# typed: strict
+# typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
 module Homebrew
   module TestBot
     class FormulaeDetect < Test
-      sig { returns(T::Array[String]) }
       attr_reader :testing_formulae, :added_formulae, :deleted_formulae
 
-      sig {
-        params(
-          argument:  String,
-          tap:       T.nilable(Tap),
-          git:       String,
-          dry_run:   T::Boolean,
-          fail_fast: T::Boolean,
-          verbose:   T::Boolean,
-        ).void
-      }
       def initialize(argument, tap:, git:, dry_run:, fail_fast:, verbose:)
         super(tap:, git:, dry_run:, fail_fast:, verbose:)
 
         @argument = argument
-        @added_formulae = T.let([], T::Array[String])
-        @deleted_formulae = T.let([], T::Array[String])
-        @formulae_to_fetch = T.let([], T::Array[String])
-        @testing_formulae = T.let([], T::Array[String])
+        @added_formulae = []
+        @deleted_formulae = []
+        @formulae_to_fetch = []
       end
 
-      sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
       def run!(args:)
         detect_formulae!(args:)
 
@@ -43,7 +30,6 @@ module Homebrew
 
       private
 
-      sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
       def detect_formulae!(args:)
         test_header(:FormulaeDetect, method: :detect_formulae!)
 
@@ -83,11 +69,11 @@ module Homebrew
               No known CI provider detected! If you are using GitHub Actions then we cannot find the expected environment variables! Check you have e.g. exported them to a Docker container.
             EOS
           end
-        elsif (tap = self.tap.presence) && tap.full_name.casecmp(github_repository)&.zero?
+        elsif tap.present? && tap.full_name.casecmp(github_repository).zero?
           # Use GitHub Actions variables for pull request jobs.
           if (base_ref = ENV.fetch("GITHUB_BASE_REF", nil)).present?
             unless tap.official?
-              test git.to_s, "-C", repository.to_s, "fetch",
+              test git, "-C", repository, "fetch",
                    "origin", "+refs/heads/#{base_ref}"
             end
             origin_ref = "origin/#{base_ref}"
@@ -100,7 +86,7 @@ module Homebrew
             diff_end_sha1 = github_sha
           # Use GitHub Actions variables for branch jobs.
           else
-            test git.to_s, "-C", repository.to_s, "fetch", "origin", "+#{github_ref}" unless tap.official?
+            test git, "-C", repository, "fetch", "origin", "+#{github_ref}" unless tap.official?
             origin_ref = "origin/#{github_ref.gsub(%r{^refs/heads/}, "")}"
             diff_end_sha1 = diff_start_sha1 = github_sha
           end
@@ -118,7 +104,7 @@ module Homebrew
 
         diff_start_sha1 = diff_end_sha1 if @testing_formulae.present?
 
-        if (tap = self.tap.presence)
+        if tap
           tap_origin_ref_revision_args =
             [git, "-C", tap.path.to_s, "log", "-1", "--format=%h (%s)", origin_ref]
           tap_origin_ref_revision = if args.dry_run?
@@ -143,7 +129,7 @@ module Homebrew
 
         modified_formulae = []
 
-        if diff_start_sha1 != diff_end_sha1 && (tap = self.tap.presence)
+        if tap && diff_start_sha1 != diff_end_sha1
           formula_path = tap.formula_dir.to_s
           @added_formulae +=
             diff_formulae(diff_start_sha1, diff_end_sha1, formula_path, "A")
@@ -219,7 +205,6 @@ module Homebrew
         EOS
       end
 
-      sig { params(formula_name: String, args: Homebrew::Cmd::TestBotCmd::Args).returns(T.nilable(String)) }
       def safe_formula_canonical_name(formula_name, args:)
         Homebrew.with_no_api_env do
           Formulary.factory(formula_name).full_name
@@ -228,7 +213,7 @@ module Homebrew
         raise if e.tap.installed?
 
         test "brew", "tap", e.tap.name
-        retry unless steps.fetch(-1).failed?
+        retry unless steps.last.failed?
         onoe e
         puts e.backtrace if args.debug?
       rescue FormulaUnavailableError, TapFormulaAmbiguityError => e
@@ -236,36 +221,26 @@ module Homebrew
         puts e.backtrace if args.debug?
       end
 
-      sig { params(ref: String).returns(String) }
       def rev_parse(ref)
         Utils.popen_read(git, "-C", repository, "rev-parse", "--verify", ref).strip
       end
 
-      sig { returns(String) }
       def current_sha1
         rev_parse("HEAD")
       end
 
-      sig {
-        params(
-          start_revision: String,
-          end_revision:   String,
-          path:           String,
-          filter:         String,
-        ).returns(T::Array[String])
-      }
       def diff_formulae(start_revision, end_revision, path, filter)
-        raise "A tap is required to call diff_formulae" unless @tap
+        return unless tap
 
         Utils.safe_popen_read(
           git, "-C", repository,
           "diff-tree", "-r", "--name-only", "--diff-filter=#{filter}",
           start_revision, end_revision, "--", path
         ).lines(chomp: true).filter_map do |file|
-          next unless @tap.formula_file?(file)
+          next unless tap.formula_file?(file)
 
           file = Pathname.new(file)
-          @tap.formula_file_to_name(file)
+          tap.formula_file_to_name(file)
         end
       end
     end

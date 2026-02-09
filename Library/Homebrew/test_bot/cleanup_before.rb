@@ -1,10 +1,9 @@
-# typed: strict
+# typed: true # rubocop:todo Sorbet/StrictSigil
 # frozen_string_literal: true
 
 module Homebrew
   module TestBot
     class CleanupBefore < TestCleanup
-      sig { params(args: Homebrew::Cmd::TestBotCmd::Args).void }
       def run!(args:)
         test_header(:CleanupBefore)
 
