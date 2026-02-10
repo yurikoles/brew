@@ -38,7 +38,7 @@ module Homebrew
         end
 
         sig { params(hash: T::Hash[String, T.untyped], bottle_tag: Utils::Bottles::Tag).returns(FormulaStruct) }
-        def generate_formula_struct_hash(hash, bottle_tag: Utils::Bottles.tag)
+        def generate_formula_struct_hash(hash, bottle_tag: Homebrew::SimulateSystem.current_tag)
           hash = Homebrew::API.merge_variations(hash, bottle_tag:).dup
 
           if (caveats = hash["caveats"])
