@@ -122,6 +122,10 @@ module Cask
       @dsl.instance_eval(&@block)
       @dsl.add_implicit_macos_dependency
       @dsl.language_eval
+    rescue CaskInvalidError
+      raise
+    rescue NoMethodError => e
+      raise CaskInvalidError.new(token, e.message)
     end
 
     def_delegators :@dsl, *::Cask::DSL::DSL_METHODS
